@@ -1,6 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:garden_connect/dashboard/view/dashboard_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_connect/menu/menu.dart';
+import 'menu/cubit/navigation_cubit.dart';
 
-class App extends MaterialApp {
-  const App({super.key}) : super(home: const DashboardPage());
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => NavigationCubit(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: MenuPage(),
+      ),
+    );
+  }
 }
