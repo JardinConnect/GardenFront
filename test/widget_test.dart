@@ -12,6 +12,6 @@ void main() {
   testWidgets('dashboard test', (WidgetTester tester) async {
     await tester.pumpWidget(const App());
 
-    expect(find.text('Welcome to Garden Connect'), findsOneWidget);
+    expect(find.text('Welcome to Garden Connect Dashboard'), findsOneWidget);
   });
 }
