@@ -25,6 +25,7 @@ class AuthRepository {
         User user = User.fromJson(responseData['user']);
 
         await _secureStorage.write(key: 'auth_token', value: token);
+        await _secureStorage.write(key: 'user', value: jsonEncode(user.toJson()));
 
         return User(id: user.id, email: user.email, username: user.username, isAdmin: user.isAdmin, token: token);
       } else {

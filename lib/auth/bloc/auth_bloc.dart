@@ -14,6 +14,32 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthLoginRequested>(_onLoginRequested);
     on<AuthLogoutRequested>(_onLogoutRequested);
     on<AuthCheckStatus>(_onCheckStatus);
+    on<AuthAppStarted>(_onAppStarted);
+
+    add(AuthAppStarted());
+  }
+
+  Future<void> _onAppStarted(
+      AuthAppStarted event,
+      Emitter<AuthState> emit,
+      ) async {
+    emit(AuthLoading());
+
+    try {
+      final token = await _authRepository.getToken();
+      final user = await _authRepository.getUser();
+
+      if (token != null && user != null) {
+        //TODO vérifier si le token est encore valide
+
+        emit(AuthAuthenticated(user: user, isAutoLogin: true));
+      } else {
+        emit(AuthUnauthenticated());
+      }
+    } catch (e) {
+      print('Erreur lors de la vérification au démarrage: $e');
+      emit(AuthUnauthenticated());
+    }
   }
 
   Future<void> _onLoginRequested(
