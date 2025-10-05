@@ -40,6 +40,10 @@ dependencies:
   http: ^1.5.0
   flutter_secure_storage: ^9.2.4
   json_annotation: ^4.9.0
+  widgetbook_workspace:
+    git:
+      url: git@github.com:JardinConnect/GardenUI.git
+      ref: v0.1.0
 
 dev_dependencies:
   flutter_test:
