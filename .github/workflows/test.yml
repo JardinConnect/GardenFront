@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -23,7 +23,7 @@ jobs:
 
       - name: Authenticate Git for private dependencies
         env:
-          TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           echo "machine github.com login x-access-token password $TOKEN" > ~/.netrc
           chmod 600 ~/.netrc
