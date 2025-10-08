@@ -5,31 +5,31 @@ on: [push]
 jobs:
   flutter_test:
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
       - uses: actions/setup-java@v3
         with:
-          distribution: "temurin"
-          java-version: "17"
+          distribution: temurin
+          java-version: 17
+
       - uses: subosito/flutter-action@v2
         with:
-          channel: "stable"
+          channel: stable
 
       - name: Authenticate Git for private dependencies
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          cat <<EOF > ~/.netrc
-          machine github.com
-          login x-access-token
-          password $GH_TOKEN
-          EOF
+          echo "machine github.com login x-access-token password $TOKEN" > ~/.netrc
           chmod 600 ~/.netrc
-          git config --global credential.helper store
           git config --global url."https://github.com/".insteadOf git@github.com:
 
+      # --- Flutter CI steps ---
       - run: flutter pub get
       - run: dart run build_runner build
       - run: flutter analyze --no-fatal-infos
