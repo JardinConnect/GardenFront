@@ -4,8 +4,9 @@ on: [push]
 
 jobs:
   flutter_test:
-    name: Run Flutter Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
@@ -15,10 +16,13 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-      - name: Configure git to use GitHub token
+
+      - name: Configure git to use HTTPS with token
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --global url."https://github.com/".insteadOf git@github.com:
-          git config --global url."https://${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
 
       - run: flutter pub get
       - run: dart run build_runner build
