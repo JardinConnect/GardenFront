@@ -21,7 +21,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "machine github.com login $GH_TOKEN" > ~/.netrc
+          cat <<EOF > ~/.netrc
+          machine github.com
+          login x-access-token
+          password $GH_TOKEN
+          EOF
+          chmod 600 ~/.netrc
           git config --global credential.helper store
           git config --global url."https://github.com/".insteadOf git@github.com:
 
