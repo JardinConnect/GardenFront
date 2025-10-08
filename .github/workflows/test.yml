@@ -17,15 +17,15 @@ jobs:
         with:
           channel: "stable"
 
-      - name: Configure git to use HTTPS with token
+      - name: Authenticate Git for private dependencies
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --global url."https://${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
-          git config --global url."https://github.com/".insteadOf "git@github.com:"
+          echo "machine github.com login $GH_TOKEN" > ~/.netrc
+          git config --global credential.helper store
+          git config --global url."https://github.com/".insteadOf git@github.com:
 
       - run: flutter pub get
       - run: dart run build_runner build
-      - run: flutter --version
       - run: flutter analyze --no-fatal-infos
       - run: flutter test
