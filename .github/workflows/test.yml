@@ -23,7 +23,7 @@ jobs:
 
       - name: Authenticate Git for private dependencies
         env:
-          TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN || secrets.GITHUB_TOKEN }}
+          TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
           echo "machine github.com login x-access-token password $TOKEN" > ~/.netrc
           chmod 600 ~/.netrc
