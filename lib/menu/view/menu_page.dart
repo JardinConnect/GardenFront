@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_connect/core/app_assets.dart';
 import 'package:garden_connect/dashboard/view/dashboard_page.dart';
 import 'package:garden_connect/settings/view/settings_page.dart';
 import 'package:garden_connect/menu/cubit/navigation_cubit.dart';
 import 'package:garden_connect/menu/cubit/navigation_state.dart';
 import 'package:garden_connect/auth/auth.dart';
-import 'package:widgetbook_workspace/ui/components.dart';
+import 'package:garden_ui/ui/components.dart';
 
 class MenuPage extends StatelessWidget {
   const MenuPage({super.key});
@@ -22,8 +23,8 @@ class MenuPage extends StatelessWidget {
         return Scaffold(
           body: Row(
             children: [
-              Flexible(
-                flex: 3,
+              Expanded(
+                flex: 2,
                 child: Menu(
                   items: [
                     MenuItem(
@@ -65,9 +66,10 @@ class MenuPage extends StatelessWidget {
                       severity: MenuItemSeverity.danger,
                     ),
                   ],
+                  logo: AssetImage(AppAssets.logo),
                 ),
               ),
-              Expanded(flex: 7, child: _pages[state.index]),
+              Expanded(flex: 8, child: _pages[state.index]),
             ],
           ),
         );
