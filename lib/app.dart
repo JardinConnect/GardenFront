@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/auth/auth.dart';
-import 'package:widgetbook_workspace/ui/design_system.dart';
+import 'package:garden_ui/ui/design_system.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -12,6 +12,10 @@ class App extends StatelessWidget {
       create: (_) => AuthBloc(),
       child: MaterialApp(
         theme: ThemeData(
+          splashColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          dividerColor: Colors.transparent,
           useMaterial3: true,
           colorScheme: ColorScheme(
             primary: GardenColors.primary.shade500,
@@ -38,9 +42,10 @@ class App extends StatelessWidget {
           ),
           cardTheme: CardThemeData(
             color: GardenColors.base.shade50,
-            elevation: 0,
-            shadowColor: GardenColors.base.shade900.withValues(alpha: 0.2),
-            shape: RoundedRectangleBorder(borderRadius: GardenRadius.radiusMd),
+            elevation: 1,
+            margin: EdgeInsets.all(GardenSpace.paddingMd),
+            shadowColor: Colors.black.withValues(alpha: 0.5),
+            shape: RoundedRectangleBorder(borderRadius: GardenRadius.radiusLg),
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
