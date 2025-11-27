@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_connect/cells/view/cells_page.dart';
 import 'package:garden_connect/core/app_assets.dart';
 import 'package:garden_connect/dashboard/view/dashboard_page.dart';
+import 'package:garden_connect/espaces/view/spaces_page.dart';
 import 'package:garden_connect/settings/view/settings_page.dart';
 import 'package:garden_connect/menu/cubit/navigation_cubit.dart';
 import 'package:garden_connect/menu/cubit/navigation_state.dart';
 import 'package:garden_connect/auth/auth.dart';
 import 'package:garden_ui/ui/components.dart';
 
+import '../../alerts/view/alerts_page.dart';
+
 class MenuPage extends StatelessWidget {
   const MenuPage({super.key});
 
   static final List<Widget> _pages = [
     const DashboardPage(),
+    const SpacesPage(),
+    const CellsPage(),
+    const AlertsPage(),
     const SettingsPage(),
   ];
 
@@ -36,17 +43,20 @@ class MenuPage extends StatelessWidget {
                     MenuItem(
                       icon: Icons.hexagon_outlined,
                       label: 'Espaces',
-                      onTap: () => {},
+                      onTap:
+                          () => context.read<NavigationCubit>().navigateTo(1),
                     ),
                     MenuItem(
                       icon: Icons.sensors,
                       label: 'Cellules',
-                      onTap: () => {},
+                      onTap:
+                          () => context.read<NavigationCubit>().navigateTo(2),
                     ),
                     MenuItem(
                       icon: Icons.thunderstorm_outlined,
                       label: 'Alertes',
-                      onTap: () => {},
+                      onTap:
+                          () => context.read<NavigationCubit>().navigateTo(3),
                     ),
                   ],
                   bottomItems: [
@@ -54,7 +64,7 @@ class MenuPage extends StatelessWidget {
                       icon: Icons.settings,
                       label: 'Paramètres',
                       onTap:
-                          () => context.read<NavigationCubit>().navigateTo(1),
+                          () => context.read<NavigationCubit>().navigateTo(4),
                     ),
                     MenuItem(
                       icon: Icons.logout,
