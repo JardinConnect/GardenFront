@@ -43,15 +43,77 @@ class _AlertHistoryViewState extends State<AlertHistoryView> {
       setState(() {
         _alertEvents.removeWhere((e) => e.id == event.id);
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Archivage de l\'alerte ${event.value}'),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Archivage de l\'alerte ${event.value}'),
+          ),
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erreur lors de l\'archivage: $e')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur lors de l\'archivage: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleArchiveAll() async {
+    if (_alertEvents.isEmpty) return;
+
+    // Dialog de confirmation
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Archiver tout l\'historique'),
+        content: Text('Êtes-vous sûr de vouloir archiver tous les ${_alertEvents.length} événements ?\nCette action est irréversible.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Archiver tout'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      await _performArchiveAll();
+    }
+  }
+
+  Future<void> _performArchiveAll() async {
+    try {
+      // Archive tous les événements
+      for (final event in _alertEvents) {
+        await _alertRepository.archiveAlertEvent(event.id);
+      }
+      
+      setState(() {
+        _alertEvents.clear();
+      });
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Tout l\'historique a été archivé'),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur lors de l\'archivage: $e')),
+        );
+      }
     }
   }
 
@@ -66,6 +128,7 @@ class _AlertHistoryViewState extends State<AlertHistoryView> {
         events: _alertEvents,
         showHeaders: true,
         onDeleteEvent: _handleDeleteEvent,
+        onArchiveAll: _alertEvents.isNotEmpty ? _handleArchiveAll : null,
       ),
     );
   }
