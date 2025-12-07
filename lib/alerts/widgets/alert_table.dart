@@ -74,11 +74,12 @@ class AlertTable extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       child: GardenCard(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10), // Même padding que les lignes
           child: Row(
             children: [
-              // Espace pour l'icône du capteur (pas de titre)
-              const SizedBox(width: 32),
+              // Espace pour l'icône du capteur (pas de titre) - même largeur que les lignes
+              const SizedBox(width: 40), // Changement de 32 à 40
+              const SizedBox(width: 32), // Même espacement que dans les lignes
               // Valeur de l'alerte
               Expanded(
                 flex: 2,
@@ -157,20 +158,24 @@ class AlertTable extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       child: GardenCard(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10), // Réduction du padding horizontal
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              // Icône du capteur à gauche
+              // Icône du capteur à gauche - plus large et plus à gauche
               SizedBox(
-                width: 32,
-                child: GardenIcon(
-                  iconName: event.sensorType.iconName,
-                  size: GardenIconSize.sm,
-                  color: _getSensorColor(event.sensorType),
+                width: 40, // Augmentation de 32 à 40
+                child: Align(
+                  alignment: Alignment.centerLeft, // Alignement à gauche
+                  child: GardenIcon(
+                    iconName: event.sensorType.iconName,
+                    size: GardenIconSize.md, // Retour à sm pour réduire la taille
+                    color: _getSensorColor(event.sensorType),
+                  ),
                 ),
               ),
+              const SizedBox(width: 32), // Espacement entre l'icône et la valeur
               // Valeur de l'alerte
               Expanded(
                 flex: 2,
