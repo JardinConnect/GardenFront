@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:garden_ui/ui/components.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/alert_bloc.dart';
 import '../widgets/tab_menu.dart';
 import '../widgets/display_mode_button.dart';
 import '../widgets/add_alert_button.dart';
@@ -13,98 +14,155 @@ enum DisplayMode {
   card,
 }
 
-class AlertsPage extends StatefulWidget {
+class AlertsPage extends StatelessWidget {
   const AlertsPage({super.key});
 
   @override
-  State<AlertsPage> createState() => _AlertsPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => AlertBloc(),
+      child: const AlertsPageView(),
+    );
+  }
 }
 
-class _AlertsPageState extends State<AlertsPage> {
-  AlertTabType _selectedTab = AlertTabType.alerts;
-  DisplayMode _displayMode = DisplayMode.list;
+class AlertsPageView extends StatelessWidget {
+  const AlertsPageView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header avec titre et boutons d'action
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return BlocConsumer<AlertBloc, AlertState>(
+      listener: (context, state) {
+        if (state is AlertError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        if (state is AlertLoaded && state.successMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.successMessage!),
+              backgroundColor: Colors.green,
+            ),
+          );
+          // Nettoyer le message après l'affichage
+          context.read<AlertBloc>().add(AlertClearSuccessMessage());
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Gestion des alertes',
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-                Container(
-                  margin: const EdgeInsets.only(right: 16),
-                  child: Row(
-                    children: [
-                      // Bouton pour changer le mode d'affichage
-                      if (_selectedTab == AlertTabType.alerts) ...[
-                        DisplayModeButton(
-                          isListMode: _displayMode == DisplayMode.list,
-                          onToggle: () {
-                            setState(() {
-                              _displayMode = _displayMode == DisplayMode.list
-                                  ? DisplayMode.card
-                                  : DisplayMode.list;
-                            });
-                          },
-                        ),
-                        const SizedBox(width: 8),
-                      ],
-                      // Bouton pour ajouter une alerte
-                      AddAlertButton(
-                        onPressed: () {
-                          _handleAddAlert(context);
-                        },
+                // Header avec titre et boutons d'action
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Gestion des alertes',
+                      style: Theme.of(context).textTheme.headlineLarge,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(right: 16),
+                      child: Row(
+                        children: [
+                          // Bouton pour changer le mode d'affichage
+                          if (state is AlertLoaded && state.selectedTab == AlertTabType.alerts) ...[
+                            DisplayModeButton(
+                              isListMode: state.displayMode == DisplayMode.list,
+                              onToggle: () {
+                                context.read<AlertBloc>().add(
+                                  AlertChangeDisplayMode(
+                                    displayMode: state.displayMode == DisplayMode.list
+                                        ? DisplayMode.card
+                                        : DisplayMode.list,
+                                  ),
+                                );
+                              },
+                            ),
+                            const SizedBox(width: 8),
+                          ],
+                          // Bouton pour ajouter une alerte
+                          AddAlertButton(
+                            onPressed: () {
+                              _handleAddAlert(context);
+                            },
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                // Menu des onglets
+                if (state is AlertLoaded)
+                  AlertTabMenu(
+                    selectedTab: state.selectedTab,
+                    onTabSelected: (tab) {
+                      context.read<AlertBloc>().add(AlertChangeTab(tabType: tab));
+                    },
                   ),
+                const SizedBox(height: 16),
+                // Contenu de l'onglet sélectionné
+                Expanded(
+                  child: _buildTabContent(context, state),
                 ),
               ],
             ),
-            const SizedBox(height: 24),
-            // Menu des onglets
-            AlertTabMenu(
-              selectedTab: _selectedTab,
-              onTabSelected: (tab) {
-                setState(() {
-                  _selectedTab = tab;
-                });
-              },
-            ),
-            const SizedBox(height: 16),
-            // Contenu de l'onglet sélectionné
-            Expanded(
-              child: _buildTabContent(),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildTabContent() {
-    switch (_selectedTab) {
+  Widget _buildTabContent(BuildContext context, AlertState state) {
+    if (state is AlertLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (state is AlertError) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Erreur: ${state.message}'),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                context.read<AlertBloc>().add(AlertLoadData());
+              },
+              child: const Text('Réessayer'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (state is! AlertLoaded) {
+      return const SizedBox.shrink();
+    }
+
+    switch (state.selectedTab) {
       case AlertTabType.alerts:
-        return _buildAlertsContent();
+        return _buildAlertsContent(state);
       case AlertTabType.history:
-        return const AlertHistoryView();
+        return AlertHistoryView(
+          alertEvents: state.alertEvents,
+        );
     }
   }
 
   /// Construit le contenu de l'onglet Alertes
-  Widget _buildAlertsContent() {
-    if (_displayMode == DisplayMode.list) {
-      return const AlertListView();
+  Widget _buildAlertsContent(AlertLoaded state) {
+    if (state.displayMode == DisplayMode.list) {
+      return AlertListView(alerts: state.alerts);
     } else {
-      return const AlertCardView();
+      return AlertCardView(sensorAlerts: state.sensorAlerts);
     }
   }
 
