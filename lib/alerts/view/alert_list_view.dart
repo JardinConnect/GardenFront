@@ -1,81 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:garden_ui/ui/components.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/alert_bloc.dart';
 import '../models/alert_models.dart';
-import '../data/alert_repository.dart';
 import '../widgets/sensor_icons_row.dart';
 
 /// Composant pour l'affichage en liste des alertes
-class AlertListView extends StatefulWidget {
-  const AlertListView({super.key});
+class AlertListView extends StatelessWidget {
+  final List<Alert> alerts;
 
-  @override
-  State<AlertListView> createState() => _AlertListViewState();
-}
-
-class _AlertListViewState extends State<AlertListView> {
-  final AlertRepository _alertRepository = AlertRepository();
-  List<Alert> _alerts = [];
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadAlerts();
-  }
-
-  Future<void> _loadAlerts() async {
-    try {
-      final alerts = await _alertRepository.getAlertsForListView();
-      setState(() {
-        _alerts = alerts;
-        _isLoading = false;
-      });
-    } catch (e) {
-      debugPrint('Erreur lors du chargement des alertes: $e');
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _toggleAlertStatus(Alert alert, bool newStatus) async {
-    try {
-      await _alertRepository.updateAlertStatus(alert.id, newStatus);
-      // Mise à jour locale de l'état
-      setState(() {
-        final index = _alerts.indexWhere((a) => a.id == alert.id);
-        if (index >= 0) {
-          _alerts[index] = Alert(
-            id: alert.id,
-            title: alert.title,
-            description: alert.description,
-            isActive: newStatus,
-            sensorTypes: alert.sensorTypes,
-          );
-        }
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erreur: $e')),
-      );
-    }
-  }
+  const AlertListView({super.key, required this.alerts});
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (_alerts.isEmpty) {
+    if (alerts.isEmpty) {
       return const Center(child: Text('Aucune alerte disponible'));
     }
-
+    
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: _alerts.length,
+      itemCount: alerts.length,
       itemBuilder: (context, index) {
-        final alert = _alerts[index];
+        final alert = alerts[index];
         return Container(
           margin: const EdgeInsets.only(bottom: 12),
           padding: const EdgeInsets.all(16),
@@ -85,7 +30,7 @@ class _AlertListViewState extends State<AlertListView> {
             border: Border.all(color: Colors.grey.shade200),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
+                color: Colors.grey.withValues(alpha: 0.1),
                 spreadRadius: 1,
                 blurRadius: 3,
                 offset: const Offset(0, 1),
@@ -136,7 +81,14 @@ class _AlertListViewState extends State<AlertListView> {
               // Switch d'activation
               Switch(
                 value: alert.isActive,
-                onChanged: (value) => _toggleAlertStatus(alert, value),
+                onChanged: (value) {
+                  context.read<AlertBloc>().add(
+                    AlertToggleStatus(
+                      alertId: alert.id,
+                      isActive: value,
+                    ),
+                  );
+                },
               ),
             ],
           ),
