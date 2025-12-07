@@ -2,39 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/components.dart';
 import '../models/alert_models.dart';
 
-/// Modèle de données pour un capteur d'alerte
-class SensorAlertData {
-  final String id;
-  final String title;
-  final SensorType sensorType;
-  final SensorThreshold threshold;
-  final bool isEnabled;
-
-  const SensorAlertData({
-    required this.id,
-    required this.title,
-    required this.sensorType,
-    required this.threshold,
-    required this.isEnabled,
-  });
-
-  SensorAlertData copyWith({
-    String? id,
-    String? title,
-    SensorType? sensorType,
-    SensorThreshold? threshold,
-    bool? isEnabled,
-  }) {
-    return SensorAlertData(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      sensorType: sensorType ?? this.sensorType,
-      threshold: threshold ?? this.threshold,
-      isEnabled: isEnabled ?? this.isEnabled,
-    );
-  }
-}
-
 /// Composant carousel pour afficher les alertes de capteurs
 /// Utilise le SensorAlertCard avec pagination intégrée
 class SensorAlertCarousel extends StatefulWidget {
