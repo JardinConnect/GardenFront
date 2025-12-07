@@ -74,11 +74,23 @@ class AlertTable extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       child: GardenCard(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child: Row(
             children: [
               // Espace pour l'icône du capteur (pas de titre)
               const SizedBox(width: 32),
+              // Valeur de l'alerte
+              Expanded(
+                flex: 2,
+                child: Text(
+                  'Valeur',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ),
               // Cellule
               Expanded(
                 flex: 2,
@@ -117,7 +129,7 @@ class AlertTable extends StatelessWidget {
               ),
               // Localisation
               Expanded(
-                flex: 4,
+                flex: 3,
                 child: Text(
                   'Localisation',
                   style: TextStyle(
@@ -128,19 +140,10 @@ class AlertTable extends StatelessWidget {
                 ),
               ),
               // Action (archivage) - pas de titre pour la colonne d'action
-              if (onArchiveAll != null)
-                SizedBox(
-                  width: 40,
-                  child: IconButton(
-                    onPressed: onArchiveAll,
-                    icon: Icon(
-                      Icons.inventory_2_outlined,
-                      size: 20,
-                      color: GardenColors.typography.shade400,
-                    ),
-                    tooltip: 'Archiver tout',
-                  ),
-                ),
+              SizedBox(
+                width: 40,
+                child: Container(), // Espace vide pour aligner avec le bouton d'archivage
+              ),
             ],
           ),
         ),
@@ -154,24 +157,26 @@ class AlertTable extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       child: GardenCard(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              // Icône du capteur à gauche (pas dans une colonne)
+              // Icône du capteur à gauche
               SizedBox(
                 width: 32,
-                child: Center(
-                  child: GardenIcon(
-                    iconName: event.sensorType.iconName,
-                    size: GardenIconSize.sm,
-                    color: _getSensorColor(event.sensorType),
-                  ),
+                child: GardenIcon(
+                  iconName: event.sensorType.iconName,
+                  size: GardenIconSize.sm,
+                  color: _getSensorColor(event.sensorType),
                 ),
               ),
-              // Cellule
+              // Valeur de l'alerte
               Expanded(
                 flex: 2,
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(
                       Icons.warning,
@@ -181,14 +186,28 @@ class AlertTable extends StatelessWidget {
                     const SizedBox(width: 8),
                     Flexible(
                       child: Text(
-                        '${event.cellName} - ${event.value}',
+                        event.value,
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
+                          height: 1.2,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
+                ),
+              ),
+              // Cellule
+              Expanded(
+                flex: 2,
+                child: Text(
+                  event.cellName,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    height: 1.2,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               // Heure
@@ -196,7 +215,10 @@ class AlertTable extends StatelessWidget {
                 flex: 1,
                 child: Text(
                   event.time,
-                  style: const TextStyle(fontSize: 14),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    height: 1.2,
+                  ),
                 ),
               ),
               // Date
@@ -204,16 +226,20 @@ class AlertTable extends StatelessWidget {
                 flex: 2,
                 child: Text(
                   event.date,
-                  style: const TextStyle(fontSize: 14),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    height: 1.2,
+                  ),
                 ),
               ),
               // Localisation
               Expanded(
-                flex: 4,
+                flex: 3,
                 child: Text(
                   event.location,
                   style: TextStyle(
                     fontSize: 12,
+                    height: 1.2,
                     color: Colors.grey.shade600,
                   ),
                   overflow: TextOverflow.ellipsis,
