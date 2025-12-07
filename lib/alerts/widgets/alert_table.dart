@@ -192,7 +192,7 @@ class AlertTable extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(
-                      Icons.warning,
+                      Icons.warning_amber_rounded,
                       size: 16,
                       color: Colors.red.shade600,
                     ),
