@@ -5,48 +5,8 @@ import '../widgets/display_mode_button.dart';
 import '../widgets/add_alert_button.dart';
 import '../widgets/alert_table.dart';
 import '../widgets/sensor_icons_row.dart';
+import '../widgets/sensor_alert_carousel.dart';
 import '../models/alert_models.dart';
-
-/// Modèle pour une alerte de capteur
-class SensorAlert {
-  final String id;
-  final String title;
-  final SensorType sensorType;
-  final SensorThreshold threshold;
-  final bool isActive;
-  final int currentPage;
-  final int totalPages;
-
-  const SensorAlert({
-    required this.id,
-    required this.title,
-    required this.sensorType,
-    required this.threshold,
-    required this.isActive,
-    required this.currentPage,
-    required this.totalPages,
-  });
-
-  SensorAlert copyWith({
-    String? id,
-    String? title,
-    SensorType? sensorType,
-    SensorThreshold? threshold,
-    bool? isActive,
-    int? currentPage,
-    int? totalPages,
-  }) {
-    return SensorAlert(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      sensorType: sensorType ?? this.sensorType,
-      threshold: threshold ?? this.threshold,
-      isActive: isActive ?? this.isActive,
-      currentPage: currentPage ?? this.currentPage,
-      totalPages: totalPages ?? this.totalPages,
-    );
-  }
-}
 
 /// Mode d'affichage des alertes
 enum DisplayMode {
@@ -64,12 +24,12 @@ class AlertsPage extends StatefulWidget {
 class _AlertsPageState extends State<AlertsPage> {
   AlertTabType _selectedTab = AlertTabType.alerts;
   DisplayMode _displayMode = DisplayMode.list;
-  List<SensorAlert> _alerts = [];
+  List<SensorAlertData> _sensorAlerts = [];
 
   @override
   void initState() {
     super.initState();
-    _alerts = _getMockAlerts();
+    _sensorAlerts = _getMockSensorAlerts();
   }
 
   @override
@@ -151,9 +111,9 @@ class _AlertsPageState extends State<AlertsPage> {
       // Affichage en liste simple comme dans la maquette
       return ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: _alerts.length,
+        itemCount: _sensorAlerts.length,
         itemBuilder: (context, index) {
-          final alert = _alerts[index];
+          final alert = _sensorAlerts[index];
           return Container(
             margin: const EdgeInsets.only(bottom: 12),
             padding: const EdgeInsets.all(16),
@@ -178,7 +138,7 @@ class _AlertsPageState extends State<AlertsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Alerte ${index + 1}',
+                        alert.title,
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
@@ -199,13 +159,7 @@ class _AlertsPageState extends State<AlertsPage> {
                           const SizedBox(width: 24), // Petit espacement entre texte et icônes
                           // Ligne d'icônes de capteurs directement après la description
                           SensorIconsRow(
-                            activeSensorTypes: [
-                              SensorType.temperature,
-                              SensorType.humiditySurface,
-                              SensorType.humidityDepth,
-                              SensorType.light,
-                              SensorType.rain,
-                            ],
+                            activeSensorTypes: [alert.sensorType],
                           ),
                         ],
                       ),
@@ -215,10 +169,10 @@ class _AlertsPageState extends State<AlertsPage> {
                 const SizedBox(width: 12), // Espacement avant le toggle
                 // Toggle d'activation tout à droite
                 Switch(
-                  value: alert.isActive,
+                  value: alert.isEnabled,
                   onChanged: (value) {
                     setState(() {
-                      _alerts[index] = alert.copyWith(isActive: value);
+                      _sensorAlerts[index] = alert.copyWith(isEnabled: value);
                     });
                   },
                 ),
@@ -228,37 +182,59 @@ class _AlertsPageState extends State<AlertsPage> {
         },
       );
     } else {
-      // Affichage en cartes (mode grille) avec SensorAlertCard
+      // Affichage en cartes avec grille de SensorAlertCarousel
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            childAspectRatio: 0.8,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-          ),
-          itemCount: _alerts.length,
-          itemBuilder: (context, index) {
-            final alert = _alerts[index];
-            return SensorAlertCard(
-              sensorType: alert.sensorType,
-              threshold: alert.threshold,
-              isEnabled: alert.isActive,
-              onToggle: (isActive) {
-                setState(() {
-                  _alerts[index] = alert.copyWith(isActive: isActive);
-                });
-              },
-              totalPages: alert.totalPages,
-              currentPage: alert.currentPage,
-              onPageChanged: (pageIndex) {
-                setState(() {
-                  _alerts[index] = alert.copyWith(currentPage: pageIndex);
-                });
-              },
-            );
-          },
+        child: Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          children: [
+            // Première carte avec les 2 premiers capteurs
+            SizedBox(
+              width: 400,
+              child: SensorAlertCarousel(
+                sensors: _sensorAlerts.take(2).toList(),
+                onToggle: (sensorId, isEnabled) {
+                  setState(() {
+                    final globalIndex = _sensorAlerts.indexWhere((alert) => alert.id == sensorId);
+                    if (globalIndex >= 0) {
+                      _sensorAlerts[globalIndex] = _sensorAlerts[globalIndex].copyWith(isEnabled: isEnabled);
+                    }
+                  });
+                },
+              ),
+            ),
+            // Deuxième carte avec les 2 suivants
+            SizedBox(
+              width: 400,
+              child: SensorAlertCarousel(
+                sensors: _sensorAlerts.skip(2).take(2).toList(),
+                onToggle: (sensorId, isEnabled) {
+                  setState(() {
+                    final globalIndex = _sensorAlerts.indexWhere((alert) => alert.id == sensorId);
+                    if (globalIndex >= 0) {
+                      _sensorAlerts[globalIndex] = _sensorAlerts[globalIndex].copyWith(isEnabled: isEnabled);
+                    }
+                  });
+                },
+              ),
+            ),
+            // Troisième carte avec le dernier capteur
+            SizedBox(
+              width: 400,
+              child: SensorAlertCarousel(
+                sensors: _sensorAlerts.skip(4).toList(),
+                onToggle: (sensorId, isEnabled) {
+                  setState(() {
+                    final globalIndex = _sensorAlerts.indexWhere((alert) => alert.id == sensorId);
+                    if (globalIndex >= 0) {
+                      _sensorAlerts[globalIndex] = _sensorAlerts[globalIndex].copyWith(isEnabled: isEnabled);
+                    }
+                  });
+                },
+              ),
+            ),
+          ],
         ),
       );
     }
@@ -291,9 +267,9 @@ class _AlertsPageState extends State<AlertsPage> {
   }
 
   /// Génère des données de test pour les alertes de capteurs
-  List<SensorAlert> _getMockAlerts() {
+  List<SensorAlertData> _getMockSensorAlerts() {
     return [
-      const SensorAlert(
+      const SensorAlertData(
         id: '1',
         title: 'Alerte 12 spé Temp',
         sensorType: SensorType.temperature,
@@ -313,11 +289,9 @@ class _AlertsPageState extends State<AlertsPage> {
             ),
           ],
         ),
-        isActive: true,
-        currentPage: 2,
-        totalPages: 5,
+        isEnabled: true,
       ),
-      const SensorAlert(
+      const SensorAlertData(
         id: '2',
         title: 'Alerte Global',
         sensorType: SensorType.humiditySurface,
@@ -337,11 +311,9 @@ class _AlertsPageState extends State<AlertsPage> {
             ),
           ],
         ),
-        isActive: true,
-        currentPage: 0,
-        totalPages: 5,
+        isEnabled: true,
       ),
-      const SensorAlert(
+      const SensorAlertData(
         id: '3',
         title: 'Alerte spé température...',
         sensorType: SensorType.humidityDepth,
@@ -361,57 +333,57 @@ class _AlertsPageState extends State<AlertsPage> {
             ),
           ],
         ),
-        isActive: true,
-        currentPage: 1,
-        totalPages: 5,
+        isEnabled: true,
       ),
-      const SensorAlert(
+      const SensorAlertData(
         id: '4',
         title: 'Alerte température',
-        sensorType: SensorType.temperature,
+        sensorType: SensorType.light,
         threshold: SensorThreshold(
           thresholds: [
             ThresholdValue(
-              value: 90,
-              unit: '%',
+              value: 10000,
+              unit: ' lux',
               label: 'maximale',
-              alertType: MenuAlertType.warning,
+              alertType: MenuAlertType.error,
             ),
             ThresholdValue(
-              value: 10,
-              unit: '%',
+              value: 5000,
+              unit: ' lux',
+              label: 'optimale',
+              alertType: MenuAlertType.none,
+            ),
+            ThresholdValue(
+              value: 1000,
+              unit: ' lux',
+              label: 'minimale',
+              alertType: MenuAlertType.warning,
+            ),
+          ],
+        ),
+        isEnabled: false,
+      ),
+      const SensorAlertData(
+        id: '5',
+        title: 'Alerte pluie',
+        sensorType: SensorType.rain,
+        threshold: SensorThreshold(
+          thresholds: [
+            ThresholdValue(
+              value: 100,
+              unit: ' mm',
+              label: 'maximale',
+              alertType: MenuAlertType.none,
+            ),
+            ThresholdValue(
+              value: 0,
+              unit: ' mm',
               label: 'minimale',
               alertType: MenuAlertType.none,
             ),
           ],
         ),
-        isActive: false,
-        currentPage: 3,
-        totalPages: 5,
-      ),
-      const SensorAlert(
-        id: '5',
-        title: 'Alerte température old',
-        sensorType: SensorType.light,
-        threshold: SensorThreshold(
-          thresholds: [
-            ThresholdValue(
-              value: 90,
-              unit: '%',
-              label: 'maximale',
-              alertType: MenuAlertType.warning,
-            ),
-            ThresholdValue(
-              value: 10,
-              unit: '%',
-              label: 'minimale',
-              alertType: MenuAlertType.warning,
-            ),
-          ],
-        ),
-        isActive: false,
-        currentPage: 4,
-        totalPages: 5,
+        isEnabled: false,
       ),
     ];
   }
