@@ -140,10 +140,18 @@ class AlertTable extends StatelessWidget {
                   ),
                 ),
               ),
-              // Action (archivage) - pas de titre pour la colonne d'action
+              // Action (archivage) - bouton pour archiver tout
               SizedBox(
                 width: 40,
-                child: Container(), // Espace vide pour aligner avec le bouton d'archivage
+                child: IconButton(
+                  onPressed: onArchiveAll,
+                  icon: Icon(
+                    Icons.inventory_2_outlined,
+                    size: 20,
+                    color: GardenColors.typography.shade400,
+                  ),
+                  tooltip: 'Archiver tout',
+                ),
               ),
             ],
           ),
