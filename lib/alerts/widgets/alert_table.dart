@@ -13,12 +13,16 @@ class AlertTable extends StatelessWidget {
   
   /// Callback appelé lors de l'archivage d'un événement
   final ValueChanged<AlertEvent>? onDeleteEvent;
+  
+  /// Callback appelé lors de l'archivage de tous les événements
+  final VoidCallback? onArchiveAll;
 
   const AlertTable({
     super.key,
     required this.events,
     this.showHeaders = true,
     this.onDeleteEvent,
+    this.onArchiveAll,
   });
 
   @override
@@ -26,8 +30,38 @@ class AlertTable extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // En-têtes (optionnel)
-        if (showHeaders) _buildHeader(),
+        // Header avec compteur et bouton Archive All
+        if (showHeaders && events.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '${events.length} événement(s) dans l\'historique',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        // En-têtes des colonnes (optionnel)
+        if (showHeaders && events.isNotEmpty) _buildHeader(),
+        // Message vide si aucun événement
+        if (events.isEmpty)
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.all(32.0),
+              child: Text(
+                'Aucun événement dans l\'historique',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+          ),
         // Liste des événements
         ...events.map((event) => _buildEventRow(event)),
       ],
@@ -93,8 +127,20 @@ class AlertTable extends StatelessWidget {
                   ),
                 ),
               ),
-              // Action (archivage)
-              const SizedBox(width: 40),
+              // Action (archivage) - pas de titre pour la colonne d'action
+              if (onArchiveAll != null)
+                SizedBox(
+                  width: 40,
+                  child: IconButton(
+                    onPressed: onArchiveAll,
+                    icon: Icon(
+                      Icons.inventory_2_outlined,
+                      size: 20,
+                      color: GardenColors.typography.shade400,
+                    ),
+                    tooltip: 'Archiver tout',
+                  ),
+                ),
             ],
           ),
         ),
