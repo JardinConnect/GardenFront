@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/alert_bloc.dart';
-import '../widgets/tab_menu.dart';
-import '../widgets/display_mode_button.dart';
-import '../widgets/add_alert_button.dart';
+import '../widgets/button/tab_menu.dart';
+import '../widgets/button/display_mode_button.dart';
+import '../widgets/button/add_alert_button.dart';
 import 'alert_list_view.dart';
 import 'alert_card_view.dart';
 import 'alert_history_view.dart';

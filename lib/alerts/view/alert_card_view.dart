@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/alert_bloc.dart';
 import '../models/alert_models.dart';
-import '../widgets/sensor_alert_carousel.dart';
+import '../widgets/alerts/sensor_alert_carousel.dart';
 
 /// Composant pour l'affichage en cartes des alertes
 class AlertCardView extends StatelessWidget {

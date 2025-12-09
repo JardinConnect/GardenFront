@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/components.dart';
-import '../models/alert_models.dart';
+import '../../models/alert_models.dart';
 
 /// Composant carousel pour afficher les alertes de capteurs
 /// Utilise le SensorAlertCard avec pagination intégrée

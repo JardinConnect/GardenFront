@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_ui/ui/components.dart';
 import '../bloc/alert_bloc.dart';
 import '../models/alert_models.dart';
-import '../widgets/sensor_icons_row.dart';
+import '../widgets/alerts/sensor_icons_row.dart';
 
 /// Composant pour l'affichage en liste des alertes
 class AlertListView extends StatelessWidget {
