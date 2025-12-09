@@ -46,13 +46,6 @@ class _SensorsSectionState extends State<SensorsSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Capteurs disponibles',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 16),
 
         // Grille de capteurs
         GridView.builder(
@@ -71,49 +64,59 @@ class _SensorsSectionState extends State<SensorsSection> {
 
             return GestureDetector(
               onTap: () => _toggleSensor(sensor),
-              child: GardenCard(
-                hasShadow: true,
-                hasBorder: isSelected,
-                child: Stack(
-                  children: [
-                    // Contenu principal
-                    Center(
-                      child: GardenIcon(
-                        iconName: sensor.type.iconName,
-                        size: GardenIconSize.lg,
-                        color: _getSensorColor(sensor),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: isSelected
+                    ? Border.all(
+                        color: GardenColors.primary.shade500,
+                        width: 1,
+                      )
+                    : null,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: GardenCard(
+                  hasShadow: true,
+                  child: Stack(
+                    children: [
+                      // Contenu principal
+                      Center(
+                        child: GardenIcon(
+                          iconName: sensor.type.iconName,
+                          size: GardenIconSize.lg,
+                          color: _getSensorColor(sensor),
+                        ),
                       ),
-                    ),
 
-                    // Cercle de sélection en haut à droite
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: Container(
-                        width: 20,
-                        height: 20,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: isSelected
-                            ? GardenColors.primary.shade500
-                            : Colors.transparent,
-                          border: Border.all(
+                      // Cercle de sélection en haut à droite
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
                             color: isSelected
                               ? GardenColors.primary.shade500
-                              : Colors.grey.shade400,
-                            width: 2,
+                              : Colors.transparent,
+                            border: Border.all(
+                              color: isSelected
+                                ? GardenColors.primary.shade500
+                                : Colors.grey.shade400,
+                              width: 2,
+                            ),
                           ),
+                          child: isSelected
+                            ? const Icon(
+                                Icons.check,
+                                size: 12,
+                                color: Colors.white,
+                              )
+                            : null,
                         ),
-                        child: isSelected
-                          ? const Icon(
-                              Icons.check,
-                              size: 12,
-                              color: Colors.white,
-                            )
-                          : null,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );
