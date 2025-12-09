@@ -1,11 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_ui/ui/components.dart';
+import 'package:garden_ui/ui/design_system.dart';
 import '../bloc/alert_bloc.dart';
 import '../widgets/forms/alert_name_input.dart';
 import '../widgets/forms/sensors_section.dart';
 import '../widgets/forms/thresholds_section.dart';
 import '../widgets/forms/alert_table_section.dart';
+
+void _showSnackBar(BuildContext context, String message) {
+  final screenWidth = MediaQuery.of(context).size.width;
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(
+        message,
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      backgroundColor: GardenColors.tertiary.shade700,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      margin: EdgeInsets.only(
+        bottom: 20,
+        right: 20,
+        left: screenWidth - 320, // SnackBar de 300px de largeur
+      ),
+    ),
+  );
+}
+
 /// Vue pour ajouter une nouvelle alerte
 class AlertAddView extends StatelessWidget {
   const AlertAddView({super.key});
@@ -102,11 +130,7 @@ class AlertAddView extends StatelessWidget {
               icon: Icons.add_alert,
               onPressed: () {
                 // TODO: Implémenter la création d'alerte
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Alerte créée avec succès !"),
-                  ),
-                );
+                _showSnackBar(context, "Alerte créée avec succès !");
               },
             ),
           ),
