@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_ui/ui/components.dart';
 import '../bloc/alert_bloc.dart';
-
+import '../widgets/forms/alert_name_input.dart';
+import '../widgets/forms/sensors_section.dart';
+import '../widgets/forms/thresholds_section.dart';
+import '../widgets/forms/alert_table_section.dart';
 /// Vue pour ajouter une nouvelle alerte
 class AlertAddView extends StatelessWidget {
   const AlertAddView({super.key});
@@ -49,16 +53,44 @@ class AlertAddView extends StatelessWidget {
             style: Theme.of(context).textTheme.headlineLarge,
           ),
           const SizedBox(height: 24),
-          // Contenu (pour l'instant vide)
-          const Expanded(
-            child: Center(
-              child: Text(
-                'Contenu à venir...',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
+          // Row avec deux GardenCards côte à côte
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // GardenCard de gauche - Configuration
+                Expanded(
+                  flex: 1,
+                  child: GardenCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Input pour le nom de l'alerte
+                        const AlertNameInput(),
+                        const SizedBox(height: 24),
+
+                        // Section capteurs
+                        const SensorsSection(),
+                        const SizedBox(height: 16),
+
+                        // Section seuils
+                        const ThresholdsSection(),
+                        const SizedBox(height: 16),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+
+                const SizedBox(width: 16),
+
+                // GardenCard de droite - Tableau
+                Expanded(
+                  flex: 1,
+                  child: GardenCard(
+                    child: const AlertTableSection(),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
