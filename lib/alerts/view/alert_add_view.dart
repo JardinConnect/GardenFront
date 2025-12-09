@@ -75,7 +75,6 @@ class AlertAddView extends StatelessWidget {
 
                         // Section seuils
                         const ThresholdsSection(),
-                        const SizedBox(height: 16),
                       ],
                     ),
                   ),
@@ -91,6 +90,24 @@ class AlertAddView extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          // Bouton Créer Alerte centré en bas
+          Center(
+            child: Button(
+              label: "Créer Alerte",
+              icon: Icons.add_alert,
+              onPressed: () {
+                // TODO: Implémenter la création d'alerte
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Alerte créée avec succès !"),
+                  ),
+                );
+              },
             ),
           ),
         ],
