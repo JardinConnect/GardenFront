@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/alert_bloc.dart';
 import '../models/alert_models.dart';
-import '../widgets/alert_table.dart';
+import '../widgets/history/alert_table.dart';
 
 /// Composant pour l'affichage de l'historique des alertes
 class AlertHistoryView extends StatelessWidget {

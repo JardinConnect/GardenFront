@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 import '../models/alert_models.dart';
 import '../data/alert_repository.dart';
 import '../view/alerts_page.dart'; // Pour DisplayMode
-import '../widgets/tab_menu.dart'; // Pour AlertTabType
+import '../widgets/button/tab_menu.dart'; // Pour AlertTabType
 
 part 'alert_event.dart';
 part 'alert_state.dart';
