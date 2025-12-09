@@ -7,6 +7,7 @@ import '../widgets/button/add_alert_button.dart';
 import 'alert_list_view.dart';
 import 'alert_card_view.dart';
 import 'alert_history_view.dart';
+import 'alert_add_view.dart';
 
 /// Mode d'affichage des alertes
 enum DisplayMode {
@@ -53,126 +54,101 @@ class AlertsPageView extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        return Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header avec titre et boutons d'action
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Gestion des alertes',
-                      style: Theme.of(context).textTheme.headlineLarge,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(right: 16),
-                      child: Row(
-                        children: [
-                          // Bouton pour changer le mode d'affichage
-                          if (state is AlertLoaded && state.selectedTab == AlertTabType.alerts) ...[
-                            DisplayModeButton(
-                              isListMode: state.displayMode == DisplayMode.list,
-                              onToggle: () {
-                                context.read<AlertBloc>().add(
-                                  AlertChangeDisplayMode(
-                                    displayMode: state.displayMode == DisplayMode.list
-                                        ? DisplayMode.card
-                                        : DisplayMode.list,
-                                  ),
-                                );
-                              },
-                            ),
-                            const SizedBox(width: 8),
-                          ],
-                          // Bouton pour ajouter une alerte
-                          AddAlertButton(
-                            onPressed: () {
-                              _handleAddAlert(context);
+        if (state is AlertLoaded && state.isShowingAddView) {
+          return const AlertAddView();
+        }
+        
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header avec titre et boutons d'action
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Gestion des alertes',
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(right: 16),
+                    child: Row(
+                      children: [
+                        // Bouton pour changer le mode d'affichage
+                        if (state is AlertLoaded && state.selectedTab == AlertTabType.alerts) ...[
+                          DisplayModeButton(
+                            isListMode: state.displayMode == DisplayMode.list,
+                            onToggle: () {
+                              context.read<AlertBloc>().add(
+                                AlertChangeDisplayMode(
+                                  displayMode: state.displayMode == DisplayMode.list
+                                      ? DisplayMode.card
+                                      : DisplayMode.list,
+                                ),
+                              );
                             },
                           ),
+                          const SizedBox(width: 8),
                         ],
-                      ),
+                        // Bouton pour ajouter une alerte
+                        AddAlertButton(
+                          onPressed: () {
+                            _handleAddAlert(context);
+                          },
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                // Menu des onglets
-                if (state is AlertLoaded)
-                  AlertTabMenu(
-                    selectedTab: state.selectedTab,
-                    onTabSelected: (tab) {
-                      context.read<AlertBloc>().add(AlertChangeTab(tabType: tab));
-                    },
                   ),
-                const SizedBox(height: 16),
-                // Contenu de l'onglet sélectionné
-                Expanded(
-                  child: _buildTabContent(context, state),
+                ],
+              ),
+              const SizedBox(height: 24),
+              // Menu des onglets
+              if (state is AlertLoaded)
+                AlertTabMenu(
+                  selectedTab: state.selectedTab,
+                  onTabSelected: (tab) {
+                    context.read<AlertBloc>().add(AlertChangeTab(tabType: tab));
+                  },
                 ),
-              ],
-            ),
+              const SizedBox(height: 16),
+              // Contenu de l'onglet sélectionné
+              Expanded(
+                child: _buildTabContent(context, state),
+              ),
+            ],
           ),
         );
       },
     );
   }
 
+  /// Construit le contenu selon l'onglet sélectionné
   Widget _buildTabContent(BuildContext context, AlertState state) {
-    if (state is AlertLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (state is AlertError) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Erreur: ${state.message}'),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                context.read<AlertBloc>().add(AlertLoadData());
-              },
-              child: const Text('Réessayer'),
-            ),
-          ],
-        ),
-      );
-    }
-
     if (state is! AlertLoaded) {
-      return const SizedBox.shrink();
+      return const Center(child: CircularProgressIndicator());
     }
 
     switch (state.selectedTab) {
       case AlertTabType.alerts:
         return _buildAlertsContent(state);
       case AlertTabType.history:
-        return AlertHistoryView(
-          alertEvents: state.alertEvents,
-        );
+        return AlertHistoryView(alertEvents: state.alertEvents);
     }
   }
 
-  /// Construit le contenu de l'onglet Alertes
+  /// Construit le contenu des alertes selon le mode d'affichage
   Widget _buildAlertsContent(AlertLoaded state) {
-    if (state.displayMode == DisplayMode.list) {
-      return AlertListView(alerts: state.alerts);
-    } else {
-      return AlertCardView(sensorAlerts: state.sensorAlerts);
+    switch (state.displayMode) {
+      case DisplayMode.list:
+        return AlertListView(alerts: state.alerts);
+      case DisplayMode.card:
+        return AlertCardView(sensorAlerts: state.sensorAlerts);
     }
   }
 
   /// Gère l'action d'ajout d'une nouvelle alerte
   void _handleAddAlert(BuildContext context) {
-    // TODO: Implémenter l'ajout d'alerte
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Ajouter une alerte'),
-      ),
-    );
+    context.read<AlertBloc>().add(AlertShowAddView());
   }
 }

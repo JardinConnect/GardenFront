@@ -20,6 +20,8 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
     on<AlertArchiveAll>(_archiveAll);
     on<AlertChangeTab>(_changeTab);
     on<AlertClearSuccessMessage>(_clearSuccessMessage);
+    on<AlertShowAddView>(_showAddView);
+    on<AlertHideAddView>(_hideAddView);
 
     // Charger les données initiales
     add(AlertLoadData());
@@ -142,6 +144,20 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
     if (state is AlertLoaded) {
       final currentState = state as AlertLoaded;
       emit(currentState.copyWith(clearSuccessMessage: true));
+    }
+  }
+
+  void _showAddView(AlertShowAddView event, Emitter<AlertState> emit) {
+    if (state is AlertLoaded) {
+      final currentState = state as AlertLoaded;
+      emit(currentState.copyWith(isShowingAddView: true));
+    }
+  }
+
+  void _hideAddView(AlertHideAddView event, Emitter<AlertState> emit) {
+    if (state is AlertLoaded) {
+      final currentState = state as AlertLoaded;
+      emit(currentState.copyWith(isShowingAddView: false));
     }
   }
 }

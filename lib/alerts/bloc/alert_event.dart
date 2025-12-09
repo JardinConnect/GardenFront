@@ -33,3 +33,7 @@ final class AlertChangeTab extends AlertBlocEvent {
 }
 
 final class AlertClearSuccessMessage extends AlertBlocEvent {}
+
+final class AlertShowAddView extends AlertBlocEvent {}
+
+final class AlertHideAddView extends AlertBlocEvent {}
