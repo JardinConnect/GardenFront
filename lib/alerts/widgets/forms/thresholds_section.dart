@@ -57,11 +57,7 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
 
   Widget _buildCriticalSection() {
     return Container(
-      padding: const EdgeInsets.all(12), // Réduit de 16 à 12
-      decoration: BoxDecoration(
-        border: Border.all(color: GardenColors.primary.shade500, width: 1),
-        borderRadius: BorderRadius.circular(12),
-      ),
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -90,16 +86,7 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
 
   Widget _buildWarningSection() {
     return Container(
-      padding: const EdgeInsets.all(12), // Réduit de 16 à 12
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: _isWarningEnabled
-            ? GardenColors.primary.shade500
-            : Colors.grey.shade300,
-          width: 1,
-        ),
-        borderRadius: BorderRadius.circular(12),
-      ),
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -150,60 +137,116 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
     ValueChanged<RangeValues>? onChanged,
   }) {
     return Container(
-      height: 45, // Réduit de 60 à 45
-      child: SfLinearGauge(
-        minimum: -20,
-        maximum: 50,
-        orientation: LinearGaugeOrientation.horizontal,
-        majorTickStyle: const LinearTickStyle(
-          length: 6, // Réduit de 8 à 6
-          thickness: 1,
-          color: Colors.grey,
+      height: 75, // Augmenté de 65 à 75 pour faire place aux labels plus éloignés
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Stack(
+            children: [
+              SfLinearGauge(
+                minimum: -20,
+                maximum: 50,
+                orientation: LinearGaugeOrientation.horizontal,
+                majorTickStyle: const LinearTickStyle(
+                  length: 8,
+                  thickness: 2,
+                  color: Colors.grey,
+                ),
+                minorTickStyle: const LinearTickStyle(
+                  length: 4,
+                  thickness: 1,
+                  color: Colors.grey,
+                ),
+                axisLabelStyle: TextStyle(
+                  fontSize: 10,
+                  color: Colors.grey.shade600,
+                ),
+                interval: 10,
+                minorTicksPerInterval: 4,
+                showTicks: true,
+                showLabels: true,
+                markerPointers: [
+                  LinearShapePointer(
+                    value: range.start,
+                    shapeType: LinearShapePointerType.circle,
+                    color: color,
+                    height: 12,
+                    width: 12,
+                    position: LinearElementPosition.cross,
+                    onChanged: onChanged != null ? (value) {
+                      if (value < range.end) {
+                        onChanged(RangeValues(value, range.end));
+                      }
+                    } : null,
+                  ),
+                  LinearShapePointer(
+                    value: range.end,
+                    shapeType: LinearShapePointerType.circle,
+                    color: color,
+                    height: 12,
+                    width: 12,
+                    position: LinearElementPosition.cross,
+                    onChanged: onChanged != null ? (value) {
+                      if (value > range.start) {
+                        onChanged(RangeValues(range.start, value));
+                      }
+                    } : null,
+                  ),
+                ],
+                ranges: [
+                  LinearGaugeRange(
+                    startValue: range.start,
+                    endValue: range.end,
+                    color: color.withValues(alpha: 0.3),
+                    position: LinearElementPosition.cross,
+                  ),
+                ],
+              ),
+
+              // Labels avec positionnement précis basé sur la largeur réelle
+              _buildValueLabel(
+                value: range.start,
+                color: color,
+                width: constraints.maxWidth,
+              ),
+
+              _buildValueLabel(
+                value: range.end,
+                color: color,
+                width: constraints.maxWidth,
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildValueLabel({
+    required double value,
+    required Color color,
+    required double width,
+  }) {
+    // Calcul précis de la position basé sur la largeur réelle
+    final double relativePosition = (value - (-20)) / (50 - (-20));
+    final double leftPosition = (relativePosition * width) - 20; // -20 pour centrer le label
+
+    return Positioned(
+      left: leftPosition.clamp(0, width - 40),
+      top: -0.5,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.9),
+          borderRadius: BorderRadius.circular(4),
         ),
-        axisLabelStyle: TextStyle(
-          fontSize: 10, // Réduit de 12 à 10
-          color: Colors.grey.shade600,
+        child: Text(
+          '${value.round()}°C',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 10,
+            fontWeight: FontWeight.w500,
+          ),
         ),
-        interval: 20, // Augmenté de 10 à 20 pour moins de labels
-        showTicks: true,
-        showLabels: true,
-        markerPointers: [
-          LinearShapePointer(
-            value: range.start,
-            shapeType: LinearShapePointerType.circle,
-            color: color,
-            height: 12, // Taille réduite
-            width: 12,
-            position: LinearElementPosition.cross,
-            onChanged: onChanged != null ? (value) {
-              if (value < range.end) {
-                onChanged(RangeValues(value, range.end));
-              }
-            } : null,
-          ),
-          LinearShapePointer(
-            value: range.end,
-            shapeType: LinearShapePointerType.circle,
-            color: color,
-            height: 12, // Taille réduite
-            width: 12,
-            position: LinearElementPosition.cross,
-            onChanged: onChanged != null ? (value) {
-              if (value > range.start) {
-                onChanged(RangeValues(range.start, value));
-              }
-            } : null,
-          ),
-        ],
-        ranges: [
-          LinearGaugeRange(
-            startValue: range.start,
-            endValue: range.end,
-            color: color.withValues(alpha: 0.3),
-            position: LinearElementPosition.cross,
-          ),
-        ],
-        // Suppression du barPointer pour simplifier
       ),
     );
   }
