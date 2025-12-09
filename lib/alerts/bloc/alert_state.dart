@@ -20,6 +20,7 @@ final class AlertLoaded extends AlertState {
   final DisplayMode displayMode;
   final AlertTabType selectedTab;
   final String? successMessage;
+  final bool isShowingAddView;
 
   AlertLoaded({
     required this.alerts,
@@ -28,6 +29,7 @@ final class AlertLoaded extends AlertState {
     required this.displayMode,
     required this.selectedTab,
     this.successMessage,
+    this.isShowingAddView = false,
   });
 
   AlertLoaded copyWith({
@@ -37,6 +39,7 @@ final class AlertLoaded extends AlertState {
     DisplayMode? displayMode,
     AlertTabType? selectedTab,
     String? successMessage,
+    bool? isShowingAddView,
     bool clearSuccessMessage = false,
   }) {
     return AlertLoaded(
@@ -46,6 +49,7 @@ final class AlertLoaded extends AlertState {
       displayMode: displayMode ?? this.displayMode,
       selectedTab: selectedTab ?? this.selectedTab,
       successMessage: clearSuccessMessage ? null : (successMessage ?? this.successMessage),
+      isShowingAddView: isShowingAddView ?? this.isShowingAddView,
     );
   }
 }
