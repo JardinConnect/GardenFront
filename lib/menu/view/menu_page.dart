@@ -10,6 +10,8 @@ import 'package:garden_connect/auth/auth.dart';
 import 'package:garden_ui/ui/components.dart';
 
 import '../../alerts/view/alerts_page.dart';
+import '../../areas/pages/areas_page.dart';
+import '../../cells/view/cells_page.dart';
 
 class MenuPage extends StatelessWidget {
   const MenuPage({super.key});
