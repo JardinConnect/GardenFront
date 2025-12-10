@@ -52,42 +52,42 @@ class _AlertTableSectionState extends State<AlertTableSection> {
     _spaces = [
       SpaceLocation(
         id: '1',
-        name: 'Espace A',
+        name: 'Cellule A',
         serre: 'Serre Principale',
         chapelle: 'Chapelle Nord',
         planche: 'Planche 01',
       ),
       SpaceLocation(
         id: '2',
-        name: 'Espace B',
+        name: 'Cellule B',
         serre: 'Serre Principale',
         chapelle: 'Chapelle Nord',
         planche: 'Planche 02',
       ),
       SpaceLocation(
         id: '3',
-        name: 'Espace C',
+        name: 'Cellule C',
         serre: 'Serre Principale',
         chapelle: 'Chapelle Sud',
         planche: 'Planche 15',
       ),
       SpaceLocation(
         id: '4',
-        name: 'Espace D',
+        name: 'Cellule D',
         serre: 'Serre Secondaire',
         chapelle: 'Chapelle Est',
         planche: 'Planche 19',
       ),
       SpaceLocation(
         id: '5',
-        name: 'Espace E',
+        name: 'Cellule E',
         serre: 'Serre Secondaire',
         chapelle: 'Chapelle Est',
         planche: 'Planche 20',
       ),
       SpaceLocation(
         id: '6',
-        name: 'Espace F',
+        name: 'Cellule F',
         serre: 'Serre Annexe',
         chapelle: 'Chapelle Unique',
         planche: 'Planche 05',
@@ -138,7 +138,6 @@ class _AlertTableSectionState extends State<AlertTableSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Compteur aligné à droite
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -162,7 +161,7 @@ class _AlertTableSectionState extends State<AlertTableSection> {
             itemCount: _spaces.length,
             itemBuilder: (context, index) {
               return Container(
-                margin: const EdgeInsets.only(bottom: 6), // Augmenté de 4 à 6 pour plus d'espacement
+                margin: const EdgeInsets.only(bottom: 6),
                 child: _buildSpaceRow(_spaces[index]),
               );
             },
@@ -175,7 +174,7 @@ class _AlertTableSectionState extends State<AlertTableSection> {
   Widget _buildTableHeader() {
     return GardenCard(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4), // Réduit de 6 à 4
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         child: Row(
           children: [
             // Checkbox pour sélectionner tout
@@ -195,7 +194,7 @@ class _AlertTableSectionState extends State<AlertTableSection> {
                 child: Text(
                   'Cellule',
                   style: TextStyle(
-                    fontSize: 11, // Réduit de 12 à 11
+                    fontSize: 11,
                     fontWeight: FontWeight.w600,
                     color: Colors.grey.shade600,
                   ),
@@ -208,7 +207,7 @@ class _AlertTableSectionState extends State<AlertTableSection> {
               child: Text(
                 'Localisation',
                 style: TextStyle(
-                  fontSize: 11, // Réduit de 12 à 11
+                  fontSize: 11,
                   fontWeight: FontWeight.w600,
                   color: Colors.grey.shade600,
                 ),
@@ -243,9 +242,9 @@ class _AlertTableSectionState extends State<AlertTableSection> {
                 child: Text(
                   space.name,
                   style: const TextStyle(
-                    fontSize: 13, // Réduit de 14 à 13
+                    fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    height: 1.1, // Réduit de 1.2 à 1.1
+                    height: 1.1,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -257,8 +256,8 @@ class _AlertTableSectionState extends State<AlertTableSection> {
               child: Text(
                 space.fullLocation,
                 style: TextStyle(
-                  fontSize: 11, // Réduit de 12 à 11
-                  height: 1.1, // Réduit de 1.2 à 1.1
+                  fontSize: 11,
+                  height: 1.1,
                   color: Colors.grey.shade600,
                 ),
                 overflow: TextOverflow.ellipsis,
