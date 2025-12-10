@@ -8,7 +8,7 @@ import 'package:garden_connect/menu/cubit/navigation_state.dart';
 import 'package:garden_connect/auth/auth.dart';
 import 'package:garden_ui/ui/components.dart';
 
-import '../../alerts/view/alerts_page.dart';
+import '../../alerts/page/alerts_page.dart';
 import '../../areas/pages/areas_page.dart';
 import '../../cells/view/cells_page.dart';
 

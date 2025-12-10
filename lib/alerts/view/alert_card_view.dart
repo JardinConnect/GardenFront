@@ -1,181 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:garden_ui/ui/enums/alert.dart';
-import 'package:garden_ui/ui/enums/sensor_type.dart';
-import 'package:garden_ui/ui/models/sensor_threshold.dart';
-import 'package:garden_ui/ui/models/threshold_value.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/alert_bloc.dart';
 import '../widgets/alerts/sensor_alert_carousel.dart';
 import '../models/alert_models.dart';
 
-/// Composant pour l'affichage en cartes des alertes (mock)
+/// Composant pour l'affichage en cartes des alertes avec carousel
+/// Affiche les alertes regroupées par capteurs dans des cartes avec navigation
 class AlertCardView extends StatelessWidget {
-  const AlertCardView({super.key, required List<SensorAlertData> sensorAlerts});
+  final List<SensorAlertData> sensorAlerts;
 
-  /// Données mock : chaque sous-liste = une carte
-  List<List<SensorAlertData>> get _mockCards => [
-    // Card simple (1 capteur)
-    [
-      SensorAlertData(
-        id: '1',
-        title: 'Température unique',
-        sensorType: SensorType.temperature,
-        threshold: SensorThreshold(thresholds: [
-          ThresholdValue(
-              value: 35,
-              unit: '°C',
-              label: 'maximale',
-              alertType: MenuAlertType.error),
-          ThresholdValue(
-              value: 2,
-              unit: '°C',
-              label: 'minimale',
-              alertType: MenuAlertType.error),
-        ]),
-        isEnabled: true,
-      ),
-    ],
-    // Card carrousel (2 capteurs)
-    [
-      SensorAlertData(
-        id: '2a',
-        title: 'Humidité Surface',
-        sensorType: SensorType.temperature,
-        threshold: SensorThreshold(thresholds: [
-          ThresholdValue(
-              value: 40,
-              unit: '°C',
-              label: 'maximale',
-              alertType: MenuAlertType.error),
-          ThresholdValue(
-              value: 0,
-              unit: '°C',
-              label: 'minimale',
-              alertType: MenuAlertType.error),
-        ]),
-        isEnabled: true,
-      ),
-      SensorAlertData(
-        id: '2b',
-        title: 'Lumière',
-        sensorType: SensorType.temperature,
-        threshold: SensorThreshold(thresholds: [
-          ThresholdValue(
-              value: 10000,
-              unit: ' lux',
-              label: 'maximale',
-              alertType: MenuAlertType.error),
-          ThresholdValue(
-              value: 1000,
-              unit: ' lux',
-              label: 'minimale',
-              alertType: MenuAlertType.error),
-        ]),
-        isEnabled: true,
-      ),
-    ],
-    // Card carrousel (3 capteurs)
-    [
-      SensorAlertData(
-        id: '3a',
-        title: 'Température',
-        sensorType: SensorType.temperature,
-        threshold: SensorThreshold(thresholds: [
-          ThresholdValue(
-              value: 40,
-              unit: '°C',
-              label: 'maximale',
-              alertType: MenuAlertType.warning),
-          ThresholdValue(
-              value: 30,
-              unit: '°C',
-              label: 'maximale',
-              alertType: MenuAlertType.error),
-          ThresholdValue(
-              value: 10,
-              unit: '°C',
-              label: 'minimale',
-              alertType: MenuAlertType.warning),
-          ThresholdValue(
-              value: 0,
-              unit: '°C',
-              label: 'minimale',
-              alertType: MenuAlertType.error),
-        ]),
-        isEnabled: true,
-      ),
-      SensorAlertData(
-        id: '3b',
-        title: 'Humidité Profonde',
-        sensorType: SensorType.temperature,
-        threshold: SensorThreshold(thresholds: [
-          ThresholdValue(
-              value: 40,
-              unit: '°C',
-              label: 'maximale',
-              alertType: MenuAlertType.warning),
-          ThresholdValue(
-              value: 30,
-              unit: '°C',
-              label: 'maximale',
-              alertType: MenuAlertType.error),
-          ThresholdValue(
-              value: 10,
-              unit: '°C',
-              label: 'minimale',
-              alertType: MenuAlertType.warning),
-          ThresholdValue(
-              value: 0,
-              unit: '°C',
-              label: 'minimale',
-              alertType: MenuAlertType.error),
-        ]),
-        isEnabled: false,
-      ),
-      SensorAlertData(
-        id: '3c',
-        title: 'Pluie',
-        sensorType: SensorType.temperature,
-        threshold: SensorThreshold(thresholds: [
-          ThresholdValue(
-              value: 40,
-              unit: '°C',
-              label: 'maximale',
-              alertType: MenuAlertType.warning),
-          ThresholdValue(
-              value: 30,
-              unit: '°C',
-              label: 'maximale',
-              alertType: MenuAlertType.error),
-          ThresholdValue(
-              value: 10,
-              unit: '°C',
-              label: 'minimale',
-              alertType: MenuAlertType.warning),
-          ThresholdValue(
-              value: 0,
-              unit: '°C',
-              label: 'minimale',
-              alertType: MenuAlertType.error),
-        ]),
-        isEnabled: true,
-      ),
-    ],
-  ];
+  const AlertCardView({super.key, required this.sensorAlerts});
 
   @override
   Widget build(BuildContext context) {
-    // Chaque sous-liste = une card
-    final cards = _mockCards
-        .map(
-          (group) => SizedBox(
-        width: 400,
-        child: SensorAlertCarousel(
-          sensors: group,
-          onToggle: (sensorId, isEnabled) {
-          },
-        ),
-      ),
-    )
-        .toList();
+    // Si aucune donnée, afficher un message
+    if (sensorAlerts.isEmpty) {
+      return const Center(
+        child: Text('Aucune alerte de capteur disponible'),
+      );
+    }
+
+    // Grouper les alertes par type pour créer les cartes
+    // Pour l'instant on affiche toutes les alertes dans des cartes individuelles
+    // TODO: Implémenter la logique de groupement si nécessaire
+    final cards = _buildAlertCards(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -183,6 +31,31 @@ class AlertCardView extends StatelessWidget {
         spacing: 16,
         runSpacing: 16,
         children: cards,
+      ),
+    );
+  }
+
+  /// Construit la liste des cartes d'alerte
+  List<Widget> _buildAlertCards(BuildContext context) {
+    // Pour chaque alerte, créer une carte avec carousel
+    // Si plusieurs alertes doivent être regroupées, adapter cette logique
+    return sensorAlerts.map((sensorAlert) {
+      return SizedBox(
+        width: 400,
+        child: SensorAlertCarousel(
+          sensors: [sensorAlert], // Une seule alerte par carte pour l'instant
+          onToggle: (sensorId, isEnabled) => _handleToggleAlert(context, sensorId, isEnabled),
+        ),
+      );
+    }).toList();
+  }
+
+  /// Gère l'activation/désactivation d'une alerte de capteur
+  void _handleToggleAlert(BuildContext context, String alertId, bool isEnabled) {
+    context.read<AlertBloc>().add(
+      AlertToggleStatus(
+        alertId: alertId,
+        isActive: isEnabled,
       ),
     );
   }

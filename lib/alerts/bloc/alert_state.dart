@@ -21,6 +21,8 @@ final class AlertLoaded extends AlertState {
   final AlertTabType selectedTab;
   final String? successMessage;
   final bool isShowingAddView;
+  final bool isShowingEditView;
+  final String? editingAlertId;
 
   AlertLoaded({
     required this.alerts,
@@ -30,6 +32,8 @@ final class AlertLoaded extends AlertState {
     required this.selectedTab,
     this.successMessage,
     this.isShowingAddView = false,
+    this.isShowingEditView = false,
+    this.editingAlertId,
   });
 
   AlertLoaded copyWith({
@@ -40,6 +44,8 @@ final class AlertLoaded extends AlertState {
     AlertTabType? selectedTab,
     String? successMessage,
     bool? isShowingAddView,
+    bool? isShowingEditView,
+    String? editingAlertId,
     bool clearSuccessMessage = false,
   }) {
     return AlertLoaded(
@@ -50,6 +56,8 @@ final class AlertLoaded extends AlertState {
       selectedTab: selectedTab ?? this.selectedTab,
       successMessage: clearSuccessMessage ? null : (successMessage ?? this.successMessage),
       isShowingAddView: isShowingAddView ?? this.isShowingAddView,
+      isShowingEditView: isShowingEditView ?? this.isShowingEditView,
+      editingAlertId: editingAlertId ?? this.editingAlertId,
     );
   }
 }

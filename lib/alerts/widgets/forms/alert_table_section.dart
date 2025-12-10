@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/components.dart';
-import 'package:garden_ui/ui/design_system.dart';
+import '../../repository/alert_repository.dart';
 
 /// Modèle pour représenter un espace avec sa localisation hiérarchique
 class SpaceLocation {
@@ -20,10 +20,23 @@ class SpaceLocation {
     this.isSelected = false,
   });
 
+  /// Construit un SpaceLocation depuis les données JSON de l'API
+  factory SpaceLocation.fromJson(Map<String, dynamic> json) {
+    return SpaceLocation(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      serre: json['serre'] as String,
+      chapelle: json['chapelle'] as String,
+      planche: json['planche'] as String,
+      isSelected: false,
+    );
+  }
+
   String get fullLocation => '$serre > $chapelle > $planche';
 }
 
 /// Composant pour la section du tableau de sélection des espaces
+/// Récupère la liste des espaces depuis le repository
 class AlertTableSection extends StatefulWidget {
   final List<String>? selectedSpaceIds;
   final ValueChanged<List<String>>? onSelectionChanged;
@@ -39,74 +52,61 @@ class AlertTableSection extends StatefulWidget {
 }
 
 class _AlertTableSectionState extends State<AlertTableSection> {
-  late List<SpaceLocation> _spaces;
+  List<SpaceLocation> _spaces = [];
   bool _selectAll = false;
+  bool _isLoading = true;
+  String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
-    _initializeSpaces();
+    _loadSpaces();
   }
 
-  void _initializeSpaces() {
-    _spaces = [
-      SpaceLocation(
-        id: '1',
-        name: 'Espace A',
-        serre: 'Serre Principale',
-        chapelle: 'Chapelle Nord',
-        planche: 'Planche 01',
-      ),
-      SpaceLocation(
-        id: '2',
-        name: 'Espace B',
-        serre: 'Serre Principale',
-        chapelle: 'Chapelle Nord',
-        planche: 'Planche 02',
-      ),
-      SpaceLocation(
-        id: '3',
-        name: 'Espace C',
-        serre: 'Serre Principale',
-        chapelle: 'Chapelle Sud',
-        planche: 'Planche 15',
-      ),
-      SpaceLocation(
-        id: '4',
-        name: 'Espace D',
-        serre: 'Serre Secondaire',
-        chapelle: 'Chapelle Est',
-        planche: 'Planche 19',
-      ),
-      SpaceLocation(
-        id: '5',
-        name: 'Espace E',
-        serre: 'Serre Secondaire',
-        chapelle: 'Chapelle Est',
-        planche: 'Planche 20',
-      ),
-      SpaceLocation(
-        id: '6',
-        name: 'Espace F',
-        serre: 'Serre Annexe',
-        chapelle: 'Chapelle Unique',
-        planche: 'Planche 05',
-      ),
-    ];
+  /// Charge la liste des espaces depuis le repository
+  Future<void> _loadSpaces() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
 
-    // Appliquer les sélections initiales si fournies
-    if (widget.selectedSpaceIds != null) {
-      for (var space in _spaces) {
-        space.isSelected = widget.selectedSpaceIds!.contains(space.id);
-      }
+    try {
+      // Récupère le repository depuis le contexte (via le Bloc)
+      final repository = AlertRepository();
+      final spacesData = await repository.fetchSpaces();
+
+      // Convertit les données JSON en objets SpaceLocation
+      final loadedSpaces = spacesData
+          .map((json) => SpaceLocation.fromJson(json))
+          .toList();
+
+      setState(() {
+        _spaces = loadedSpaces;
+
+        // Applique les sélections initiales si fournies
+        if (widget.selectedSpaceIds != null) {
+          for (var space in _spaces) {
+            space.isSelected = widget.selectedSpaceIds!.contains(space.id);
+          }
+        }
+
+        _updateSelectAllState();
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Erreur lors du chargement des espaces: $e';
+        _isLoading = false;
+      });
     }
-    _updateSelectAllState();
   }
 
+  /// Met à jour l'état "tout sélectionner"
   void _updateSelectAllState() {
-    _selectAll = _spaces.every((space) => space.isSelected);
+    _selectAll = _spaces.isNotEmpty && _spaces.every((space) => space.isSelected);
   }
 
+  /// Notifie le parent que la sélection a changé
   void _notifySelectionChanged() {
     final selectedIds = _spaces
         .where((space) => space.isSelected)
@@ -115,6 +115,7 @@ class _AlertTableSectionState extends State<AlertTableSection> {
     widget.onSelectionChanged?.call(selectedIds);
   }
 
+  /// Bascule la sélection de tous les espaces
   void _toggleSelectAll(bool? value) {
     setState(() {
       _selectAll = value ?? false;
@@ -125,6 +126,7 @@ class _AlertTableSectionState extends State<AlertTableSection> {
     _notifySelectionChanged();
   }
 
+  /// Bascule la sélection d'un espace spécifique
   void _toggleSpaceSelection(SpaceLocation space, bool? value) {
     setState(() {
       space.isSelected = value ?? false;
@@ -135,10 +137,40 @@ class _AlertTableSectionState extends State<AlertTableSection> {
 
   @override
   Widget build(BuildContext context) {
+    // Afficher un indicateur de chargement
+    if (_isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    // Afficher un message d'erreur
+    if (_errorMessage != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, size: 48, color: Colors.red[300]),
+            const SizedBox(height: 16),
+            Text(
+              _errorMessage!,
+              style: TextStyle(color: Colors.red[700]),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _loadSpaces,
+              child: const Text('Réessayer'),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Compteur aligné à droite
+        // Compteur de sélection
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -162,7 +194,7 @@ class _AlertTableSectionState extends State<AlertTableSection> {
             itemCount: _spaces.length,
             itemBuilder: (context, index) {
               return Container(
-                margin: const EdgeInsets.only(bottom: 6), // Augmenté de 4 à 6 pour plus d'espacement
+                margin: const EdgeInsets.only(bottom: 6),
                 child: _buildSpaceRow(_spaces[index]),
               );
             },
@@ -172,13 +204,14 @@ class _AlertTableSectionState extends State<AlertTableSection> {
     );
   }
 
+  /// Construit l'en-tête du tableau avec la checkbox de sélection globale
   Widget _buildTableHeader() {
     return GardenCard(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4), // Réduit de 6 à 4
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         child: Row(
           children: [
-            // Checkbox pour sélectionner tout
+            // Checkbox pour sélectionner/désélectionner tous les espaces
             SizedBox(
               width: 32,
               child: Checkbox(
@@ -188,27 +221,29 @@ class _AlertTableSectionState extends State<AlertTableSection> {
               ),
             ),
             const SizedBox(width: 12),
-            // En-tête Cellule
+
+            // Colonne : Nom de la cellule
             Expanded(
               flex: 2,
               child: Center(
                 child: Text(
                   'Cellule',
                   style: TextStyle(
-                    fontSize: 11, // Réduit de 12 à 11
+                    fontSize: 11,
                     fontWeight: FontWeight.w600,
                     color: Colors.grey.shade600,
                   ),
                 ),
               ),
             ),
-            // En-tête Localisation
+
+            // Colonne : Localisation hiérarchique
             Expanded(
               flex: 3,
               child: Text(
                 'Localisation',
                 style: TextStyle(
-                  fontSize: 11, // Réduit de 12 à 11
+                  fontSize: 11,
                   fontWeight: FontWeight.w600,
                   color: Colors.grey.shade600,
                 ),
@@ -220,13 +255,14 @@ class _AlertTableSectionState extends State<AlertTableSection> {
     );
   }
 
+  /// Construit une ligne du tableau pour un espace donné
   Widget _buildSpaceRow(SpaceLocation space) {
     return GardenCard(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3), // Réduit de 4 à 3
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
         child: Row(
           children: [
-            // Checkbox
+            // Checkbox de sélection
             SizedBox(
               width: 32,
               child: Checkbox(
@@ -236,6 +272,7 @@ class _AlertTableSectionState extends State<AlertTableSection> {
               ),
             ),
             const SizedBox(width: 12),
+
             // Nom de la cellule
             Expanded(
               flex: 2,
@@ -243,22 +280,23 @@ class _AlertTableSectionState extends State<AlertTableSection> {
                 child: Text(
                   space.name,
                   style: const TextStyle(
-                    fontSize: 13, // Réduit de 14 à 13
+                    fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    height: 1.1, // Réduit de 1.2 à 1.1
+                    height: 1.1,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
-            // Localisation hiérarchique
+
+            // Localisation complète (Serre > Chapelle > Planche)
             Expanded(
               flex: 3,
               child: Text(
                 space.fullLocation,
                 style: TextStyle(
-                  fontSize: 11, // Réduit de 12 à 11
-                  height: 1.1, // Réduit de 1.2 à 1.1
+                  fontSize: 12,
+                  height: 1.1,
                   color: Colors.grey.shade600,
                 ),
                 overflow: TextOverflow.ellipsis,
@@ -270,3 +308,4 @@ class _AlertTableSectionState extends State<AlertTableSection> {
     );
   }
 }
+

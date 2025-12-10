@@ -26,6 +26,12 @@ final class AlertDeleteEvent extends AlertBlocEvent {
 
 final class AlertArchiveAll extends AlertBlocEvent {}
 
+final class AlertArchiveByCell extends AlertBlocEvent {
+  final String cellId;
+
+  AlertArchiveByCell({required this.cellId});
+}
+
 final class AlertChangeTab extends AlertBlocEvent {
   final AlertTabType tabType;
 
@@ -37,3 +43,16 @@ final class AlertClearSuccessMessage extends AlertBlocEvent {}
 final class AlertShowAddView extends AlertBlocEvent {}
 
 final class AlertHideAddView extends AlertBlocEvent {}
+
+final class AlertShowEditView extends AlertBlocEvent {
+  final String alertId;
+
+  AlertShowEditView({required this.alertId});
+}
+
+final class AlertDeleteAlert extends AlertBlocEvent {
+  final String alertId;
+
+  AlertDeleteAlert({required this.alertId});
+}
+

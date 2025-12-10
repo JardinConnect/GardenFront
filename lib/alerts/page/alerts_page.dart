@@ -5,10 +5,11 @@ import '../widgets/button/tab_menu.dart';
 import '../widgets/button/display_mode_button.dart';
 import '../widgets/button/add_alert_button.dart';
 import '../widgets/common/snackbar.dart' as custom_snackbar;
-import 'alert_list_view.dart';
-import 'alert_card_view.dart';
-import 'alert_history_view.dart';
-import 'alert_add_view.dart';
+import '../view/alert_list_view.dart';
+import '../view/alert_card_view.dart';
+import '../view/alert_history_view.dart';
+import '../view/alert_add_view.dart';
+import '../view/alert_edit_view.dart';
 
 /// Mode d'affichage des alertes
 enum DisplayMode {
@@ -46,14 +47,24 @@ class AlertsPageView extends StatelessWidget {
         if (state is AlertLoaded && state.successMessage != null) {
           custom_snackbar.showSnackBarSucces(context, state.successMessage!);
           // Nettoyer le message après l'affichage
-          context.read<AlertBloc>().add(AlertClearSuccessMessage());
+          Future.delayed(Duration.zero, () {
+            if (context.mounted) {
+              context.read<AlertBloc>().add(AlertClearSuccessMessage());
+            }
+          });
         }
       },
       builder: (context, state) {
+        // Afficher la vue d'ajout d'alerte
         if (state is AlertLoaded && state.isShowingAddView) {
           return const AlertAddView();
         }
         
+        // Afficher la vue d'édition d'alerte
+        if (state is AlertLoaded && state.isShowingEditView && state.editingAlertId != null) {
+          return AlertEditView(alertId: state.editingAlertId!);
+        }
+
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(

@@ -1,25 +1,93 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_gauges/gauges.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
+import 'sensors_section.dart';
+import 'single_sensor_icon.dart';
 
-/// Composant pour la section des seuils
+/// Configuration pour un type de capteur
+class _SensorConfig {
+  final double min;
+  final double max;
+  final String unit;
+  final RangeValues defaultCritical;
+  final RangeValues defaultWarning;
+  final double interval;
+
+  const _SensorConfig({
+    required this.min,
+    required this.max,
+    required this.unit,
+    required this.defaultCritical,
+    required this.defaultWarning,
+    required this.interval,
+  });
+}
+
+/// Configurations des capteurs centralisées
+const Map<SensorType, _SensorConfig> _sensorConfigs = {
+  SensorType.temperature: _SensorConfig(
+    min: -20,
+    max: 50,
+    unit: '°C',
+    interval: 10,
+    defaultCritical: RangeValues(0, 30),
+    defaultWarning: RangeValues(5, 25),
+  ),
+  SensorType.humiditySurface: _SensorConfig(
+    min: 0,
+    max: 100,
+    unit: '%',
+    interval: 10,
+    defaultCritical: RangeValues(10, 80),
+    defaultWarning: RangeValues(20, 70),
+  ),
+  SensorType.humidityDepth: _SensorConfig(
+    min: 0,
+    max: 100,
+    unit: '%',
+    interval: 10,
+    defaultCritical: RangeValues(10, 80),
+    defaultWarning: RangeValues(20, 70),
+  ),
+  SensorType.light: _SensorConfig(
+    min: 0,
+    max: 20000,
+    unit: 'lm',
+    interval: 5000,
+    defaultCritical: RangeValues(100, 10000),
+    defaultWarning: RangeValues(500, 8000),
+  ),
+  SensorType.rain: _SensorConfig(
+    min: 0,
+    max: 100,
+    unit: '%',
+    interval: 10,
+    defaultCritical: RangeValues(1, 80),
+    defaultWarning: RangeValues(5, 70),
+  ),
+};
+
+/// Widget de configuration des seuils d'alerte (version simplifiée)
 class ThresholdsSection extends StatefulWidget {
-  final RangeValues criticalRange;
-  final RangeValues warningRange;
   final bool isWarningEnabled;
-  final ValueChanged<RangeValues>? onCriticalRangeChanged;
-  final ValueChanged<RangeValues>? onWarningRangeChanged;
   final ValueChanged<bool>? onWarningEnabledChanged;
+  final List<SelectedSensor> selectedSensors;
+  final Map<String, RangeValues>? criticalRanges;
+  final Map<String, RangeValues>? warningRanges;
+  final void Function(SelectedSensor, RangeValues)? onCriticalRangeChanged;
+  final void Function(SelectedSensor, RangeValues)? onWarningRangeChanged;
 
   const ThresholdsSection({
     super.key,
-    this.criticalRange = const RangeValues(-15, 45),
-    this.warningRange = const RangeValues(-5, 30),
     this.isWarningEnabled = true,
+    this.onWarningEnabledChanged,
+    this.selectedSensors = const [],
+    this.criticalRanges,
+    this.warningRanges,
     this.onCriticalRangeChanged,
     this.onWarningRangeChanged,
-    this.onWarningEnabledChanged,
   });
 
   @override
@@ -27,64 +95,38 @@ class ThresholdsSection extends StatefulWidget {
 }
 
 class _ThresholdsSectionState extends State<ThresholdsSection> {
-  late RangeValues _criticalRange;
-  late RangeValues _warningRange;
   late bool _isWarningEnabled;
 
   @override
   void initState() {
     super.initState();
-    _criticalRange = widget.criticalRange;
-    _warningRange = widget.warningRange;
     _isWarningEnabled = widget.isWarningEnabled;
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.selectedSensors.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(12),
+        child: Text(
+          'Aucun capteur sélectionné. Sélectionnez des capteurs pour configurer des seuils.',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Colors.grey[700],
+          ),
+        ),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
-        // Section Alerte critique
-        _buildCriticalSection(),
-        const SizedBox(height: 16), // Réduit de 24 à 16
-
-        // Section Avertissement
-        _buildWarningSection(),
+        _buildSection('Alerte critique', GardenColors.redAlert.shade500, true),
+        _buildSection('Avertissement', GardenColors.yellowWarning.shade600, false, hasToggle: true),
       ],
     );
   }
 
-  Widget _buildCriticalSection() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Alerte critique',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: Colors.black, // Titre en noir
-            ),
-          ),
-          const SizedBox(height: 12), // Réduit de 16 à 12
-          _buildSyncfusionGauge(
-            range: _criticalRange,
-            color: GardenColors.redAlert.shade500, // Slider critique en rouge
-            onChanged: (RangeValues values) {
-              setState(() {
-                _criticalRange = values;
-              });
-              widget.onCriticalRangeChanged?.call(values);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWarningSection() {
+  Widget _buildSection(String title, Color color, bool isCritical, {bool hasToggle = false}) {
     return Container(
       padding: const EdgeInsets.all(12),
       child: Column(
@@ -94,159 +136,93 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Avertissement',
+                title,
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: Colors.black, // Titre en noir
                 ),
               ),
-              GardenToggle(
-                isEnabled: _isWarningEnabled,
-                onToggle: (bool value) {
-                  setState(() {
-                    _isWarningEnabled = value;
-                  });
-                  widget.onWarningEnabledChanged?.call(value);
-                },
-              ),
+              if (hasToggle)
+                GardenToggle(
+                  isEnabled: _isWarningEnabled,
+                  onToggle: (value) {
+                    setState(() => _isWarningEnabled = value);
+                    widget.onWarningEnabledChanged?.call(value);
+                  },
+                ),
             ],
           ),
-          const SizedBox(height: 12), // Réduit de 16 à 12
-          _buildSyncfusionGauge(
-            range: _warningRange,
-            color: _isWarningEnabled
-              ? GardenColors.yellowWarning.shade600 // Slider avertissement en jaune
-              : Colors.grey.shade400,
-            onChanged: _isWarningEnabled
-              ? (RangeValues values) {
-                  setState(() {
-                    _warningRange = values;
-                  });
-                  widget.onWarningRangeChanged?.call(values);
-                }
-              : null,
-          ),
+          const SizedBox(height: 12),
+          for (final sensor in widget.selectedSensors) ...[
+            Opacity(
+              opacity: (!isCritical && !_isWarningEnabled) ? 0.5 : 1.0,
+              child: _buildSensorSlider(sensor, color, isCritical),
+            ),
+            const SizedBox(height: 8),
+          ],
         ],
       ),
     );
   }
 
-  Widget _buildSyncfusionGauge({
-    required RangeValues range,
-    required Color color,
-    ValueChanged<RangeValues>? onChanged,
-  }) {
-    return Container(
-      height: 75, // Augmenté de 65 à 75 pour faire place aux labels plus éloignés
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return Stack(
-            children: [
-              SfLinearGauge(
-                minimum: -20,
-                maximum: 50,
-                orientation: LinearGaugeOrientation.horizontal,
-                majorTickStyle: const LinearTickStyle(
-                  length: 8,
-                  thickness: 2,
-                  color: Colors.grey,
-                ),
-                minorTickStyle: const LinearTickStyle(
-                  length: 4,
-                  thickness: 1,
-                  color: Colors.grey,
-                ),
-                axisLabelStyle: TextStyle(
-                  fontSize: 10,
-                  color: Colors.grey.shade600,
-                ),
-                interval: 10,
-                minorTicksPerInterval: 4,
-                showTicks: true,
-                showLabels: true,
-                markerPointers: [
-                  LinearShapePointer(
-                    value: range.start,
-                    shapeType: LinearShapePointerType.circle,
-                    color: color,
-                    height: 12,
-                    width: 12,
-                    position: LinearElementPosition.cross,
-                    onChanged: onChanged != null ? (value) {
-                      if (value < range.end) {
-                        onChanged(RangeValues(value, range.end));
-                      }
-                    } : null,
-                  ),
-                  LinearShapePointer(
-                    value: range.end,
-                    shapeType: LinearShapePointerType.circle,
-                    color: color,
-                    height: 12,
-                    width: 12,
-                    position: LinearElementPosition.cross,
-                    onChanged: onChanged != null ? (value) {
-                      if (value > range.start) {
-                        onChanged(RangeValues(range.start, value));
-                      }
-                    } : null,
-                  ),
-                ],
-                ranges: [
-                  LinearGaugeRange(
-                    startValue: range.start,
-                    endValue: range.end,
-                    color: color.withValues(alpha: 0.3),
-                    position: LinearElementPosition.cross,
-                  ),
-                ],
-              ),
+  Widget _buildSensorSlider(SelectedSensor sensor, Color color, bool isCritical) {
+    final config = _sensorConfigs[sensor.type]!;
+    final key = '${sensor.type.index}_${sensor.index}';
+    final range = isCritical
+        ? (widget.criticalRanges?[key] ?? config.defaultCritical)
+        : (widget.warningRanges?[key] ?? config.defaultWarning);
 
-              // Labels avec positionnement précis basé sur la largeur réelle
-              _buildValueLabel(
-                value: range.start,
-                color: color,
-                width: constraints.maxWidth,
-              ),
-
-              _buildValueLabel(
-                value: range.end,
-                color: color,
-                width: constraints.maxWidth,
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildValueLabel({
-    required double value,
-    required Color color,
-    required double width,
-  }) {
-    // Calcul précis de la position basé sur la largeur réelle
-    final double relativePosition = (value - (-20)) / (50 - (-20));
-    final double leftPosition = (relativePosition * width) - 20; // -20 pour centrer le label
-
-    return Positioned(
-      left: leftPosition.clamp(0, width - 40),
-      top: -0.5,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.9),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Text(
-          '${value.round()}°C',
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 10,
-            fontWeight: FontWeight.w500,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+      child: Row(
+        children: [
+          // Icône du capteur
+          Tooltip(
+            message: '${sensor.type.displayName} ${sensor.index + 1}',
+            child: SingleSensorIcon(
+              sensorType: sensor.type,
+              isActive: true,
+              index: sensor.index,
+              containerSize: 28,
+              iconSize: 18,
+            ),
           ),
-        ),
+          const SizedBox(width: 12),
+
+          Expanded(
+            child: SfRangeSliderTheme(
+              data: SfRangeSliderThemeData(
+                activeTrackHeight: 3,
+                inactiveTrackHeight: 3,
+                tooltipBackgroundColor: color.withValues(alpha: 0.95),
+                tooltipTextStyle: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 9,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              child: SfRangeSlider(
+                min: config.min,
+                max: config.max,
+                values: SfRangeValues(range.start, range.end),
+                interval: config.interval,
+                showLabels: true,
+                showTicks: true,
+                enableTooltip: true,
+                activeColor: color,
+                inactiveColor: color.withValues(alpha: 0.2),
+                tooltipTextFormatterCallback: (dynamic actualValue, String formattedText) {
+                  return '${actualValue.round()}${config.unit}';
+                },
+                onChanged: (SfRangeValues values) {
+                  final callback = isCritical
+                      ? widget.onCriticalRangeChanged
+                      : widget.onWarningRangeChanged;
+                  callback?.call(sensor, RangeValues(values.start, values.end));
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
