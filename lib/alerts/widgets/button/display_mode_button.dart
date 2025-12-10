@@ -31,8 +31,8 @@ class DisplayModeButton extends StatelessWidget {
           color: GardenColors.primary.shade50,
         ),
         tooltip: isListMode 
-            ? 'Affichage en cartes alex'
-            : 'Affichage en liste alex',
+            ? 'Affichage en cartes'
+            : 'Affichage en liste',
       ),
     );
   }

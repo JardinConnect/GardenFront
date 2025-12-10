@@ -65,13 +65,13 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
             'Alerte critique',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.w600,
-              color: GardenColors.redAlert.shade700,
+              color: Colors.black, // Titre en noir
             ),
           ),
           const SizedBox(height: 12), // Réduit de 16 à 12
           _buildSyncfusionGauge(
             range: _criticalRange,
-            color: GardenColors.redAlert.shade500,
+            color: GardenColors.redAlert.shade500, // Slider critique en rouge
             onChanged: (RangeValues values) {
               setState(() {
                 _criticalRange = values;
@@ -97,9 +97,7 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
                 'Avertissement',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: _isWarningEnabled
-                    ? GardenColors.blueInfo.shade700
-                    : Colors.grey.shade600,
+                  color: Colors.black, // Titre en noir
                 ),
               ),
               GardenToggle(
@@ -117,14 +115,16 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
           _buildSyncfusionGauge(
             range: _warningRange,
             color: _isWarningEnabled
-              ? GardenColors.blueInfo.shade500
+              ? GardenColors.yellowWarning.shade600 // Slider avertissement en jaune
               : Colors.grey.shade400,
-            onChanged: _isWarningEnabled ? (RangeValues values) {
-              setState(() {
-                _warningRange = values;
-              });
-              widget.onWarningRangeChanged?.call(values);
-            } : null,
+            onChanged: _isWarningEnabled
+              ? (RangeValues values) {
+                  setState(() {
+                    _warningRange = values;
+                  });
+                  widget.onWarningRangeChanged?.call(values);
+                }
+              : null,
           ),
         ],
       ),
