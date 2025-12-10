@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:garden_ui/ui/design_system.dart';
 import 'package:intl/intl.dart';
 
 import '../filters/analytics_filter.dart';
@@ -35,21 +36,21 @@ class _GraphicWidgetState extends State<GraphicWidget> {
           },
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: const [
+            children: [
               RadioListTile<AnalyticsFilterEnum>(
-                title: Text('Humidité'),
+                title: Text('Humidité', style: GardenTypography.caption),
                 value: AnalyticsFilterEnum.humidity,
                 contentPadding: EdgeInsets.zero,
                 dense: true,
               ),
               RadioListTile<AnalyticsFilterEnum>(
-                title: Text('Température'),
+                title: Text('Température', style: GardenTypography.caption),
                 value: AnalyticsFilterEnum.temperature,
                 contentPadding: EdgeInsets.zero,
                 dense: true,
               ),
               RadioListTile<AnalyticsFilterEnum>(
-                title: Text('Luminosité'),
+                title: Text('Luminosité', style: GardenTypography.caption),
                 value: AnalyticsFilterEnum.light,
                 contentPadding: EdgeInsets.zero,
                 dense: true,
@@ -62,15 +63,15 @@ class _GraphicWidgetState extends State<GraphicWidget> {
   }
 
   Widget _buildChart(
-      double minValue,
-      double maxValue,
-      List<Analytic> sortedData,
-      dynamic currentFilter,
-      ) {
+    double minValue,
+    double maxValue,
+    List<Analytic> sortedData,
+    dynamic currentFilter,
+  ) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: SizedBox(
-        height: 400,
+        height: 300,
         child: LineChart(
           LineChartData(
             gridData: FlGridData(
@@ -79,14 +80,12 @@ class _GraphicWidgetState extends State<GraphicWidget> {
               drawHorizontalLine: true,
               horizontalInterval: 5,
               verticalInterval: 1,
-              getDrawingHorizontalLine: (value) => FlLine(
-                color: Colors.grey.shade300,
-                strokeWidth: 1,
-              ),
-              getDrawingVerticalLine: (value) => FlLine(
-                color: Colors.grey.shade300,
-                strokeWidth: 1,
-              ),
+              getDrawingHorizontalLine:
+                  (value) =>
+                      FlLine(color: Colors.grey.shade300, strokeWidth: 1),
+              getDrawingVerticalLine:
+                  (value) =>
+                      FlLine(color: Colors.grey.shade300, strokeWidth: 1),
             ),
             titlesData: FlTitlesData(
               leftTitles: AxisTitles(
@@ -146,7 +145,6 @@ class _GraphicWidgetState extends State<GraphicWidget> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     final currentFilter = widget.analytics.analyticsFilters.firstWhere(
@@ -186,13 +184,8 @@ class _GraphicWidgetState extends State<GraphicWidget> {
             ),
           ),
           Expanded(
-            flex: 5,
-            child: _buildChart(
-              minValue,
-              maxValue,
-              sortedData,
-              currentFilter,
-            ),
+            flex: 3,
+            child: _buildChart(minValue, maxValue, sortedData, currentFilter),
           ),
         ],
       ),
