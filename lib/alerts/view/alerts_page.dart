@@ -4,6 +4,7 @@ import '../bloc/alert_bloc.dart';
 import '../widgets/button/tab_menu.dart';
 import '../widgets/button/display_mode_button.dart';
 import '../widgets/button/add_alert_button.dart';
+import '../widgets/common/snackbar.dart' as custom_snackbar;
 import 'alert_list_view.dart';
 import 'alert_card_view.dart';
 import 'alert_history_view.dart';
@@ -43,12 +44,7 @@ class AlertsPageView extends StatelessWidget {
           );
         }
         if (state is AlertLoaded && state.successMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.successMessage!),
-              backgroundColor: Colors.green,
-            ),
-          );
+          custom_snackbar.showSnackBarSucces(context, state.successMessage!);
           // Nettoyer le message après l'affichage
           context.read<AlertBloc>().add(AlertClearSuccessMessage());
         }
