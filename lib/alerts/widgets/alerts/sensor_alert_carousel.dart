@@ -7,10 +7,10 @@ import '../../models/alert_models.dart';
 class SensorAlertCarousel extends StatefulWidget {
   /// Liste des données de capteurs à afficher
   final List<SensorAlertData> sensors;
-  
+
   /// Callback appelé quand l'état d'activation d'un capteur change
   final void Function(String sensorId, bool isEnabled)? onToggle;
-  
+
   /// Index de la page courante (optionnel)
   final int? initialPage;
 
@@ -29,13 +29,15 @@ class _SensorAlertCarouselState extends State<SensorAlertCarousel> {
   late int currentPage;
   late List<SensorAlertData> sensors;
 
+  List<SensorAlertData> _allSensors(List<SensorAlertData> input) {
+    return input;
+  }
+
   @override
   void initState() {
     super.initState();
+    sensors = _allSensors(widget.sensors);
     currentPage = widget.initialPage ?? 0;
-    sensors = List.from(widget.sensors);
-    
-    // Assure-toi que la page courante est valide
     if (currentPage >= sensors.length) {
       currentPage = sensors.isNotEmpty ? sensors.length - 1 : 0;
     }
@@ -44,12 +46,8 @@ class _SensorAlertCarouselState extends State<SensorAlertCarousel> {
   @override
   void didUpdateWidget(SensorAlertCarousel oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
-    // Met à jour les données si elles ont changé
     if (widget.sensors != oldWidget.sensors) {
-      sensors = List.from(widget.sensors);
-      
-      // Vérifie que la page courante est toujours valide
+      sensors = _allSensors(widget.sensors);
       if (currentPage >= sensors.length) {
         currentPage = sensors.isNotEmpty ? sensors.length - 1 : 0;
       }
@@ -58,7 +56,6 @@ class _SensorAlertCarouselState extends State<SensorAlertCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    // Si aucun capteur, affiche un message
     if (sensors.isEmpty) {
       return Container(
         width: 400,
@@ -81,16 +78,16 @@ class _SensorAlertCarouselState extends State<SensorAlertCarousel> {
 
     final currentSensor = sensors[currentPage];
 
+    final List<ThresholdValue> limitedThresholds = currentSensor.threshold.thresholds.take(6).toList();
+
     return SensorAlertCard(
       sensorType: currentSensor.sensorType,
-      threshold: currentSensor.threshold,
+      threshold: SensorThreshold(thresholds: limitedThresholds),
       isEnabled: currentSensor.isEnabled,
       onToggle: (value) {
         setState(() {
           sensors[currentPage] = currentSensor.copyWith(isEnabled: value);
         });
-        
-        // Notifie le parent du changement
         widget.onToggle?.call(currentSensor.id, value);
       },
       totalPages: sensors.length,
