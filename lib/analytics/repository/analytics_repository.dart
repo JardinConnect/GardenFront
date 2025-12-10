@@ -1,6 +1,6 @@
-import '../models/analytics.dart';
+import '../../analytics/models/analytics.dart';
 
-class DashboardRepository {
+class AnalyticsRepository {
   Future<Analytics> fetchAnalytics() async {
     // TODO call API route to fetch analytics data
     try {
@@ -12,7 +12,7 @@ class DashboardRepository {
           {"value": 21, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "12"},
           {"value": 22, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "12"},
           {"value": 20, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "12"},
-          {"value": 19, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "12"},
+          {"value": 34, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "12"},
         ],
         "soil_temperature": [
           {"value": 15, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},

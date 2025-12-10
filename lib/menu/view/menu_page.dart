@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:garden_connect/cells/view/cells_page.dart';
 import 'package:garden_connect/core/app_assets.dart';
 import 'package:garden_connect/dashboard/view/dashboard_page.dart';
 import 'package:garden_connect/espaces/view/spaces_page.dart';
@@ -17,7 +16,7 @@ class MenuPage extends StatelessWidget {
 
   static final List<Widget> _pages = [
     const DashboardPage(),
-    const SpacesPage(),
+    const AreasPage(),
     const CellsPage(),
     const AlertsPage(),
     const SettingsPage(),

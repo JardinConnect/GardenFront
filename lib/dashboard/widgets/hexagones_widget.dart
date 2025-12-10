@@ -1,24 +1,118 @@
 import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
 
-class HexagonesWidget extends StatelessWidget {
-  final List<String> areas;
+import '../../areas/models/area.dart';
+import 'hexagon_dialog_box_widget.dart';
 
-  HexagonesWidget({super.key, required this.areas});
+class HexagonesWidget extends StatefulWidget {
+  final List<Area> areas;
 
-  List<Widget> _buildHexagons(BuildContext context) {
-    return areas.map((item) {
-      return HexagonWidget.flat(
-        width: 125,
-        color: Theme.of(context).colorScheme.primary,
-        padding: 16.0,
-        child: Center(child: Text(item, style: TextStyle(color: Colors.white))),
+  const HexagonesWidget({super.key, required this.areas});
+
+  @override
+  State<HexagonesWidget> createState() => _HexagonesWidgetState();
+}
+
+class _HexagonesWidgetState extends State<HexagonesWidget> {
+  int _selectedLevel = 1;
+
+  // Récupère tous les niveaux disponibles dans les areas
+  // Récupère tous les niveaux disponibles de manière récursive
+  List<int> _getAvailableLevels() {
+    final levels = <int>{};
+
+    void extractLevels(Area area) {
+      levels.add(area.level);
+      if (area.areas != null) {
+        for (var subArea in area.areas!) {
+          extractLevels(subArea);
+        }
+      }
+    }
+
+    for (var area in widget.areas) {
+      extractLevels(area);
+    }
+
+    return levels.toList()..sort();
+  }
+
+  // Filtre les areas par niveau sélectionné de manière récursive
+  List<Area> _getFilteredAreas() {
+    final filteredAreas = <Area>[];
+
+    void collectAreasByLevel(Area area) {
+      if (area.level == _selectedLevel) {
+        filteredAreas.add(area);
+      }
+      if (area.areas != null) {
+        for (var subArea in area.areas!) {
+          collectAreasByLevel(subArea);
+        }
+      }
+    }
+
+    for (var area in widget.areas) {
+      collectAreasByLevel(area);
+    }
+
+    return filteredAreas;
+  }
+
+  // // Compte le nombre total de nœuds actifs
+  // int _countActiveNodes() {
+  //   int count = 0;
+  //   for (var area in widget.areas) {
+  //     count++; // L'area elle-même
+  //     if (area.areas != null) {
+  //       count += area.areas!.length; // Les sous-areas
+  //       for (var subArea in area.areas!) {
+  //         if (subArea.cells != null) {
+  //           count += subArea.cells!.length; // Les cellules
+  //         }
+  //       }
+  //     }
+  //   }
+  //   return count;
+  // }
+
+  List<Widget> _buildHexagons(BuildContext context, List<Area> filteredAreas) {
+    return filteredAreas.map((area) {
+      return GestureDetector(
+        onTap: () {
+          showDialog(
+            context: context,
+            builder:
+                (BuildContext context) => HexagonDialogBoxWidget(area: area),
+          );
+        },
+        child: HexagonWidget.flat(
+          width: 125,
+          color: Theme.of(context).colorScheme.primary,
+          padding: 16.0,
+          child: Center(
+            child: SizedBox(
+              width: 80,
+              child: Text(
+                area.name,
+                style: const TextStyle(color: Colors.white, fontSize: 12),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+        ),
       );
     }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
+    final availableLevels = _getAvailableLevels();
+    final filteredAreas = _getFilteredAreas();
+    // final activeNodesCount = _countActiveNodes();
+
     return Column(
       children: [
         Row(
@@ -29,26 +123,36 @@ class HexagonesWidget extends StatelessWidget {
             ),
             const SizedBox(width: 25),
             DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: 'Niveau 1',
+              child: DropdownButton<int>(
+                value: _selectedLevel,
                 autofocus: true,
                 isDense: true,
-                icon: Icon(Icons.keyboard_arrow_down, color: Colors.black),
+                icon: const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Colors.black,
+                ),
                 borderRadius: BorderRadius.circular(10),
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 items:
-                    <String>['Niveau 1', 'Niveau 2', 'Niveau 2'].map((
-                      String value,
-                    ) {
-                      return DropdownMenuItem<String>(
-                        value: value,
+                    availableLevels.map((int level) {
+                      return DropdownMenuItem<int>(
+                        value: level,
                         child: Text(
-                          value,
-                          style: TextStyle(color: Colors.black),
+                          'Niveau $level',
+                          style: const TextStyle(color: Colors.black),
                         ),
                       );
                     }).toList(),
-                onChanged: (_) {},
+                onChanged: (int? newLevel) {
+                  if (newLevel != null) {
+                    setState(() {
+                      _selectedLevel = newLevel;
+                    });
+                  }
+                },
               ),
             ),
             const Spacer(),
@@ -63,18 +167,26 @@ class HexagonesWidget extends StatelessWidget {
                   vertical: 2,
                 ),
                 child: Text(
-                  '18 noeuds actifs',
-                  style: TextStyle(color: Colors.white),
+                  '18 nœuds actifs',
+                  style: const TextStyle(color: Colors.white),
                 ),
               ),
             ),
           ],
         ),
         const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: _buildHexagons(context),
-        ),
+        filteredAreas.isEmpty
+            ? const Padding(
+              padding: EdgeInsets.all(32.0),
+              child: Text(
+                'Aucune zone disponible pour ce niveau',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            )
+            : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: _buildHexagons(context, filteredAreas),
+            ),
       ],
     );
   }
