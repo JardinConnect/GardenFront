@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
@@ -42,22 +43,44 @@ class SensorIconsRow extends StatelessWidget {
     );
   }
 
+  /// Widget local pour afficher une icône SVG avec une taille personnalisée
+  Widget _customSensorIcon(String iconName, double size, Color color) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Center(
+        child: SvgPicture.asset(
+          'lib/ui/assets/icons/Icon=$iconName, Size=75.svg',
+          package: 'garden_ui',
+          width: size,
+          height: size,
+          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+        ),
+      ),
+    );
+  }
+
   /// Construit une icône de capteur avec fond coloré et état actif/inactif
   Widget _buildSensorIcon(SensorType sensorType, bool isActive, int index) {
     final color = _getSensorColor(sensorType, index);
 
+    // Augmentation de la taille du conteneur uniquement
+    const double iconContainerSize = 36; // Anciennement 28
+    // Taille personnalisée pour l'icône
+    const double customIconSize = 20.0; // Taille personnalisée souhaitée
+
     return Container(
-      width: 24,
-      height: 24,
+      width: iconContainerSize,
+      height: iconContainerSize,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4), // Coins légèrement arrondis pour un carré
-        color: isActive ? color.withValues(alpha: 0.2) : Colors.grey.shade200, // Couleurs plus légères
+        borderRadius: BorderRadius.circular(4),
+        color: isActive ? color.withValues(alpha: 0.2) : Colors.grey.shade200,
       ),
       child: Center(
-        child: GardenIcon(
-          iconName: sensorType.iconName,
-          size: GardenIconSize.sm,
-          color: isActive ? color : Colors.grey.shade500, // Couleur d'origine pour l'icône
+        child: _customSensorIcon(
+          sensorType.iconName,
+          customIconSize,
+          isActive ? color : Colors.grey.shade500,
         ),
       ),
     );

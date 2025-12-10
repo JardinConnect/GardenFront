@@ -16,71 +16,76 @@ class AlertListView extends StatelessWidget {
     if (alerts.isEmpty) {
       return const Center(child: Text('Aucune alerte disponible'));
     }
-    
+
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       itemCount: alerts.length,
       itemBuilder: (context, index) {
         final alert = alerts[index];
+
         return Container(
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: const EdgeInsets.only(bottom: 8),
           child: GardenCard(
             child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  // Contenu principal de l'alerte
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+              child: SizedBox(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+
+                    Row(
                       children: [
-                        Text(
-                          alert.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                            color: Colors.black87,
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              alert.title,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                color: Colors.black87,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        // Description et icônes alignées en colonnes
-                        Row(
-                          children: [
-                            // Description avec largeur fixe pour alignement
-                            SizedBox(
-                              width: 300, // Largeur fixe pour aligner les icônes
-                              child: Text(
-                                alert.description,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey.shade600,
-                                ),
+
+                        TooltipIconButton(
+                          onPressed: () {
+                            // TODO Action personnalisée ici
+                          },
+                          size: TooltipSize.lg,
+                        ),
+                        const SizedBox(width: 8),
+                        Switch(
+                          value: alert.isActive,
+                          onChanged: (value) {
+                            context.read<AlertBloc>().add(
+                              AlertToggleStatus(
+                                alertId: alert.id,
+                                isActive: value,
                               ),
-                            ),
-                            // Icônes alignées en colonne
-                            SensorIconsRow(
-                              activeSensorTypes: alert.sensorTypes,
-                            ),
-                            // Spacer pour pousser vers la gauche
-                            const Spacer(),
-                          ],
+                            );
+                          },
                         ),
                       ],
                     ),
-                  ),
-                  // Switch d'activation
-                  Switch(
-                    value: alert.isActive,
-                    onChanged: (value) {
-                      context.read<AlertBloc>().add(
-                        AlertToggleStatus(
-                          alertId: alert.id,
-                          isActive: value,
+
+                    Align(
+                      alignment: Alignment.centerLeft + const Alignment(0.55, 0),
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 260),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: SensorIconsRow(
+                            activeSensorTypes: alert.sensorTypes,
+                          ),
                         ),
-                      );
-                    },
-                  ),
-                ],
+                      ),
+                    ),
+
+                  ],
+                ),
               ),
             ),
           ),
