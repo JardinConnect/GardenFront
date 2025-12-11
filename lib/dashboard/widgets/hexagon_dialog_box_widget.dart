@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garden_connect/common/widgets/wip_widget.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:garden_ui/ui/foundation/color/color_design_system.dart';
 
@@ -82,7 +83,7 @@ class HexagonDialogBoxWidget extends StatelessWidget {
                     children: [
                       SingleChildScrollView(
                         padding: EdgeInsets.all(14),
-                        child: Text("Contenu Vue d'ensemble"),
+                        child: WorkInProgressWidget(),
                       ),
                       SingleChildScrollView(
                         padding: EdgeInsets.all(14),
