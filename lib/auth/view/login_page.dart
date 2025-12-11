@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/menu/menu.dart';
 import '../bloc/auth_bloc.dart';
+import '../../alerts/widgets/common/snackbar.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -34,12 +35,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             );
           } else if (state is AuthAuthenticated && !state.isAutoLogin) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text("Connexion réussie !"),
-                backgroundColor: Colors.green,
-              ),
-            );
+            showSnackBarSucces(context, "Connexion réussie !");
           }
         },
         builder: (context, state) {

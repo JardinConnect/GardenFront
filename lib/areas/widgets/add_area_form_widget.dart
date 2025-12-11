@@ -4,6 +4,7 @@ import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import '../models/area.dart';
 import '../bloc/area_bloc.dart';
+import '../../alerts/widgets/common/snackbar.dart';
 
 class AddAreaFormWidget extends StatefulWidget {
   final List<Area> availableAreas;
@@ -53,29 +54,8 @@ class _AddAreaFormWidgetState extends State<AddAreaFormWidget> {
         _selectedParentArea = null;
       });
 
-      final mediaQuery = MediaQuery.of(context);
-      final screenWidth = mediaQuery.size.width;
-      final screenHeight = mediaQuery.size.height;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: NotificationToast(
-            title: 'Nouvel Espace',
-            message: "L'espace : $newAreaName a été ajouté avec succès !",
-            size: NotificationSize.md,
-            severity: NotificationSeverity.success,
-          ),
-          duration: const Duration(seconds: 4),
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.only(
-            bottom: screenHeight - 100,
-            right: 20,
-            left: screenWidth - 400,
-          ),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-      );
+      // Use shared snackbar helper for consistent toast placement/style
+      showSnackBarSucces(context, "L'espace : $newAreaName a été ajouté avec succès !");
     }
   }
 
