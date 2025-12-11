@@ -27,7 +27,10 @@ class AlertAddView extends StatelessWidget {
                   context.read<AlertBloc>().add(AlertHideAddView());
                 },
                 style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
@@ -64,20 +67,22 @@ class AlertAddView extends StatelessWidget {
                 Expanded(
                   flex: 1,
                   child: GardenCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Input pour le nom de l'alerte
-                        const AlertNameInput(),
-                        const SizedBox(height: 24),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Input pour le nom de l'alerte
+                          const AlertNameInput(),
+                          const SizedBox(height: 24),
 
-                        // Section capteurs
-                        const SensorsSection(),
-                        const SizedBox(height: 16),
+                          // Section capteurs
+                          const SensorsSection(),
+                          const SizedBox(height: 16),
 
-                        // Section seuils
-                        const ThresholdsSection(),
-                      ],
+                          // Section seuils
+                          const ThresholdsSection(),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -87,9 +92,7 @@ class AlertAddView extends StatelessWidget {
                 // GardenCard de droite - Tableau
                 Expanded(
                   flex: 1,
-                  child: GardenCard(
-                    child: const AlertTableSection(),
-                  ),
+                  child: GardenCard(child: const AlertTableSection()),
                 ),
               ],
             ),
@@ -104,7 +107,10 @@ class AlertAddView extends StatelessWidget {
               icon: Icons.add_alert,
               onPressed: () {
                 context.read<AlertBloc>().add(AlertHideAddView());
-                custom_snackbar.showSnackBarSucces(context, "Alerte créée avec succès !");
+                custom_snackbar.showSnackBarSucces(
+                  context,
+                  "Alerte créée avec succès !",
+                );
               },
             ),
           ),

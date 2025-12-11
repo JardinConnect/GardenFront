@@ -42,13 +42,10 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         // Section Alerte critique
         _buildCriticalSection(),
         const SizedBox(height: 16), // Réduit de 24 à 16
-
         // Section Avertissement
         _buildWarningSection(),
       ],
@@ -67,6 +64,39 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
               fontWeight: FontWeight.w600,
               color: Colors.black, // Titre en noir
             ),
+          ),
+          const SizedBox(height: 12), // Réduit de 16 à 12
+          _buildSyncfusionGauge(
+            range: _criticalRange,
+            color: GardenColors.redAlert.shade500, // Slider critique en rouge
+            onChanged: (RangeValues values) {
+              setState(() {
+                _criticalRange = values;
+              });
+              widget.onCriticalRangeChanged?.call(values);
+            },
+          ),
+          const SizedBox(height: 12), // Réduit de 16 à 12
+          _buildSyncfusionGauge(
+            range: _criticalRange,
+            color: GardenColors.redAlert.shade500, // Slider critique en rouge
+            onChanged: (RangeValues values) {
+              setState(() {
+                _criticalRange = values;
+              });
+              widget.onCriticalRangeChanged?.call(values);
+            },
+          ),
+          const SizedBox(height: 12), // Réduit de 16 à 12
+          _buildSyncfusionGauge(
+            range: _criticalRange,
+            color: GardenColors.redAlert.shade500, // Slider critique en rouge
+            onChanged: (RangeValues values) {
+              setState(() {
+                _criticalRange = values;
+              });
+              widget.onCriticalRangeChanged?.call(values);
+            },
           ),
           const SizedBox(height: 12), // Réduit de 16 à 12
           _buildSyncfusionGauge(
@@ -114,17 +144,78 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
           const SizedBox(height: 12), // Réduit de 16 à 12
           _buildSyncfusionGauge(
             range: _warningRange,
-            color: _isWarningEnabled
-              ? GardenColors.yellowWarning.shade600 // Slider avertissement en jaune
-              : Colors.grey.shade400,
-            onChanged: _isWarningEnabled
-              ? (RangeValues values) {
-                  setState(() {
-                    _warningRange = values;
-                  });
-                  widget.onWarningRangeChanged?.call(values);
-                }
-              : null,
+            color:
+                _isWarningEnabled
+                    ? GardenColors
+                        .yellowWarning
+                        .shade600 // Slider avertissement en jaune
+                    : Colors.grey.shade400,
+            onChanged:
+                _isWarningEnabled
+                    ? (RangeValues values) {
+                      setState(() {
+                        _warningRange = values;
+                      });
+                      widget.onWarningRangeChanged?.call(values);
+                    }
+                    : null,
+          ),
+          const SizedBox(height: 12), // Réduit de 16 à 12
+          _buildSyncfusionGauge(
+            range: _warningRange,
+            color:
+                _isWarningEnabled
+                    ? GardenColors
+                        .yellowWarning
+                        .shade600 // Slider avertissement en jaune
+                    : Colors.grey.shade400,
+            onChanged:
+                _isWarningEnabled
+                    ? (RangeValues values) {
+                      setState(() {
+                        _warningRange = values;
+                      });
+                      widget.onWarningRangeChanged?.call(values);
+                    }
+                    : null,
+          ),
+          const SizedBox(height: 12), // Réduit de 16 à 12
+          _buildSyncfusionGauge(
+            range: _warningRange,
+            color:
+                _isWarningEnabled
+                    ? GardenColors
+                        .yellowWarning
+                        .shade600 // Slider avertissement en jaune
+                    : Colors.grey.shade400,
+            onChanged:
+                _isWarningEnabled
+                    ? (RangeValues values) {
+                      setState(() {
+                        _warningRange = values;
+                      });
+                      widget.onWarningRangeChanged?.call(values);
+                    }
+                    : null,
+          ),
+          const SizedBox(height: 12), // Réduit de 16 à 12
+          _buildSyncfusionGauge(
+            range: _warningRange,
+            color:
+                _isWarningEnabled
+                    ? GardenColors
+                        .yellowWarning
+                        .shade600 // Slider avertissement en jaune
+                    : Colors.grey.shade400,
+            onChanged:
+                _isWarningEnabled
+                    ? (RangeValues values) {
+                      setState(() {
+                        _warningRange = values;
+                      });
+                      widget.onWarningRangeChanged?.call(values);
+                    }
+                    : null,
           ),
         ],
       ),
@@ -137,7 +228,8 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
     ValueChanged<RangeValues>? onChanged,
   }) {
     return Container(
-      height: 75, // Augmenté de 65 à 75 pour faire place aux labels plus éloignés
+      height: 75,
+      // Augmenté de 65 à 75 pour faire place aux labels plus éloignés
       child: LayoutBuilder(
         builder: (context, constraints) {
           return Stack(
@@ -172,11 +264,14 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
                     height: 12,
                     width: 12,
                     position: LinearElementPosition.cross,
-                    onChanged: onChanged != null ? (value) {
-                      if (value < range.end) {
-                        onChanged(RangeValues(value, range.end));
-                      }
-                    } : null,
+                    onChanged:
+                        onChanged != null
+                            ? (value) {
+                              if (value < range.end) {
+                                onChanged(RangeValues(value, range.end));
+                              }
+                            }
+                            : null,
                   ),
                   LinearShapePointer(
                     value: range.end,
@@ -185,11 +280,14 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
                     height: 12,
                     width: 12,
                     position: LinearElementPosition.cross,
-                    onChanged: onChanged != null ? (value) {
-                      if (value > range.start) {
-                        onChanged(RangeValues(range.start, value));
-                      }
-                    } : null,
+                    onChanged:
+                        onChanged != null
+                            ? (value) {
+                              if (value > range.start) {
+                                onChanged(RangeValues(range.start, value));
+                              }
+                            }
+                            : null,
                   ),
                 ],
                 ranges: [
@@ -228,7 +326,8 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
   }) {
     // Calcul précis de la position basé sur la largeur réelle
     final double relativePosition = (value - (-20)) / (50 - (-20));
-    final double leftPosition = (relativePosition * width) - 20; // -20 pour centrer le label
+    final double leftPosition =
+        (relativePosition * width) - 20; // -20 pour centrer le label
 
     return Positioned(
       left: leftPosition.clamp(0, width - 40),
