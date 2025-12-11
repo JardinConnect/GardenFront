@@ -41,20 +41,17 @@ class MenuPage extends StatelessWidget {
                     MenuItem(
                       icon: Icons.hexagon_outlined,
                       label: 'Espaces',
-                      onTap:
-                          () => context.read<NavigationCubit>().navigateTo(1),
+                      onTap: () => context.read<NavigationCubit>().navigateTo(1),
                     ),
                     MenuItem(
                       icon: Icons.sensors,
                       label: 'Cellules',
-                      onTap:
-                          () => context.read<NavigationCubit>().navigateTo(2),
+                      onTap: () => {},
                     ),
                     MenuItem(
                       icon: Icons.thunderstorm_outlined,
                       label: 'Alertes',
-                      onTap:
-                          () => context.read<NavigationCubit>().navigateTo(3),
+                      onTap: () => {},
                     ),
                   ],
                   bottomItems: [
@@ -62,7 +59,7 @@ class MenuPage extends StatelessWidget {
                       icon: Icons.settings,
                       label: 'Paramètres',
                       onTap:
-                          () => context.read<NavigationCubit>().navigateTo(4),
+                          () => context.read<NavigationCubit>().navigateTo(2),
                     ),
                     MenuItem(
                       icon: Icons.logout,
