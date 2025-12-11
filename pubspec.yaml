@@ -49,6 +49,7 @@ dependencies:
   hexagon: ^0.2.0
   flutter_svg: ^2.2.1
   google_fonts: ^6.3.2
+  syncfusion_flutter_gauges: ^31.2.18
 
 dev_dependencies:
   flutter_test:
