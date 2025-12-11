@@ -4,6 +4,7 @@ import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'sensors_section.dart';
 import 'SingleSensorIcon.dart';
+import 'dart:math' as math;
 
 /// Composant pour la section des seuils
 class ThresholdsSection extends StatefulWidget {
@@ -241,93 +242,129 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
       height: 75,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          return Stack(
-            children: [
-              SfLinearGauge(
-                minimum: min,
-                maximum: max,
-                orientation: LinearGaugeOrientation.horizontal,
-                majorTickStyle: const LinearTickStyle(
-                  length: 8,
-                  thickness: 2,
-                  color: Colors.grey,
-                ),
-                minorTickStyle: const LinearTickStyle(
-                  length: 4,
-                  thickness: 1,
-                  color: Colors.grey,
-                ),
-                axisLabelStyle: TextStyle(
-                  fontSize: 10,
-                  color: Colors.grey.shade600,
-                ),
-                interval: ((max - min) / 6).roundToDouble(),
-                minorTicksPerInterval: 4,
-                showTicks: true,
-                showLabels: true,
-                markerPointers: [
-                  LinearShapePointer(
-                    value: range.start,
-                    shapeType: LinearShapePointerType.circle,
-                    color: color,
-                    height: 12,
-                    width: 12,
-                    position: LinearElementPosition.cross,
-                    onChanged:
-                        onChanged != null
-                            ? (value) {
-                              if (value < range.end) {
-                                onChanged(RangeValues(value, range.end));
+          final double innerWidth = constraints.maxWidth;
+
+          // Clamp displayed start/end to axis min/max
+          final double displayStart = range.start.clamp(min, max);
+          final double displayEnd = range.end.clamp(min, max);
+
+          // Helper: compute a "nice" interval (1,2,5 * 10^n) for given span
+          double niceInterval(double span) {
+            if (span <= 0) return 1.0;
+            final raw = span / 5.0; // target ~5 major ticks
+            final exp = math.pow(10, (math.log(raw) / math.ln10).floor()).toDouble();
+            final candidates = [exp, 2 * exp, 5 * exp, 10 * exp];
+            for (final c in candidates) {
+              if (c >= raw) return c.toDouble();
+            }
+            return candidates.last.toDouble();
+          }
+
+          final span = (max - min).abs();
+          double interval;
+          if (unit == '%') {
+            interval = 10.0;
+          } else if (unit == '°C') {
+            interval = 10.0;
+          } else if (unit == 'lm') {
+            // prefer a coarser division for lumens
+            interval = niceInterval(span);
+          } else {
+            interval = niceInterval(span);
+          }
+
+          if (interval <= 0) interval = 1.0;
+
+          return SizedBox(
+            width: innerWidth,
+            child: Stack(
+              children: <Widget>[
+                SfLinearGauge(
+                  minimum: min,
+                  maximum: max,
+                  orientation: LinearGaugeOrientation.horizontal,
+                  majorTickStyle: const LinearTickStyle(
+                    length: 8,
+                    thickness: 2,
+                    color: Colors.grey,
+                  ),
+                  minorTickStyle: const LinearTickStyle(
+                    length: 4,
+                    thickness: 1,
+                    color: Colors.grey,
+                  ),
+                  axisLabelStyle: TextStyle(
+                    fontSize: 10,
+                    color: Colors.grey.shade600,
+                  ),
+                  interval: interval,
+                  minorTicksPerInterval: 4,
+                  showTicks: true,
+                  showLabels: true,
+                  markerPointers: <LinearShapePointer>[
+                    LinearShapePointer(
+                      value: displayStart,
+                      shapeType: LinearShapePointerType.circle,
+                      color: color,
+                      height: 12,
+                      width: 12,
+                      position: LinearElementPosition.cross,
+                      onChanged: onChanged != null
+                          ? (double v) {
+                              if (v < range.end) {
+                                final newStart = v.clamp(min, max);
+                                onChanged(RangeValues(newStart, range.end.clamp(min, max)));
                               }
                             }
-                            : null,
-                  ),
-                  LinearShapePointer(
-                    value: range.end,
-                    shapeType: LinearShapePointerType.circle,
-                    color: color,
-                    height: 12,
-                    width: 12,
-                    position: LinearElementPosition.cross,
-                    onChanged:
-                        onChanged != null
-                            ? (value) {
-                              if (value > range.start) {
-                                onChanged(RangeValues(range.start, value));
+                          : null,
+                    ),
+                    LinearShapePointer(
+                      value: displayEnd,
+                      shapeType: LinearShapePointerType.circle,
+                      color: color,
+                      height: 12,
+                      width: 12,
+                      position: LinearElementPosition.cross,
+                      onChanged: onChanged != null
+                          ? (double v) {
+                              if (v > range.start) {
+                                final newEnd = v.clamp(min, max);
+                                onChanged(RangeValues(range.start.clamp(min, max), newEnd));
                               }
                             }
-                            : null,
-                  ),
-                ],
-                ranges: [
-                  LinearGaugeRange(
-                    startValue: range.start,
-                    endValue: range.end,
-                    color: color.withValues(alpha: 0.3),
-                    position: LinearElementPosition.cross,
-                  ),
-                ],
-              ),
+                          : null,
+                    ),
+                  ],
+                  ranges: <LinearGaugeRange>[
+                    LinearGaugeRange(
+                      startValue: displayStart,
+                      endValue: displayEnd,
+                      color: color.withValues(alpha: 0.3),
+                      position: LinearElementPosition.cross,
+                    ),
+                  ],
+                ),
 
-              // Labels avec positionnement précis basé sur la largeur réelle
-              _buildValueLabel(
-                value: range.start,
-                color: color,
-                width: constraints.maxWidth,
-                unit: unit,
-                min: min,
-                max: max,
-              ),
+                // Labels
+                _buildValueLabel(
+                  value: displayStart,
+                  color: color,
+                  width: innerWidth,
+                  unit: unit,
+                  min: min,
+                  max: max,
+                ),
 
-              _buildValueLabel(
-                value: range.end,
-                color: color,
-                width: constraints.maxWidth,
-                unit: unit,
-                min: min,
-                max: max,
-              ),
-            ],
+                _buildValueLabel(
+                  value: displayEnd,
+                  color: color,
+                  width: innerWidth,
+                  unit: unit,
+                  min: min,
+                  max: max,
+                ),
+              ],
+            ),
           );
         },
       ),
@@ -342,7 +379,8 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
     required double min,
     required double max,
   }) {
-    final double relativePosition = (value - min) / (max - min);
+    final double clamped = value.clamp(min, max);
+    final double relativePosition = (clamped - min) / (max - min);
     final double leftPosition = (relativePosition * width) - 20; // -20 pour centrer
 
     return Positioned(
@@ -355,7 +393,7 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
           borderRadius: BorderRadius.circular(4),
         ),
         child: Text(
-          '${_formatValue(value, unit)}',
+          '${_formatValue(clamped, unit)}',
           style: const TextStyle(
             color: Colors.white,
             fontSize: 10,
