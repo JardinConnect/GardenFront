@@ -469,6 +469,7 @@ class _ParameterDisplaySectionState extends State<ParameterDisplaySection> {
         ParameterItem(
           id: 'help_tooltips',
           label: 'Afficher les bulles d’aide contextuelles',
+          defaultValue: true
         ),
         ParameterItem(
           id: 'show_offline_cells',
@@ -477,6 +478,7 @@ class _ParameterDisplaySectionState extends State<ParameterDisplaySection> {
         ParameterItem(
           id: 'show_thresholds',
           label: 'Afficher les seuils d’alerte sur les graphiques',
+            defaultValue: true
         ),
         ParameterItem(id: 'show_units', label: 'Afficher les unités de mesure'),
       ],
@@ -488,6 +490,7 @@ class _ParameterDisplaySectionState extends State<ParameterDisplaySection> {
         ParameterItem(
           id: 'allow_alert_edit',
           label: 'Autoriser la modification des alertes',
+            defaultValue: true
         ),
         ParameterItem(
           id: 'confirm_before_delete_alert',
@@ -514,10 +517,12 @@ class _ParameterDisplaySectionState extends State<ParameterDisplaySection> {
         ParameterItem(
           id: 'allow_move_node',
           label: 'Autoriser le déplacement d’une cellule',
+            defaultValue: true
         ),
         ParameterItem(
           id: 'confirm_before_delete_node',
           label: 'Demander une confirmation avant suppression',
+            defaultValue: true
         ),
         ParameterItem(
           id: 'show_battery',
@@ -544,6 +549,7 @@ class _ParameterDisplaySectionState extends State<ParameterDisplaySection> {
         ParameterItem(
           id: 'allow_move_space',
           label: 'Autoriser le déplacement d’un espace',
+            defaultValue: true
         ),
         ParameterItem(
           id: 'confirm_before_delete_space',
