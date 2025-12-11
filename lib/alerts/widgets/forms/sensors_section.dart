@@ -1,11 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
+import 'package:garden_ui/ui/enums/sensor_type.dart';
+
+/// Classe publique représentant un capteur sélectionné avec son index
+class SelectedSensor {
+  final SensorType type;
+  final int index;
+
+  const SelectedSensor(this.type, this.index);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is SelectedSensor &&
+            runtimeType == other.runtimeType &&
+            type == other.type &&
+            index == other.index;
+  }
+
+  @override
+  int get hashCode => type.hashCode ^ index.hashCode;
+}
 
 /// Composant pour la section de sélection des capteurs
 class SensorsSection extends StatefulWidget {
-  final List<SensorType> selectedSensors;
-  final ValueChanged<List<SensorType>>? onSelectionChanged;
+  final List<SelectedSensor> selectedSensors;
+  final ValueChanged<List<SelectedSensor>>? onSelectionChanged;
 
   const SensorsSection({
     super.key,
@@ -23,11 +44,11 @@ class _SensorsSectionState extends State<SensorsSection> {
   @override
   void initState() {
     super.initState();
-    // Convertir la liste de SensorType en liste de _SensorData sélectionnés
+    // Convertir la liste de SelectedSensor en liste de _SensorData sélectionnés
     _selectedSensors = [];
-    for (final sensorType in widget.selectedSensors) {
-      final matchingSensors = _allSensors.where((s) => s.type == sensorType).toList();
-      _selectedSensors.addAll(matchingSensors);
+    for (final sel in widget.selectedSensors) {
+      final matching = _allSensors.where((s) => s.type == sel.type && s.index == sel.index).toList();
+      _selectedSensors.addAll(matching);
     }
   }
 
@@ -141,8 +162,8 @@ class _SensorsSectionState extends State<SensorsSection> {
       }
     });
 
-    // Convertir en liste de SensorType pour le callback
-    final sensorTypes = _selectedSensors.map((s) => s.type).toSet().toList();
+    // Convertir en liste de SelectedSensor pour le callback
+    final sensorTypes = _selectedSensors.map((s) => SelectedSensor(s.type, s.index)).toList();
     widget.onSelectionChanged?.call(sensorTypes);
   }
 

@@ -9,8 +9,55 @@ import '../widgets/forms/alert_table_section.dart';
 import '../widgets/common/snackbar.dart' as custom_snackbar;
 
 /// Vue pour ajouter une nouvelle alerte
-class AlertAddView extends StatelessWidget {
+class AlertAddView extends StatefulWidget {
   const AlertAddView({super.key});
+
+  @override
+  State<AlertAddView> createState() => _AlertAddViewState();
+}
+
+class _AlertAddViewState extends State<AlertAddView> {
+  List<SelectedSensor> _selectedSensors = [];
+
+  // Separate maps for critical and warning ranges per sensor key
+  Map<String, RangeValues> _criticalRanges = {};
+  Map<String, RangeValues> _warningRanges = {};
+  bool _isWarningEnabled = true;
+
+  void _onSensorsChanged(List<SelectedSensor> sensors) {
+    setState(() {
+      _selectedSensors = sensors;
+      // Ensure maps have entries for each selected sensor (optional)
+      for (final s in sensors) {
+        final key = _sensorKey(s);
+        _criticalRanges.putIfAbsent(key, () => const RangeValues(-10, 40));
+        _warningRanges.putIfAbsent(key, () => const RangeValues(0, 30));
+      }
+      // Remove ranges for unselected sensors
+      _criticalRanges.removeWhere((k, v) => !sensors.any((s) => _sensorKey(s) == k));
+      _warningRanges.removeWhere((k, v) => !sensors.any((s) => _sensorKey(s) == k));
+    });
+  }
+
+  String _sensorKey(SelectedSensor s) => '${s.type.index}_${s.index}';
+
+  void _onCriticalRangeChanged(SelectedSensor s, RangeValues range) {
+    setState(() {
+      _criticalRanges[_sensorKey(s)] = range;
+    });
+  }
+
+  void _onWarningRangeChanged(SelectedSensor s, RangeValues range) {
+    setState(() {
+      _warningRanges[_sensorKey(s)] = range;
+    });
+  }
+
+  void _onWarningEnabledChanged(bool enabled) {
+    setState(() {
+      _isWarningEnabled = enabled;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,11 +123,22 @@ class AlertAddView extends StatelessWidget {
                           const SizedBox(height: 24),
 
                           // Section capteurs
-                          const SensorsSection(),
+                          SensorsSection(
+                            selectedSensors: _selectedSensors,
+                            onSelectionChanged: _onSensorsChanged,
+                          ),
                           const SizedBox(height: 16),
 
-                          // Section seuils
-                          const ThresholdsSection(),
+                          // Section seuils - passe la liste de capteurs sélectionnés et les maps
+                          ThresholdsSection(
+                            selectedSensors: _selectedSensors,
+                            criticalRanges: _criticalRanges,
+                            warningRanges: _warningRanges,
+                            isWarningEnabled: _isWarningEnabled,
+                            onCriticalRangeChanged: _onCriticalRangeChanged,
+                            onWarningRangeChanged: _onWarningRangeChanged,
+                            onWarningEnabledChanged: _onWarningEnabledChanged,
+                          ),
                         ],
                       ),
                     ),
