@@ -13,10 +13,7 @@ class AuthRepository {
       final response = await http.post(
         Uri.parse('$baseUrl/login'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
+        body: jsonEncode({'email': email, 'password': password}),
       );
 
       if (response.statusCode == 201) {
@@ -25,9 +22,19 @@ class AuthRepository {
         User user = User.fromJson(responseData['user']);
 
         await _secureStorage.write(key: 'auth_token', value: token);
-        await _secureStorage.write(key: 'user', value: jsonEncode(user.toJson()));
+        await _secureStorage.write(
+          key: 'user',
+          value: jsonEncode(user.toJson()),
+        );
 
-        return User(id: user.id, email: user.email, username: user.username, isAdmin: user.isAdmin, token: token);
+        return User(
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          phoneNumber: user.phoneNumber,
+          token: token,
+        );
       } else {
         return null;
       }

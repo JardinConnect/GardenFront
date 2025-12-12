@@ -2,19 +2,21 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class User {
   final int id;
   final String email;
-  final String username;
-  final bool isAdmin;
+  final String firstName;
+  final String lastName;
+  final String phoneNumber;
   final String? token;
 
   User({
     required this.id,
     required this.email,
-    required this.username,
-    required this.isAdmin,
+    required this.firstName,
+    required this.lastName,
+    required this.phoneNumber,
     required this.token,
   });
 
