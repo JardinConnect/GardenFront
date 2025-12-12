@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:garden_connect/cells/view/cells_page.dart';
 import 'package:garden_connect/core/app_assets.dart';
 import 'package:garden_connect/dashboard/view/dashboard_page.dart';
-import 'package:garden_connect/espaces/view/spaces_page.dart';
 import 'package:garden_connect/settings/view/settings_page.dart';
 import 'package:garden_connect/menu/cubit/navigation_cubit.dart';
 import 'package:garden_connect/menu/cubit/navigation_state.dart';
@@ -11,13 +9,15 @@ import 'package:garden_connect/auth/auth.dart';
 import 'package:garden_ui/ui/components.dart';
 
 import '../../alerts/view/alerts_page.dart';
+import '../../areas/pages/areas_page.dart';
+import '../../cells/view/cells_page.dart';
 
 class MenuPage extends StatelessWidget {
   const MenuPage({super.key});
 
   static final List<Widget> _pages = [
     const DashboardPage(),
-    const SpacesPage(),
+    const AreasPage(),
     const CellsPage(),
     const AlertsPage(),
     const SettingsPage(),
