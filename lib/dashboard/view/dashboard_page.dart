@@ -66,7 +66,7 @@ class DashboardPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Bonjour ${user.username}',
+                        'Bonjour ${user.firstName}',
                         style: Theme.of(context).textTheme.headlineLarge,
                       ),
                       const SizedBox(height: 50),
