@@ -1,10 +1,11 @@
 
 import 'package:flutter/material.dart';
+import 'package:garden_connect/settings/models/settings.dart';
 import 'package:garden_ui/ui/widgets/atoms/Card/card.dart' show GardenCard;
 
-class LogCard extends StatelessWidget {
-  const LogCard({super.key, required this.logs});
-  final List<String> logs;
+class LogCardWidget extends StatelessWidget {
+  const LogCardWidget({super.key, required this.logs});
+  final Logs logs;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,7 @@ class LogCard extends StatelessWidget {
                       ),
                       child: Column(
                         children: [
-                          for (final log in logs)
+                          for (final log in logs.logs)
                             Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Container(

@@ -7,7 +7,7 @@ import 'package:garden_connect/settings/widgets/user_profile_widget.dart';
 import '../bloc/settings_bloc.dart';
 import '../widgets/logs_widget.dart';
 import '../widgets/settings_widget.dart';
-import '../widgets/users_list_widget.dart';
+import '../widgets/users_list_card_widget.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -46,17 +46,17 @@ class SettingsPage extends StatelessWidget {
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: GlobalStatCard(
+                                child: GlobalStatCardWidget(
                                   title: "Total utilisateurs",
                                   icon: Icons.group_outlined,
-                                  data: "8",
+                                  data: users.length.toString(),
                                 ),
                               ),
                             ),
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: GlobalStatCard(
+                                child: GlobalStatCardWidget(
                                   title: "Total Cellules",
                                   icon: Icons.sensors,
                                   data: "28",
@@ -66,7 +66,7 @@ class SettingsPage extends StatelessWidget {
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: GlobalStatCard(
+                                child: GlobalStatCardWidget(
                                   title: "Total Espaces",
                                   icon: Icons.hexagon_outlined,
                                   data: "38",
@@ -76,7 +76,7 @@ class SettingsPage extends StatelessWidget {
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: GlobalStatCard(
+                                child: GlobalStatCardWidget(
                                   title: "Activités (24h)",
                                   icon: Icons.bar_chart_outlined,
                                   data: "840",
@@ -105,11 +105,11 @@ class SettingsPage extends StatelessWidget {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: UserListCard(users: users,),
+                                  child: UserListCardWidget(users: users,),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: LogCard(logs:logs),
+                                  child: LogCardWidget(logs:logs),
                                 ),
                               ],
                             ),

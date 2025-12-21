@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/components.dart';
 
-class GlobalStatCard extends StatelessWidget {
+class GlobalStatCardWidget extends StatelessWidget {
   final String title;
   final IconData icon;
   final String data;
 
-  const GlobalStatCard({
+  const GlobalStatCardWidget({
     super.key,
     required this.title,
     required this.icon,

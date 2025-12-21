@@ -32,7 +32,7 @@ class SettingsRepository {
     }
   }
 
-  Future<List<String>> fetchLogs() async {
+  Future<Logs> fetchLogs() async {
     try {
       var response = {
         "logs": [
@@ -56,7 +56,7 @@ class SettingsRepository {
           'Guy ajoute alerte_gel_nocturne',
         ],
       };
-      return List<String>.from(response['logs'] ?? []);
+      return Logs.fromJson(response);
     } catch (e) {
       throw Exception('Failed to load logs: $e');
     }
@@ -67,7 +67,7 @@ class SettingsRepository {
 
       final storage = FlutterSecureStorage();
 
-// Récupérer le token stocké
+  // Récupérer le token stocké
       String? token = await storage.read(key: 'auth_token');
       final response = await http.get(
         Uri.parse('$baseUrl/users/?skip=0&limit=10'),
@@ -78,11 +78,12 @@ class SettingsRepository {
         },
 
       );
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        return (responseData as List)
+        final users = (responseData as List)
             .map((userJson) => User.fromJson(userJson))
             .toList();
+        return users;
       } else {
         return null;
       }

@@ -45,6 +45,20 @@ enum SettingType {
   allowAreaRenaming,
   allowAreaDeletion;
 
+
+  String get categoryName{
+    switch (this) {
+      case SettingType.showHelpBubbles:
+        return 'General';
+      case SettingType.showAlertThresholds ||SettingType.allowAlertsModification || SettingType.silentNightMode || SettingType.allowCellsRenaming || SettingType.allowCellsDeletion:
+        return 'Notifications et alertes';
+      case SettingType.showDisconnectedCells || SettingType.allowCellsMoving || SettingType.showCellsBatteryLevel:
+        return 'Gestion des cellules';
+      case SettingType.showEmptyAreas || SettingType.allowAreaMoving || SettingType.allowAreaRenaming || SettingType.allowAreaDeletion:
+        return 'Gestion des espaces';
+    }
+  }
+
   String get name {
     switch (this) {
       case SettingType.showHelpBubbles:
@@ -75,4 +89,16 @@ enum SettingType {
         return 'Autoriser la suppression des espaces';
     }
   }
+}
+
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+class Logs {
+  final List<String> logs;
+
+  Logs({
+    required this.logs,
+  });
+
+  factory Logs.fromJson(Map<String, dynamic> json) =>
+      _$LogsFromJson(json);
 }

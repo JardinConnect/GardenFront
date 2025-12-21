@@ -3,8 +3,8 @@ import 'package:garden_ui/ui/widgets/atoms/Card/card.dart';
 
 import '../../auth/models/user.dart';
 
-class UserListCard extends StatelessWidget {
-  const UserListCard({super.key, required this.users});
+class UserListCardWidget extends StatelessWidget {
+  const UserListCardWidget({super.key, required this.users});
 
   final List<User> users;
 
@@ -53,8 +53,8 @@ class UserListCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsetsGeometry.directional(top: 8.0),
                         child: Column(
-                          children: [
-                            for (final user in users)
+                          children:
+                            users.map((user)=>
                               Padding(
                                 padding: const EdgeInsets.all(2.0),
                                 child: Row(
@@ -78,8 +78,7 @@ class UserListCard extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                              ),
-                          ],
+                              )).toList(),
                         ),
                       ),
                     ],

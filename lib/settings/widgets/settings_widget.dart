@@ -19,17 +19,16 @@ class _GlobalSettingsWidgetState extends State<GlobalSettingsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final settings = widget.settings;
 
     // Grouper les paramètres par catégorie
-    Map<int, List<dynamic>> groupedSettings = {};
+    Map<String, List<dynamic>> groupedSettings = {};
 
-    for (var i = 0; i < settings.settings.length; i++) {
-      int category = getCategory(i);
+    for (var i = 0; i < widget.settings.settings.length; i++) {
+      String category = widget.settings.settings[i].setting.categoryName;
       if (!groupedSettings.containsKey(category)) {
         groupedSettings[category] = [];
       }
-      groupedSettings[category]!.add(settings.settings[i]);
+      groupedSettings[category]!.add(widget.settings.settings[i]);
     }
 
     return GardenCard(
@@ -49,17 +48,15 @@ class _GlobalSettingsWidgetState extends State<GlobalSettingsWidget> {
               ],
             ),
             const SizedBox(height: 10),
-
             for (var category in groupedSettings.keys)
               ExpansionTile(
                 initiallyExpanded: category == 1,
                 shape: const Border(),
-                title: Text(
-                  getCategoryName(category),
+                title: Text(category,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
-                children: [
-                  for (var setting in groupedSettings[category]!)
+                children:
+                  groupedSettings[category]!.map((setting)=>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: CheckboxListTile(
@@ -75,32 +72,11 @@ class _GlobalSettingsWidgetState extends State<GlobalSettingsWidget> {
                         ),
                         contentPadding: EdgeInsets.zero,
                       ),
-                    ),
-                ],
+                    )).toList(),
               ),
           ],
         ),
       ),
     );
-  }
-
-  int getCategory(int index) {
-    if (index >= 0 && index <= 2) return 1;
-    if (index >= 3 && index <= 4) return 2;
-    if (index >= 5 && index <= 8) return 3;
-    return 4;
-  }
-
-  String getCategoryName(int category) {
-    switch (category) {
-      case 1:
-        return 'Général';
-      case 2:
-        return 'Notifications et alertes';
-      case 3:
-        return 'Gestion des cellules';
-      default:
-        return 'Gestion des espaces';
-    }
   }
 }

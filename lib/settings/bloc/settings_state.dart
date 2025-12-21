@@ -16,7 +16,7 @@ final class SettingsError extends SettingsState {
 final class SettingsLoaded extends SettingsState {
   final Settings settings;
   final List<User> users;
-  final List<String> logs;
+  final Logs logs;
 
   SettingsLoaded({required this.settings, required this.users, required this.logs});
 }
