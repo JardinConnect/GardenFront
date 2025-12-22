@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/core/app_assets.dart';
 import 'package:garden_connect/dashboard/view/dashboard_page.dart';
-import 'package:garden_connect/settings/view/settings_page.dart';
+import 'package:garden_connect/settings/page/settings_page.dart';
 import 'package:garden_connect/menu/cubit/navigation_cubit.dart';
 import 'package:garden_connect/menu/cubit/navigation_state.dart';
 import 'package:garden_connect/auth/auth.dart';
