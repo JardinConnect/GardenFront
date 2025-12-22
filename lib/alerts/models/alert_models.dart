@@ -95,12 +95,9 @@ class AlertEvent {
   /// Nom de la cellule concernée
   final String cellName;
   
-  /// Heure de déclenchement
-  final String time;
-  
-  /// Date de déclenchement
-  final String date;
-  
+  /// Date et heure de déclenchement
+  final DateTime dateTime;
+
   /// Localisation complète (Parcelle > Serre > Chapelle > planche)
   final String location;
 
@@ -109,8 +106,7 @@ class AlertEvent {
     required this.value,
     required this.sensorType,
     required this.cellName,
-    required this.time,
-    required this.date,
+    required this.dateTime,
     required this.location,
   });
 
@@ -120,8 +116,7 @@ class AlertEvent {
       value: json['value'] as String,
       sensorType: _sensorTypeFromString(json['sensorType'] as String),
       cellName: json['cellName'] as String,
-      time: json['time'] as String,
-      date: json['date'] as String,
+      dateTime: DateTime.parse(json['dateTime'] as String),
       location: json['location'] as String,
     );
   }

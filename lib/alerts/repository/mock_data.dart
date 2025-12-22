@@ -114,8 +114,7 @@ class AlertMockData {
       "value": "26°C",
       "sensorType": "temperature",
       "cellName": "Cellule 2",
-      "time": "16h45",
-      "date": "07/12/2025",
+      "dateTime": "2025-12-07T16:45:00",
       "location": "Parcelle1 > Serre 2 > Chappelle 5 > planche 19"
     },
     {
@@ -123,8 +122,7 @@ class AlertMockData {
       "value": "88%",
       "sensorType": "humiditySurface",
       "cellName": "Cellule 5",
-      "time": "14h30",
-      "date": "07/12/2025",
+      "dateTime": "2025-12-07T14:30:00",
       "location": "Parcelle2 > Serre 1 > Chappelle 3 > planche 8"
     },
     {
@@ -132,8 +130,7 @@ class AlertMockData {
       "value": "800 lux",
       "sensorType": "light",
       "cellName": "Cellule 1",
-      "time": "12h15",
-      "date": "06/12/2025",
+      "dateTime": "2025-12-06T12:15:00",
       "location": "Parcelle1 > Serre 3 > Chappelle 2 > planche 4"
     },
     {
@@ -141,8 +138,7 @@ class AlertMockData {
       "value": "38%",
       "sensorType": "humiditySurface",
       "cellName": "Cellule 3",
-      "time": "10h20",
-      "date": "06/12/2025",
+      "dateTime": "2025-12-06T10:20:00",
       "location": "Parcelle1 > Serre 1 > Chappelle 1 > planche 12"
     },
     {
@@ -150,8 +146,7 @@ class AlertMockData {
       "value": "17°C",
       "sensorType": "temperature",
       "cellName": "Cellule 4",
-      "time": "08h05",
-      "date": "05/12/2025",
+      "dateTime": "2025-12-05T08:05:00",
       "location": "Parcelle2 > Serre 2 > Chappelle 4 > planche 6"
     },
     {
@@ -159,8 +154,7 @@ class AlertMockData {
       "value": "95%",
       "sensorType": "humidityDepth",
       "cellName": "Cellule 1",
-      "time": "22h30",
-      "date": "04/12/2025",
+      "dateTime": "2025-12-04T22:30:00",
       "location": "Parcelle1 > Serre 3 > Chappelle 2 > planche 4"
     }
   ];

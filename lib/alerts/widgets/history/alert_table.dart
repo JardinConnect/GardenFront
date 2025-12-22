@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:garden_ui/ui/components.dart';
 import '../../models/alert_models.dart';
@@ -202,10 +203,10 @@ class AlertTable extends StatelessWidget {
               _buildCellNameCell(event.cellName),
 
               // Heure de déclenchement
-              _buildTimeCell(event.time),
+              _buildTimeCell(event.dateTime),
 
               // Date de déclenchement
-              _buildDateCell(event.date),
+              _buildDateCell(event.dateTime),
 
               // Localisation complète
               _buildLocationCell(event.location),
@@ -280,11 +281,12 @@ class AlertTable extends StatelessWidget {
   }
 
   /// Construit la cellule de l'heure
-  Widget _buildTimeCell(String time) {
+  Widget _buildTimeCell(DateTime dateTime) {
+    final timeFormat = DateFormat('HH:mm');
     return Expanded(
       flex: 1,
       child: Text(
-        time,
+        timeFormat.format(dateTime),
         style: const TextStyle(
           fontSize: 14,
           height: 1.2,
@@ -294,11 +296,12 @@ class AlertTable extends StatelessWidget {
   }
 
   /// Construit la cellule de la date
-  Widget _buildDateCell(String date) {
+  Widget _buildDateCell(DateTime dateTime) {
+    final dateFormat = DateFormat('dd/MM/yyyy');
     return Expanded(
       flex: 2,
       child: Text(
-        date,
+        dateFormat.format(dateTime),
         style: const TextStyle(
           fontSize: 14,
           height: 1.2,
