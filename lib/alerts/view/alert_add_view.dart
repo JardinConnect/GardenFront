@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_ui/ui/components.dart';
 import '../bloc/alert_bloc.dart';
-import '../repository/alert_repository.dart';
 import '../widgets/forms/alert_add_header.dart';
 import '../widgets/forms/alert_configuration_form.dart';
 import '../widgets/forms/sensors_section.dart';
@@ -12,7 +11,14 @@ import '../widgets/common/snackbar.dart' as custom_snackbar;
 /// Vue pour créer une nouvelle alerte
 /// Permet de configurer le nom, les capteurs et les seuils d'alerte
 class AlertAddView extends StatefulWidget {
-  const AlertAddView({super.key});
+  final List<Map<String, dynamic>> spaces;
+  final List<Map<String, dynamic>> availableSensors;
+
+  const AlertAddView({
+    super.key,
+    required this.spaces,
+    required this.availableSensors,
+  });
 
   @override
   State<AlertAddView> createState() => _AlertAddViewState();
@@ -28,36 +34,9 @@ class _AlertAddViewState extends State<AlertAddView> {
   final Map<String, RangeValues> _warningRanges = {};
   bool _isWarningEnabled = true;
 
-  // État du chargement des espaces
-  List<Map<String, dynamic>> _spaces = [];
-  bool _isLoadingSpaces = true;
-
   @override
   void initState() {
     super.initState();
-    _loadSpaces();
-  }
-
-  /// Charge la liste des espaces depuis le repository
-  Future<void> _loadSpaces() async {
-    try {
-      final repository = AlertRepository();
-      final spaces = await repository.fetchSpaces();
-      setState(() {
-        _spaces = spaces;
-        _isLoadingSpaces = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoadingSpaces = false;
-      });
-      if (mounted) {
-        custom_snackbar.showSnackBarError(
-          context,
-          'Erreur lors du chargement des espaces: $e',
-        );
-      }
-    }
   }
 
   // Permet de nettoyer les contrôles lors de la fermeture de la vue
@@ -98,6 +77,7 @@ class _AlertAddViewState extends State<AlertAddView> {
                     onCriticalRangeChanged: _onCriticalRangeChanged,
                     onWarningRangeChanged: _onWarningRangeChanged,
                     onWarningEnabledChanged: _onWarningEnabledChanged,
+                    availableSensors: widget.availableSensors,
                   ),
                 ),
 
@@ -107,9 +87,9 @@ class _AlertAddViewState extends State<AlertAddView> {
                 Expanded(
                   flex: 1,
                   child: GardenCard(
-                    child: _isLoadingSpaces
+                    child: widget.spaces.isEmpty
                         ? const Center(child: CircularProgressIndicator())
-                        : AlertTableSection(spaces: _spaces),
+                        : AlertTableSection(spaces: widget.spaces),
                   ),
                 ),
               ],

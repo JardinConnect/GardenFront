@@ -24,6 +24,9 @@ final class AlertLoaded extends AlertState {
   final bool isShowingEditView;
   final String? editingAlertId;
   final Alert? editingAlert;
+  final List<Map<String, dynamic>> spaces;
+  final Map<String, dynamic>? alertDetails;
+  final List<Map<String, dynamic>> availableSensors;
 
   AlertLoaded({
     required this.alerts,
@@ -36,6 +39,9 @@ final class AlertLoaded extends AlertState {
     this.isShowingEditView = false,
     this.editingAlertId,
     this.editingAlert,
+    this.spaces = const [],
+    this.alertDetails,
+    this.availableSensors = const [],
   });
 
   AlertLoaded copyWith({
@@ -49,6 +55,9 @@ final class AlertLoaded extends AlertState {
     bool? isShowingEditView,
     String? editingAlertId,
     Alert? editingAlert,
+    List<Map<String, dynamic>>? spaces,
+    Map<String, dynamic>? alertDetails,
+    List<Map<String, dynamic>>? availableSensors,
     bool clearSuccessMessage = false,
   }) {
     return AlertLoaded(
@@ -62,6 +71,9 @@ final class AlertLoaded extends AlertState {
       isShowingEditView: isShowingEditView ?? this.isShowingEditView,
       editingAlertId: editingAlertId ?? this.editingAlertId,
       editingAlert: editingAlert ?? this.editingAlert,
+      spaces: spaces ?? this.spaces,
+      alertDetails: alertDetails ?? this.alertDetails,
+      availableSensors: availableSensors ?? this.availableSensors,
     );
   }
 }

@@ -57,12 +57,20 @@ class AlertsPageView extends StatelessWidget {
       builder: (context, state) {
         // Afficher la vue d'ajout d'alerte
         if (state is AlertLoaded && state.isShowingAddView) {
-          return const AlertAddView();
+          return AlertAddView(
+            spaces: state.spaces,
+            availableSensors: state.availableSensors,
+          );
         }
         
         // Afficher la vue d'édition d'alerte
-        if (state is AlertLoaded && state.isShowingEditView && state.editingAlertId != null) {
-          return AlertEditView(alertId: state.editingAlertId!);
+        if (state is AlertLoaded && state.isShowingEditView && state.editingAlert != null && state.alertDetails != null) {
+          return AlertEditView(
+            alert: state.editingAlert!,
+            spaces: state.spaces,
+            alertDetails: state.alertDetails!,
+            availableSensors: state.availableSensors,
+          );
         }
 
         return Padding(

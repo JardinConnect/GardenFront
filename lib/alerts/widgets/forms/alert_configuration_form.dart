@@ -17,6 +17,7 @@ class AlertConfigurationForm extends StatelessWidget {
   final void Function(SelectedSensor, RangeValues)? onCriticalRangeChanged;
   final void Function(SelectedSensor, RangeValues)? onWarningRangeChanged;
   final ValueChanged<bool>? onWarningEnabledChanged;
+  final List<Map<String, dynamic>> availableSensors;
 
   const AlertConfigurationForm({
     super.key,
@@ -30,6 +31,7 @@ class AlertConfigurationForm extends StatelessWidget {
     this.onCriticalRangeChanged,
     this.onWarningRangeChanged,
     this.onWarningEnabledChanged,
+    required this.availableSensors,
   });
 
   @override
@@ -51,6 +53,7 @@ class AlertConfigurationForm extends StatelessWidget {
             SensorsSection(
               selectedSensors: selectedSensors,
               onSelectionChanged: onSensorsChanged,
+              availableSensors: availableSensors,
             ),
 
             const SizedBox(height: 16),

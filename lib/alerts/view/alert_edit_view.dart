@@ -4,7 +4,6 @@ import 'package:garden_ui/ui/components.dart';
 
 import '../bloc/alert_bloc.dart';
 import '../models/alert_models.dart';
-import '../repository/alert_repository.dart';
 import '../widgets/common/snackbar.dart' as custom_snackbar;
 import '../widgets/forms/alert_configuration_form.dart';
 import '../widgets/forms/alert_danger_zone.dart';
@@ -14,9 +13,18 @@ import '../widgets/forms/sensors_section.dart';
 /// Vue pour modifier/visualiser une alerte existante
 /// Réutilise les composants de la vue d'ajout avec les données pré-remplies
 class AlertEditView extends StatefulWidget {
-  final String alertId;
+  final Alert alert;
+  final List<Map<String, dynamic>> spaces;
+  final Map<String, dynamic> alertDetails;
+  final List<Map<String, dynamic>> availableSensors;
 
-  const AlertEditView({super.key, required this.alertId});
+  const AlertEditView({
+    super.key,
+    required this.alert,
+    required this.spaces,
+    required this.alertDetails,
+    required this.availableSensors,
+  });
 
   @override
   State<AlertEditView> createState() => _AlertEditViewState();
@@ -35,13 +43,11 @@ class _AlertEditViewState extends State<AlertEditView> {
 
   // État de chargement
   bool _isLoading = true;
-  List<Map<String, dynamic>> _spaces = [];
 
   @override
   void initState() {
     super.initState();
     _loadAlertData();
-    _loadSpaces();
   }
 
   @override
@@ -50,75 +56,48 @@ class _AlertEditViewState extends State<AlertEditView> {
     super.dispose();
   }
 
-  /// Charge la liste des espaces depuis le repository
-  Future<void> _loadSpaces() async {
+  /// Charge les données de l'alerte depuis les détails reçus en paramètre
+  void _loadAlertData() {
     try {
-      final repository = AlertRepository();
-      final spaces = await repository.fetchSpaces();
+      // Charger le nom de l'alerte
+      _nameController.text = widget.alertDetails['name'] as String;
+
+      // Charger les IDs des cellules sélectionnées
+      _selectedCellIds = (widget.alertDetails['cellIds'] as List).cast<String>();
+
+      // Charger l'état de l'activation des avertissements
+      _isWarningEnabled = widget.alertDetails['isWarningEnabled'] as bool;
+
+      // Charger les capteurs sélectionnés
+      final sensorsData = widget.alertDetails['sensors'] as List;
+      _selectedSensors = sensorsData.map((sensorJson) {
+        final typeString = sensorJson['type'] as String;
+        final type = _parseSensorType(typeString);
+        final index = sensorJson['index'] as int;
+
+        // Charger les plages critiques et d'avertissement
+        final key = '${type.index}_$index';
+
+        if (sensorJson['criticalRange'] != null) {
+          final criticalRange = sensorJson['criticalRange'] as Map;
+          _criticalRanges[key] = RangeValues(
+            (criticalRange['start'] as num).toDouble(),
+            (criticalRange['end'] as num).toDouble(),
+          );
+        }
+
+        if (sensorJson['warningRange'] != null) {
+          final warningRange = sensorJson['warningRange'] as Map;
+          _warningRanges[key] = RangeValues(
+            (warningRange['start'] as num).toDouble(),
+            (warningRange['end'] as num).toDouble(),
+          );
+        }
+
+        return SelectedSensor(type, index);
+      }).toList();
+
       setState(() {
-        _spaces = spaces;
-      });
-    } catch (e) {
-      if (mounted) {
-        custom_snackbar.showSnackBarError(
-          context,
-          'Erreur lors du chargement des espaces: $e',
-        );
-      }
-    }
-  }
-
-  /// Charge les données de l'alerte depuis le repository
-  Future<void> _loadAlertData() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      // Récupérer les données depuis le Repository
-      final alertRepository = AlertRepository();
-      final alertData = await alertRepository.fetchAlertDetails(widget.alertId);
-
-      setState(() {
-        // Charger le nom de l'alerte
-        _nameController.text = alertData['name'] as String;
-
-        // Charger les IDs des cellules sélectionnées
-        _selectedCellIds = (alertData['cellIds'] as List).cast<String>();
-
-        // Charger l'état de l'activation des avertissements
-        _isWarningEnabled = alertData['isWarningEnabled'] as bool;
-
-        // Charger les capteurs sélectionnés
-        final sensorsData = alertData['sensors'] as List;
-        _selectedSensors =
-            sensorsData.map((sensorJson) {
-              final typeString = sensorJson['type'] as String;
-              final type = _parseSensorType(typeString);
-              final index = sensorJson['index'] as int;
-
-              // Charger les plages critiques et d'avertissement
-              final key = '${type.index}_$index';
-
-              if (sensorJson['criticalRange'] != null) {
-                final criticalRange = sensorJson['criticalRange'] as Map;
-                _criticalRanges[key] = RangeValues(
-                  (criticalRange['start'] as num).toDouble(),
-                  (criticalRange['end'] as num).toDouble(),
-                );
-              }
-
-              if (sensorJson['warningRange'] != null) {
-                final warningRange = sensorJson['warningRange'] as Map;
-                _warningRanges[key] = RangeValues(
-                  (warningRange['start'] as num).toDouble(),
-                  (warningRange['end'] as num).toDouble(),
-                );
-              }
-
-              return SelectedSensor(type, index);
-            }).toList();
-
         _isLoading = false;
       });
     } catch (e) {
@@ -159,102 +138,92 @@ class _AlertEditViewState extends State<AlertEditView> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return BlocBuilder<AlertBloc, AlertState>(
-      builder: (context, state) {
-        // Récupérer l'alerte depuis le state du Bloc
-        Alert? alert;
-        if (state is AlertLoaded && state.editingAlert != null) {
-          alert = state.editingAlert;
-        }
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // En-tête avec bouton retour et titre modifié
+          _buildHeader(context),
 
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // En-tête avec bouton retour et titre modifié
-              _buildHeader(context),
+          const SizedBox(height: 24),
 
-              const SizedBox(height: 24),
+          // Contenu principal : configuration et aperçu
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Formulaire de configuration (gauche)
+                Expanded(
+                  flex: 1,
+                  child: SingleChildScrollView(
+                    child: AlertConfigurationForm(
+                      nameController: _nameController,
+                      nameValidator: _validateAlertName,
+                      selectedSensors: _selectedSensors,
+                      onSensorsChanged: _onSensorsChanged,
+                      criticalRanges: _criticalRanges,
+                      warningRanges: _warningRanges,
+                      isWarningEnabled: _isWarningEnabled,
+                      onCriticalRangeChanged: _onCriticalRangeChanged,
+                      onWarningRangeChanged: _onWarningRangeChanged,
+                      onWarningEnabledChanged: _onWarningEnabledChanged,
+                      availableSensors: widget.availableSensors,
+                    ),
+                  ),
+                ),
 
-              // Contenu principal : configuration et aperçu
-              Expanded(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // Formulaire de configuration (gauche)
-                    Expanded(
-                      flex: 1,
-                      child: SingleChildScrollView(
-                        child: AlertConfigurationForm(
-                          nameController: _nameController,
-                          nameValidator: _validateAlertName,
-                          selectedSensors: _selectedSensors,
-                          onSensorsChanged: _onSensorsChanged,
-                          criticalRanges: _criticalRanges,
-                          warningRanges: _warningRanges,
-                          isWarningEnabled: _isWarningEnabled,
-                          onCriticalRangeChanged: _onCriticalRangeChanged,
-                          onWarningRangeChanged: _onWarningRangeChanged,
-                          onWarningEnabledChanged: _onWarningEnabledChanged,
+                const SizedBox(width: 16),
+
+                // Colonne droite : Tableau des cellules + Zone de danger
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Tableau de sélection des cellules (hauteur réduite)
+                      Expanded(
+                        flex: 3,
+                        child: GardenCard(
+                          child: widget.spaces.isEmpty
+                              ? const Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : AlertTableSection(
+                                  spaces: widget.spaces,
+                                  selectedSpaceIds: _selectedCellIds,
+                                  onSelectionChanged: (selectedIds) {
+                                    setState(() {
+                                      _selectedCellIds = selectedIds;
+                                    });
+                                  },
+                                ),
                         ),
                       ),
-                    ),
 
-                    const SizedBox(width: 16),
+                      const SizedBox(height: 16),
 
-                    // Colonne droite : Tableau des cellules + Zone de danger
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // Tableau de sélection des cellules (hauteur réduite)
-                          Expanded(
-                            flex: 3,
-                            child: GardenCard(
-                              child:
-                                  _spaces.isEmpty
-                                      ? const Center(
-                                        child: CircularProgressIndicator(),
-                                      )
-                                      : AlertTableSection(
-                                        spaces: _spaces,
-                                        selectedSpaceIds: _selectedCellIds,
-                                        onSelectionChanged: (selectedIds) {
-                                          setState(() {
-                                            _selectedCellIds = selectedIds;
-                                          });
-                                        },
-                                      ),
-                            ),
-                          ),
-
-                          const SizedBox(height: 16),
-
-                          // Zone de danger en dessous
-                          if (alert != null) AlertDangerZone(alert: alert),
-                        ],
-                      ),
-                    ),
-                  ],
+                      // Zone de danger en dessous
+                      AlertDangerZone(alert: widget.alert),
+                    ],
+                  ),
                 ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // Bouton de sauvegarde des modifications
-              Center(
-                child: Button(
-                  label: "Enregistrer les modifications",
-                  icon: Icons.save,
-                  onPressed: _handleSaveAlert,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        );
-      },
+
+          const SizedBox(height: 24),
+
+          // Bouton de sauvegarde des modifications
+          Center(
+            child: Button(
+              label: "Enregistrer les modifications",
+              icon: Icons.save,
+              onPressed: _handleSaveAlert,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

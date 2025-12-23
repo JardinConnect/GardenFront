@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:garden_ui/ui/enums/sensor_type.dart';
-import '../../repository/alert_repository.dart';
 import '../../models/alert_models.dart';
 
 /// Classe représentant un capteur sélectionné avec son type et son index
@@ -27,7 +26,6 @@ class SelectedSensor {
 
 /// Widget de sélection des capteurs pour une alerte
 /// Affiche une grille de capteurs sélectionnables avec distinction visuelle
-/// Charge la liste des capteurs disponibles depuis le repository
 class SensorsSection extends StatefulWidget {
   /// Liste des capteurs actuellement sélectionnés
   final List<SelectedSensor> selectedSensors;
@@ -35,10 +33,14 @@ class SensorsSection extends StatefulWidget {
   /// Callback appelé lors du changement de sélection
   final ValueChanged<List<SelectedSensor>>? onSelectionChanged;
 
+  /// Liste des capteurs disponibles (chargée depuis le Bloc)
+  final List<Map<String, dynamic>> availableSensors;
+
   const SensorsSection({
     super.key,
     this.selectedSensors = const [],
     this.onSelectionChanged,
+    required this.availableSensors,
   });
 
   @override
@@ -62,20 +64,11 @@ class _SensorsSectionState extends State<SensorsSection> {
     _loadAvailableSensors();
   }
 
-  /// Charge la liste des capteurs disponibles depuis le repository
-  Future<void> _loadAvailableSensors() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
+  /// Charge la liste des capteurs disponibles depuis les données reçues en paramètre
+  void _loadAvailableSensors() {
     try {
-      // Récupère les capteurs disponibles depuis le repository
-      final repository = AlertRepository();
-      final sensorsData = await repository.fetchAvailableSensors();
-
       // Convertit les données JSON en objets _SensorData
-      final loadedSensors = sensorsData.map((json) {
+      final loadedSensors = widget.availableSensors.map((json) {
         return _SensorData(
           _parseSensorType(json['type'] as String),
           json['displayName'] as String,

@@ -37,6 +37,8 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
       final alerts = await _alertRepository.fetchAlerts();
       final sensorAlerts = await _alertRepository.fetchSensorAlerts();
       final alertEvents = await _alertRepository.fetchAlertHistory();
+      final spaces = await _alertRepository.fetchSpaces();
+      final availableSensors = await _alertRepository.fetchAvailableSensors();
 
       emit(
         AlertLoaded(
@@ -45,6 +47,8 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
           alertEvents: alertEvents,
           displayMode: DisplayMode.list,
           selectedTab: AlertTabType.alerts,
+          spaces: spaces,
+          availableSensors: availableSensors,
         ),
       );
     } catch (e) {
@@ -258,7 +262,7 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
   }
 
   /// Affiche la vue d'édition d'une alerte
-  void _showEditView(AlertShowEditView event, Emitter<AlertState> emit) {
+  Future<void> _showEditView(AlertShowEditView event, Emitter<AlertState> emit) async {
     if (state is AlertLoaded) {
       final currentState = state as AlertLoaded;
       
@@ -273,6 +277,9 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
           sensorTypes: [],
         ),
       );
+
+      // Charger les détails de l'alerte
+      final alertDetails = await _alertRepository.fetchAlertDetails(event.alertId);
       
       emit(
         currentState.copyWith(
@@ -280,6 +287,7 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
           isShowingAddView: false,
           editingAlertId: event.alertId,
           editingAlert: alert,
+          alertDetails: alertDetails,
         ),
       );
     }
