@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_ui/ui/components.dart';
+
 import '../bloc/alert_bloc.dart';
+import '../models/alert_models.dart';
 import '../repository/alert_repository.dart';
-import '../widgets/forms/alert_configuration_form.dart';
-import '../widgets/forms/sensors_section.dart';
-import '../widgets/forms/alert_table_section.dart';
-import '../widgets/forms/alert_danger_zone.dart';
 import '../widgets/common/snackbar.dart' as custom_snackbar;
+import '../widgets/forms/alert_configuration_form.dart';
+import '../widgets/forms/alert_danger_zone.dart';
+import '../widgets/forms/alert_table_section.dart';
+import '../widgets/forms/sensors_section.dart';
 
 /// Vue pour modifier/visualiser une alerte existante
 /// Réutilise les composants de la vue d'ajout avec les données pré-remplies
@@ -33,7 +35,6 @@ class _AlertEditViewState extends State<AlertEditView> {
 
   // État de chargement
   bool _isLoading = true;
-  String _alertName = '';
   List<Map<String, dynamic>> _spaces = [];
 
   @override
@@ -81,7 +82,6 @@ class _AlertEditViewState extends State<AlertEditView> {
       setState(() {
         // Charger le nom de l'alerte
         _nameController.text = alertData['name'] as String;
-        _alertName = alertData['name'] as String;
 
         // Charger les IDs des cellules sélectionnées
         _selectedCellIds = (alertData['cellIds'] as List).cast<String>();
@@ -91,32 +91,33 @@ class _AlertEditViewState extends State<AlertEditView> {
 
         // Charger les capteurs sélectionnés
         final sensorsData = alertData['sensors'] as List;
-        _selectedSensors = sensorsData.map((sensorJson) {
-          final typeString = sensorJson['type'] as String;
-          final type = _parseSensorType(typeString);
-          final index = sensorJson['index'] as int;
+        _selectedSensors =
+            sensorsData.map((sensorJson) {
+              final typeString = sensorJson['type'] as String;
+              final type = _parseSensorType(typeString);
+              final index = sensorJson['index'] as int;
 
-          // Charger les plages critiques et d'avertissement
-          final key = '${type.index}_$index';
+              // Charger les plages critiques et d'avertissement
+              final key = '${type.index}_$index';
 
-          if (sensorJson['criticalRange'] != null) {
-            final criticalRange = sensorJson['criticalRange'] as Map;
-            _criticalRanges[key] = RangeValues(
-              (criticalRange['start'] as num).toDouble(),
-              (criticalRange['end'] as num).toDouble(),
-            );
-          }
+              if (sensorJson['criticalRange'] != null) {
+                final criticalRange = sensorJson['criticalRange'] as Map;
+                _criticalRanges[key] = RangeValues(
+                  (criticalRange['start'] as num).toDouble(),
+                  (criticalRange['end'] as num).toDouble(),
+                );
+              }
 
-          if (sensorJson['warningRange'] != null) {
-            final warningRange = sensorJson['warningRange'] as Map;
-            _warningRanges[key] = RangeValues(
-              (warningRange['start'] as num).toDouble(),
-              (warningRange['end'] as num).toDouble(),
-            );
-          }
+              if (sensorJson['warningRange'] != null) {
+                final warningRange = sensorJson['warningRange'] as Map;
+                _warningRanges[key] = RangeValues(
+                  (warningRange['start'] as num).toDouble(),
+                  (warningRange['end'] as num).toDouble(),
+                );
+              }
 
-          return SelectedSensor(type, index);
-        }).toList();
+              return SelectedSensor(type, index);
+            }).toList();
 
         _isLoading = false;
       });
@@ -155,97 +156,105 @@ class _AlertEditViewState extends State<AlertEditView> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // En-tête avec bouton retour et titre modifié
-          _buildHeader(context),
+    return BlocBuilder<AlertBloc, AlertState>(
+      builder: (context, state) {
+        // Récupérer l'alerte depuis le state du Bloc
+        Alert? alert;
+        if (state is AlertLoaded && state.editingAlert != null) {
+          alert = state.editingAlert;
+        }
 
-          const SizedBox(height: 24),
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // En-tête avec bouton retour et titre modifié
+              _buildHeader(context),
 
-          // Contenu principal : configuration et aperçu
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Formulaire de configuration (gauche)
-                Expanded(
-                  flex: 1,
-                  child: SingleChildScrollView(
-                    child: AlertConfigurationForm(
-                      nameController: _nameController,
-                      nameValidator: _validateAlertName,
-                      selectedSensors: _selectedSensors,
-                      onSensorsChanged: _onSensorsChanged,
-                      criticalRanges: _criticalRanges,
-                      warningRanges: _warningRanges,
-                      isWarningEnabled: _isWarningEnabled,
-                      onCriticalRangeChanged: _onCriticalRangeChanged,
-                      onWarningRangeChanged: _onWarningRangeChanged,
-                      onWarningEnabledChanged: _onWarningEnabledChanged,
-                    ),
-                  ),
-                ),
+              const SizedBox(height: 24),
 
-                const SizedBox(width: 16),
-
-                // Colonne droite : Tableau des cellules + Zone de danger
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Tableau de sélection des cellules (hauteur réduite)
-                      Expanded(
-                        flex: 3,
-                        child: GardenCard(
-                          child: _spaces.isEmpty
-                              ? const Center(child: CircularProgressIndicator())
-                              : AlertTableSection(
-                                  spaces: _spaces,
-                                  selectedSpaceIds: _selectedCellIds,
-                                  onSelectionChanged: (selectedIds) {
-                                    setState(() {
-                                      _selectedCellIds = selectedIds;
-                                    });
-                                  },
-                                ),
+              // Contenu principal : configuration et aperçu
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Formulaire de configuration (gauche)
+                    Expanded(
+                      flex: 1,
+                      child: SingleChildScrollView(
+                        child: AlertConfigurationForm(
+                          nameController: _nameController,
+                          nameValidator: _validateAlertName,
+                          selectedSensors: _selectedSensors,
+                          onSensorsChanged: _onSensorsChanged,
+                          criticalRanges: _criticalRanges,
+                          warningRanges: _warningRanges,
+                          isWarningEnabled: _isWarningEnabled,
+                          onCriticalRangeChanged: _onCriticalRangeChanged,
+                          onWarningRangeChanged: _onWarningRangeChanged,
+                          onWarningEnabledChanged: _onWarningEnabledChanged,
                         ),
                       ),
+                    ),
 
-                      const SizedBox(height: 16),
+                    const SizedBox(width: 16),
 
-                      // Zone de danger en dessous
-                      AlertDangerZone(
-                        alertId: widget.alertId,
-                        alertName: _alertName,
+                    // Colonne droite : Tableau des cellules + Zone de danger
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // Tableau de sélection des cellules (hauteur réduite)
+                          Expanded(
+                            flex: 3,
+                            child: GardenCard(
+                              child:
+                                  _spaces.isEmpty
+                                      ? const Center(
+                                        child: CircularProgressIndicator(),
+                                      )
+                                      : AlertTableSection(
+                                        spaces: _spaces,
+                                        selectedSpaceIds: _selectedCellIds,
+                                        onSelectionChanged: (selectedIds) {
+                                          setState(() {
+                                            _selectedCellIds = selectedIds;
+                                          });
+                                        },
+                                      ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          // Zone de danger en dessous
+                          if (alert != null) AlertDangerZone(alert: alert),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
 
-          const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-          // Bouton de sauvegarde des modifications
-          Center(
-            child: Button(
-              label: "Enregistrer les modifications",
-              icon: Icons.save,
-              onPressed: _handleSaveAlert,
-            ),
+              // Bouton de sauvegarde des modifications
+              Center(
+                child: Button(
+                  label: "Enregistrer les modifications",
+                  icon: Icons.save,
+                  onPressed: _handleSaveAlert,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -269,10 +278,7 @@ class _AlertEditViewState extends State<AlertEditView> {
               SizedBox(width: 4),
               Text(
                 'Retour',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
             ],
           ),
@@ -297,16 +303,19 @@ class _AlertEditViewState extends State<AlertEditView> {
       // Initialiser les plages pour les nouveaux capteurs
       for (final sensor in sensors) {
         final key = '${sensor.type.index}_${sensor.index}';
-        _criticalRanges.putIfAbsent(key, () => _getDefaultCriticalRange(sensor));
+        _criticalRanges.putIfAbsent(
+          key,
+          () => _getDefaultCriticalRange(sensor),
+        );
         _warningRanges.putIfAbsent(key, () => _getDefaultWarningRange(sensor));
       }
 
       // Nettoyer les plages des capteurs désélectionnés
-      _criticalRanges.removeWhere((key, _) =>
-        !sensors.any((s) => '${s.type.index}_${s.index}' == key)
+      _criticalRanges.removeWhere(
+        (key, _) => !sensors.any((s) => '${s.type.index}_${s.index}' == key),
       );
-      _warningRanges.removeWhere((key, _) =>
-        !sensors.any((s) => '${s.type.index}_${s.index}' == key)
+      _warningRanges.removeWhere(
+        (key, _) => !sensors.any((s) => '${s.type.index}_${s.index}' == key),
       );
     });
   }
@@ -314,33 +323,45 @@ class _AlertEditViewState extends State<AlertEditView> {
   /// Retourne la plage critique par défaut selon le type de capteur
   RangeValues _getDefaultCriticalRange(SelectedSensor sensor) {
     switch (sensor.type) {
-      case SensorType.temperature: return const RangeValues(-10, 40);
+      case SensorType.temperature:
+        return const RangeValues(-10, 40);
       case SensorType.humiditySurface:
-      case SensorType.humidityDepth: return const RangeValues(10, 90);
-      case SensorType.light: return const RangeValues(100, 15000);
-      case SensorType.rain: return const RangeValues(0, 80);
+      case SensorType.humidityDepth:
+        return const RangeValues(10, 90);
+      case SensorType.light:
+        return const RangeValues(100, 15000);
+      case SensorType.rain:
+        return const RangeValues(0, 80);
     }
   }
 
   /// Retourne la plage d'avertissement par défaut selon le type de capteur
   RangeValues _getDefaultWarningRange(SelectedSensor sensor) {
     switch (sensor.type) {
-      case SensorType.temperature: return const RangeValues(0, 30);
+      case SensorType.temperature:
+        return const RangeValues(0, 30);
       case SensorType.humiditySurface:
-      case SensorType.humidityDepth: return const RangeValues(20, 80);
-      case SensorType.light: return const RangeValues(500, 10000);
-      case SensorType.rain: return const RangeValues(5, 70);
+      case SensorType.humidityDepth:
+        return const RangeValues(20, 80);
+      case SensorType.light:
+        return const RangeValues(500, 10000);
+      case SensorType.rain:
+        return const RangeValues(5, 70);
     }
   }
 
   /// Gère le changement de plage critique
   void _onCriticalRangeChanged(SelectedSensor sensor, RangeValues range) {
-    setState(() => _criticalRanges['${sensor.type.index}_${sensor.index}'] = range);
+    setState(
+      () => _criticalRanges['${sensor.type.index}_${sensor.index}'] = range,
+    );
   }
 
   /// Gère le changement de plage d'avertissement
   void _onWarningRangeChanged(SelectedSensor sensor, RangeValues range) {
-    setState(() => _warningRanges['${sensor.type.index}_${sensor.index}'] = range);
+    setState(
+      () => _warningRanges['${sensor.type.index}_${sensor.index}'] = range,
+    );
   }
 
   /// Gère l'activation/désactivation des avertissements
@@ -410,4 +431,3 @@ class _AlertEditViewState extends State<AlertEditView> {
     );
   }
 }
-

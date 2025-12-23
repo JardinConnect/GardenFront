@@ -261,11 +261,25 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
   void _showEditView(AlertShowEditView event, Emitter<AlertState> emit) {
     if (state is AlertLoaded) {
       final currentState = state as AlertLoaded;
+      
+      // Rechercher l'alerte dans la liste
+      final alert = currentState.alerts.firstWhere(
+        (a) => a.id == event.alertId,
+        orElse: () => Alert(
+          id: event.alertId,
+          title: 'Alerte inconnue',
+          description: '',
+          isActive: false,
+          sensorTypes: [],
+        ),
+      );
+      
       emit(
         currentState.copyWith(
           isShowingEditView: true,
           isShowingAddView: false,
           editingAlertId: event.alertId,
+          editingAlert: alert,
         ),
       );
     }

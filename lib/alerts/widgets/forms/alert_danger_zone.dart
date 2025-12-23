@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_ui/ui/components.dart';
 import '../../bloc/alert_bloc.dart';
+import '../../models/alert_models.dart';
 
 /// Widget pour la zone de danger avec le bouton de suppression d'alerte
 /// Affiche un avertissement et permet de supprimer l'alerte
 class AlertDangerZone extends StatelessWidget {
-  final String alertId;
-  final String alertName;
+  final Alert alert;
 
   const AlertDangerZone({
     super.key,
-    required this.alertId,
-    required this.alertName,
+    required this.alert,
   });
 
   @override
@@ -82,7 +81,7 @@ class AlertDangerZone extends StatelessWidget {
 
     if (confirmed == true && context.mounted) {
       // Envoyer l'événement de suppression au Bloc
-      context.read<AlertBloc>().add(AlertDeleteAlert(alertId: alertId));
+      context.read<AlertBloc>().add(AlertDeleteAlert(alertId: alert.id));
     }
   }
 
@@ -99,7 +98,7 @@ class AlertDangerZone extends StatelessWidget {
           ],
         ),
         content: Text(
-          'Êtes-vous sûr de vouloir supprimer l\'alerte "$alertName" ?\n\n'
+          'Êtes-vous sûr de vouloir supprimer l\'alerte "${alert.title}" ?\n\n'
           'Cette action est irréversible et toutes les données seront perdues.',
           style: const TextStyle(fontSize: 14),
         ),

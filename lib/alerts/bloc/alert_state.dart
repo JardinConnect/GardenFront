@@ -16,13 +16,14 @@ final class AlertError extends AlertState {
 final class AlertLoaded extends AlertState {
   final List<Alert> alerts;
   final List<SensorAlertData> sensorAlerts;
-  final List<AlertEvent> alertEvents; // AlertEvent du modèle
+  final List<AlertEvent> alertEvents;
   final DisplayMode displayMode;
   final AlertTabType selectedTab;
   final String? successMessage;
   final bool isShowingAddView;
   final bool isShowingEditView;
   final String? editingAlertId;
+  final Alert? editingAlert;
 
   AlertLoaded({
     required this.alerts,
@@ -34,6 +35,7 @@ final class AlertLoaded extends AlertState {
     this.isShowingAddView = false,
     this.isShowingEditView = false,
     this.editingAlertId,
+    this.editingAlert,
   });
 
   AlertLoaded copyWith({
@@ -46,6 +48,7 @@ final class AlertLoaded extends AlertState {
     bool? isShowingAddView,
     bool? isShowingEditView,
     String? editingAlertId,
+    Alert? editingAlert,
     bool clearSuccessMessage = false,
   }) {
     return AlertLoaded(
@@ -58,6 +61,7 @@ final class AlertLoaded extends AlertState {
       isShowingAddView: isShowingAddView ?? this.isShowingAddView,
       isShowingEditView: isShowingEditView ?? this.isShowingEditView,
       editingAlertId: editingAlertId ?? this.editingAlertId,
+      editingAlert: editingAlert ?? this.editingAlert,
     );
   }
 }
