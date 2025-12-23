@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:garden_ui/ui/components.dart';
-import 'package:garden_ui/ui/design_system.dart';
+import '../../models/alert_models.dart';
 
 /// Composant d'affichage d'une ligne d'icônes de capteurs
 class SensorIconsRow extends StatelessWidget {
@@ -62,7 +62,7 @@ class SensorIconsRow extends StatelessWidget {
 
   /// Construit une icône de capteur avec fond coloré et état actif/inactif
   Widget _buildSensorIcon(SensorType sensorType, bool isActive, int index) {
-    final color = _getSensorColor(sensorType, index);
+    final color = getSensorColor(sensorType, index: index);
 
     // Augmentation de la taille du conteneur uniquement
     const double iconContainerSize = 36; // Anciennement 28
@@ -84,30 +84,5 @@ class SensorIconsRow extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  /// Retourne la couleur appropriée pour chaque type de capteur
-  Color _getSensorColor(SensorType sensorType, int index) {
-    // Thermomètre rouge (index 0)
-    if (sensorType == SensorType.temperature && index == 0) {
-      return GardenColors.redAlert.shade500;
-    }
-    // Thermomètre marron (index 1)
-    if (sensorType == SensorType.temperature && index == 1) {
-      return Colors.brown;
-    }
-
-    switch (sensorType) {
-      case SensorType.temperature:
-        return GardenColors.redAlert.shade500;
-      case SensorType.humiditySurface:
-        return GardenColors.blueInfo.shade400;
-      case SensorType.humidityDepth:
-        return GardenColors.blueInfo.shade400;
-      case SensorType.light:
-        return GardenColors.secondary.shade300;
-      case SensorType.rain:
-        return GardenColors.blueInfo.shade400;
-    }
   }
 }

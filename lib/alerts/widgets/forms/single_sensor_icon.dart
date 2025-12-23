@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:garden_ui/ui/components.dart';
-import 'package:garden_ui/ui/design_system.dart';
+import '../../models/alert_models.dart';
 
 /// Icône isolée pour un capteur
 class SingleSensorIcon extends StatelessWidget {
@@ -31,7 +31,7 @@ class SingleSensorIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = _getSensorColor(sensorType, index);
+    final color = getSensorColor(sensorType, index: index);
 
     return Container(
       width: containerSize,
@@ -53,28 +53,5 @@ class SingleSensorIcon extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  /// Détermine la couleur du capteur (même logique que ta version précédente)
-  Color _getSensorColor(SensorType sensorType, int index) {
-    if (sensorType == SensorType.temperature && index == 0) {
-      return GardenColors.redAlert.shade500;
-    }
-    if (sensorType == SensorType.temperature && index == 1) {
-      return Colors.brown;
-    }
-
-    switch (sensorType) {
-      case SensorType.temperature:
-        return GardenColors.redAlert.shade500;
-      case SensorType.humiditySurface:
-        return GardenColors.blueInfo.shade400;
-      case SensorType.humidityDepth:
-        return GardenColors.blueInfo.shade400;
-      case SensorType.light:
-        return GardenColors.secondary.shade300;
-      case SensorType.rain:
-        return GardenColors.blueInfo.shade400;
-    }
   }
 }

@@ -229,7 +229,7 @@ class AlertTable extends StatelessWidget {
         child: GardenIcon(
           iconName: sensorType.iconName,
           size: GardenIconSize.md,
-          color: _getSensorColor(sensorType),
+          color: getSensorColor(sensorType),
         ),
       ),
     );
@@ -342,23 +342,6 @@ class AlertTable extends StatelessWidget {
         tooltip: 'Archiver',
       ),
     );
-  }
-
-  /// Retourne la couleur appropriée pour chaque type de capteur
-  /// Permet une identification visuelle rapide du type d'alerte
-  Color _getSensorColor(SensorType sensorType) {
-    switch (sensorType) {
-      case SensorType.temperature:
-        return Colors.red.shade600; // Rouge pour température
-      case SensorType.humiditySurface:
-        return Colors.blue.shade600; // Bleu clair pour humidité de surface
-      case SensorType.humidityDepth:
-        return Colors.blue.shade800; // Bleu foncé pour humidité profonde
-      case SensorType.light:
-        return Colors.orange.shade600; // Orange pour luminosité
-      case SensorType.rain:
-        return Colors.purple.shade600; // Violet pour pluviosité
-    }
   }
 }
 

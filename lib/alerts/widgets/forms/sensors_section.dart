@@ -3,6 +3,7 @@ import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:garden_ui/ui/enums/sensor_type.dart';
 import '../../repository/alert_repository.dart';
+import '../../models/alert_models.dart';
 
 /// Classe représentant un capteur sélectionné avec son type et son index
 class SelectedSensor {
@@ -216,7 +217,7 @@ class _SensorsSectionState extends State<SensorsSection> {
                 child: GardenIcon(
                   iconName: sensor.type.iconName,
                   size: GardenIconSize.lg,
-                  color: _getSensorColor(sensor),
+                  color: getSensorColor(sensor.type, index: sensor.index),
                 ),
               ),
 
@@ -280,33 +281,6 @@ class _SensorsSectionState extends State<SensorsSection> {
         .map((s) => SelectedSensor(s.type, s.index))
         .toList();
     widget.onSelectionChanged?.call(selectedSensorTypes);
-  }
-
-  /// Retourne la couleur appropriée pour chaque type de capteur
-  Color _getSensorColor(_SensorData sensor) {
-    // Thermomètre rouge (index 0)
-    if (sensor.type == SensorType.temperature && sensor.index == 0) {
-      return GardenColors.redAlert.shade500;
-    }
-
-    // Thermomètre marron (index 1)
-    if (sensor.type == SensorType.temperature && sensor.index == 1) {
-      return Colors.brown;
-    }
-
-    // Couleurs par défaut selon le type
-    switch (sensor.type) {
-      case SensorType.temperature:
-        return GardenColors.redAlert.shade500;
-      case SensorType.humiditySurface:
-        return GardenColors.blueInfo.shade400;
-      case SensorType.humidityDepth:
-        return GardenColors.blueInfo.shade600;
-      case SensorType.light:
-        return GardenColors.secondary.shade400;
-      case SensorType.rain:
-        return GardenColors.blueInfo.shade500;
-    }
   }
 }
 

@@ -1,4 +1,6 @@
-import 'package:garden_ui/ui/components.dart'; // Pour SensorThreshold, ThresholdValue et enums
+import 'package:flutter/material.dart';
+import 'package:garden_ui/ui/components.dart';
+import 'package:garden_ui/ui/design_system.dart';
 
 /// Modèle représentant une alerte dans le système
 class Alert {
@@ -166,4 +168,32 @@ SensorThreshold _sensorThresholdFromJson(Map<String, dynamic> json) {
             ))
         .toList(),
   );
+}
+
+/// Retourne la couleur appropriée pour chaque type de capteur
+/// 
+/// Permet une identification visuelle rapide du type de capteur.
+/// Gère un cas spécial pour le thermomètre marron (index 1).
+/// 
+/// [sensorType] - Le type de capteur
+/// [index] - Index optionnel pour distinguer les variations (ex: thermomètre rouge vs marron)
+Color getSensorColor(SensorType sensorType, {int index = 0}) {
+  // Cas spécial : thermomètre marron (index 1)
+  if (sensorType == SensorType.temperature && index == 1) {
+    return Colors.brown;
+  }
+
+  // Couleurs par défaut selon le type
+  switch (sensorType) {
+    case SensorType.temperature:
+      return GardenColors.redAlert.shade500;
+    case SensorType.humiditySurface:
+      return GardenColors.blueInfo.shade400;
+    case SensorType.humidityDepth:
+      return GardenColors.blueInfo.shade600;
+    case SensorType.light:
+      return GardenColors.secondary.shade400;
+    case SensorType.rain:
+      return GardenColors.blueInfo.shade500;
+  }
 }
