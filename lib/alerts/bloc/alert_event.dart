@@ -56,3 +56,29 @@ final class AlertDeleteAlert extends AlertBlocEvent {
   AlertDeleteAlert({required this.alertId});
 }
 
+final class AlertUpdateSensors extends AlertBlocEvent {
+  final List<SelectedSensor> sensors;
+
+  AlertUpdateSensors({required this.sensors});
+}
+
+final class AlertUpdateCriticalRange extends AlertBlocEvent {
+  final SelectedSensor sensor;
+  final RangeValues range;
+
+  AlertUpdateCriticalRange({required this.sensor, required this.range});
+}
+
+final class AlertUpdateWarningRange extends AlertBlocEvent {
+  final SelectedSensor sensor;
+  final RangeValues range;
+
+  AlertUpdateWarningRange({required this.sensor, required this.range});
+}
+
+final class AlertUpdateWarningEnabled extends AlertBlocEvent {
+  final bool enabled;
+
+  AlertUpdateWarningEnabled({required this.enabled});
+}
+

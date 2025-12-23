@@ -28,12 +28,6 @@ class _AlertAddViewState extends State<AlertAddView> {
   // Contrôleur pour le nom de l'alerte
   final TextEditingController _nameController = TextEditingController();
 
-  // État de la configuration de l'alerte
-  List<SelectedSensor> _selectedSensors = [];
-  final Map<String, RangeValues> _criticalRanges = {};
-  final Map<String, RangeValues> _warningRanges = {};
-  bool _isWarningEnabled = true;
-
   @override
   void initState() {
     super.initState();
@@ -48,126 +42,89 @@ class _AlertAddViewState extends State<AlertAddView> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // En-tête avec bouton retour et titre
-          const AlertAddHeader(),
+    return BlocBuilder<AlertBloc, AlertState>(
+      builder: (context, state) {
+        if (state is! AlertLoaded) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-          const SizedBox(height: 24),
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // En-tête avec bouton retour et titre
+              const AlertAddHeader(),
 
-          // Contenu principal : configuration et aperçu
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Formulaire de configuration
-                Expanded(
-                  flex: 1,
-                  child: AlertConfigurationForm(
-                    nameController: _nameController,
-                    nameValidator: _validateAlertName,
-                    selectedSensors: _selectedSensors,
-                    onSensorsChanged: _onSensorsChanged,
-                    criticalRanges: _criticalRanges,
-                    warningRanges: _warningRanges,
-                    isWarningEnabled: _isWarningEnabled,
-                    onCriticalRangeChanged: _onCriticalRangeChanged,
-                    onWarningRangeChanged: _onWarningRangeChanged,
-                    onWarningEnabledChanged: _onWarningEnabledChanged,
-                    availableSensors: widget.availableSensors,
-                  ),
+              const SizedBox(height: 24),
+
+              // Contenu principal : configuration et aperçu
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Formulaire de configuration
+                    Expanded(
+                      flex: 1,
+                      child: AlertConfigurationForm(
+                        nameController: _nameController,
+                        nameValidator: _validateAlertName,
+                        selectedSensors: state.selectedSensors,
+                        onSensorsChanged: (sensors) {
+                          context.read<AlertBloc>().add(AlertUpdateSensors(sensors: sensors));
+                        },
+                        criticalRanges: state.criticalRanges,
+                        warningRanges: state.warningRanges,
+                        isWarningEnabled: state.isWarningEnabled,
+                        onCriticalRangeChanged: (sensor, range) {
+                          context.read<AlertBloc>().add(
+                            AlertUpdateCriticalRange(sensor: sensor, range: range),
+                          );
+                        },
+                        onWarningRangeChanged: (sensor, range) {
+                          context.read<AlertBloc>().add(
+                            AlertUpdateWarningRange(sensor: sensor, range: range),
+                          );
+                        },
+                        onWarningEnabledChanged: (enabled) {
+                          context.read<AlertBloc>().add(
+                            AlertUpdateWarningEnabled(enabled: enabled),
+                          );
+                        },
+                        availableSensors: widget.availableSensors,
+                      ),
+                    ),
+
+                    const SizedBox(width: 16),
+
+                    // Aperçu du tableau
+                    Expanded(
+                      flex: 1,
+                      child: GardenCard(
+                        child: widget.spaces.isEmpty
+                            ? const Center(child: CircularProgressIndicator())
+                            : AlertTableSection(spaces: widget.spaces),
+                      ),
+                    ),
+                  ],
                 ),
+              ),
 
-                const SizedBox(width: 16),
+              const SizedBox(height: 24),
 
-                // Aperçu du tableau
-                Expanded(
-                  flex: 1,
-                  child: GardenCard(
-                    child: widget.spaces.isEmpty
-                        ? const Center(child: CircularProgressIndicator())
-                        : AlertTableSection(spaces: widget.spaces),
-                  ),
+              // Bouton de création
+              Center(
+                child: Button(
+                  label: "Créer Alerte",
+                  icon: Icons.add_alert,
+                  onPressed: () => _handleCreateAlert(state),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-
-          const SizedBox(height: 24),
-
-          // Bouton de création
-          Center(
-            child: Button(
-              label: "Créer Alerte",
-              icon: Icons.add_alert,
-              onPressed: _handleCreateAlert,
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
-  }
-
-  /// Gère le changement de sélection des capteurs
-  void _onSensorsChanged(List<SelectedSensor> sensors) {
-    setState(() {
-      _selectedSensors = sensors;
-
-      // Initialiser les plages pour les nouveaux capteurs
-      for (final sensor in sensors) {
-        final key = '${sensor.type.index}_${sensor.index}';
-        _criticalRanges.putIfAbsent(key, () => _getDefaultCriticalRange(sensor));
-        _warningRanges.putIfAbsent(key, () => _getDefaultWarningRange(sensor));
-      }
-
-      // Nettoyer les plages des capteurs désélectionnés
-      _criticalRanges.removeWhere((key, _) =>
-        !sensors.any((s) => '${s.type.index}_${s.index}' == key)
-      );
-      _warningRanges.removeWhere((key, _) =>
-        !sensors.any((s) => '${s.type.index}_${s.index}' == key)
-      );
-    });
-  }
-
-  /// Retourne la plage critique par défaut selon le type de capteur
-  RangeValues _getDefaultCriticalRange(SelectedSensor sensor) {
-    switch (sensor.type) {
-      case SensorType.temperature: return const RangeValues(-10, 40);
-      case SensorType.humiditySurface:
-      case SensorType.humidityDepth: return const RangeValues(10, 90);
-      case SensorType.light: return const RangeValues(100, 15000);
-      case SensorType.rain: return const RangeValues(0, 80);
-    }
-  }
-
-  /// Retourne la plage d'avertissement par défaut selon le type de capteur
-  RangeValues _getDefaultWarningRange(SelectedSensor sensor) {
-    switch (sensor.type) {
-      case SensorType.temperature: return const RangeValues(0, 30);
-      case SensorType.humiditySurface:
-      case SensorType.humidityDepth: return const RangeValues(20, 80);
-      case SensorType.light: return const RangeValues(500, 10000);
-      case SensorType.rain: return const RangeValues(5, 70);
-    }
-  }
-
-  /// Gère le changement de plage critique
-  void _onCriticalRangeChanged(SelectedSensor sensor, RangeValues range) {
-    setState(() => _criticalRanges['${sensor.type.index}_${sensor.index}'] = range);
-  }
-
-  /// Gère le changement de plage d'avertissement
-  void _onWarningRangeChanged(SelectedSensor sensor, RangeValues range) {
-    setState(() => _warningRanges['${sensor.type.index}_${sensor.index}'] = range);
-  }
-
-  /// Gère l'activation/désactivation des avertissements
-  void _onWarningEnabledChanged(bool enabled) {
-    setState(() => _isWarningEnabled = enabled);
   }
 
   /// Valide le nom de l'alerte
@@ -182,7 +139,7 @@ class _AlertAddViewState extends State<AlertAddView> {
   }
 
   /// Gère la création de l'alerte
-  void _handleCreateAlert() {
+  void _handleCreateAlert(AlertLoaded state) {
     final name = _nameController.text.trim();
     final validationError = _validateAlertName(name);
 
@@ -191,7 +148,7 @@ class _AlertAddViewState extends State<AlertAddView> {
       return;
     }
 
-    if (_selectedSensors.isEmpty) {
+    if (state.selectedSensors.isEmpty) {
       custom_snackbar.showSnackBarError(
         context,
         'Veuillez sélectionner au moins un capteur',
@@ -205,10 +162,10 @@ class _AlertAddViewState extends State<AlertAddView> {
     //   name: name,
     //   cellIds: selectedCellIds,
     //   sensors: {
-    //     'critical': _criticalRanges,
-    //     'warning': _isWarningEnabled ? _warningRanges : null,
+    //     'critical': state.criticalRanges,
+    //     'warning': state.isWarningEnabled ? state.warningRanges : null,
     //   },
-    //   isWarningEnabled: _isWarningEnabled,
+    //   isWarningEnabled: state.isWarningEnabled,
     // );
 
     context.read<AlertBloc>().add(AlertHideAddView());
@@ -218,4 +175,3 @@ class _AlertAddViewState extends State<AlertAddView> {
     );
   }
 }
-

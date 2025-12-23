@@ -27,6 +27,10 @@ final class AlertLoaded extends AlertState {
   final List<Map<String, dynamic>> spaces;
   final Map<String, dynamic>? alertDetails;
   final List<Map<String, dynamic>> availableSensors;
+  final List<SelectedSensor> selectedSensors;
+  final Map<String, RangeValues> criticalRanges;
+  final Map<String, RangeValues> warningRanges;
+  final bool isWarningEnabled;
 
   AlertLoaded({
     required this.alerts,
@@ -42,6 +46,10 @@ final class AlertLoaded extends AlertState {
     this.spaces = const [],
     this.alertDetails,
     this.availableSensors = const [],
+    this.selectedSensors = const [],
+    this.criticalRanges = const {},
+    this.warningRanges = const {},
+    this.isWarningEnabled = true,
   });
 
   AlertLoaded copyWith({
@@ -58,6 +66,10 @@ final class AlertLoaded extends AlertState {
     List<Map<String, dynamic>>? spaces,
     Map<String, dynamic>? alertDetails,
     List<Map<String, dynamic>>? availableSensors,
+    List<SelectedSensor>? selectedSensors,
+    Map<String, RangeValues>? criticalRanges,
+    Map<String, RangeValues>? warningRanges,
+    bool? isWarningEnabled,
     bool clearSuccessMessage = false,
   }) {
     return AlertLoaded(
@@ -74,6 +86,10 @@ final class AlertLoaded extends AlertState {
       spaces: spaces ?? this.spaces,
       alertDetails: alertDetails ?? this.alertDetails,
       availableSensors: availableSensors ?? this.availableSensors,
+      selectedSensors: selectedSensors ?? this.selectedSensors,
+      criticalRanges: criticalRanges ?? this.criticalRanges,
+      warningRanges: warningRanges ?? this.warningRanges,
+      isWarningEnabled: isWarningEnabled ?? this.isWarningEnabled,
     );
   }
 }

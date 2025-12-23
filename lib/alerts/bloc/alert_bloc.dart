@@ -1,10 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 
 import '../models/alert_models.dart';
 import '../page/alerts_page.dart';
 import '../repository/alert_repository.dart';
 import '../widgets/button/tab_menu.dart';
+import '../widgets/forms/sensors_section.dart';
 
 part 'alert_event.dart';
 part 'alert_state.dart';
@@ -25,6 +27,10 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
     on<AlertHideAddView>(_hideAddView);
     on<AlertShowEditView>(_showEditView);
     on<AlertDeleteAlert>(_deleteAlert);
+    on<AlertUpdateSensors>(_updateSensors);
+    on<AlertUpdateCriticalRange>(_updateCriticalRange);
+    on<AlertUpdateWarningRange>(_updateWarningRange);
+    on<AlertUpdateWarningEnabled>(_updateWarningEnabled);
 
     // Charger les données initiales
     add(AlertLoadData());
@@ -334,5 +340,80 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
         ),
       );
     }
+  }
+
+  /// Gère la mise à jour des capteurs sélectionnés
+  void _updateSensors(
+    AlertUpdateSensors event,
+    Emitter<AlertState> emit,
+  ) {
+    if (state is! AlertLoaded) return;
+
+    final currentState = state as AlertLoaded;
+    final sensors = event.sensors;
+    final newCriticalRanges = Map<String, RangeValues>.from(currentState.criticalRanges);
+    final newWarningRanges = Map<String, RangeValues>.from(currentState.warningRanges);
+
+    // Initialiser les plages pour les nouveaux capteurs
+    for (final sensor in sensors) {
+      final key = '${sensor.type.index}_${sensor.index}';
+      newCriticalRanges.putIfAbsent(key, () => sensor.type.defaultCriticalRange);
+      newWarningRanges.putIfAbsent(key, () => sensor.type.defaultWarningRange);
+    }
+
+    // Nettoyer les plages des capteurs désélectionnés
+    newCriticalRanges.removeWhere((key, _) =>
+      !sensors.any((s) => '${s.type.index}_${s.index}' == key)
+    );
+    newWarningRanges.removeWhere((key, _) =>
+      !sensors.any((s) => '${s.type.index}_${s.index}' == key)
+    );
+
+    emit(currentState.copyWith(
+      selectedSensors: sensors,
+      criticalRanges: newCriticalRanges,
+      warningRanges: newWarningRanges,
+    ));
+  }
+
+  /// Gère la mise à jour d'une plage critique
+  void _updateCriticalRange(
+    AlertUpdateCriticalRange event,
+    Emitter<AlertState> emit,
+  ) {
+    if (state is! AlertLoaded) return;
+
+    final currentState = state as AlertLoaded;
+    final key = '${event.sensor.type.index}_${event.sensor.index}';
+    final newRanges = Map<String, RangeValues>.from(currentState.criticalRanges);
+    newRanges[key] = event.range;
+
+    emit(currentState.copyWith(criticalRanges: newRanges));
+  }
+
+  /// Gère la mise à jour d'une plage d'avertissement
+  void _updateWarningRange(
+    AlertUpdateWarningRange event,
+    Emitter<AlertState> emit,
+  ) {
+    if (state is! AlertLoaded) return;
+
+    final currentState = state as AlertLoaded;
+    final key = '${event.sensor.type.index}_${event.sensor.index}';
+    final newRanges = Map<String, RangeValues>.from(currentState.warningRanges);
+    newRanges[key] = event.range;
+
+    emit(currentState.copyWith(warningRanges: newRanges));
+  }
+
+  /// Gère l'activation/désactivation des avertissements
+  void _updateWarningEnabled(
+    AlertUpdateWarningEnabled event,
+    Emitter<AlertState> emit,
+  ) {
+    if (state is! AlertLoaded) return;
+
+    final currentState = state as AlertLoaded;
+    emit(currentState.copyWith(isWarningEnabled: event.enabled));
   }
 }

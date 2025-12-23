@@ -2,6 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
+/// Extension pour ajouter les plages par défaut aux types de capteurs
+extension SensorTypeExtension on SensorType {
+  /// Retourne la plage critique par défaut selon le type de capteur
+  RangeValues get defaultCriticalRange {
+    switch (this) {
+      case SensorType.temperature:
+        return const RangeValues(-10, 40);
+      case SensorType.humiditySurface:
+      case SensorType.humidityDepth:
+        return const RangeValues(10, 90);
+      case SensorType.light:
+        return const RangeValues(100, 15000);
+      case SensorType.rain:
+        return const RangeValues(0, 80);
+    }
+  }
+
+  /// Retourne la plage d'avertissement par défaut selon le type de capteur
+  RangeValues get defaultWarningRange {
+    switch (this) {
+      case SensorType.temperature:
+        return const RangeValues(0, 30);
+      case SensorType.humiditySurface:
+      case SensorType.humidityDepth:
+        return const RangeValues(20, 80);
+      case SensorType.light:
+        return const RangeValues(500, 10000);
+      case SensorType.rain:
+        return const RangeValues(5, 70);
+    }
+  }
+}
+
 /// Modèle représentant une alerte dans le système
 class Alert {
   /// Identifiant unique de l'alerte
