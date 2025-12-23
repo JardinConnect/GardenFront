@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_ui/ui/components.dart';
 import '../bloc/alert_bloc.dart';
+import '../models/alert_models.dart';
 import '../repository/alert_repository.dart';
 import '../widgets/forms/alert_configuration_form.dart';
 import '../widgets/forms/sensors_section.dart';
@@ -34,17 +35,37 @@ class _AlertEditViewState extends State<AlertEditView> {
   // État de chargement
   bool _isLoading = true;
   String _alertName = '';
+  List<Space> _spaces = [];
 
   @override
   void initState() {
     super.initState();
     _loadAlertData();
+    _loadSpaces();
   }
 
   @override
   void dispose() {
     _nameController.dispose();
     super.dispose();
+  }
+
+  /// Charge la liste des espaces depuis le repository
+  Future<void> _loadSpaces() async {
+    try {
+      final repository = AlertRepository();
+      final spaces = await repository.fetchSpaces();
+      setState(() {
+        _spaces = spaces;
+      });
+    } catch (e) {
+      if (mounted) {
+        custom_snackbar.showSnackBarError(
+          context,
+          'Erreur lors du chargement des espaces: $e',
+        );
+      }
+    }
   }
 
   /// Charge les données de l'alerte depuis le repository
@@ -186,14 +207,17 @@ class _AlertEditViewState extends State<AlertEditView> {
                       Expanded(
                         flex: 3,
                         child: GardenCard(
-                          child: AlertTableSection(
-                            selectedSpaceIds: _selectedCellIds,
-                            onSelectionChanged: (selectedIds) {
-                              setState(() {
-                                _selectedCellIds = selectedIds;
-                              });
-                            },
-                          ),
+                          child: _spaces.isEmpty
+                              ? const Center(child: CircularProgressIndicator())
+                              : AlertTableSection(
+                                  spaces: _spaces,
+                                  selectedSpaceIds: _selectedCellIds,
+                                  onSelectionChanged: (selectedIds) {
+                                    setState(() {
+                                      _selectedCellIds = selectedIds;
+                                    });
+                                  },
+                                ),
                         ),
                       ),
 

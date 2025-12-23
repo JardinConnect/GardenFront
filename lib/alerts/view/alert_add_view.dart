@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_ui/ui/components.dart';
 import '../bloc/alert_bloc.dart';
+import '../models/alert_models.dart';
+import '../repository/alert_repository.dart';
 import '../widgets/forms/alert_add_header.dart';
 import '../widgets/forms/alert_configuration_form.dart';
 import '../widgets/forms/sensors_section.dart';
@@ -26,6 +28,38 @@ class _AlertAddViewState extends State<AlertAddView> {
   final Map<String, RangeValues> _criticalRanges = {};
   final Map<String, RangeValues> _warningRanges = {};
   bool _isWarningEnabled = true;
+
+  // État du chargement des espaces
+  List<Space> _spaces = [];
+  bool _isLoadingSpaces = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSpaces();
+  }
+
+  /// Charge la liste des espaces depuis le repository
+  Future<void> _loadSpaces() async {
+    try {
+      final repository = AlertRepository();
+      final spaces = await repository.fetchSpaces();
+      setState(() {
+        _spaces = spaces;
+        _isLoadingSpaces = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingSpaces = false;
+      });
+      if (mounted) {
+        custom_snackbar.showSnackBarError(
+          context,
+          'Erreur lors du chargement des espaces: $e',
+        );
+      }
+    }
+  }
 
   // Permet de nettoyer les contrôles lors de la fermeture de la vue
   @override
@@ -71,10 +105,12 @@ class _AlertAddViewState extends State<AlertAddView> {
                 const SizedBox(width: 16),
 
                 // Aperçu du tableau
-                const Expanded(
+                Expanded(
                   flex: 1,
                   child: GardenCard(
-                    child: AlertTableSection(),
+                    child: _isLoadingSpaces
+                        ? const Center(child: CircularProgressIndicator())
+                        : AlertTableSection(spaces: _spaces),
                   ),
                 ),
               ],

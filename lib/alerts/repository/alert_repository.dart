@@ -85,16 +85,21 @@ class AlertRepository {
   }
 
   /// Récupère la liste complète des espaces avec leur localisation hiérarchique
-  Future<List<Map<String, dynamic>>> fetchSpaces() async {
+  Future<List<Space>> fetchSpaces() async {
     // TODO: Remplacer par un vrai appel HTTP
-    await Future.delayed(const Duration(milliseconds: 300));
-    return AlertMockData.spaces;
+
+    try {
+      return AlertMockData.spaces
+          .map((spaceJson) => Space.fromJson(spaceJson))
+          .toList();
+    } catch (e) {
+      throw Exception('Erreur lors de la récupération des espaces: $e');
+    }
   }
 
   /// Récupère la liste des types de capteurs disponibles
   Future<List<Map<String, dynamic>>> fetchAvailableSensors() async {
     // TODO: Remplacer par un vrai appel HTTP
-    await Future.delayed(const Duration(milliseconds: 200));
     return AlertMockData.availableSensors;
   }
 

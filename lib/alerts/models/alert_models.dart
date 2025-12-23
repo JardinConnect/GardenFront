@@ -170,6 +170,39 @@ SensorThreshold _sensorThresholdFromJson(Map<String, dynamic> json) {
   );
 }
 
+/// Modèle représentant un espace avec sa localisation hiérarchique
+class Space {
+  final String id;
+  final String name;
+  final String serre;
+  final String chapelle;
+  final String planche;
+  bool isSelected;
+
+  Space({
+    required this.id,
+    required this.name,
+    required this.serre,
+    required this.chapelle,
+    required this.planche,
+    this.isSelected = false,
+  });
+
+  /// Construit un Space depuis les données JSON de l'API
+  factory Space.fromJson(Map<String, dynamic> json) {
+    return Space(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      serre: json['serre'] as String,
+      chapelle: json['chapelle'] as String,
+      planche: json['planche'] as String,
+      isSelected: false,
+    );
+  }
+
+  String get fullLocation => '$serre > $chapelle > $planche';
+}
+
 /// Retourne la couleur appropriée pour chaque type de capteur
 /// 
 /// Permet une identification visuelle rapide du type de capteur.
