@@ -85,13 +85,12 @@ class AlertRepository {
   }
 
   /// Récupère la liste complète des espaces avec leur localisation hiérarchique
-  Future<List<Space>> fetchSpaces() async {
+  Future<List<Map<String, dynamic>>> fetchSpaces() async {
     // TODO: Remplacer par un vrai appel HTTP
-
+    await Future.delayed(const Duration(milliseconds: 300));
+    
     try {
-      return AlertMockData.spaces
-          .map((spaceJson) => Space.fromJson(spaceJson))
-          .toList();
+      return AlertMockData.spaces;
     } catch (e) {
       throw Exception('Erreur lors de la récupération des espaces: $e');
     }

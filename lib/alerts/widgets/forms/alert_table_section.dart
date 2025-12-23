@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/components.dart';
-import '../../models/alert_models.dart';
 
 /// Composant pour la section du tableau de sélection des espaces
 class AlertTableSection extends StatefulWidget {
-  final List<Space> spaces;
+  final List<Map<String, dynamic>> spaces;
   final List<String>? selectedSpaceIds;
   final ValueChanged<List<String>>? onSelectionChanged;
 
@@ -21,6 +20,7 @@ class AlertTableSection extends StatefulWidget {
 
 class _AlertTableSectionState extends State<AlertTableSection> {
   bool _selectAll = false;
+  final Set<String> _selectedIds = {};
 
   @override
   void initState() {
@@ -31,42 +31,44 @@ class _AlertTableSectionState extends State<AlertTableSection> {
   /// Applique les sélections initiales si fournies
   void _applyInitialSelections() {
     if (widget.selectedSpaceIds != null) {
-      for (var space in widget.spaces) {
-        space.isSelected = widget.selectedSpaceIds!.contains(space.id);
-      }
+      _selectedIds.addAll(widget.selectedSpaceIds!);
     }
     _updateSelectAllState();
   }
 
   /// Met à jour l'état "tout sélectionner"
   void _updateSelectAllState() {
-    _selectAll = widget.spaces.isNotEmpty && widget.spaces.every((space) => space.isSelected);
+    _selectAll = widget.spaces.isNotEmpty && 
+                 widget.spaces.every((space) => _selectedIds.contains(space['id']));
   }
 
   /// Notifie le parent que la sélection a changé
   void _notifySelectionChanged() {
-    final selectedIds = widget.spaces
-        .where((space) => space.isSelected)
-        .map((space) => space.id)
-        .toList();
-    widget.onSelectionChanged?.call(selectedIds);
+    widget.onSelectionChanged?.call(_selectedIds.toList());
   }
 
   /// Bascule la sélection de tous les espaces
   void _toggleSelectAll(bool? value) {
     setState(() {
       _selectAll = value ?? false;
-      for (var space in widget.spaces) {
-        space.isSelected = _selectAll;
+      if (_selectAll) {
+        _selectedIds.addAll(widget.spaces.map((space) => space['id'] as String));
+      } else {
+        _selectedIds.clear();
       }
     });
     _notifySelectionChanged();
   }
 
   /// Bascule la sélection d'un espace spécifique
-  void _toggleSpaceSelection(Space space, bool? value) {
+  void _toggleSpaceSelection(Map<String, dynamic> space, bool? value) {
     setState(() {
-      space.isSelected = value ?? false;
+      final id = space['id'] as String;
+      if (value == true) {
+        _selectedIds.add(id);
+      } else {
+        _selectedIds.remove(id);
+      }
       _updateSelectAllState();
     });
     _notifySelectionChanged();
@@ -82,7 +84,7 @@ class _AlertTableSectionState extends State<AlertTableSection> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Text(
-              '${widget.spaces.where((s) => s.isSelected).length} / ${widget.spaces.length} sélectionnés',
+              '${_selectedIds.length} / ${widget.spaces.length} sélectionnés',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Colors.grey[600],
               ),
@@ -163,7 +165,14 @@ class _AlertTableSectionState extends State<AlertTableSection> {
   }
 
   /// Construit une ligne du tableau pour un espace donné
-  Widget _buildSpaceRow(Space space) {
+  Widget _buildSpaceRow(Map<String, dynamic> space) {
+    final id = space['id'] as String;
+    final name = space['name'] as String;
+    final serre = space['serre'] as String;
+    final chapelle = space['chapelle'] as String;
+    final planche = space['planche'] as String;
+    final fullLocation = '$serre > $chapelle > $planche';
+    
     return GardenCard(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
@@ -173,7 +182,7 @@ class _AlertTableSectionState extends State<AlertTableSection> {
             SizedBox(
               width: 32,
               child: Checkbox(
-                value: space.isSelected,
+                value: _selectedIds.contains(id),
                 onChanged: (value) => _toggleSpaceSelection(space, value),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
@@ -185,7 +194,7 @@ class _AlertTableSectionState extends State<AlertTableSection> {
               flex: 2,
               child: Center(
                 child: Text(
-                  space.name,
+                  name,
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
@@ -200,7 +209,7 @@ class _AlertTableSectionState extends State<AlertTableSection> {
             Expanded(
               flex: 3,
               child: Text(
-                space.fullLocation,
+                fullLocation,
                 style: TextStyle(
                   fontSize: 12,
                   height: 1.1,

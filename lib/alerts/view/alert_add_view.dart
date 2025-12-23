@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_ui/ui/components.dart';
 import '../bloc/alert_bloc.dart';
-import '../models/alert_models.dart';
 import '../repository/alert_repository.dart';
 import '../widgets/forms/alert_add_header.dart';
 import '../widgets/forms/alert_configuration_form.dart';
@@ -30,7 +29,7 @@ class _AlertAddViewState extends State<AlertAddView> {
   bool _isWarningEnabled = true;
 
   // État du chargement des espaces
-  List<Space> _spaces = [];
+  List<Map<String, dynamic>> _spaces = [];
   bool _isLoadingSpaces = true;
 
   @override
