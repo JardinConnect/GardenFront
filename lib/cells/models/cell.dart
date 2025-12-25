@@ -1,16 +1,17 @@
+import 'package:garden_connect/cells/models/cell_analytics.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import '../../analytics/models/analytics.dart';
 
 part 'cell.g.dart';
 
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class Cell {
   final String name;
-  final List<Analytics>? analytics;
+  final int battery;
+  final CellAnalytics analytics;
 
   Cell({
     required this.name,
+    required this.battery,
     required this.analytics,
   });
 
