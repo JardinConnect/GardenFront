@@ -5,7 +5,6 @@ import 'package:garden_connect/cells/repository/cell_repository.dart';
 import 'package:meta/meta.dart';
 
 part 'cell_event.dart';
-
 part 'cell_state.dart';
 
 class CellBloc extends Bloc<CellEvent, CellState> {
@@ -16,19 +15,29 @@ class CellBloc extends Bloc<CellEvent, CellState> {
     on<RefreshCells>(_refreshCells);
     on<ToggleCellsDisplayMode>(_toggleCellsDisplayMode);
     on<FilterCellsChanged>(_applyFilter);
+    on<SearchCells>(_searchCells);
   }
 
   _loadCells(LoadCells event, Emitter<CellState> emit) async {
     bool isList = false;
+    AnalyticMetric? filter;
     if (state is CellsLoaded) {
       isList = (state as CellsLoaded).isList;
+      filter = (state as CellsLoaded).filter;
     }
 
     emit(const CellsShimmer());
     try {
       final cells = await _cellRepository.fetchCells();
-      emit(CellsLoaded(cells: cells, isList: isList));
-    } catch(e) {
+      emit(
+        CellsLoaded(
+          cells: cells,
+          filteredCells: cells,
+          isList: isList,
+          filter: filter,
+        ),
+      );
+    } catch (e) {
       emit(CellError(message: e.toString()));
     }
   }
@@ -37,12 +46,15 @@ class CellBloc extends Bloc<CellEvent, CellState> {
     try {
       await _cellRepository.refreshCells();
       add(LoadCells());
-    } catch(e) {
+    } catch (e) {
       emit(CellError(message: e.toString()));
     }
   }
 
-  _toggleCellsDisplayMode(ToggleCellsDisplayMode event, Emitter<CellState> emit) async {
+  _toggleCellsDisplayMode(
+    ToggleCellsDisplayMode event,
+    Emitter<CellState> emit,
+  ) async {
     if (state is CellsLoaded) {
       final loadedState = state as CellsLoaded;
       emit(loadedState.copyWith(isList: !loadedState.isList));
@@ -52,11 +64,36 @@ class CellBloc extends Bloc<CellEvent, CellState> {
   _applyFilter(FilterCellsChanged event, Emitter<CellState> emit) async {
     if (state is CellsLoaded) {
       final loadedState = state as CellsLoaded;
-      emit(CellsLoaded(
-        cells: loadedState.cells,
-        isList: loadedState.isList,
-        filter: event.filter,
-      ));
+      emit(
+        CellsLoaded(
+          cells: loadedState.cells,
+          filteredCells: loadedState.filteredCells,
+          isList: loadedState.isList,
+          filter: event.filter,
+        ),
+      );
+    }
+  }
+
+  _searchCells(SearchCells event, Emitter<CellState> emit) async {
+    if (state is CellsLoaded) {
+      final loadedState = state as CellsLoaded;
+
+      emit(
+        loadedState.copyWith(
+          filteredCells:
+              event.search == null || event.search!.isEmpty
+                  ? loadedState.cells
+                  : loadedState.cells
+                      .where(
+                        (cell) => cell.name.toLowerCase().contains(
+                          event.search!.toLowerCase(),
+                        ),
+                      )
+                      .toList(),
+          search: event.search,
+        ),
+      );
     }
   }
 }

@@ -18,7 +18,7 @@ class CellRepository {
 
     for (int i = 0; i < 10; i++) {
       mockedJson.add({
-        "name": "Tomate Serre Nord",
+        "name": "Tomate Serre Nord $i",
         "battery": 67,
         "analytics": {
           "air_temperature": {"value": 18, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},

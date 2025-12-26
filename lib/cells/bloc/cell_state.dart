@@ -21,25 +21,36 @@ final class CellsShimmer extends CellState {
 }
 
 final class CellsLoaded extends CellState {
+  /// La liste des cellules complète
   final List<Cell> cells;
+  /// La liste des cellules filtrée en fonction de la recherche
+  final List<Cell> filteredCells;
+  /// Est-ce qu'on affiche les cellules au format liste ? (false = cards)
   final bool isList;
   final AnalyticMetric? filter;
+  final String? search;
 
   const CellsLoaded({
     required this.cells,
+    required this.filteredCells,
     this.isList = false,
-    this.filter
+    this.filter,
+    this.search
   });
 
   CellsLoaded copyWith({
     List<Cell>? cells,
+    List<Cell>? filteredCells,
     bool? isList,
     AnalyticMetric? filter,
+    String? search,
   }) {
     return CellsLoaded(
       cells: cells ?? this.cells,
+      filteredCells: filteredCells ?? this.filteredCells,
       isList: isList ?? this.isList,
-      filter: filter ?? this.filter
+      filter: filter ?? this.filter,
+      search: search ?? this.search
     );
   }
 }

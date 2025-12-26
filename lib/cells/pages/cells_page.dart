@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/cells/bloc/cell_bloc.dart';
 import 'package:garden_connect/cells/models/analytic_metric.dart';
-import 'package:garden_connect/cells/widgets/cells_grid.dart';
+import 'package:garden_connect/cells/widgets/cells_cards.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
 class CellsPage extends StatelessWidget {
@@ -18,6 +18,10 @@ class CellsPage extends StatelessWidget {
 
   _onFilterChanged(BuildContext context, AnalyticMetric? newFilter) {
     context.read<CellBloc>().add(FilterCellsChanged(filter: newFilter));
+  }
+
+  _onSearch(BuildContext context, String text) {
+    context.read<CellBloc>().add(SearchCells(search: text));
   }
 
   @override
@@ -61,7 +65,7 @@ class CellsPage extends StatelessWidget {
                                     hintText: "Filtre",
                                   ),
                                   dropdownColor: GardenColors.base.shade50,
-                                  style: GardenTypography.bodyMd.copyWith(
+                                  style: GardenTypography.bodyLg.copyWith(
                                     color: GardenColors.typography.shade900,
                                   ),
                                   initialValue: cellsState.filter,
@@ -70,8 +74,8 @@ class CellsPage extends StatelessWidget {
                                     DropdownMenuItem(
                                       value: null,
                                       child: Text(
-                                        "Aucun filtre",
-                                        style: GardenTypography.bodyMd.copyWith(
+                                        "Filtre",
+                                        style: GardenTypography.bodyLg.copyWith(
                                           color:
                                               GardenColors.typography.shade900,
                                         ),
@@ -83,7 +87,7 @@ class CellsPage extends StatelessWidget {
                                         child: Text(
                                           metric.label,
                                           style:
-                                              GardenTypography.bodyMd.copyWith(
+                                              GardenTypography.bodyLg.copyWith(
                                             color: GardenColors
                                                 .typography.shade900,
                                           ),
@@ -96,9 +100,13 @@ class CellsPage extends StatelessWidget {
                                           _onFilterChanged(context, newFilter),
                                 ),
                                 TextField(
+                                  onChanged: (text) => _onSearch(context, text),
                                   decoration: InputDecoration(
                                     hintText: 'Rechercher',
                                     prefixIcon: Icon(Icons.search),
+                                    hintStyle: GardenTypography.bodyLg.copyWith(
+                                      color: GardenColors.typography.shade200
+                                    )
                                   ),
                                 ),
                               ],
@@ -123,8 +131,8 @@ class CellsPage extends StatelessWidget {
                       if (cellsState.isList)
                         Text("List")
                       else
-                        CellsGrid(
-                          cells: cellsState.cells,
+                        CellsCards(
+                          cells: cellsState.filteredCells,
                           filter: cellsState.filter,
                         ),
                     ],
