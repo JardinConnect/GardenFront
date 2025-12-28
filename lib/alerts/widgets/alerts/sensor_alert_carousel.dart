@@ -97,6 +97,7 @@ class _SensorAlertCarouselState extends State<SensorAlertCarousel> {
           currentPage = index;
         });
       },
+      iconColor: getSensorColor(currentSensor.sensorType),
     );
   }
 }
