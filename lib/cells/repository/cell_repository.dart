@@ -25,6 +25,7 @@ class CellRepository {
           "soil_temperature": {"value": 15, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},
           "air_humidity": {"value": 65, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},
           "soil_humidity": {"value": 45, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},
+          "deep_soil_humidity": {"value": 32, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},
           "light": {"value": 35, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},
         },
       });

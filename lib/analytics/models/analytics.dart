@@ -222,6 +222,18 @@ class SoilHumidityAnalytic extends Analytic {
 }
 
 @JsonSerializable(createToJson: false)
+class DeepSoilHumidityAnalytic extends Analytic {
+  DeepSoilHumidityAnalytic({
+    required super.value,
+    required super.occurredAt,
+    required super.sensorId,
+  });
+
+  factory DeepSoilHumidityAnalytic.fromJson(Map<String, dynamic> json) =>
+      _$DeepSoilHumidityAnalyticFromJson(json);
+}
+
+@JsonSerializable(createToJson: false)
 class LightAnalytic extends Analytic {
   LightAnalytic({
     required super.value,

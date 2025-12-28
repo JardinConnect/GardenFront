@@ -21,7 +21,7 @@ class CellsCards extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 350,
-        mainAxisExtent: 220,
+        childAspectRatio: 350 / 220,
         crossAxisSpacing: GardenSpace.gapLg,
         mainAxisSpacing: GardenSpace.gapLg,
       ),
@@ -29,92 +29,103 @@ class CellsCards extends StatelessWidget {
       itemBuilder: (context, index) {
         final cell = cells[index];
 
-        switch (filter) {
-          case AnalyticMetric.AIR_TEMPERATURE:
-            return AnalyticsSummaryCard(
-              name: cell.name,
-              batteryPercentage: cell.battery,
-              onPressed: () => {},
-              light: 0,
-              rain: 0,
-              humiditySurface: 0,
-              humidityDepth: 0,
-              temperatureSurface: cell.analytics.airTemperature.value,
-              temperatureDepth: 0,
-            );
-          case AnalyticMetric.SOIL_TEMPERATURE:
-            return AnalyticsSummaryCard(
-              name: cell.name,
-              batteryPercentage: cell.battery,
-              onPressed: () => {},
-              light: 0,
-              rain: 0,
-              humiditySurface: 0,
-              humidityDepth: 0,
-              temperatureSurface: 0,
-              temperatureDepth: cell.analytics.soilTemperature.value,
-            );
-          case AnalyticMetric.AIR_HUMIDITY:
-            return AnalyticsSummaryCard(
-              name: cell.name,
-              batteryPercentage: cell.battery,
-              onPressed: () => {},
-              light: 0,
-              rain: 0,
-              humiditySurface: cell.analytics.airHumidity.value.toInt(),
-              humidityDepth: 0,
-              temperatureSurface: 0,
-              temperatureDepth: 0,
-            );
-          case AnalyticMetric.SOIL_HUMIDITY:
-            return AnalyticsSummaryCard(
-              name: cell.name,
-              batteryPercentage: cell.battery,
-              onPressed: () => {},
-              light: 0,
-              rain: 0,
-              humiditySurface: 0,
-              humidityDepth: cell.analytics.soilHumidity.value.toInt(),
-              temperatureSurface: 0,
-              temperatureDepth: 0,
-            );
-          case AnalyticMetric.LUMINOSITY:
-            return AnalyticsSummaryCard(
-              name: cell.name,
-              batteryPercentage: cell.battery,
-              onPressed: () => {},
-              light: cell.analytics.light.value.toInt(),
-              rain: 0,
-              humiditySurface: 0,
-              humidityDepth: 0,
-              temperatureSurface: 0,
-              temperatureDepth: 0,
-            );
-          case AnalyticMetric.RAIN:
-            return AnalyticsSummaryCard(
-              name: cell.name,
-              batteryPercentage: cell.battery,
-              onPressed: () => {},
-              light: 0,
-              rain: cell.analytics.airHumidity.value.toInt(),
-              humiditySurface: 0,
-              humidityDepth: 0,
-              temperatureSurface: 0,
-              temperatureDepth: 0,
-            );
-          case null:
-            return AnalyticsSummaryCard(
-              name: cell.name,
-              batteryPercentage: cell.battery,
-              onPressed: () => {},
-              light: cell.analytics.light.value.toInt(),
-              rain: cell.analytics.airHumidity.value.toInt(),
-              humiditySurface: cell.analytics.airHumidity.value.toInt(),
-              humidityDepth: cell.analytics.soilHumidity.value.toInt(),
-              temperatureSurface: cell.analytics.airTemperature.value,
-              temperatureDepth: cell.analytics.soilTemperature.value,
-            );
-        }
+        final card = () {
+          switch (filter) {
+            case AnalyticMetric.AIR_TEMPERATURE:
+              return AnalyticsSummaryCard(
+                name: cell.name,
+                batteryPercentage: cell.battery,
+                onPressed: () => {},
+                light: 0,
+                rain: 0,
+                humiditySurface: 0,
+                humidityDepth: 0,
+                temperatureSurface: cell.analytics.airTemperature.value,
+                temperatureDepth: 0,
+              );
+            case AnalyticMetric.SOIL_TEMPERATURE:
+              return AnalyticsSummaryCard(
+                name: cell.name,
+                batteryPercentage: cell.battery,
+                onPressed: () => {},
+                light: 0,
+                rain: 0,
+                humiditySurface: 0,
+                humidityDepth: 0,
+                temperatureSurface: 0,
+                temperatureDepth: cell.analytics.soilTemperature.value,
+              );
+            case AnalyticMetric.AIR_HUMIDITY:
+              return AnalyticsSummaryCard(
+                name: cell.name,
+                batteryPercentage: cell.battery,
+                onPressed: () => {},
+                light: 0,
+                rain: 0,
+                humiditySurface: cell.analytics.soilHumidity.value.toInt(),
+                humidityDepth: 0,
+                temperatureSurface: 0,
+                temperatureDepth: 0,
+              );
+            case AnalyticMetric.SOIL_HUMIDITY:
+              return AnalyticsSummaryCard(
+                name: cell.name,
+                batteryPercentage: cell.battery,
+                onPressed: () => {},
+                light: 0,
+                rain: 0,
+                humiditySurface: 0,
+                humidityDepth: cell.analytics.deepSoilHumidity.value.toInt(),
+                temperatureSurface: 0,
+                temperatureDepth: 0,
+              );
+            case AnalyticMetric.LUMINOSITY:
+              return AnalyticsSummaryCard(
+                name: cell.name,
+                batteryPercentage: cell.battery,
+                onPressed: () => {},
+                light: cell.analytics.light.value.toInt(),
+                rain: 0,
+                humiditySurface: 0,
+                humidityDepth: 0,
+                temperatureSurface: 0,
+                temperatureDepth: 0,
+              );
+            case AnalyticMetric.DEEP_SOIL_HUMIDITY:
+              return AnalyticsSummaryCard(
+                name: cell.name,
+                batteryPercentage: cell.battery,
+                onPressed: () => {},
+                light: 0,
+                rain: cell.analytics.airHumidity.value.toInt(),
+                humiditySurface: 0,
+                humidityDepth: 0,
+                temperatureSurface: 0,
+                temperatureDepth: 0,
+              );
+            case null:
+              return AnalyticsSummaryCard(
+                name: cell.name,
+                batteryPercentage: cell.battery,
+                onPressed: () => {},
+                light: cell.analytics.light.value.toInt(),
+                rain: cell.analytics.airHumidity.value.toInt(),
+                humiditySurface: cell.analytics.soilHumidity.value.toInt(),
+                humidityDepth: cell.analytics.deepSoilHumidity.value.toInt(),
+                temperatureSurface: cell.analytics.airTemperature.value,
+                temperatureDepth: cell.analytics.soilTemperature.value,
+              );
+          }
+        }();
+
+        return FittedBox(
+          fit: BoxFit.scaleDown,
+          child: SizedBox(
+            width: 350,
+            height: 220,
+            child: card,
+          ),
+        );
       },
     );
   }

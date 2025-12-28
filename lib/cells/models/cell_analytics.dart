@@ -9,6 +9,7 @@ class CellAnalytics {
   final SoilTemperatureAnalytic soilTemperature;
   final AirHumidityAnalytic airHumidity;
   final SoilHumidityAnalytic soilHumidity;
+  final DeepSoilHumidityAnalytic deepSoilHumidity;
   final LightAnalytic light;
 
   CellAnalytics({
@@ -16,6 +17,7 @@ class CellAnalytics {
     required this.soilTemperature,
     required this.airHumidity,
     required this.soilHumidity,
+    required this.deepSoilHumidity,
     required this.light,
   });
 
