@@ -1,41 +1,41 @@
 enum AnalyticMetric {
-  AIR_TEMPERATURE,
-  SOIL_TEMPERATURE,
-  AIR_HUMIDITY,
-  SOIL_HUMIDITY,
-  LUMINOSITY,
-  DEEP_SOIL_HUMIDITY;
+  airTemperature,
+  soilTemperature,
+  airHumidity,
+  soilHumidity,
+  luminosity,
+  deepSoilHumidity;
 
   String get label {
     switch (this) {
-      case AnalyticMetric.AIR_TEMPERATURE:
+      case AnalyticMetric.airTemperature:
         return "Température Air";
-      case AnalyticMetric.SOIL_TEMPERATURE:
+      case AnalyticMetric.soilTemperature:
         return "Température Sol";
-      case AnalyticMetric.AIR_HUMIDITY:
+      case AnalyticMetric.airHumidity:
         return "Humidité Air";
-      case AnalyticMetric.SOIL_HUMIDITY:
+      case AnalyticMetric.soilHumidity:
         return "Humidité Sol";
-      case AnalyticMetric.LUMINOSITY:
+      case AnalyticMetric.luminosity:
         return "Luminosité";
-      case AnalyticMetric.DEEP_SOIL_HUMIDITY:
+      case AnalyticMetric.deepSoilHumidity:
         return "Humidité du sol profond";
     }
   }
 
   String get unit {
     switch (this) {
-      case AnalyticMetric.AIR_TEMPERATURE:
+      case AnalyticMetric.airTemperature:
         return "°C";
-      case AnalyticMetric.SOIL_TEMPERATURE:
+      case AnalyticMetric.soilTemperature:
         return "°C";
-      case AnalyticMetric.AIR_HUMIDITY:
+      case AnalyticMetric.airHumidity:
         return "%";
-      case AnalyticMetric.SOIL_HUMIDITY:
+      case AnalyticMetric.soilHumidity:
         return "%";
-      case AnalyticMetric.LUMINOSITY:
+      case AnalyticMetric.luminosity:
         return "lux";
-      case AnalyticMetric.DEEP_SOIL_HUMIDITY:
+      case AnalyticMetric.deepSoilHumidity:
         return "%";
     }
   }

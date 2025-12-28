@@ -12,12 +12,12 @@ class CellsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var columns = [
-      AnalyticMetric.LUMINOSITY.label,
-      AnalyticMetric.AIR_TEMPERATURE.label,
-      AnalyticMetric.SOIL_TEMPERATURE.label,
-      AnalyticMetric.AIR_HUMIDITY.label,
-      AnalyticMetric.SOIL_HUMIDITY.label,
-      AnalyticMetric.DEEP_SOIL_HUMIDITY.label,
+      AnalyticMetric.luminosity.label,
+      AnalyticMetric.airTemperature.label,
+      AnalyticMetric.soilTemperature.label,
+      AnalyticMetric.airHumidity.label,
+      AnalyticMetric.soilHumidity.label,
+      AnalyticMetric.deepSoilHumidity.label,
     ];
 
     return Padding(
@@ -48,12 +48,12 @@ class CellsList extends StatelessWidget {
             itemBuilder: (context, index) {
               var cell = cells[index];
               var values = [
-                "${cell.analytics.light.value} ${AnalyticMetric.LUMINOSITY.unit}",
-                cell.analytics.airTemperature.value.toStringAsFixed(1) + AnalyticMetric.AIR_TEMPERATURE.unit,
-                cell.analytics.soilTemperature.value.toStringAsFixed(1) + AnalyticMetric.SOIL_TEMPERATURE.unit,
-                cell.analytics.airHumidity.value.toString() + AnalyticMetric.AIR_HUMIDITY.unit,
-                cell.analytics.soilHumidity.value.toString() + AnalyticMetric.SOIL_HUMIDITY.unit,
-                cell.analytics.deepSoilHumidity.value.toString() + AnalyticMetric.DEEP_SOIL_HUMIDITY.unit,
+                "${cell.analytics.light.value} ${AnalyticMetric.luminosity.unit}",
+                cell.analytics.airTemperature.value.toStringAsFixed(1) + AnalyticMetric.airTemperature.unit,
+                cell.analytics.soilTemperature.value.toStringAsFixed(1) + AnalyticMetric.soilTemperature.unit,
+                cell.analytics.airHumidity.value.toString() + AnalyticMetric.airHumidity.unit,
+                cell.analytics.soilHumidity.value.toString() + AnalyticMetric.soilHumidity.unit,
+                cell.analytics.deepSoilHumidity.value.toString() + AnalyticMetric.deepSoilHumidity.unit,
               ];
 
               return GardenCard(

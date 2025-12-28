@@ -31,7 +31,7 @@ class CellsCards extends StatelessWidget {
 
         final card = () {
           switch (filter) {
-            case AnalyticMetric.AIR_TEMPERATURE:
+            case AnalyticMetric.airTemperature:
               return AnalyticsSummaryCard(
                 name: cell.name,
                 batteryPercentage: cell.battery,
@@ -43,7 +43,7 @@ class CellsCards extends StatelessWidget {
                 temperatureSurface: cell.analytics.airTemperature.value,
                 temperatureDepth: 0,
               );
-            case AnalyticMetric.SOIL_TEMPERATURE:
+            case AnalyticMetric.soilTemperature:
               return AnalyticsSummaryCard(
                 name: cell.name,
                 batteryPercentage: cell.battery,
@@ -55,7 +55,7 @@ class CellsCards extends StatelessWidget {
                 temperatureSurface: 0,
                 temperatureDepth: cell.analytics.soilTemperature.value,
               );
-            case AnalyticMetric.AIR_HUMIDITY:
+            case AnalyticMetric.airHumidity:
               return AnalyticsSummaryCard(
                 name: cell.name,
                 batteryPercentage: cell.battery,
@@ -67,7 +67,7 @@ class CellsCards extends StatelessWidget {
                 temperatureSurface: 0,
                 temperatureDepth: 0,
               );
-            case AnalyticMetric.SOIL_HUMIDITY:
+            case AnalyticMetric.soilHumidity:
               return AnalyticsSummaryCard(
                 name: cell.name,
                 batteryPercentage: cell.battery,
@@ -79,7 +79,7 @@ class CellsCards extends StatelessWidget {
                 temperatureSurface: 0,
                 temperatureDepth: 0,
               );
-            case AnalyticMetric.LUMINOSITY:
+            case AnalyticMetric.luminosity:
               return AnalyticsSummaryCard(
                 name: cell.name,
                 batteryPercentage: cell.battery,
@@ -91,7 +91,7 @@ class CellsCards extends StatelessWidget {
                 temperatureSurface: 0,
                 temperatureDepth: 0,
               );
-            case AnalyticMetric.DEEP_SOIL_HUMIDITY:
+            case AnalyticMetric.deepSoilHumidity:
               return AnalyticsSummaryCard(
                 name: cell.name,
                 batteryPercentage: cell.battery,
