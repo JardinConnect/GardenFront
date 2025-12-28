@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/cells/bloc/cell_bloc.dart';
 import 'package:garden_connect/cells/models/analytic_metric.dart';
 import 'package:garden_connect/cells/widgets/cells_cards.dart';
+import 'package:garden_connect/cells/widgets/cells_filter.dart';
+import 'package:garden_connect/cells/widgets/cells_list.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
 class CellsPage extends StatelessWidget {
@@ -60,53 +62,23 @@ class CellsPage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               spacing: GardenSpace.gapSm,
                               children: [
-                                DropdownButtonFormField<AnalyticMetric>(
-                                  decoration: const InputDecoration(
-                                    hintText: "Filtre",
-                                  ),
-                                  dropdownColor: GardenColors.base.shade50,
-                                  style: GardenTypography.bodyLg.copyWith(
-                                    color: GardenColors.typography.shade900,
-                                  ),
-                                  initialValue: cellsState.filter,
-                                  isExpanded: true,
-                                  items: [
-                                    DropdownMenuItem(
-                                      value: null,
-                                      child: Text(
-                                        "Filtre",
-                                        style: GardenTypography.bodyLg.copyWith(
-                                          color:
-                                              GardenColors.typography.shade900,
+                                if (!cellsState.isList)
+                                  CellsFilter(
+                                    filter: cellsState.filter,
+                                    onChanged:
+                                        (newFilter) => _onFilterChanged(
+                                          context,
+                                          newFilter,
                                         ),
-                                      ),
-                                    ),
-                                    ...AnalyticMetric.values.map(
-                                      (metric) => DropdownMenuItem(
-                                        value: metric,
-                                        child: Text(
-                                          metric.label,
-                                          style:
-                                              GardenTypography.bodyLg.copyWith(
-                                            color: GardenColors
-                                                .typography.shade900,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                  onChanged:
-                                      (newFilter) =>
-                                          _onFilterChanged(context, newFilter),
-                                ),
+                                  ),
                                 TextField(
                                   onChanged: (text) => _onSearch(context, text),
                                   decoration: InputDecoration(
                                     hintText: 'Rechercher',
                                     prefixIcon: Icon(Icons.search),
                                     hintStyle: GardenTypography.bodyLg.copyWith(
-                                      color: GardenColors.typography.shade200
-                                    )
+                                      color: GardenColors.typography.shade200,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -117,7 +89,11 @@ class CellsPage extends StatelessWidget {
                             children: [
                               IconButton.filled(
                                 onPressed: () => _onToggleListFormat(context),
-                                icon: Icon(Icons.list),
+                                icon: Icon(
+                                  cellsState.isList
+                                      ? Icons.grid_view
+                                      : Icons.list,
+                                ),
                               ),
                               IconButton.filled(
                                 onPressed: () => _onRefresh(context),
@@ -129,7 +105,7 @@ class CellsPage extends StatelessWidget {
                       ),
 
                       if (cellsState.isList)
-                        Text("List")
+                        CellsList(cells: cellsState.filteredCells)
                       else
                         CellsCards(
                           cells: cellsState.filteredCells,
@@ -140,9 +116,7 @@ class CellsPage extends StatelessWidget {
                 ),
               );
             } else {
-              return const Center(
-                child: Text('Erreur'),
-              );
+              return const Center(child: Text('Erreur'));
             }
           },
         ),
