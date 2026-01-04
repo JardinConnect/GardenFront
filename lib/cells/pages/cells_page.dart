@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_connect/analytics/models/analytics.dart';
 import 'package:garden_connect/cells/bloc/cell_bloc.dart';
-import 'package:garden_connect/cells/models/analytic_metric.dart';
 import 'package:garden_connect/cells/widgets/cells_cards_widget.dart';
 import 'package:garden_connect/cells/widgets/cells_filter_widget.dart';
 import 'package:garden_connect/cells/widgets/cells_list_widget.dart';
@@ -18,7 +18,7 @@ class CellsPage extends StatelessWidget {
     context.read<CellBloc>().add(RefreshCells());
   }
 
-  _onFilterChanged(BuildContext context, AnalyticMetric? newFilter) {
+  _onFilterChanged(BuildContext context, AnalyticType? newFilter) {
     context.read<CellBloc>().add(FilterCellsChanged(filter: newFilter));
   }
 

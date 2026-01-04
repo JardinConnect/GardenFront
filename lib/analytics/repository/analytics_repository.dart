@@ -41,6 +41,15 @@ class AnalyticsRepository {
           {"value": 50, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "12"},
           {"value": 48, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "12"},
         ],
+        "deep_soil_humidity": [
+          {"value": 52, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},
+          {"value": 34, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "12"},
+          {"value": 48, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "12"},
+          {"value": 52, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "12"},
+          {"value": 55, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "12"},
+          {"value": 65, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "12"},
+          {"value": 48, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "12"},
+        ],
         "light": [
           {"value": 35, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},
           {"value": 40, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "12"},

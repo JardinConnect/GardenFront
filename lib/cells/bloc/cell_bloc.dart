@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:garden_connect/cells/models/analytic_metric.dart';
+import 'package:garden_connect/analytics/models/analytics.dart';
 import 'package:garden_connect/cells/models/cell.dart';
 import 'package:garden_connect/cells/repository/cell_repository.dart';
 import 'package:meta/meta.dart';
@@ -20,7 +20,7 @@ class CellBloc extends Bloc<CellEvent, CellState> {
 
   _loadCells(LoadCells event, Emitter<CellState> emit) async {
     bool isList = false;
-    AnalyticMetric? filter;
+    AnalyticType? filter;
     if (state is CellsLoaded) {
       isList = (state as CellsLoaded).isList;
       filter = (state as CellsLoaded).filter;

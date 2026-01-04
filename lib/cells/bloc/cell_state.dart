@@ -27,7 +27,7 @@ final class CellsLoaded extends CellState {
   final List<Cell> filteredCells;
   /// Est-ce qu'on affiche les cellules au format liste ? (false = cards)
   final bool isList;
-  final AnalyticMetric? filter;
+  final AnalyticType? filter;
   final String? search;
 
   const CellsLoaded({
@@ -42,7 +42,7 @@ final class CellsLoaded extends CellState {
     List<Cell>? cells,
     List<Cell>? filteredCells,
     bool? isList,
-    AnalyticMetric? filter,
+    AnalyticType? filter,
     String? search,
   }) {
     return CellsLoaded(

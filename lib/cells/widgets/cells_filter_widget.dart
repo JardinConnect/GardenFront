@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:garden_connect/cells/models/analytic_metric.dart';
+import 'package:garden_connect/analytics/models/analytics.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
 class CellsFilterWidget extends StatelessWidget {
-  final AnalyticMetric? filter;
-  final ValueChanged<AnalyticMetric?>? onChanged;
+  final AnalyticType? filter;
+  final ValueChanged<AnalyticType?>? onChanged;
 
   const CellsFilterWidget({
     super.key,
@@ -14,7 +14,7 @@ class CellsFilterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<AnalyticMetric>(
+    return DropdownButtonFormField<AnalyticType>(
       decoration: const InputDecoration(
         hintText: "Filtre",
       ),
@@ -35,12 +35,12 @@ class CellsFilterWidget extends StatelessWidget {
             ),
           ),
         ),
-        ...AnalyticMetric.values.map(
-              (metric) =>
+        ...AnalyticType.values.map(
+              (type) =>
               DropdownMenuItem(
-                value: metric,
+                value: type,
                 child: Text(
-                  metric.label,
+                  type.name,
                   style:
                   GardenTypography.bodyLg.copyWith(
                     color: GardenColors

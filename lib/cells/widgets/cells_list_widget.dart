@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:garden_connect/cells/models/analytic_metric.dart';
+import 'package:garden_connect/analytics/filters/analytics_filter.dart';
+import 'package:garden_connect/analytics/models/analytics.dart';
 import 'package:garden_connect/cells/models/cell.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
@@ -12,12 +13,12 @@ class CellsListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var columns = [
-      AnalyticMetric.luminosity.label,
-      AnalyticMetric.airTemperature.label,
-      AnalyticMetric.soilTemperature.label,
-      AnalyticMetric.airHumidity.label,
-      AnalyticMetric.soilHumidity.label,
-      AnalyticMetric.deepSoilHumidity.label,
+      AnalyticType.light.name,
+      AnalyticType.airTemperature.name,
+      AnalyticType.soilTemperature.name,
+      AnalyticType.airHumidity.name,
+      AnalyticType.soilHumidity.name,
+      AnalyticType.deepSoilHumidity.name,
     ];
 
     return Padding(
@@ -48,12 +49,12 @@ class CellsListWidget extends StatelessWidget {
             itemBuilder: (context, index) {
               var cell = cells[index];
               var values = [
-                "${cell.analytics.light.value} ${AnalyticMetric.luminosity.unit}",
-                cell.analytics.airTemperature.value.toStringAsFixed(1) + AnalyticMetric.airTemperature.unit,
-                cell.analytics.soilTemperature.value.toStringAsFixed(1) + AnalyticMetric.soilTemperature.unit,
-                cell.analytics.airHumidity.value.toString() + AnalyticMetric.airHumidity.unit,
-                cell.analytics.soilHumidity.value.toString() + AnalyticMetric.soilHumidity.unit,
-                cell.analytics.deepSoilHumidity.value.toString() + AnalyticMetric.deepSoilHumidity.unit,
+                "${cell.analytics.getLastAnalyticByType(AnalyticType.light)?.value} ${AnalyticsFilterEnum.light.unit}",
+                "${cell.analytics.getLastAnalyticByType(AnalyticType.airTemperature)?.value.toStringAsFixed(1)} ${AnalyticsFilterEnum.temperature.unit}",
+                "${cell.analytics.getLastAnalyticByType(AnalyticType.soilTemperature)?.value.toStringAsFixed(1)} ${AnalyticsFilterEnum.temperature.unit}",
+                "${cell.analytics.getLastAnalyticByType(AnalyticType.airHumidity)?.value.toString()} ${AnalyticsFilterEnum.humidity.unit}",
+                "${cell.analytics.getLastAnalyticByType(AnalyticType.soilHumidity)?.value.toString()} ${AnalyticsFilterEnum.humidity.unit}",
+                "${cell.analytics.getLastAnalyticByType(AnalyticType.deepSoilHumidity)?.value.toString()} ${AnalyticsFilterEnum.humidity.unit}",
               ];
 
               return GardenCard(

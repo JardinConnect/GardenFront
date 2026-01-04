@@ -1,4 +1,4 @@
-import 'package:garden_connect/cells/models/cell_analytics.dart';
+import 'package:garden_connect/analytics/models/analytics.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'cell.g.dart';
@@ -7,7 +7,7 @@ part 'cell.g.dart';
 class Cell {
   final String name;
   final int battery;
-  final CellAnalytics analytics;
+  final Analytics analytics;
 
   Cell({
     required this.name,

@@ -10,7 +10,7 @@ final class RefreshCells extends CellEvent {}
 final class ToggleCellsDisplayMode extends CellEvent {}
 
 final class FilterCellsChanged extends CellEvent {
-  final AnalyticMetric? filter;
+  final AnalyticType? filter;
 
   FilterCellsChanged({required this.filter});
 }
