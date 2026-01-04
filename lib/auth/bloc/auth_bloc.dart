@@ -13,7 +13,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : _authRepository = AuthRepository(), super(AuthInitial()) {
     on<AuthLoginRequested>(_onLoginRequested);
     on<AuthLogoutRequested>(_onLogoutRequested);
-    on<AuthCheckStatus>(_onCheckStatus);
     on<AuthAppStarted>(_onAppStarted);
 
     add(AuthAppStarted());
@@ -72,22 +71,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthUnauthenticated());
     } catch (e) {
       emit(AuthUnauthenticated(error: "Erreur lors de la déconnexion"));
-    }
-  }
-
-  Future<void> _onCheckStatus(
-    AuthCheckStatus event,
-    Emitter<AuthState> emit,
-  ) async {
-    emit(AuthLoading());
-
-    final token = await _authRepository.getToken();
-    final user = await _authRepository.getUser();
-
-    if (token != null && user != null) {
-      emit(AuthAuthenticated(user: user));
-    } else {
-      emit(AuthUnauthenticated());
     }
   }
 
