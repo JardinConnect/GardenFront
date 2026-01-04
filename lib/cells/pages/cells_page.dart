@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/cells/bloc/cell_bloc.dart';
 import 'package:garden_connect/cells/models/analytic_metric.dart';
-import 'package:garden_connect/cells/widgets/cells_cards.dart';
-import 'package:garden_connect/cells/widgets/cells_filter.dart';
-import 'package:garden_connect/cells/widgets/cells_list.dart';
+import 'package:garden_connect/cells/widgets/cells_cards_widget.dart';
+import 'package:garden_connect/cells/widgets/cells_filter_widget.dart';
+import 'package:garden_connect/cells/widgets/cells_list_widget.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
 class CellsPage extends StatelessWidget {
@@ -63,7 +63,7 @@ class CellsPage extends StatelessWidget {
                               spacing: GardenSpace.gapSm,
                               children: [
                                 if (!cellsState.isList)
-                                  CellsFilter(
+                                  CellsFilterWidget(
                                     filter: cellsState.filter,
                                     onChanged:
                                         (newFilter) => _onFilterChanged(
@@ -105,9 +105,9 @@ class CellsPage extends StatelessWidget {
                       ),
 
                       if (cellsState.isList)
-                        CellsList(cells: cellsState.filteredCells)
+                        CellsListWidget(cells: cellsState.filteredCells)
                       else
-                        CellsCards(
+                        CellsCardsWidget(
                           cells: cellsState.filteredCells,
                           filter: cellsState.filter,
                         ),

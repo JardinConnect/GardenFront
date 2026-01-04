@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:garden_connect/cells/models/analytic_metric.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
-class CellsFilter extends StatelessWidget {
+class CellsFilterWidget extends StatelessWidget {
   final AnalyticMetric? filter;
   final ValueChanged<AnalyticMetric?>? onChanged;
 
-  const CellsFilter({
+  const CellsFilterWidget({
     super.key,
     required this.filter,
     required this.onChanged

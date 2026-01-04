@@ -4,10 +4,10 @@ import 'package:garden_connect/cells/models/cell.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
-class CellsList extends StatelessWidget {
+class CellsListWidget extends StatelessWidget {
   final List<Cell> cells;
 
-  const CellsList({super.key, required this.cells});
+  const CellsListWidget({super.key, required this.cells});
 
   @override
   Widget build(BuildContext context) {

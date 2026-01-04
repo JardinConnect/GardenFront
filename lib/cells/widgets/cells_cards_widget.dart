@@ -4,11 +4,11 @@ import 'package:garden_connect/cells/models/cell.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
-class CellsCards extends StatelessWidget {
+class CellsCardsWidget extends StatelessWidget {
   final List<Cell> cells;
   final AnalyticMetric? filter;
 
-  const CellsCards({
+  const CellsCardsWidget({
     super.key,
     required this.cells,
     required this.filter,
