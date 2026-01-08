@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:garden_connect/settings/repository/settings_repository.dart';
+import 'package:garden_connect/settings/dashboard/repository/settings_repository.dart';
 import 'package:meta/meta.dart';
 
-import '../../auth/models/user.dart';
+import '../../../auth/models/user.dart';
 import '../models/settings.dart';
 
 part 'settings_state.dart';
