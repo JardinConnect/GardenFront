@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:garden_connect/settings/models/settings.dart';
+import 'package:garden_connect/settings/dashboard/models/settings.dart';
 import 'package:garden_ui/ui/widgets/atoms/Card/card.dart' show GardenCard;
 
 class LogCardWidget extends StatelessWidget {

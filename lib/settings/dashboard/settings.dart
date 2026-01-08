@@ -1,0 +1,1 @@
+export '../dashboard/page/settings_page.dart';

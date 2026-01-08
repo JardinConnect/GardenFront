@@ -8,7 +8,7 @@ import 'package:garden_connect/dashboard/view/dashboard_page.dart';
 import 'package:garden_connect/areas/pages/areas_page.dart';
 import 'package:garden_connect/cells/view/cells_page.dart';
 import 'package:garden_connect/alerts/page/alerts_page.dart';
-import 'package:garden_connect/settings/page/settings_page.dart';
+import 'package:garden_connect/settings/dashboard/page/settings_page.dart';
 
 class AppRouter {
   final AuthBloc authBloc;
