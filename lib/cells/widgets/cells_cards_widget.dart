@@ -6,12 +6,14 @@ import 'package:garden_ui/ui/design_system.dart';
 
 class CellsCardsWidget extends StatelessWidget {
   final List<Cell> cells;
+  final Function(BuildContext context, int id) onPressed;
   final AnalyticType? filter;
 
   const CellsCardsWidget({
     super.key,
     required this.cells,
     required this.filter,
+    required this.onPressed
   });
 
   @override
@@ -35,7 +37,7 @@ class CellsCardsWidget extends StatelessWidget {
               return AnalyticsSummaryCard(
                 name: cell.name,
                 batteryPercentage: cell.battery,
-                onPressed: () => {},
+                onPressed: () => onPressed(context, cell.id),
                 light: 0,
                 rain: 0,
                 humiditySurface: 0,
@@ -47,7 +49,7 @@ class CellsCardsWidget extends StatelessWidget {
               return AnalyticsSummaryCard(
                 name: cell.name,
                 batteryPercentage: cell.battery,
-                onPressed: () => {},
+                onPressed: () => onPressed(context, cell.id),
                 light: 0,
                 rain: 0,
                 humiditySurface: 0,
@@ -59,7 +61,7 @@ class CellsCardsWidget extends StatelessWidget {
               return AnalyticsSummaryCard(
                 name: cell.name,
                 batteryPercentage: cell.battery,
-                onPressed: () => {},
+                onPressed: () => onPressed(context, cell.id),
                 light: 0,
                 rain: cell.analytics.getLastAnalyticByType(AnalyticType.airHumidity)!.value.toInt(),
                 humiditySurface: 0,
@@ -71,7 +73,7 @@ class CellsCardsWidget extends StatelessWidget {
               return AnalyticsSummaryCard(
                 name: cell.name,
                 batteryPercentage: cell.battery,
-                onPressed: () => {},
+                onPressed: () => onPressed(context, cell.id),
                 light: 0,
                 rain: 0,
                 humiditySurface: cell.analytics.getLastAnalyticByType(AnalyticType.soilHumidity)!.value.toInt(),
@@ -83,7 +85,7 @@ class CellsCardsWidget extends StatelessWidget {
               return AnalyticsSummaryCard(
                 name: cell.name,
                 batteryPercentage: cell.battery,
-                onPressed: () => {},
+                onPressed: () => onPressed(context, cell.id),
                 light: cell.analytics.getLastAnalyticByType(AnalyticType.light)!.value.toInt(),
                 rain: 0,
                 humiditySurface: 0,
@@ -95,7 +97,7 @@ class CellsCardsWidget extends StatelessWidget {
               return AnalyticsSummaryCard(
                 name: cell.name,
                 batteryPercentage: cell.battery,
-                onPressed: () => {},
+                onPressed: () => onPressed(context, cell.id),
                 light: 0,
                 rain: 0,
                 humiditySurface: 0,
@@ -107,7 +109,7 @@ class CellsCardsWidget extends StatelessWidget {
               return AnalyticsSummaryCard(
                 name: cell.name,
                 batteryPercentage: cell.battery,
-                onPressed: () => {},
+                onPressed: () => onPressed(context, cell.id),
                 light: cell.analytics.getLastAnalyticByType(AnalyticType.light)!.value.toInt(),
                 rain: cell.analytics.getLastAnalyticByType(AnalyticType.airHumidity)!.value.toInt(),
                 humiditySurface: cell.analytics.getLastAnalyticByType(AnalyticType.soilHumidity)!.value.toInt(),

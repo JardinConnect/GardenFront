@@ -1,4 +1,5 @@
 import 'package:garden_connect/cells/models/cell.dart';
+import 'package:garden_connect/cells/models/cell_detail.dart';
 
 class CellRepository {
 
@@ -10,6 +11,17 @@ class CellRepository {
     }
   }
 
+  Future<CellDetail> fetchCellDetail(int id) async {
+    try {
+      return _mockedCellDetail();
+    } catch(e) {
+      throw Exception('Failed to load cell $id: $e');
+    }
+  }
+
+  Future<void> changeCellTracking(int id, bool newTrackingValue) async {
+  }
+
   Future<void> refreshCells() async {
   }
 
@@ -18,67 +30,167 @@ class CellRepository {
 
     for (int i = 0; i < 10; i++) {
       mockedJson.add({
+        "id": i + 1,
         "name": "Tomate Serre Nord $i",
         "battery": 67,
         "analytics": {
           "air_temperature": [
-            {"value": 18, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},
-            {"value": 20, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "12"},
-            {"value": 19, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "12"},
-            {"value": 21, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "12"},
-            {"value": 22, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "12"},
-            {"value": 20, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "12"},
-            {"value": 34, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "12"},
+            {"value": 18, "occurred_at": "2025-11-05T08:00:00Z", "sensor_id": 12, "alert_status":  "ALERT"}
           ],
           "soil_temperature": [
-            {"value": 15, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},
-            {"value": 16, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "12"},
-            {"value": 15, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "12"},
-            {"value": 17, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "12"},
-            {"value": 18, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "12"},
-            {"value": 16, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "12"},
-            {"value": 15, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "12"},
+            {"value": 15, "occurred_at": "2025-11-05T08:00:00Z", "sensor_id": 13, "alert_status":  "WARNING"}
           ],
           "air_humidity": [
-            {"value": 65, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},
-            {"value": 70, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "12"},
-            {"value": 68, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "12"},
-            {"value": 72, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "12"},
-            {"value": 75, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "12"},
-            {"value": 70, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "12"},
-            {"value": 68, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "12"},
+            {"value": 65, "occurred_at": "2025-11-05T08:00:00Z", "sensor_id": 12, "alert_status":  "OK"}
           ],
           "soil_humidity": [
-            {"value": 45, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},
-            {"value": 50, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "12"},
-            {"value": 48, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "12"},
-            {"value": 52, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "12"},
-            {"value": 55, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "12"},
-            {"value": 50, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "12"},
-            {"value": 48, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "12"},
+            {"value": 45, "occurred_at": "2025-11-05T08:00:00Z", "sensor_id": 12, "alert_status":  "WARNING"}
           ],
           "deep_soil_humidity": [
-            {"value": 52, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},
-            {"value": 34, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "12"},
-            {"value": 48, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "12"},
-            {"value": 52, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "12"},
-            {"value": 55, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "12"},
-            {"value": 65, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "12"},
-            {"value": 48, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "12"},
+            {"value": 52, "occurred_at": "2025-11-05T08:00:00Z", "sensor_id": 12, "alert_status":  "OK"}
           ],
           "light": [
-            {"value": 35, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},
-            {"value": 40, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "12"},
-            {"value": 32, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "12"},
-            {"value": 45, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "12"},
-            {"value": 38, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "12"},
-            {"value": 41, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "12"},
-            {"value": 34, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "12"},
-          ],
-        },
+            {"value": 35, "occurred_at": "2025-11-05T08:00:00Z", "sensor_id": 12, "alert_status":  "ALERT"}
+          ]
+        }
       });
     }
 
     return mockedJson.map((cell) => Cell.fromJson(cell)).toList();
+  }
+
+  CellDetail _mockedCellDetail() {
+    final json = {
+      "id": 14,
+      "name": "Tomate Serre Nord",
+      "battery": 67,
+      "is_tracked": true,
+      "last_update_at": "2026-01-09 09:46:26",
+      "location": {
+        "id": 3,
+        "name": "Planche A",
+        "location": {
+          "id": 2,
+          "name": "Parcelle #3",
+          "location": {
+            "id": 1,
+            "name": "Champ #1",
+            "location": null
+          }
+        }
+      },
+      "analytics": {
+        "air_temperature": [
+          {
+            "value": 18,
+            "occurred_at": "2025-11-05T08:00:00Z",
+            "sensor_id": 12,
+            "alert_status":  "OK"
+          },
+          {
+            "value": 20,
+            "occurred_at": "2025-11-06T08:00:00Z",
+            "sensor_id": 12,
+            "alert_status":  "ALERT"
+          },
+          {
+            "value": 19,
+            "occurred_at": "2025-11-07T08:00:00Z",
+            "sensor_id": 12,
+            "alert_status":  "WARNING"
+          }
+        ],
+        "soil_temperature": [
+          {
+            "value": 15,
+            "occurred_at": "2025-11-05T08:00:00Z",
+            "sensor_id": 12,
+            "alert_status":  "WARNING"
+          },
+          {
+            "value": 16,
+            "occurred_at": "2025-11-06T08:00:00Z",
+            "sensor_id": 12,
+            "alert_status":  "ALERT"
+          }
+        ],
+        "air_humidity": [
+          {
+            "value": 75,
+            "occurred_at": "2025-11-09T08:00:00Z",
+            "sensor_id": 12,
+            "alert_status":  "OK"
+          },
+          {
+            "value": 70,
+            "occurred_at": "2025-11-10T08:00:00Z",
+            "sensor_id": 12,
+            "alert_status":  "ALERT"
+          },
+          {
+            "value": 68,
+            "occurred_at": "2025-11-11T08:00:00Z",
+            "sensor_id": 12,
+            "alert_status":  "OK"
+          }
+        ],
+        "soil_humidity": [
+          {
+            "value": 50,
+            "occurred_at": "2025-11-10T08:00:00Z",
+            "sensor_id": 12,
+            "alert_status":  "WARNING"
+          },
+          {
+            "value": 48,
+            "occurred_at": "2025-11-11T08:00:00Z",
+            "sensor_id": 12,
+            "alert_status":  "ALERT"
+          }
+        ],
+        "deep_soil_humidity": [
+          {
+            "value": 55,
+            "occurred_at": "2025-11-09T08:00:00Z",
+            "sensor_id": 12,
+            "alert_status":  "OK"
+          },
+          {
+            "value": 65,
+            "occurred_at": "2025-11-10T08:00:00Z",
+            "sensor_id": 12,
+            "alert_status":  "WARNING"
+          },
+          {
+            "value": 48,
+            "occurred_at": "2025-11-11T08:00:00Z",
+            "sensor_id": 12,
+            "alert_status":  "ALERT"
+          }
+        ],
+        "light": [
+          {
+            "value": 38,
+            "occurred_at": "2025-11-09T08:00:00Z",
+            "sensor_id": 12,
+            "alert_status":  "OK"
+          },
+          {
+            "value": 41,
+            "occurred_at": "2025-11-10T08:00:00Z",
+            "sensor_id": 12,
+            "alert_status":  "WARNING"
+          },
+          {
+            "value": 34,
+            "occurred_at": "2025-11-11T08:00:00Z",
+            "sensor_id": 12,
+            "alert_status":  "ALERT"
+          }
+        ]
+      }
+    };
+
+    return CellDetail.fromJson(json);
   }
 }

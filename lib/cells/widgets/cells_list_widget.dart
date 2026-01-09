@@ -1,14 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:garden_connect/analytics/filters/analytics_filter.dart';
+import 'package:garden_connect/analytics/models/analytic_alert_status.dart';
 import 'package:garden_connect/analytics/models/analytics.dart';
 import 'package:garden_connect/cells/models/cell.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
+class CellAnalyticListItem {
+  final String value;
+  final AnalyticAlertStatus alertStatus;
+
+  CellAnalyticListItem({
+    required this.value,
+    required this.alertStatus
+  });
+}
+
 class CellsListWidget extends StatelessWidget {
   final List<Cell> cells;
+  final Function(BuildContext context, int id) onPressed;
 
-  const CellsListWidget({super.key, required this.cells});
+  const CellsListWidget({
+    super.key,
+    required this.cells,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,24 +64,80 @@ class CellsListWidget extends StatelessWidget {
 
             itemBuilder: (context, index) {
               var cell = cells[index];
+              var light = cell.analytics.getLastAnalyticByType(
+                  AnalyticType.light);
+              var airTemperature = cell.analytics.getLastAnalyticByType(
+                  AnalyticType.airTemperature);
+              var soilTemperature = cell.analytics.getLastAnalyticByType(
+                  AnalyticType.soilTemperature);
+              var airHumidity = cell.analytics.getLastAnalyticByType(
+                  AnalyticType.airHumidity);
+              var soilHumidity = cell.analytics.getLastAnalyticByType(
+                  AnalyticType.soilHumidity);
+              var deepSoilHumidity = cell.analytics.getLastAnalyticByType(
+                  AnalyticType.deepSoilHumidity);
+
               var values = [
-                "${cell.analytics.getLastAnalyticByType(AnalyticType.light)?.value} ${AnalyticsFilterEnum.light.unit}",
-                "${cell.analytics.getLastAnalyticByType(AnalyticType.airTemperature)?.value.toStringAsFixed(1)} ${AnalyticsFilterEnum.temperature.unit}",
-                "${cell.analytics.getLastAnalyticByType(AnalyticType.soilTemperature)?.value.toStringAsFixed(1)} ${AnalyticsFilterEnum.temperature.unit}",
-                "${cell.analytics.getLastAnalyticByType(AnalyticType.airHumidity)?.value.toString()} ${AnalyticsFilterEnum.humidity.unit}",
-                "${cell.analytics.getLastAnalyticByType(AnalyticType.soilHumidity)?.value.toString()} ${AnalyticsFilterEnum.humidity.unit}",
-                "${cell.analytics.getLastAnalyticByType(AnalyticType.deepSoilHumidity)?.value.toString()} ${AnalyticsFilterEnum.humidity.unit}",
+                CellAnalyticListItem(
+                    value: "${light?.value} ${AnalyticsFilterEnum.light.unit}",
+                    alertStatus: light!.alertStatus),
+                CellAnalyticListItem(value: "${airTemperature?.value
+                    .toStringAsFixed(1)} ${AnalyticsFilterEnum.temperature
+                    .unit}", alertStatus: airTemperature!.alertStatus),
+                CellAnalyticListItem(
+                    value: "${soilTemperature?.value
+                        .toStringAsFixed(1)} ${AnalyticsFilterEnum.temperature
+                        .unit}",
+                    alertStatus: soilTemperature!.alertStatus),
+                CellAnalyticListItem(
+                    value: "${airHumidity?.value
+                        .toString()} ${AnalyticsFilterEnum.humidity.unit}",
+                    alertStatus: airHumidity!.alertStatus),
+                CellAnalyticListItem(
+                    value: "${soilHumidity?.value
+                        .toString()} ${AnalyticsFilterEnum.humidity.unit}",
+                    alertStatus: soilHumidity!.alertStatus),
+                CellAnalyticListItem(
+                    value: "${deepSoilHumidity?.value
+                        .toString()} ${AnalyticsFilterEnum.humidity.unit}",
+                    alertStatus: deepSoilHumidity!.alertStatus)
               ];
 
-              return GardenCard(
-                hasBorder: true,
-                child: Row(
-                  children: [
-                    Expanded(flex: 1, child: Text(cell.name, style: GardenTypography.bodyLg)),
-                    ...values.map((value) {
-                      return Expanded(flex: 1, child: Center(child: Text(value, style: GardenTypography.bodyLg,)));
-                    })
-                  ],
+              return GestureDetector(
+                onTap: onPressed(context, cell.id),
+                child: GardenCard(
+                  hasBorder: true,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Text(cell.name, style: GardenTypography.bodyLg),
+                      ),
+                      ...values.map((CellAnalyticListItem item) {
+                        return Expanded(
+                          flex: 1,
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              spacing: GardenSpace.gapSm,
+                              children: [
+                                Container(
+                                  width: 10,
+                                  height: 10,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(100),
+                                      color: item.alertStatus.color
+                                  ),
+                                ),
+                                Text(item.value, style: GardenTypography.bodyLg),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
                 ),
               );
             },

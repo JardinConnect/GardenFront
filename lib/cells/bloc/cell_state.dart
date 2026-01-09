@@ -2,7 +2,6 @@ part of 'cell_bloc.dart';
 
 @immutable
 sealed class CellState {
-
   const CellState();
 }
 
@@ -23,8 +22,10 @@ final class CellsShimmer extends CellState {
 final class CellsLoaded extends CellState {
   /// La liste des cellules complète
   final List<Cell> cells;
+
   /// La liste des cellules filtrée en fonction de la recherche
   final List<Cell> filteredCells;
+
   /// Est-ce qu'on affiche les cellules au format liste ? (false = cards)
   final bool isList;
   final AnalyticType? filter;
@@ -35,7 +36,7 @@ final class CellsLoaded extends CellState {
     required this.filteredCells,
     this.isList = false,
     this.filter,
-    this.search
+    this.search,
   });
 
   CellsLoaded copyWith({
@@ -50,7 +51,17 @@ final class CellsLoaded extends CellState {
       filteredCells: filteredCells ?? this.filteredCells,
       isList: isList ?? this.isList,
       filter: filter ?? this.filter,
-      search: search ?? this.search
+      search: search ?? this.search,
     );
   }
+}
+
+final class CellDetailShimmer extends CellState {
+  const CellDetailShimmer() : super();
+}
+
+final class CellDetailLoaded extends CellState {
+  final CellDetail cell;
+
+  const CellDetailLoaded({required this.cell});
 }

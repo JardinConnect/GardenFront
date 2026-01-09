@@ -67,7 +67,7 @@ class _GlobalSettingsWidgetState extends State<GlobalSettingsWidget> {
                           });
                         },
                         title: Text(
-                          setting.setting.name,
+                          setting.setting.value,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         contentPadding: EdgeInsets.zero,

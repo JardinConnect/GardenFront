@@ -1,10 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/analytics/models/analytics.dart';
 import 'package:garden_connect/cells/models/cell.dart';
+import 'package:garden_connect/cells/models/cell_detail.dart';
 import 'package:garden_connect/cells/repository/cell_repository.dart';
+import 'package:go_router/go_router.dart';
 import 'package:meta/meta.dart';
 
 part 'cell_event.dart';
+
 part 'cell_state.dart';
 
 class CellBloc extends Bloc<CellEvent, CellState> {
@@ -16,6 +19,8 @@ class CellBloc extends Bloc<CellEvent, CellState> {
     on<ToggleCellsDisplayMode>(_toggleCellsDisplayMode);
     on<FilterCellsChanged>(_applyFilter);
     on<SearchCells>(_searchCells);
+    on<LoadCellDetail>(_loadCellDetail);
+    on<CellTrackingChanged>(_changeCellTracking);
   }
 
   _loadCells(LoadCells event, Emitter<CellState> emit) async {
@@ -94,6 +99,27 @@ class CellBloc extends Bloc<CellEvent, CellState> {
           search: event.search,
         ),
       );
+    }
+  }
+
+  _loadCellDetail(LoadCellDetail event, Emitter<CellState> emit) async {
+    emit(const CellDetailShimmer());
+    try {
+      final cell = await _cellRepository.fetchCellDetail(event.id);
+      emit(
+        CellDetailLoaded(cell: cell),
+      );
+    } catch (e) {
+      emit(CellError(message: e.toString()));
+    }
+  }
+
+  _changeCellTracking(CellTrackingChanged event, Emitter<CellState> emit) async {
+    try {
+      await _cellRepository.changeCellTracking(event.id, event.newTrackingValue);
+      add(LoadCellDetail(id: event.id));
+    } catch(e) {
+      emit(CellError(message: e.toString()));
     }
   }
 }

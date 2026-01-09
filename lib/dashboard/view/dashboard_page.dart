@@ -101,7 +101,7 @@ class DashboardPage extends StatelessWidget {
                                     return SizedBox(
                                       width: (constraints.maxWidth - 32) / 3,
                                       child: AnalyticsSummaryCard(
-                                        name: area.name,
+                                        name: area.value,
                                         batteryPercentage: 89,
                                         onPressed: () {},
                                         light: 3,
@@ -130,7 +130,7 @@ class DashboardPage extends StatelessWidget {
                                     return SizedBox(
                                       width: (constraints.maxWidth - 32) / 3,
                                       child: AnalyticsSummaryCard(
-                                        name: area.name,
+                                        name: area.value,
                                         onPressed: () {},
                                         light: 3,
                                         rain: 7,
