@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/auth/utils/auth_extension.dart';
-import 'package:garden_connect/settings/dashboard/widgets/global_stat_card_widget.dart';
+import 'package:garden_connect/common/widgets/global_stat_card_widget.dart';
 import 'package:garden_connect/settings/dashboard/widgets/user_profile_widget.dart';
 
 import '../bloc/settings_bloc.dart';
