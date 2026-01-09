@@ -5,14 +5,14 @@ class GlobalStatCardWidget extends StatelessWidget {
   final String title;
   final IconData? icon;
   final String data;
-  final String? color;
+  final int? level;
 
   const GlobalStatCardWidget({
     super.key,
     required this.title,
     this.icon,
     required this.data,
-    this.color,
+    this.level,
   });
 
   @override
@@ -20,39 +20,38 @@ class GlobalStatCardWidget extends StatelessWidget {
     return GardenCard(
       hasShadow: true,
       hasBorder: true,
-      child: Row(
-        children: [
-          if (color != null)
-            Container(
-              width: 5,
-              height: 64,
-              margin: EdgeInsets.only(right: 16),
-              decoration: BoxDecoration(
-                color: Color(int.parse(color!)),
-                borderRadius: BorderRadius.circular(4),
+      child: IntrinsicHeight(
+        child: Row(
+          children: [
+            if (level != null)
+              Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: LevelIndicator(level: level!)
+              ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(title, style: Theme.of(context).textTheme.headlineSmall),
+                      if (icon != null)
+                        Icon(
+                          icon,
+                          color: Theme.of(context).colorScheme.primary,
+                          size: 32,
+                        )
+                      else
+                        SizedBox.shrink(),
+                    ],
+                  ),
+                  Text(data, style: Theme.of(context).textTheme.headlineLarge),
+                ],
               ),
             ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(title, style: Theme.of(context).textTheme.headlineSmall),
-                    if (icon != null)
-                    Icon(
-                      icon,
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 32,
-                    ),
-                  ],
-                ),
-                Text(data, style: Theme.of(context).textTheme.headlineLarge),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
