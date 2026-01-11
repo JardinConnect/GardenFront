@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:garden_connect/analytics/models/analytics.dart';
-import 'package:garden_connect/analytics/widgets/analytic_card.dart';
+import 'package:garden_connect/analytics/widgets/analytics_cards_grid.dart';
 import 'package:garden_connect/analytics/widgets/graphic_widget.dart';
 import 'package:garden_connect/cells/bloc/cell_bloc.dart';
 import 'package:garden_connect/cells/models/cell_location.dart';
+import 'package:garden_connect/common/widgets/back_text_button.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
+import 'package:go_router/go_router.dart';
 
 class CellDetailPage extends StatelessWidget {
   final int id;
@@ -17,6 +18,10 @@ class CellDetailPage extends StatelessWidget {
     context.read<CellBloc>().add(
       CellTrackingChanged(id: id, newTrackingValue: newTrackingValue),
     );
+  }
+
+  void _handleRefreshCellDetail(BuildContext context) {
+    context.read<CellBloc>().add(RefreshCellDetail(id: id));
   }
 
   String getBreadcrumbLocation(CellLocation location) {
@@ -38,13 +43,13 @@ class CellDetailPage extends StatelessWidget {
     Duration difference = DateTime.now().difference(lastUpdateAt);
 
     if (difference.inSeconds < 60) {
-      result.write(" ${difference.inSeconds}s");
+      result.write(" ${difference.inSeconds} ${difference.inSeconds == 1 ? 'seconde' : 'secondes'}");
     } else if (difference.inMinutes < 60) {
-      result.write(" ${difference.inMinutes}min");
+      result.write(" ${difference.inMinutes} ${difference.inMinutes == 1 ? 'minute' : 'minutes'}");
     } else if (difference.inHours < 24) {
-      result.write(" ${difference.inHours}h");
+      result.write(" ${difference.inHours} ${difference.inHours == 1 ? 'heure' : 'heures'}");
     } else {
-      result.write(" ${difference.inDays}j");
+      result.write(" ${difference.inDays} ${difference.inDays == 1 ? 'jour' : 'jours'}");
     }
 
     return result.toString();
@@ -84,19 +89,10 @@ class CellDetailPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text("<- Retour", style: GardenTypography.bodyLg),
-                              Row(
-                                spacing: GardenSpace.gapSm,
-                                children: [
-                                  IconButton.filled(
-                                    icon: Icon(Icons.edit_outlined),
-                                    onPressed: () => {},
-                                  ),
-                                  IconButton.filled(
-                                    icon: Icon(Icons.refresh),
-                                    onPressed: () => {},
-                                  ),
-                                ],
+                              BackTextButton(backFunction: () => context.pop()),
+                              IconButton.filled(
+                                icon: Icon(Icons.refresh),
+                                onPressed: () => _handleRefreshCellDetail,
                               ),
                             ],
                           ),
@@ -140,7 +136,7 @@ class CellDetailPage extends StatelessWidget {
                                 style: GardenTypography.caption,
                               ),
                               BatteryIndicator(
-                                batteryPercentage: 63,
+                                batteryPercentage: cellState.cell.battery,
                                 size: BatteryIndicatorSize.sm,
                               ),
                             ],
@@ -148,101 +144,7 @@ class CellDetailPage extends StatelessWidget {
                         ],
                       ),
 
-                      GridView.count(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: GardenSpace.gapMd,
-                        crossAxisSpacing: GardenSpace.gapXl,
-                        childAspectRatio: 2.5,
-                        shrinkWrap: true,
-                        children: <Widget>[
-                          AnalyticCard(
-                            type: AnalyticType.airHumidity,
-                            alertStatus:
-                                cellState.cell.analytics
-                                    .getLastAnalyticByType(
-                                      AnalyticType.airHumidity,
-                                    )!
-                                    .alertStatus,
-                            value:
-                                cellState.cell.analytics
-                                    .getLastAnalyticByType(
-                                      AnalyticType.airHumidity,
-                                    )!
-                                    .value,
-                          ),
-                          AnalyticCard(
-                            type: AnalyticType.light,
-                            alertStatus:
-                                cellState.cell.analytics
-                                    .getLastAnalyticByType(AnalyticType.light)!
-                                    .alertStatus,
-                            value:
-                                cellState.cell.analytics
-                                    .getLastAnalyticByType(AnalyticType.light)!
-                                    .value,
-                          ),
-                          AnalyticCard(
-                            type: AnalyticType.airTemperature,
-                            alertStatus:
-                                cellState.cell.analytics
-                                    .getLastAnalyticByType(
-                                      AnalyticType.airTemperature,
-                                    )!
-                                    .alertStatus,
-                            value:
-                                cellState.cell.analytics
-                                    .getLastAnalyticByType(
-                                      AnalyticType.airTemperature,
-                                    )!
-                                    .value,
-                          ),
-                          AnalyticCard(
-                            type: AnalyticType.soilTemperature,
-                            alertStatus:
-                                cellState.cell.analytics
-                                    .getLastAnalyticByType(
-                                      AnalyticType.soilTemperature,
-                                    )!
-                                    .alertStatus,
-                            value:
-                                cellState.cell.analytics
-                                    .getLastAnalyticByType(
-                                      AnalyticType.soilTemperature,
-                                    )!
-                                    .value,
-                          ),
-                          AnalyticCard(
-                            type: AnalyticType.soilHumidity,
-                            alertStatus:
-                                cellState.cell.analytics
-                                    .getLastAnalyticByType(
-                                      AnalyticType.soilHumidity,
-                                    )!
-                                    .alertStatus,
-                            value:
-                                cellState.cell.analytics
-                                    .getLastAnalyticByType(
-                                      AnalyticType.soilHumidity,
-                                    )!
-                                    .value,
-                          ),
-                          AnalyticCard(
-                            type: AnalyticType.deepSoilHumidity,
-                            alertStatus:
-                                cellState.cell.analytics
-                                    .getLastAnalyticByType(
-                                      AnalyticType.deepSoilHumidity,
-                                    )!
-                                    .alertStatus,
-                            value:
-                                cellState.cell.analytics
-                                    .getLastAnalyticByType(
-                                      AnalyticType.deepSoilHumidity,
-                                    )!
-                                    .value,
-                          ),
-                        ],
-                      ),
+                      AnalyticsCardsGrid(analytics: cellState.cell.analytics),
 
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

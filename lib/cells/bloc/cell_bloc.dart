@@ -21,6 +21,7 @@ class CellBloc extends Bloc<CellEvent, CellState> {
     on<SearchCells>(_searchCells);
     on<LoadCellDetail>(_loadCellDetail);
     on<CellTrackingChanged>(_changeCellTracking);
+    on<RefreshCellDetail>(_refreshCellDetail);
   }
 
   _loadCells(LoadCells event, Emitter<CellState> emit) async {
@@ -119,6 +120,15 @@ class CellBloc extends Bloc<CellEvent, CellState> {
       await _cellRepository.changeCellTracking(event.id, event.newTrackingValue);
       add(LoadCellDetail(id: event.id));
     } catch(e) {
+      emit(CellError(message: e.toString()));
+    }
+  }
+
+  _refreshCellDetail(RefreshCellDetail event, Emitter<CellState> emit) async {
+    try {
+      await _cellRepository.refreshCell(event.id);
+      add(LoadCellDetail(id: event.id));
+    } catch (e) {
       emit(CellError(message: e.toString()));
     }
   }

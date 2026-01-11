@@ -31,8 +31,11 @@ final class CellTrackingChanged extends CellEvent {
   final int id;
   final bool newTrackingValue;
 
-  CellTrackingChanged({
-    required this.id,
-    required this.newTrackingValue,
-  });
+  CellTrackingChanged({required this.id, required this.newTrackingValue});
+}
+
+final class RefreshCellDetail extends CellEvent {
+  final int id;
+
+  RefreshCellDetail({required this.id});
 }

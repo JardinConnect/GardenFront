@@ -47,37 +47,38 @@ class AnalyticCard extends StatelessWidget {
                 AlertIndicator(alertType: alertStatus == AnalyticAlertStatus.warning ? MenuAlertType.warning : MenuAlertType.error)
             ],
           ),
-          SizedBox(height: GardenSpace.gapSm),
-          Row(
-            spacing: GardenSpace.gapLg,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              GardenIcon(
-                iconName: type.icon_name,
-                fillPercentage: 85,
-                color: type.color,
-                size: GardenIconSize.lg,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    value.toString(),
-                    style: GardenTypography.headingXl.copyWith(
-                      fontWeight: FontWeight.bold,
+          Expanded(
+            child: Row(
+              spacing: GardenSpace.gapLg,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                GardenIcon(
+                  iconName: type.icon_name,
+                  fillPercentage: 85,
+                  color: type.color,
+                  size: GardenIconSize.lg,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      value.toString(),
+                      style: GardenTypography.headingXl.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  Text(
-                    unit,
-                    style: GardenTypography.headingMd.copyWith(
-                        fontStyle: FontStyle.italic
+                    Text(
+                      unit,
+                      style: GardenTypography.headingMd.copyWith(
+                          fontStyle: FontStyle.italic
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
