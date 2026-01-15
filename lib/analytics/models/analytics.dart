@@ -52,8 +52,7 @@ class Analytics {
     if (analytics.isEmpty) return null;
     return analytics.fold<Analytic>(
       analytics.first,
-      (prev, element) =>
-          element.occurredAt.isAfter(prev.occurredAt) ? element : prev,
+      (prev, element) => element.occurredAt.isAfter(prev.occurredAt) ? element : prev,
     );
   }
 

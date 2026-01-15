@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:garden_connect/auth/models/user.dart';
-import 'package:garden_connect/settings/models/settings.dart';
+import 'package:garden_connect/settings/dashboard/models/settings.dart';
 import 'package:http/http.dart' as http;
 
 class SettingsRepository {

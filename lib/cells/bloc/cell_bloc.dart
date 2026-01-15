@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:meta/meta.dart';
 
 part 'cell_event.dart';
-
 part 'cell_state.dart';
 
 class CellBloc extends Bloc<CellEvent, CellState> {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/widgets/atoms/Card/card.dart';
 
-import '../../auth/models/user.dart';
+import '../../../auth/models/user.dart';
 
 class UserListCardWidget extends StatelessWidget {
   const UserListCardWidget({super.key, required this.users});

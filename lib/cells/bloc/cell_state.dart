@@ -2,6 +2,7 @@ part of 'cell_bloc.dart';
 
 @immutable
 sealed class CellState {
+
   const CellState();
 }
 
@@ -36,7 +37,7 @@ final class CellsLoaded extends CellState {
     required this.filteredCells,
     this.isList = false,
     this.filter,
-    this.search,
+    this.search
   });
 
   CellsLoaded copyWith({
@@ -51,7 +52,7 @@ final class CellsLoaded extends CellState {
       filteredCells: filteredCells ?? this.filteredCells,
       isList: isList ?? this.isList,
       filter: filter ?? this.filter,
-      search: search ?? this.search,
+      search: search ?? this.search
     );
   }
 }
