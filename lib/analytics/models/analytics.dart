@@ -14,6 +14,7 @@ class Analytics {
   final List<SoilTemperatureAnalytic>? soilTemperature;
   final List<AirHumidityAnalytic>? airHumidity;
   final List<SoilHumidityAnalytic>? soilHumidity;
+  final List<DeepSoilHumidityAnalytic>? deepSoilHumidity;
   final List<LightAnalytic>? light;
 
   Analytics({
@@ -21,6 +22,7 @@ class Analytics {
     this.soilTemperature,
     this.airHumidity,
     this.soilHumidity,
+    this.deepSoilHumidity,
     this.light,
   });
 
@@ -37,9 +39,20 @@ class Analytics {
         return airHumidity ?? [];
       case AnalyticType.soilHumidity:
         return soilHumidity ?? [];
+      case AnalyticType.deepSoilHumidity:
+        return deepSoilHumidity ?? [];
       case AnalyticType.light:
         return light ?? [];
     }
+  }
+
+  Analytic? getLastAnalyticByType(AnalyticType type) {
+    final analytics = getAnalyticsByType(type);
+    if (analytics.isEmpty) return null;
+    return analytics.fold<Analytic>(
+      analytics.first,
+      (prev, element) => element.occurredAt.isAfter(prev.occurredAt) ? element : prev,
+    );
   }
 
   List<AnalyticsFilter> get analyticsFilters {
@@ -55,6 +68,7 @@ class Analytics {
           break;
         case AnalyticType.airHumidity:
         case AnalyticType.soilHumidity:
+        case AnalyticType.deepSoilHumidity:
           filterType = AnalyticsFilterEnum.humidity;
           break;
         case AnalyticType.light:
@@ -128,14 +142,17 @@ enum AnalyticType {
   soilTemperature,
   airHumidity,
   soilHumidity,
+  deepSoilHumidity,
   light;
 
   String get name {
     switch (this) {
       case AnalyticType.airHumidity:
-        return 'Air';
+        return 'Humidité de l\'air';
       case AnalyticType.soilHumidity:
-        return 'Surface du sol';
+        return 'Humidité de la surface du sol';
+      case AnalyticType.deepSoilHumidity:
+        return 'Humidité du sol profond';
       case AnalyticType.airTemperature:
         return 'Température de l\'air';
       case AnalyticType.soilTemperature:
@@ -150,6 +167,8 @@ enum AnalyticType {
       case AnalyticType.airHumidity:
         return const Color(0xFFFF5892);
       case AnalyticType.soilHumidity:
+        return const Color(0xFF4B5FFA);
+      case AnalyticType.deepSoilHumidity:
         return const Color(0xFF4B5FFA);
       case AnalyticType.airTemperature:
         return GardenColors.redAlert.shade500;
@@ -219,6 +238,18 @@ class SoilHumidityAnalytic extends Analytic {
 
   factory SoilHumidityAnalytic.fromJson(Map<String, dynamic> json) =>
       _$SoilHumidityAnalyticFromJson(json);
+}
+
+@JsonSerializable(createToJson: false)
+class DeepSoilHumidityAnalytic extends Analytic {
+  DeepSoilHumidityAnalytic({
+    required super.value,
+    required super.occurredAt,
+    required super.sensorId,
+  });
+
+  factory DeepSoilHumidityAnalytic.fromJson(Map<String, dynamic> json) =>
+      _$DeepSoilHumidityAnalyticFromJson(json);
 }
 
 @JsonSerializable(createToJson: false)

@@ -3,7 +3,20 @@ import 'package:garden_ui/ui/design_system.dart';
 
 import '../models/analytics.dart';
 
-enum AnalyticsFilterEnum { humidity, temperature, light }
+enum AnalyticsFilterEnum {
+  humidity, temperature, light;
+
+  String get unit {
+    switch (this) {
+      case AnalyticsFilterEnum.humidity:
+        return '%';
+      case AnalyticsFilterEnum.temperature:
+        return '°C';
+      case AnalyticsFilterEnum.light:
+        return 'lux';
+    }
+  }
+}
 
 class AnalyticsFilter {
   final AnalyticsFilterEnum filterType;
