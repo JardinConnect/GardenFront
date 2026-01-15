@@ -52,7 +52,8 @@ class Analytics {
     if (analytics.isEmpty) return null;
     return analytics.fold<Analytic>(
       analytics.first,
-      (prev, element) => element.occurredAt.isAfter(prev.occurredAt) ? element : prev,
+      (prev, element) =>
+          element.occurredAt.isAfter(prev.occurredAt) ? element : prev,
     );
   }
 
@@ -79,10 +80,7 @@ class Analytics {
 
       if (!filterTypes.contains(filterType)) {
         filterTypes.add(filterType);
-        filters.add(AnalyticsFilter(
-          filterType: filterType,
-          analytics: this,
-        ));
+        filters.add(AnalyticsFilter(filterType: filterType, analytics: this));
       }
     }
 
@@ -182,17 +180,15 @@ enum AnalyticType {
   Color get color {
     switch (this) {
       case AnalyticType.airHumidity:
-        return const Color(0xFFFF5892);
       case AnalyticType.soilHumidity:
-        return const Color(0xFF4B5FFA);
       case AnalyticType.deepSoilHumidity:
-        return const Color(0xFF4B5FFA);
+        return GardenColors.blueInfo.shade400;
       case AnalyticType.airTemperature:
         return GardenColors.redAlert.shade500;
       case AnalyticType.soilTemperature:
-        return Colors.orange;
+        return Colors.brown;
       case AnalyticType.light:
-        return Colors.yellow;
+        return GardenColors.yellowWarning.shade500;
     }
   }
 }
