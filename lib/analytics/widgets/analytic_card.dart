@@ -10,10 +10,14 @@ class AnalyticCard extends StatelessWidget {
   final double value;
   final AnalyticAlertStatus alertStatus;
 
-  const AnalyticCard(
-      {super.key, required this.type, required this.value, required this.alertStatus});
+  const AnalyticCard({
+    super.key,
+    required this.type,
+    required this.value,
+    required this.alertStatus,
+  });
 
-  String get unit {
+  String get _unit {
     switch (type) {
       case AnalyticType.airTemperature:
       case AnalyticType.soilTemperature:
@@ -24,6 +28,21 @@ class AnalyticCard extends StatelessWidget {
         return AnalyticsFilterEnum.humidity.unit;
       case AnalyticType.light:
         return AnalyticsFilterEnum.light.unit;
+    }
+  }
+
+  double get _fillPercentage {
+    switch (type) {
+      case AnalyticType.airTemperature:
+        return (100 * value / 55).clamp(0.0, 100.0);
+      case AnalyticType.soilTemperature:
+        return (100 * value / 40).clamp(0.0, 100.0);
+      case AnalyticType.airHumidity:
+      case AnalyticType.soilHumidity:
+      case AnalyticType.deepSoilHumidity:
+        return value;
+      case AnalyticType.light:
+        return 100;
     }
   }
 
@@ -39,12 +58,20 @@ class AnalyticCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: GardenSpace.gapSm,
             children: [
-              Text(type.name, style: GardenTypography.bodyMd.copyWith(
-                  fontWeight: FontWeight.w700
-              )),
+              Text(
+                type.name,
+                style: GardenTypography.bodyMd.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
 
               if (alertStatus != AnalyticAlertStatus.ok)
-                AlertIndicator(alertType: alertStatus == AnalyticAlertStatus.warning ? MenuAlertType.warning : MenuAlertType.error)
+                AlertIndicator(
+                  alertType:
+                      alertStatus == AnalyticAlertStatus.warning
+                          ? MenuAlertType.warning
+                          : MenuAlertType.error,
+                ),
             ],
           ),
           Expanded(
@@ -54,8 +81,8 @@ class AnalyticCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 GardenIcon(
-                  iconName: type.icon_name,
-                  fillPercentage: 85,
+                  iconName: type.iconName,
+                  fillPercentage: _fillPercentage,
                   color: type.color,
                   size: GardenIconSize.lg,
                 ),
@@ -70,9 +97,9 @@ class AnalyticCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      unit,
+                      _unit,
                       style: GardenTypography.headingMd.copyWith(
-                          fontStyle: FontStyle.italic
+                        fontStyle: FontStyle.italic,
                       ),
                     ),
                   ],

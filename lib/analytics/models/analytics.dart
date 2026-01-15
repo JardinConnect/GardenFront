@@ -160,7 +160,7 @@ enum AnalyticType {
     }
   }
 
-  String get icon_name {
+  String get iconName {
     switch (this) {
       case AnalyticType.airHumidity:
         return 'Pluie';
