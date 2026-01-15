@@ -176,7 +176,7 @@ enum AnalyticType {
     }
   }
 
-  Color get color {
+  Color get iconColor {
     switch (this) {
       case AnalyticType.airHumidity:
       case AnalyticType.soilHumidity:
@@ -188,6 +188,23 @@ enum AnalyticType {
         return Colors.brown;
       case AnalyticType.light:
         return GardenColors.yellowWarning.shade500;
+    }
+  }
+
+  Color get color {
+    switch (this) {
+      case AnalyticType.airHumidity:
+        return const Color(0xFFFF5892);
+      case AnalyticType.soilHumidity:
+        return const Color(0xFF4B5FFA);
+      case AnalyticType.deepSoilHumidity:
+        return const Color(0xFF4B5FFA);
+      case AnalyticType.airTemperature:
+        return GardenColors.redAlert.shade500;
+      case AnalyticType.soilTemperature:
+        return Colors.orange;
+      case AnalyticType.light:
+        return Colors.yellow;
     }
   }
 }

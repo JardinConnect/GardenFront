@@ -88,7 +88,7 @@ class AnalyticCard extends StatelessWidget {
                 GardenIcon(
                   iconName: type.iconName,
                   fillPercentage: _fillPercentage,
-                  color: type.color,
+                  color: type.iconColor,
                   size: GardenIconSize.lg,
                 ),
                 Row(
