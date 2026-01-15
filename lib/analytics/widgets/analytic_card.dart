@@ -6,6 +6,11 @@ import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
 class AnalyticCard extends StatelessWidget {
+  /// The max value of air temperature. If it's reached, icon will be full filled (same value as in GardenUI)
+  static const int _airTemperatureMaxValue = 55;
+  /// The max value of soil temperature. If it's reached, icon will be full filled (same value as in GardenUI)
+  static const int _soilTemperatureMaxValue = 45;
+
   final AnalyticType type;
   final double value;
   final AnalyticAlertStatus alertStatus;
@@ -34,9 +39,9 @@ class AnalyticCard extends StatelessWidget {
   double get _fillPercentage {
     switch (type) {
       case AnalyticType.airTemperature:
-        return (100 * value / 55).clamp(0.0, 100.0);
+        return (100 * value / _airTemperatureMaxValue).clamp(0.0, 100.0);
       case AnalyticType.soilTemperature:
-        return (100 * value / 40).clamp(0.0, 100.0);
+        return (100 * value / _soilTemperatureMaxValue).clamp(0.0, 100.0);
       case AnalyticType.airHumidity:
       case AnalyticType.soilHumidity:
       case AnalyticType.deepSoilHumidity:
