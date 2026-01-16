@@ -144,7 +144,7 @@ class CellDetailPage extends StatelessWidget {
                         ],
                       ),
 
-                      AnalyticsCardsGrid(analytics: cellState.cell.analytics),
+                      AnalyticsCardsGridWidget(analytics: cellState.cell.analytics),
 
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

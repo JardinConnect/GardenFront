@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:garden_connect/analytics/models/analytic_alert_status.dart';
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -205,6 +204,37 @@ enum AnalyticType {
         return Colors.orange;
       case AnalyticType.light:
         return Colors.yellow;
+    }
+  }
+
+  String get unit {
+    switch (this) {
+      case AnalyticType.airTemperature:
+      case AnalyticType.soilTemperature:
+        return AnalyticsFilterEnum.temperature.unit;
+      case AnalyticType.airHumidity:
+      case AnalyticType.soilHumidity:
+      case AnalyticType.deepSoilHumidity:
+        return AnalyticsFilterEnum.humidity.unit;
+      case AnalyticType.light:
+        return AnalyticsFilterEnum.light.unit;
+    }
+  }
+}
+
+enum AnalyticAlertStatus {
+  @JsonValue("OK") ok,
+  @JsonValue("WARNING") warning,
+  @JsonValue("ALERT") alert;
+
+  Color get color {
+    switch(this) {
+      case AnalyticAlertStatus.ok:
+        return GardenColors.tertiary.shade500;
+      case AnalyticAlertStatus.warning:
+        return GardenColors.yellowWarning.shade500;
+      case AnalyticAlertStatus.alert:
+        return GardenColors.redAlert.shade500;
     }
   }
 }

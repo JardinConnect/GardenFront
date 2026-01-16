@@ -3,10 +3,10 @@ import 'package:garden_connect/analytics/models/analytics.dart';
 import 'package:garden_connect/analytics/widgets/analytic_card.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
-class AnalyticsCardsGrid extends StatelessWidget {
+class AnalyticsCardsGridWidget extends StatelessWidget {
   final Analytics analytics;
 
-  const AnalyticsCardsGrid({super.key, required this.analytics});
+  const AnalyticsCardsGridWidget({super.key, required this.analytics});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class AnalyticsCardsGrid extends StatelessWidget {
       childAspectRatio: 2.5,
       shrinkWrap: true,
       children: <Widget>[
-        AnalyticCard(
+        AnalyticCardWidget(
           type: AnalyticType.airHumidity,
           alertStatus:
               analytics
@@ -26,13 +26,13 @@ class AnalyticsCardsGrid extends StatelessWidget {
           value:
               analytics.getLastAnalyticByType(AnalyticType.airHumidity)!.value,
         ),
-        AnalyticCard(
+        AnalyticCardWidget(
           type: AnalyticType.light,
           alertStatus:
               analytics.getLastAnalyticByType(AnalyticType.light)!.alertStatus,
           value: analytics.getLastAnalyticByType(AnalyticType.light)!.value,
         ),
-        AnalyticCard(
+        AnalyticCardWidget(
           type: AnalyticType.airTemperature,
           alertStatus:
               analytics
@@ -43,7 +43,7 @@ class AnalyticsCardsGrid extends StatelessWidget {
                   .getLastAnalyticByType(AnalyticType.airTemperature)!
                   .value,
         ),
-        AnalyticCard(
+        AnalyticCardWidget(
           type: AnalyticType.soilTemperature,
           alertStatus:
               analytics
@@ -54,7 +54,7 @@ class AnalyticsCardsGrid extends StatelessWidget {
                   .getLastAnalyticByType(AnalyticType.soilTemperature)!
                   .value,
         ),
-        AnalyticCard(
+        AnalyticCardWidget(
           type: AnalyticType.soilHumidity,
           alertStatus:
               analytics
@@ -63,7 +63,7 @@ class AnalyticsCardsGrid extends StatelessWidget {
           value:
               analytics.getLastAnalyticByType(AnalyticType.soilHumidity)!.value,
         ),
-        AnalyticCard(
+        AnalyticCardWidget(
           type: AnalyticType.deepSoilHumidity,
           alertStatus:
               analytics

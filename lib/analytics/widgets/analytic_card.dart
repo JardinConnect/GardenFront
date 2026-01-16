@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:garden_connect/analytics/filters/analytics_filter.dart';
-import 'package:garden_connect/analytics/models/analytic_alert_status.dart';
 import 'package:garden_connect/analytics/models/analytics.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
-class AnalyticCard extends StatelessWidget {
+class AnalyticCardWidget extends StatelessWidget {
   /// The max value of air temperature. If it's reached, icon will be full filled (same value as in GardenUI)
   static const int _airTemperatureMaxValue = 55;
   /// The max value of soil temperature. If it's reached, icon will be full filled (same value as in GardenUI)
@@ -15,26 +13,12 @@ class AnalyticCard extends StatelessWidget {
   final double value;
   final AnalyticAlertStatus alertStatus;
 
-  const AnalyticCard({
+  const AnalyticCardWidget({
     super.key,
     required this.type,
     required this.value,
     required this.alertStatus,
   });
-
-  String get _unit {
-    switch (type) {
-      case AnalyticType.airTemperature:
-      case AnalyticType.soilTemperature:
-        return AnalyticsFilterEnum.temperature.unit;
-      case AnalyticType.airHumidity:
-      case AnalyticType.soilHumidity:
-      case AnalyticType.deepSoilHumidity:
-        return AnalyticsFilterEnum.humidity.unit;
-      case AnalyticType.light:
-        return AnalyticsFilterEnum.light.unit;
-    }
-  }
 
   double get _fillPercentage {
     switch (type) {
@@ -102,7 +86,7 @@ class AnalyticCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      _unit,
+                      type.unit,
                       style: GardenTypography.headingMd.copyWith(
                         fontStyle: FontStyle.italic,
                       ),
