@@ -251,6 +251,8 @@ abstract class Analytic {
     required this.sensorId,
     required this.alertStatus,
   });
+
+  AnalyticType getType();
 }
 
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
@@ -264,6 +266,11 @@ class AirTemperatureAnalytic extends Analytic {
 
   factory AirTemperatureAnalytic.fromJson(Map<String, dynamic> json) =>
       _$AirTemperatureAnalyticFromJson(json);
+
+  @override
+  AnalyticType getType() {
+    return AnalyticType.airTemperature;
+  }
 }
 
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
@@ -277,6 +284,11 @@ class SoilTemperatureAnalytic extends Analytic {
 
   factory SoilTemperatureAnalytic.fromJson(Map<String, dynamic> json) =>
       _$SoilTemperatureAnalyticFromJson(json);
+
+  @override
+  AnalyticType getType() {
+    return AnalyticType.soilTemperature;
+  }
 }
 
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
@@ -290,6 +302,11 @@ class AirHumidityAnalytic extends Analytic {
 
   factory AirHumidityAnalytic.fromJson(Map<String, dynamic> json) =>
       _$AirHumidityAnalyticFromJson(json);
+
+  @override
+  AnalyticType getType() {
+    return AnalyticType.airHumidity;
+  }
 }
 
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
@@ -303,6 +320,11 @@ class SoilHumidityAnalytic extends Analytic {
 
   factory SoilHumidityAnalytic.fromJson(Map<String, dynamic> json) =>
       _$SoilHumidityAnalyticFromJson(json);
+
+  @override
+  AnalyticType getType() {
+    return AnalyticType.soilHumidity;
+  }
 }
 
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
@@ -316,6 +338,11 @@ class DeepSoilHumidityAnalytic extends Analytic {
 
   factory DeepSoilHumidityAnalytic.fromJson(Map<String, dynamic> json) =>
       _$DeepSoilHumidityAnalyticFromJson(json);
+
+  @override
+  AnalyticType getType() {
+    return AnalyticType.deepSoilHumidity;
+  }
 }
 
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
@@ -329,4 +356,9 @@ class LightAnalytic extends Analytic {
 
   factory LightAnalytic.fromJson(Map<String, dynamic> json) =>
       _$LightAnalyticFromJson(json);
+
+  @override
+  AnalyticType getType() {
+    return AnalyticType.light;
+  }
 }

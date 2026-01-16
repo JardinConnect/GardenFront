@@ -9,27 +9,23 @@ class AnalyticCardWidget extends StatelessWidget {
   /// The max value of soil temperature. If it's reached, icon will be full filled (same value as in GardenUI)
   static const int _soilTemperatureMaxValue = 45;
 
-  final AnalyticType type;
-  final double value;
-  final AnalyticAlertStatus alertStatus;
+  final Analytic analytic;
 
   const AnalyticCardWidget({
     super.key,
-    required this.type,
-    required this.value,
-    required this.alertStatus,
+    required this.analytic,
   });
 
   double get _fillPercentage {
-    switch (type) {
+    switch (analytic.getType()) {
       case AnalyticType.airTemperature:
-        return (100 * value / _airTemperatureMaxValue).clamp(0.0, 100.0);
+        return (100 * analytic.value / _airTemperatureMaxValue).clamp(0.0, 100.0);
       case AnalyticType.soilTemperature:
-        return (100 * value / _soilTemperatureMaxValue).clamp(0.0, 100.0);
+        return (100 * analytic.value / _soilTemperatureMaxValue).clamp(0.0, 100.0);
       case AnalyticType.airHumidity:
       case AnalyticType.soilHumidity:
       case AnalyticType.deepSoilHumidity:
-        return value;
+        return analytic.value;
       case AnalyticType.light:
         return 100;
     }
@@ -48,16 +44,16 @@ class AnalyticCardWidget extends StatelessWidget {
             spacing: GardenSpace.gapSm,
             children: [
               Text(
-                type.name,
+                analytic.getType().name,
                 style: GardenTypography.bodyMd.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),
 
-              if (alertStatus != AnalyticAlertStatus.ok)
+              if (analytic.alertStatus != AnalyticAlertStatus.ok)
                 AlertIndicator(
                   alertType:
-                      alertStatus == AnalyticAlertStatus.warning
+                      analytic.alertStatus == AnalyticAlertStatus.warning
                           ? MenuAlertType.warning
                           : MenuAlertType.error,
                 ),
@@ -70,9 +66,9 @@ class AnalyticCardWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 GardenIcon(
-                  iconName: type.iconName,
+                  iconName: analytic.getType().iconName,
                   fillPercentage: _fillPercentage,
-                  color: type.iconColor,
+                  color: analytic.getType().iconColor,
                   size: GardenIconSize.lg,
                 ),
                 Row(
@@ -80,13 +76,13 @@ class AnalyticCardWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      value.toString(),
+                      analytic.value.toString(),
                       style: GardenTypography.headingXl.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      type.unit,
+                      analytic.getType().unit,
                       style: GardenTypography.headingMd.copyWith(
                         fontStyle: FontStyle.italic,
                       ),

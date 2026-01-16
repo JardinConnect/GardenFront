@@ -18,61 +18,22 @@ class AnalyticsCardsGridWidget extends StatelessWidget {
       shrinkWrap: true,
       children: <Widget>[
         AnalyticCardWidget(
-          type: AnalyticType.airHumidity,
-          alertStatus:
-              analytics
-                  .getLastAnalyticByType(AnalyticType.airHumidity)!
-                  .alertStatus,
-          value:
-              analytics.getLastAnalyticByType(AnalyticType.airHumidity)!.value,
+          analytic: analytics.getLastAnalyticByType(AnalyticType.airHumidity)!,
         ),
         AnalyticCardWidget(
-          type: AnalyticType.light,
-          alertStatus:
-              analytics.getLastAnalyticByType(AnalyticType.light)!.alertStatus,
-          value: analytics.getLastAnalyticByType(AnalyticType.light)!.value,
+          analytic: analytics.getLastAnalyticByType(AnalyticType.light)!,
         ),
         AnalyticCardWidget(
-          type: AnalyticType.airTemperature,
-          alertStatus:
-              analytics
-                  .getLastAnalyticByType(AnalyticType.airTemperature)!
-                  .alertStatus,
-          value:
-              analytics
-                  .getLastAnalyticByType(AnalyticType.airTemperature)!
-                  .value,
+          analytic: analytics.getLastAnalyticByType(AnalyticType.airTemperature)!,
         ),
         AnalyticCardWidget(
-          type: AnalyticType.soilTemperature,
-          alertStatus:
-              analytics
-                  .getLastAnalyticByType(AnalyticType.soilTemperature)!
-                  .alertStatus,
-          value:
-              analytics
-                  .getLastAnalyticByType(AnalyticType.soilTemperature)!
-                  .value,
+          analytic: analytics.getLastAnalyticByType(AnalyticType.soilTemperature)!,
         ),
         AnalyticCardWidget(
-          type: AnalyticType.soilHumidity,
-          alertStatus:
-              analytics
-                  .getLastAnalyticByType(AnalyticType.soilHumidity)!
-                  .alertStatus,
-          value:
-              analytics.getLastAnalyticByType(AnalyticType.soilHumidity)!.value,
+          analytic: analytics.getLastAnalyticByType(AnalyticType.soilHumidity)!,
         ),
         AnalyticCardWidget(
-          type: AnalyticType.deepSoilHumidity,
-          alertStatus:
-              analytics
-                  .getLastAnalyticByType(AnalyticType.deepSoilHumidity)!
-                  .alertStatus,
-          value:
-              analytics
-                  .getLastAnalyticByType(AnalyticType.deepSoilHumidity)!
-                  .value,
+          analytic: analytics.getLastAnalyticByType(AnalyticType.deepSoilHumidity)!,
         ),
       ],
     );
