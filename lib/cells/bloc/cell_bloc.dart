@@ -1,9 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/analytics/models/analytics.dart';
 import 'package:garden_connect/cells/models/cell.dart';
-import 'package:garden_connect/cells/models/cell_detail.dart';
 import 'package:garden_connect/cells/repository/cell_repository.dart';
-import 'package:go_router/go_router.dart';
 import 'package:meta/meta.dart';
 
 part 'cell_event.dart';

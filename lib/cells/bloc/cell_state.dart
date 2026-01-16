@@ -62,7 +62,7 @@ final class CellDetailShimmer extends CellState {
 }
 
 final class CellDetailLoaded extends CellState {
-  final CellDetail cell;
+  final Cell cell;
 
   const CellDetailLoaded({required this.cell});
 }

@@ -1,5 +1,4 @@
 import 'package:garden_connect/cells/models/cell.dart';
-import 'package:garden_connect/cells/models/cell_detail.dart';
 
 class CellRepository {
 
@@ -11,7 +10,7 @@ class CellRepository {
     }
   }
 
-  Future<CellDetail> fetchCellDetail(int id) async {
+  Future<Cell> fetchCellDetail(int id) async {
     try {
       return _mockedCellDetail();
     } catch(e) {
@@ -36,6 +35,9 @@ class CellRepository {
         "id": i + 1,
         "name": "Tomate Serre Nord $i",
         "battery": 67,
+        "is_tracked": true,
+        "last_update_at": "2026-01-09 09:46:26",
+        "location": "Champ #1 > Parcelle #3 > Planche A",
         "analytics": {
           "air_temperature": [
             {"value": 18, "occurred_at": "2025-11-05T08:00:00Z", "sensor_id": 12, "alert_status":  "ALERT"}
@@ -62,26 +64,14 @@ class CellRepository {
     return mockedJson.map((cell) => Cell.fromJson(cell)).toList();
   }
 
-  CellDetail _mockedCellDetail() {
+  Cell _mockedCellDetail() {
     final json = {
       "id": 14,
       "name": "Tomate Serre Nord",
       "battery": 67,
       "is_tracked": true,
       "last_update_at": "2026-01-09 09:46:26",
-      "location": {
-        "id": 3,
-        "name": "Planche A",
-        "location": {
-          "id": 2,
-          "name": "Parcelle #3",
-          "location": {
-            "id": 1,
-            "name": "Champ #1",
-            "location": null
-          }
-        }
-      },
+      "location": "Champ #1 > Parcelle #3 > Planche A",
       "analytics": {
         "air_temperature": [
           {
@@ -194,6 +184,6 @@ class CellRepository {
       }
     };
 
-    return CellDetail.fromJson(json);
+    return Cell.fromJson(json);
   }
 }

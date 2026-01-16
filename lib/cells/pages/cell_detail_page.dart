@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/analytics/widgets/analytics_cards_grid.dart';
 import 'package:garden_connect/analytics/widgets/graphic_widget.dart';
 import 'package:garden_connect/cells/bloc/cell_bloc.dart';
-import 'package:garden_connect/cells/models/cell_location.dart';
 import 'package:garden_connect/common/widgets/back_text_button.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
@@ -22,18 +21,6 @@ class CellDetailPage extends StatelessWidget {
 
   void _handleRefreshCellDetail(BuildContext context) {
     context.read<CellBloc>().add(RefreshCellDetail(id: id));
-  }
-
-  String getBreadcrumbLocation(CellLocation location) {
-    List<String> breadcrumb = [];
-
-    CellLocation? parent = location;
-    while (parent != null) {
-      breadcrumb.add(parent.name);
-      parent = parent.location;
-    }
-
-    return breadcrumb.reversed.toList().join(" > ");
   }
 
   String getLastUpdate(DateTime lastUpdateAt) {
@@ -132,7 +119,7 @@ class CellDetailPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                getBreadcrumbLocation(cellState.cell.location),
+                                cellState.cell.location,
                                 style: GardenTypography.caption,
                               ),
                               BatteryIndicator(
