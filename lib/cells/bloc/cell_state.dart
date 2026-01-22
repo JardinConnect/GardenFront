@@ -23,8 +23,10 @@ final class CellsShimmer extends CellState {
 final class CellsLoaded extends CellState {
   /// La liste des cellules complète
   final List<Cell> cells;
+
   /// La liste des cellules filtrée en fonction de la recherche
   final List<Cell> filteredCells;
+
   /// Est-ce qu'on affiche les cellules au format liste ? (false = cards)
   final bool isList;
   final AnalyticType? filter;
@@ -53,4 +55,14 @@ final class CellsLoaded extends CellState {
       search: search ?? this.search
     );
   }
+}
+
+final class CellDetailShimmer extends CellState {
+  const CellDetailShimmer() : super();
+}
+
+final class CellDetailLoaded extends CellState {
+  final Cell cell;
+
+  const CellDetailLoaded({required this.cell});
 }

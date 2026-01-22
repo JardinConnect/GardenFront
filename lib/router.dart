@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:garden_connect/cells/pages/cell_detail_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:garden_connect/auth/auth.dart';
 import 'package:garden_connect/menu/view/menu_page.dart';
@@ -59,6 +60,14 @@ class AppRouter {
             pageBuilder: (context, state) => NoTransitionPage(
               child: const CellsPage(),
             ),
+            routes: [
+              GoRoute(
+                path: '/:id',
+                pageBuilder: (context, GoRouterState state) => NoTransitionPage(
+                  child: CellDetailPage(id: int.parse(state.pathParameters['id']!)),
+                )
+              )
+            ]
           ),
           GoRoute(
             path: '/alerts',

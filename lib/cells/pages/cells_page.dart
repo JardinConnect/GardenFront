@@ -6,6 +6,7 @@ import 'package:garden_connect/cells/widgets/cells_cards_widget.dart';
 import 'package:garden_connect/cells/widgets/cells_filter_widget.dart';
 import 'package:garden_connect/cells/widgets/cells_list_widget.dart';
 import 'package:garden_ui/ui/design_system.dart';
+import 'package:go_router/go_router.dart';
 
 class CellsPage extends StatelessWidget {
   const CellsPage({super.key});
@@ -24,6 +25,10 @@ class CellsPage extends StatelessWidget {
 
   _onSearch(BuildContext context, String text) {
     context.read<CellBloc>().add(SearchCells(search: text));
+  }
+
+  _onCellPressed(BuildContext context, int id) {
+    context.go('/cells/$id');
   }
 
   @override
@@ -105,11 +110,15 @@ class CellsPage extends StatelessWidget {
                       ),
 
                       if (cellsState.isList)
-                        CellsListWidget(cells: cellsState.filteredCells)
+                        CellsListWidget(
+                          cells: cellsState.filteredCells,
+                          onPressed: _onCellPressed,
+                        )
                       else
                         CellsCardsWidget(
                           cells: cellsState.filteredCells,
                           filter: cellsState.filter,
+                          onPressed: _onCellPressed,
                         ),
                     ],
                   ),

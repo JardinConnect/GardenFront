@@ -78,10 +78,7 @@ class Analytics {
 
       if (!filterTypes.contains(filterType)) {
         filterTypes.add(filterType);
-        filters.add(AnalyticsFilter(
-          filterType: filterType,
-          analytics: this,
-        ));
+        filters.add(AnalyticsFilter(filterType: filterType, analytics: this));
       }
     }
 
@@ -162,6 +159,37 @@ enum AnalyticType {
     }
   }
 
+  String get iconName {
+    switch (this) {
+      case AnalyticType.airHumidity:
+        return 'Pluie';
+      case AnalyticType.soilHumidity:
+        return 'Humidite_surface';
+      case AnalyticType.deepSoilHumidity:
+        return 'Humidite_profondeur';
+      case AnalyticType.airTemperature:
+      case AnalyticType.soilTemperature:
+        return 'Thermometre';
+      case AnalyticType.light:
+        return 'Soleil';
+    }
+  }
+
+  Color get iconColor {
+    switch (this) {
+      case AnalyticType.airHumidity:
+      case AnalyticType.soilHumidity:
+      case AnalyticType.deepSoilHumidity:
+        return GardenColors.blueInfo.shade400;
+      case AnalyticType.airTemperature:
+        return GardenColors.redAlert.shade500;
+      case AnalyticType.soilTemperature:
+        return Colors.brown;
+      case AnalyticType.light:
+        return GardenColors.yellowWarning.shade500;
+    }
+  }
+
   Color get color {
     switch (this) {
       case AnalyticType.airHumidity:
@@ -178,88 +206,159 @@ enum AnalyticType {
         return Colors.yellow;
     }
   }
+
+  String get unit {
+    switch (this) {
+      case AnalyticType.airTemperature:
+      case AnalyticType.soilTemperature:
+        return AnalyticsFilterEnum.temperature.unit;
+      case AnalyticType.airHumidity:
+      case AnalyticType.soilHumidity:
+      case AnalyticType.deepSoilHumidity:
+        return AnalyticsFilterEnum.humidity.unit;
+      case AnalyticType.light:
+        return AnalyticsFilterEnum.light.unit;
+    }
+  }
+}
+
+enum AnalyticAlertStatus {
+  @JsonValue("OK") ok,
+  @JsonValue("WARNING") warning,
+  @JsonValue("ALERT") alert;
+
+  Color get color {
+    switch(this) {
+      case AnalyticAlertStatus.ok:
+        return GardenColors.tertiary.shade500;
+      case AnalyticAlertStatus.warning:
+        return GardenColors.yellowWarning.shade500;
+      case AnalyticAlertStatus.alert:
+        return GardenColors.redAlert.shade500;
+    }
+  }
 }
 
 abstract class Analytic {
   final double value;
   final DateTime occurredAt;
-  final String sensorId;
+  final int sensorId;
+  final AnalyticAlertStatus alertStatus;
 
   Analytic({
     required this.value,
     required this.occurredAt,
     required this.sensorId,
+    required this.alertStatus,
   });
+
+  AnalyticType getType();
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class AirTemperatureAnalytic extends Analytic {
   AirTemperatureAnalytic({
     required super.value,
     required super.occurredAt,
     required super.sensorId,
+    required super.alertStatus,
   });
 
   factory AirTemperatureAnalytic.fromJson(Map<String, dynamic> json) =>
       _$AirTemperatureAnalyticFromJson(json);
+
+  @override
+  AnalyticType getType() {
+    return AnalyticType.airTemperature;
+  }
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class SoilTemperatureAnalytic extends Analytic {
   SoilTemperatureAnalytic({
     required super.value,
     required super.occurredAt,
     required super.sensorId,
+    required super.alertStatus,
   });
 
   factory SoilTemperatureAnalytic.fromJson(Map<String, dynamic> json) =>
       _$SoilTemperatureAnalyticFromJson(json);
+
+  @override
+  AnalyticType getType() {
+    return AnalyticType.soilTemperature;
+  }
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class AirHumidityAnalytic extends Analytic {
   AirHumidityAnalytic({
     required super.value,
     required super.occurredAt,
     required super.sensorId,
+    required super.alertStatus,
   });
 
   factory AirHumidityAnalytic.fromJson(Map<String, dynamic> json) =>
       _$AirHumidityAnalyticFromJson(json);
+
+  @override
+  AnalyticType getType() {
+    return AnalyticType.airHumidity;
+  }
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class SoilHumidityAnalytic extends Analytic {
   SoilHumidityAnalytic({
     required super.value,
     required super.occurredAt,
     required super.sensorId,
+    required super.alertStatus,
   });
 
   factory SoilHumidityAnalytic.fromJson(Map<String, dynamic> json) =>
       _$SoilHumidityAnalyticFromJson(json);
+
+  @override
+  AnalyticType getType() {
+    return AnalyticType.soilHumidity;
+  }
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class DeepSoilHumidityAnalytic extends Analytic {
   DeepSoilHumidityAnalytic({
     required super.value,
     required super.occurredAt,
     required super.sensorId,
+    required super.alertStatus,
   });
 
   factory DeepSoilHumidityAnalytic.fromJson(Map<String, dynamic> json) =>
       _$DeepSoilHumidityAnalyticFromJson(json);
+
+  @override
+  AnalyticType getType() {
+    return AnalyticType.deepSoilHumidity;
+  }
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class LightAnalytic extends Analytic {
   LightAnalytic({
     required super.value,
     required super.occurredAt,
     required super.sensorId,
+    required super.alertStatus,
   });
 
   factory LightAnalytic.fromJson(Map<String, dynamic> json) =>
       _$LightAnalyticFromJson(json);
+
+  @override
+  AnalyticType getType() {
+    return AnalyticType.light;
+  }
 }
