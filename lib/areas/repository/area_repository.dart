@@ -22,50 +22,113 @@ class AreaRepository {
           "level": 1,
           "analytics": {
             "air_temperature": [
-              {"value": 18, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},
-              {"value": 20, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "12"},
-              {"value": 19, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "12"},
-              {"value": 21, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "12"},
-              {"value": 22, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "12"},
-              {"value": 20, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "12"},
-              {"value": 34, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "12"},
+              {
+                "value": 18,
+                "occurred_at": "2025-11-05T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "OK"
+              },
+              {
+                "value": 20,
+                "occurred_at": "2025-11-06T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "ALERT"
+              },
+              {
+                "value": 19,
+                "occurred_at": "2025-11-07T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "WARNING"
+              }
             ],
             "soil_temperature": [
-              {"value": 15, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},
-              {"value": 16, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "12"},
-              {"value": 15, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "12"},
-              {"value": 17, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "12"},
-              {"value": 18, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "12"},
-              {"value": 16, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "12"},
-              {"value": 15, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "12"},
+              {
+                "value": 15,
+                "occurred_at": "2025-11-05T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "WARNING"
+              },
+              {
+                "value": 16,
+                "occurred_at": "2025-11-06T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "ALERT"
+              }
             ],
             "air_humidity": [
-              {"value": 65, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},
-              {"value": 70, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "12"},
-              {"value": 68, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "12"},
-              {"value": 72, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "12"},
-              {"value": 75, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "12"},
-              {"value": 70, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "12"},
-              {"value": 68, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "12"},
+              {
+                "value": 75,
+                "occurred_at": "2025-11-09T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "OK"
+              },
+              {
+                "value": 70,
+                "occurred_at": "2025-11-10T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "ALERT"
+              },
+              {
+                "value": 68,
+                "occurred_at": "2025-11-11T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "OK"
+              }
             ],
             "soil_humidity": [
-              {"value": 45, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},
-              {"value": 50, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "12"},
-              {"value": 48, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "12"},
-              {"value": 52, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "12"},
-              {"value": 55, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "12"},
-              {"value": 50, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "12"},
-              {"value": 48, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "12"},
+              {
+                "value": 50,
+                "occurred_at": "2025-11-10T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "WARNING"
+              },
+              {
+                "value": 48,
+                "occurred_at": "2025-11-11T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "ALERT"
+              }
+            ],
+            "deep_soil_humidity": [
+              {
+                "value": 55,
+                "occurred_at": "2025-11-09T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "OK"
+              },
+              {
+                "value": 65,
+                "occurred_at": "2025-11-10T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "WARNING"
+              },
+              {
+                "value": 48,
+                "occurred_at": "2025-11-11T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "ALERT"
+              }
             ],
             "light": [
-              {"value": 35, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "12"},
-              {"value": 40, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "12"},
-              {"value": 32, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "12"},
-              {"value": 45, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "12"},
-              {"value": 38, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "12"},
-              {"value": 41, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "12"},
-              {"value": 34, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "12"},
-            ],
+              {
+                "value": 38,
+                "occurred_at": "2025-11-09T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "OK"
+              },
+              {
+                "value": 41,
+                "occurred_at": "2025-11-10T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "WARNING"
+              },
+              {
+                "value": 34,
+                "occurred_at": "2025-11-11T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "ALERT"
+              }
+            ]
           },
           "areas": [
             {
@@ -74,57 +137,350 @@ class AreaRepository {
               "level": 2,
               "analytics": {
                 "air_temperature": [
-                  {"value": 22, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "13"},
-                  {"value": 24, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "13"},
-                  {"value": 23, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "13"},
-                  {"value": 25, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "13"},
-                  {"value": 26, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "13"},
-                  {"value": 24, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "13"},
-                  {"value": 23, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "13"},
+                  {
+                    "value": 18,
+                    "occurred_at": "2025-11-05T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "OK"
+                  },
+                  {
+                    "value": 20,
+                    "occurred_at": "2025-11-06T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "ALERT"
+                  },
+                  {
+                    "value": 19,
+                    "occurred_at": "2025-11-07T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "WARNING"
+                  }
                 ],
                 "soil_temperature": [
-                  {"value": 17, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "13"},
-                  {"value": 18, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "13"},
-                  {"value": 17, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "13"},
-                  {"value": 19, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "13"},
-                  {"value": 20, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "13"},
-                  {"value": 18, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "13"},
-                  {"value": 17, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "13"},
+                  {
+                    "value": 15,
+                    "occurred_at": "2025-11-05T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "WARNING"
+                  },
+                  {
+                    "value": 16,
+                    "occurred_at": "2025-11-06T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "ALERT"
+                  }
                 ],
                 "air_humidity": [
-                  {"value": 60, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "13"},
-                  {"value": 65, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "13"},
-                  {"value": 63, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "13"},
-                  {"value": 67, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "13"},
-                  {"value": 70, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "13"},
-                  {"value": 65, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "13"},
-                  {"value": 63, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "13"},
+                  {
+                    "value": 75,
+                    "occurred_at": "2025-11-09T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "OK"
+                  },
+                  {
+                    "value": 70,
+                    "occurred_at": "2025-11-10T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "ALERT"
+                  },
+                  {
+                    "value": 68,
+                    "occurred_at": "2025-11-11T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "OK"
+                  }
                 ],
                 "soil_humidity": [
-                  {"value": 50, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "13"},
-                  {"value": 55, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "13"},
-                  {"value": 53, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "13"},
-                  {"value": 57, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "13"},
-                  {"value": 60, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "13"},
-                  {"value": 55, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "13"},
-                  {"value": 53, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "13"},
+                  {
+                    "value": 50,
+                    "occurred_at": "2025-11-10T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "WARNING"
+                  },
+                  {
+                    "value": 48,
+                    "occurred_at": "2025-11-11T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "ALERT"
+                  }
+                ],
+                "deep_soil_humidity": [
+                  {
+                    "value": 55,
+                    "occurred_at": "2025-11-09T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "OK"
+                  },
+                  {
+                    "value": 65,
+                    "occurred_at": "2025-11-10T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "WARNING"
+                  },
+                  {
+                    "value": 48,
+                    "occurred_at": "2025-11-11T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "ALERT"
+                  }
                 ],
                 "light": [
-                  {"value": 40, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "13"},
-                  {"value": 45, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "13"},
-                  {"value": 37, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "13"},
-                  {"value": 50, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "13"},
-                  {"value": 43, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "13"},
-                  {"value": 46, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "13"},
-                  {"value": 39, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "13"},
-                ],
+                  {
+                    "value": 38,
+                    "occurred_at": "2025-11-09T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "OK"
+                  },
+                  {
+                    "value": 41,
+                    "occurred_at": "2025-11-10T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "WARNING"
+                  },
+                  {
+                    "value": 34,
+                    "occurred_at": "2025-11-11T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "ALERT"
+                  }
+                ]
               },
               "cells": [
                 {
-                  "name": "Cellule Tomates A1",
+                  "id": 14,
+                  "name": "Tomate Serre Nord A1",
+                  "battery": 67,
+                  "is_tracked": true,
+                  "last_update_at": "2026-01-09 09:46:26",
+                  "location": "Champ #1 > Parcelle #3 > Planche A",
+                  "analytics": {
+                    "air_temperature": [
+                      {
+                        "value": 18,
+                        "occurred_at": "2025-11-05T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      },
+                      {
+                        "value": 20,
+                        "occurred_at": "2025-11-06T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      },
+                      {
+                        "value": 19,
+                        "occurred_at": "2025-11-07T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      }
+                    ],
+                    "soil_temperature": [
+                      {
+                        "value": 15,
+                        "occurred_at": "2025-11-05T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      },
+                      {
+                        "value": 16,
+                        "occurred_at": "2025-11-06T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      }
+                    ],
+                    "air_humidity": [
+                      {
+                        "value": 75,
+                        "occurred_at": "2025-11-09T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      },
+                      {
+                        "value": 70,
+                        "occurred_at": "2025-11-10T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      },
+                      {
+                        "value": 68,
+                        "occurred_at": "2025-11-11T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      }
+                    ],
+                    "soil_humidity": [
+                      {
+                        "value": 50,
+                        "occurred_at": "2025-11-10T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      },
+                      {
+                        "value": 48,
+                        "occurred_at": "2025-11-11T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      }
+                    ],
+                    "deep_soil_humidity": [
+                      {
+                        "value": 55,
+                        "occurred_at": "2025-11-09T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      },
+                      {
+                        "value": 65,
+                        "occurred_at": "2025-11-10T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      },
+                      {
+                        "value": 48,
+                        "occurred_at": "2025-11-11T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      }
+                    ],
+                    "light": [
+                      {
+                        "value": 38,
+                        "occurred_at": "2025-11-09T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      },
+                      {
+                        "value": 41,
+                        "occurred_at": "2025-11-10T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      },
+                      {
+                        "value": 34,
+                        "occurred_at": "2025-11-11T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      }
+                    ]
+                  }
                 },
                 {
-                  "name": "Cellule Tomates A2",
+                  "id": 15,
+                  "name": "Tomate Serre Nord A2",
+                  "battery": 67,
+                  "is_tracked": true,
+                  "last_update_at": "2026-01-09 09:46:26",
+                  "location": "Champ #1 > Parcelle #3 > Planche A",
+                  "analytics": {
+                    "air_temperature": [
+                      {
+                        "value": 18,
+                        "occurred_at": "2025-11-05T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      },
+                      {
+                        "value": 20,
+                        "occurred_at": "2025-11-06T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      },
+                      {
+                        "value": 19,
+                        "occurred_at": "2025-11-07T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      }
+                    ],
+                    "soil_temperature": [
+                      {
+                        "value": 15,
+                        "occurred_at": "2025-11-05T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      },
+                      {
+                        "value": 16,
+                        "occurred_at": "2025-11-06T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      }
+                    ],
+                    "air_humidity": [
+                      {
+                        "value": 75,
+                        "occurred_at": "2025-11-09T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      },
+                      {
+                        "value": 70,
+                        "occurred_at": "2025-11-10T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      },
+                      {
+                        "value": 68,
+                        "occurred_at": "2025-11-11T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      }
+                    ],
+                    "soil_humidity": [
+                      {
+                        "value": 50,
+                        "occurred_at": "2025-11-10T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      },
+                      {
+                        "value": 48,
+                        "occurred_at": "2025-11-11T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      }
+                    ],
+                    "deep_soil_humidity": [
+                      {
+                        "value": 55,
+                        "occurred_at": "2025-11-09T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      },
+                      {
+                        "value": 65,
+                        "occurred_at": "2025-11-10T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      },
+                      {
+                        "value": 48,
+                        "occurred_at": "2025-11-11T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      }
+                    ],
+                    "light": [
+                      {
+                        "value": 38,
+                        "occurred_at": "2025-11-09T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      },
+                      {
+                        "value": 41,
+                        "occurred_at": "2025-11-10T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      },
+                      {
+                        "value": 34,
+                        "occurred_at": "2025-11-11T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      }
+                    ]
+                  }
                 }
               ]
             },
@@ -136,50 +492,113 @@ class AreaRepository {
           "level": 1,
           "analytics": {
             "air_temperature": [
-              {"value": 20, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "16"},
-              {"value": 22, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "16"},
-              {"value": 21, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "16"},
-              {"value": 23, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "16"},
-              {"value": 24, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "16"},
-              {"value": 22, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "16"},
-              {"value": 21, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "16"},
+              {
+                "value": 18,
+                "occurred_at": "2025-11-05T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "OK"
+              },
+              {
+                "value": 20,
+                "occurred_at": "2025-11-06T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "ALERT"
+              },
+              {
+                "value": 19,
+                "occurred_at": "2025-11-07T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "WARNING"
+              }
             ],
             "soil_temperature": [
-              {"value": 16, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "16"},
-              {"value": 17, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "16"},
-              {"value": 16, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "16"},
-              {"value": 18, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "16"},
-              {"value": 19, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "16"},
-              {"value": 17, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "16"},
-              {"value": 16, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "16"},
+              {
+                "value": 15,
+                "occurred_at": "2025-11-05T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "WARNING"
+              },
+              {
+                "value": 16,
+                "occurred_at": "2025-11-06T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "ALERT"
+              }
             ],
             "air_humidity": [
-              {"value": 68, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "16"},
-              {"value": 73, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "16"},
-              {"value": 71, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "16"},
-              {"value": 75, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "16"},
-              {"value": 78, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "16"},
-              {"value": 73, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "16"},
-              {"value": 71, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "16"},
+              {
+                "value": 75,
+                "occurred_at": "2025-11-09T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "OK"
+              },
+              {
+                "value": 70,
+                "occurred_at": "2025-11-10T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "ALERT"
+              },
+              {
+                "value": 68,
+                "occurred_at": "2025-11-11T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "OK"
+              }
             ],
             "soil_humidity": [
-              {"value": 47, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "16"},
-              {"value": 52, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "16"},
-              {"value": 50, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "16"},
-              {"value": 54, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "16"},
-              {"value": 57, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "16"},
-              {"value": 52, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "16"},
-              {"value": 50, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "16"},
+              {
+                "value": 50,
+                "occurred_at": "2025-11-10T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "WARNING"
+              },
+              {
+                "value": 48,
+                "occurred_at": "2025-11-11T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "ALERT"
+              }
+            ],
+            "deep_soil_humidity": [
+              {
+                "value": 55,
+                "occurred_at": "2025-11-09T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "OK"
+              },
+              {
+                "value": 65,
+                "occurred_at": "2025-11-10T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "WARNING"
+              },
+              {
+                "value": 48,
+                "occurred_at": "2025-11-11T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "ALERT"
+              }
             ],
             "light": [
-              {"value": 37, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "16"},
-              {"value": 42, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "16"},
-              {"value": 34, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "16"},
-              {"value": 47, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "16"},
-              {"value": 40, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "16"},
-              {"value": 43, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "16"},
-              {"value": 36, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "16"},
-            ],
+              {
+                "value": 38,
+                "occurred_at": "2025-11-09T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "OK"
+              },
+              {
+                "value": 41,
+                "occurred_at": "2025-11-10T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "WARNING"
+              },
+              {
+                "value": 34,
+                "occurred_at": "2025-11-11T08:00:00Z",
+                "sensor_id": 12,
+                "alert_status":  "ALERT"
+              }
+            ]
           },
           "areas": [
             {
@@ -188,57 +607,350 @@ class AreaRepository {
               "level": 2,
               "analytics": {
                 "air_temperature": [
-                  {"value": 24, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "17"},
-                  {"value": 26, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "17"},
-                  {"value": 25, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "17"},
-                  {"value": 27, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "17"},
-                  {"value": 28, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "17"},
-                  {"value": 26, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "17"},
-                  {"value": 25, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "17"},
+                  {
+                    "value": 18,
+                    "occurred_at": "2025-11-05T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "OK"
+                  },
+                  {
+                    "value": 20,
+                    "occurred_at": "2025-11-06T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "ALERT"
+                  },
+                  {
+                    "value": 19,
+                    "occurred_at": "2025-11-07T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "WARNING"
+                  }
                 ],
                 "soil_temperature": [
-                  {"value": 19, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "17"},
-                  {"value": 20, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "17"},
-                  {"value": 19, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "17"},
-                  {"value": 21, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "17"},
-                  {"value": 22, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "17"},
-                  {"value": 20, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "17"},
-                  {"value": 19, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "17"},
+                  {
+                    "value": 15,
+                    "occurred_at": "2025-11-05T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "WARNING"
+                  },
+                  {
+                    "value": 16,
+                    "occurred_at": "2025-11-06T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "ALERT"
+                  }
                 ],
                 "air_humidity": [
-                  {"value": 63, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "17"},
-                  {"value": 68, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "17"},
-                  {"value": 66, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "17"},
-                  {"value": 70, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "17"},
-                  {"value": 73, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "17"},
-                  {"value": 68, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "17"},
-                  {"value": 66, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "17"},
+                  {
+                    "value": 75,
+                    "occurred_at": "2025-11-09T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "OK"
+                  },
+                  {
+                    "value": 70,
+                    "occurred_at": "2025-11-10T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "ALERT"
+                  },
+                  {
+                    "value": 68,
+                    "occurred_at": "2025-11-11T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "OK"
+                  }
                 ],
                 "soil_humidity": [
-                  {"value": 51, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "17"},
-                  {"value": 56, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "17"},
-                  {"value": 54, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "17"},
-                  {"value": 58, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "17"},
-                  {"value": 61, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "17"},
-                  {"value": 56, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "17"},
-                  {"value": 54, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "17"},
+                  {
+                    "value": 50,
+                    "occurred_at": "2025-11-10T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "WARNING"
+                  },
+                  {
+                    "value": 48,
+                    "occurred_at": "2025-11-11T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "ALERT"
+                  }
+                ],
+                "deep_soil_humidity": [
+                  {
+                    "value": 55,
+                    "occurred_at": "2025-11-09T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "OK"
+                  },
+                  {
+                    "value": 65,
+                    "occurred_at": "2025-11-10T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "WARNING"
+                  },
+                  {
+                    "value": 48,
+                    "occurred_at": "2025-11-11T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "ALERT"
+                  }
                 ],
                 "light": [
-                  {"value": 43, "occurredAt": "2025-11-05T08:00:00Z", "sensorId": "17"},
-                  {"value": 48, "occurredAt": "2025-11-06T08:00:00Z", "sensorId": "17"},
-                  {"value": 40, "occurredAt": "2025-11-07T08:00:00Z", "sensorId": "17"},
-                  {"value": 53, "occurredAt": "2025-11-08T08:00:00Z", "sensorId": "17"},
-                  {"value": 46, "occurredAt": "2025-11-09T08:00:00Z", "sensorId": "17"},
-                  {"value": 49, "occurredAt": "2025-11-10T08:00:00Z", "sensorId": "17"},
-                  {"value": 42, "occurredAt": "2025-11-11T08:00:00Z", "sensorId": "17"},
-                ],
+                  {
+                    "value": 38,
+                    "occurred_at": "2025-11-09T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "OK"
+                  },
+                  {
+                    "value": 41,
+                    "occurred_at": "2025-11-10T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "WARNING"
+                  },
+                  {
+                    "value": 34,
+                    "occurred_at": "2025-11-11T08:00:00Z",
+                    "sensor_id": 12,
+                    "alert_status":  "ALERT"
+                  }
+                ]
               },
               "cells": [
                 {
-                  "name": "Cellule Tomates A1",
+                  "id": 15,
+                  "name": "Tomate Serre Sud A1",
+                  "battery": 67,
+                  "is_tracked": true,
+                  "last_update_at": "2026-01-09 09:46:26",
+                  "location": "Champ #1 > Parcelle #3 > Planche A",
+                  "analytics": {
+                    "air_temperature": [
+                      {
+                        "value": 18,
+                        "occurred_at": "2025-11-05T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      },
+                      {
+                        "value": 20,
+                        "occurred_at": "2025-11-06T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      },
+                      {
+                        "value": 19,
+                        "occurred_at": "2025-11-07T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      }
+                    ],
+                    "soil_temperature": [
+                      {
+                        "value": 15,
+                        "occurred_at": "2025-11-05T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      },
+                      {
+                        "value": 16,
+                        "occurred_at": "2025-11-06T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      }
+                    ],
+                    "air_humidity": [
+                      {
+                        "value": 75,
+                        "occurred_at": "2025-11-09T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      },
+                      {
+                        "value": 70,
+                        "occurred_at": "2025-11-10T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      },
+                      {
+                        "value": 68,
+                        "occurred_at": "2025-11-11T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      }
+                    ],
+                    "soil_humidity": [
+                      {
+                        "value": 50,
+                        "occurred_at": "2025-11-10T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      },
+                      {
+                        "value": 48,
+                        "occurred_at": "2025-11-11T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      }
+                    ],
+                    "deep_soil_humidity": [
+                      {
+                        "value": 55,
+                        "occurred_at": "2025-11-09T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      },
+                      {
+                        "value": 65,
+                        "occurred_at": "2025-11-10T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      },
+                      {
+                        "value": 48,
+                        "occurred_at": "2025-11-11T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      }
+                    ],
+                    "light": [
+                      {
+                        "value": 38,
+                        "occurred_at": "2025-11-09T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      },
+                      {
+                        "value": 41,
+                        "occurred_at": "2025-11-10T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      },
+                      {
+                        "value": 34,
+                        "occurred_at": "2025-11-11T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      }
+                    ]
+                  }
                 },
                 {
-                  "name": "Cellule Tomates A2",
+                  "id": 15,
+                  "name": "Tomate Serre Sud A2",
+                  "battery": 67,
+                  "is_tracked": true,
+                  "last_update_at": "2026-01-09 09:46:26",
+                  "location": "Champ #1 > Parcelle #3 > Planche A",
+                  "analytics": {
+                    "air_temperature": [
+                      {
+                        "value": 18,
+                        "occurred_at": "2025-11-05T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      },
+                      {
+                        "value": 20,
+                        "occurred_at": "2025-11-06T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      },
+                      {
+                        "value": 19,
+                        "occurred_at": "2025-11-07T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      }
+                    ],
+                    "soil_temperature": [
+                      {
+                        "value": 15,
+                        "occurred_at": "2025-11-05T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      },
+                      {
+                        "value": 16,
+                        "occurred_at": "2025-11-06T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      }
+                    ],
+                    "air_humidity": [
+                      {
+                        "value": 75,
+                        "occurred_at": "2025-11-09T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      },
+                      {
+                        "value": 70,
+                        "occurred_at": "2025-11-10T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      },
+                      {
+                        "value": 68,
+                        "occurred_at": "2025-11-11T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      }
+                    ],
+                    "soil_humidity": [
+                      {
+                        "value": 50,
+                        "occurred_at": "2025-11-10T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      },
+                      {
+                        "value": 48,
+                        "occurred_at": "2025-11-11T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      }
+                    ],
+                    "deep_soil_humidity": [
+                      {
+                        "value": 55,
+                        "occurred_at": "2025-11-09T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      },
+                      {
+                        "value": 65,
+                        "occurred_at": "2025-11-10T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      },
+                      {
+                        "value": 48,
+                        "occurred_at": "2025-11-11T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      }
+                    ],
+                    "light": [
+                      {
+                        "value": 38,
+                        "occurred_at": "2025-11-09T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "OK"
+                      },
+                      {
+                        "value": 41,
+                        "occurred_at": "2025-11-10T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "WARNING"
+                      },
+                      {
+                        "value": 34,
+                        "occurred_at": "2025-11-11T08:00:00Z",
+                        "sensor_id": 12,
+                        "alert_status":  "ALERT"
+                      }
+                    ]
+                  }
                 }
               ]
             },
