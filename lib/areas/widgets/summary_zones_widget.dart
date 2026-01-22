@@ -62,6 +62,7 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
     return levels;
   }
 
+  // Compte toutes les cellules, récursivement
   int _countTotalCells() {
     int totalCells = 0;
 

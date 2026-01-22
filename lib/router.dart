@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/cells/bloc/cell_bloc.dart';
 import 'package:garden_connect/cells/pages/cell_detail_page.dart';
+import 'package:garden_connect/settings/area/page/area_add_edit_page.dart';
+import 'package:garden_connect/settings/area/page/area_settings_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:garden_connect/auth/auth.dart';
 import 'package:garden_connect/menu/view/menu_page.dart';
@@ -126,6 +128,27 @@ class AppRouter {
               child: const SettingsPage(),
             ),
           ),
+          GoRoute(
+            path: '/settings/areas',
+            builder: (context, state) => const AreaSettingsPage(),
+            routes: [
+              GoRoute(
+                path: 'add',
+                builder: (context, state) => const AreaAddEditPage(),
+              ),
+              GoRoute(
+                path: ':id',
+                builder: (context, GoRouterState state) {
+                  final viewMode = state.uri.queryParameters['view'] == 'true';
+                  return AreaAddEditPage(
+                    id: int.parse(state.pathParameters['id']!),
+                    isViewMode: viewMode,
+                  );
+                },
+              ),
+            ],
+          ),
+
         ],
       ),
     ],

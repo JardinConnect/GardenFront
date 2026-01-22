@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../analytics/models/analytics.dart';
 import '../../cells/models/cell.dart';
 import '../../common/models/base_item.dart';
 
@@ -30,5 +29,73 @@ class Area extends BaseItem {
 
   static Color _colorFromJson(String colorString) {
     return Color(int.parse(colorString, radix: 16));
+  }
+
+  /**
+   * Méthode statique pour compter le nombre d'areas par niveau dans la hiérarchie
+   */
+  static Map<int, int> countAreasByLevel(List<Area> areas) {
+    final Map<int, int> count = {};
+
+    void countRecursive(List<Area>? areaList) {
+      if (areaList == null) return;
+
+      for (final area in areaList) {
+        count[area.level] = (count[area.level] ?? 0) + 1;
+
+        if (area.areas != null && area.areas!.isNotEmpty) {
+          countRecursive(area.areas);
+        }
+      }
+    }
+
+    countRecursive(areas);
+    return count;
+  }
+
+  /**
+   * Méthode statique pour aplatir la hiérarchie des areas en une liste unique
+   * pour les afficher dans la recherche
+   */
+  static List<Area> getAllAreasFlattened(List<Area> areas) {
+    final List<Area> flatList = [];
+
+    void flattenRecursive(List<Area>? areaList) {
+      if (areaList == null) return;
+
+      for (final area in areaList) {
+        flatList.add(area);
+
+        if (area.areas != null && area.areas!.isNotEmpty) {
+          flattenRecursive(area.areas);
+        }
+      }
+    }
+
+    flattenRecursive(areas);
+    return flatList;
+  }
+
+  Area? parent;
+
+  /**
+   * Méthode pour récupérer tous les descendants d'une area (enfants, petits-enfants, etc.)
+   */
+  static List<Area> getDescendants(Area area) {
+    final List<Area> descendants = [];
+
+    void collectDescendants(List<Area>? areaList) {
+      if (areaList == null) return;
+
+      for (final child in areaList) {
+        descendants.add(child);
+        if (child.areas != null && child.areas!.isNotEmpty) {
+          collectDescendants(child.areas);
+        }
+      }
+    }
+
+    collectDescendants(area.areas);
+    return descendants;
   }
 }
