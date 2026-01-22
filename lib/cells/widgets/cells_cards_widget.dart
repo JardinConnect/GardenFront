@@ -16,6 +16,25 @@ class CellsCardsWidget extends StatelessWidget {
     required this.onPressed
   });
 
+  AnalyticsSummaryFilter? get _filter {
+    switch (filter) {
+      case AnalyticType.airTemperature:
+        return AnalyticsSummaryFilter.airTemperature;
+      case AnalyticType.soilTemperature:
+        return AnalyticsSummaryFilter.soilTemperature;
+      case AnalyticType.airHumidity:
+        return AnalyticsSummaryFilter.airHumidity;
+      case AnalyticType.soilHumidity:
+        return AnalyticsSummaryFilter.soilHumidity;
+      case AnalyticType.deepSoilHumidity:
+        return AnalyticsSummaryFilter.deepSoilHumidity;
+      case AnalyticType.light:
+        return AnalyticsSummaryFilter.light;
+      default:
+        return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
@@ -31,101 +50,29 @@ class CellsCardsWidget extends StatelessWidget {
       itemBuilder: (context, index) {
         final cell = cells[index];
 
-        final card = () {
-          switch (filter) {
-            case AnalyticType.airTemperature:
-              return AnalyticsSummaryCard(
-                name: cell.name,
-                batteryPercentage: cell.battery,
-                onPressed: () => onPressed(context, cell.id),
-                light: 0,
-                rain: 0,
-                humiditySurface: 0,
-                humidityDepth: 0,
-                temperatureSurface: cell.analytics.getLastAnalyticByType(AnalyticType.airTemperature)!.value,
-                temperatureDepth: 0,
-              );
-            case AnalyticType.soilTemperature:
-              return AnalyticsSummaryCard(
-                name: cell.name,
-                batteryPercentage: cell.battery,
-                onPressed: () => onPressed(context, cell.id),
-                light: 0,
-                rain: 0,
-                humiditySurface: 0,
-                humidityDepth: 0,
-                temperatureSurface: 0,
-                temperatureDepth: cell.analytics.getLastAnalyticByType(AnalyticType.soilTemperature)!.value,
-              );
-            case AnalyticType.airHumidity:
-              return AnalyticsSummaryCard(
-                name: cell.name,
-                batteryPercentage: cell.battery,
-                onPressed: () => onPressed(context, cell.id),
-                light: 0,
-                rain: cell.analytics.getLastAnalyticByType(AnalyticType.airHumidity)!.value.toInt(),
-                humiditySurface: 0,
-                humidityDepth: 0,
-                temperatureSurface: 0,
-                temperatureDepth: 0,
-              );
-            case AnalyticType.soilHumidity:
-              return AnalyticsSummaryCard(
-                name: cell.name,
-                batteryPercentage: cell.battery,
-                onPressed: () => onPressed(context, cell.id),
-                light: 0,
-                rain: 0,
-                humiditySurface: cell.analytics.getLastAnalyticByType(AnalyticType.soilHumidity)!.value.toInt(),
-                humidityDepth: 0,
-                temperatureSurface: 0,
-                temperatureDepth: 0,
-              );
-            case AnalyticType.light:
-              return AnalyticsSummaryCard(
-                name: cell.name,
-                batteryPercentage: cell.battery,
-                onPressed: () => onPressed(context, cell.id),
-                light: cell.analytics.getLastAnalyticByType(AnalyticType.light)!.value.toInt(),
-                rain: 0,
-                humiditySurface: 0,
-                humidityDepth: 0,
-                temperatureSurface: 0,
-                temperatureDepth: 0,
-              );
-            case AnalyticType.deepSoilHumidity:
-              return AnalyticsSummaryCard(
-                name: cell.name,
-                batteryPercentage: cell.battery,
-                onPressed: () => onPressed(context, cell.id),
-                light: 0,
-                rain: 0,
-                humiditySurface: 0,
-                humidityDepth: cell.analytics.getLastAnalyticByType(AnalyticType.deepSoilHumidity)!.value.toInt(),
-                temperatureSurface: 0,
-                temperatureDepth: 0,
-              );
-            case null:
-              return AnalyticsSummaryCard(
-                name: cell.name,
-                batteryPercentage: cell.battery,
-                onPressed: () => onPressed(context, cell.id),
-                light: cell.analytics.getLastAnalyticByType(AnalyticType.light)!.value.toInt(),
-                rain: cell.analytics.getLastAnalyticByType(AnalyticType.airHumidity)!.value.toInt(),
-                humiditySurface: cell.analytics.getLastAnalyticByType(AnalyticType.soilHumidity)!.value.toInt(),
-                humidityDepth: cell.analytics.getLastAnalyticByType(AnalyticType.deepSoilHumidity)!.value.toInt(),
-                temperatureSurface: cell.analytics.getLastAnalyticByType(AnalyticType.airTemperature)!.value,
-                temperatureDepth: cell.analytics.getLastAnalyticByType(AnalyticType.soilTemperature)!.value,
-              );
-          }
-        }();
-
         return FittedBox(
           fit: BoxFit.scaleDown,
           child: SizedBox(
             width: 350,
             height: 220,
-            child: card,
+            child: AnalyticsSummaryCard(
+              name: cell.name,
+              batteryPercentage: cell.battery,
+              filter: _filter,
+              onPressed: () => onPressed(context, cell.id),
+              light: cell.analytics.getLastAnalyticByType(AnalyticType.light)!
+                  .value.toInt(),
+              rain: cell.analytics.getLastAnalyticByType(
+                  AnalyticType.airHumidity)!.value.toInt(),
+              humiditySurface: cell.analytics.getLastAnalyticByType(
+                  AnalyticType.soilHumidity)!.value.toInt(),
+              humidityDepth: cell.analytics.getLastAnalyticByType(
+                  AnalyticType.deepSoilHumidity)!.value.toInt(),
+              temperatureSurface: cell.analytics.getLastAnalyticByType(
+                  AnalyticType.airTemperature)!.value,
+              temperatureDepth: cell.analytics.getLastAnalyticByType(
+                  AnalyticType.soilTemperature)!.value,
+            ),
           ),
         );
       },
