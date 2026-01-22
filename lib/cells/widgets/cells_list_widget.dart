@@ -102,40 +102,43 @@ class CellsListWidget extends StatelessWidget {
                     alertStatus: deepSoilHumidity!.alertStatus)
               ];
 
-              return GestureDetector(
-                onTap: onPressed(context, cell.id),
-                child: GardenCard(
-                  hasBorder: true,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Text(cell.name, style: GardenTypography.bodyLg),
-                      ),
-                      ...values.map((CellAnalyticListItem item) {
-                        return Expanded(
+              return MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () => onPressed(context, cell.id),
+                  child: GardenCard(
+                    hasBorder: true,
+                    child: Row(
+                      children: [
+                        Expanded(
                           flex: 1,
-                          child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              spacing: GardenSpace.gapSm,
-                              children: [
-                                Container(
-                                  width: 10,
-                                  height: 10,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(100),
-                                      color: item.alertStatus.color
+                          child: Text(cell.name, style: GardenTypography.bodyLg),
+                        ),
+                        ...values.map((CellAnalyticListItem item) {
+                          return Expanded(
+                            flex: 1,
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                spacing: GardenSpace.gapSm,
+                                children: [
+                                  Container(
+                                    width: 10,
+                                    height: 10,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(100),
+                                        color: item.alertStatus.color
+                                    ),
                                   ),
-                                ),
-                                Text(item.value, style: GardenTypography.bodyLg),
-                              ],
+                                  Text(item.value, style: GardenTypography.bodyLg),
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      }),
-                    ],
+                          );
+                        }),
+                      ],
+                    ),
                   ),
                 ),
               );
