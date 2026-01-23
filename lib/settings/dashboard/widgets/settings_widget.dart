@@ -41,7 +41,7 @@ class _GlobalSettingsWidgetState extends State<GlobalSettingsWidget> {
           children: [
             Row(
               children: [
-                const Icon(Icons.settings_outlined),
+                Icon(Icons.settings_outlined, color: Theme.of(context).primaryColor,),
                 const SizedBox(width: 8),
                 const Text('Paramètres', style: TextStyle(fontSize: 18)),
                 const Spacer(),

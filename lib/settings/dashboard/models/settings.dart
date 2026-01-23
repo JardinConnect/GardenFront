@@ -92,8 +92,21 @@ enum SettingType {
 }
 
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+class Log{
+  final String userId;
+  final String value;
+
+  Log({
+    required this.userId,
+    required this.value,
+  });
+
+  factory Log.fromJson(Map<String, dynamic> json) =>
+      _$LogFromJson(json);
+}
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class Logs {
-  final List<String> logs;
+  final List<Log> logs;
 
   Logs({
     required this.logs,

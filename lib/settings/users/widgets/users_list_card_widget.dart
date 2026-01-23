@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_connect/auth/utils/auth_extension.dart';
+import 'package:garden_connect/settings/users/bloc/users_bloc.dart';
 import 'package:garden_ui/ui/widgets/atoms/Card/card.dart';
 
 import '../../../auth/models/user.dart';
 
 class UserListCardWidget extends StatelessWidget {
-  const UserListCardWidget({super.key, required this.users});
+  const UserListCardWidget({super.key, required this.users, this.isEditable });
 
   final List<User> users;
+  final bool? isEditable;
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +37,8 @@ class UserListCardWidget extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsetsGeometry.directional(
                     top: 20,
-                    start: 60,
-                    end: 60,
+                    start: 40,
+                    end: 40,
                   ),
                   child: Column(
                     children: [
@@ -42,11 +46,13 @@ class UserListCardWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Nom",
+                            "Prenom/Nom",
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                           Text("Email"),
-                          Text("Status"),
+                          Text("Role"),
+                          if (isEditable == true)
+                            Text("Actions"),
                         ],
                       ),
 
@@ -62,9 +68,9 @@ class UserListCardWidget extends StatelessWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      user.lastName,
+                                      "${user.firstName}/${user.lastName}",
                                       style:
-                                          Theme.of(context).textTheme.bodyLarge,
+                                      Theme.of(context).textTheme.bodyLarge,
                                     ),
                                     Text(
                                       user.email,
@@ -72,10 +78,23 @@ class UserListCardWidget extends StatelessWidget {
                                           Theme.of(context).textTheme.bodyLarge,
                                     ),
                                     Text(
-                                      user.phoneNumber,
+                                      user.role,
                                       style:
                                           Theme.of(context).textTheme.bodyLarge,
                                     ),
+                                    if (isEditable == true)
+                                      Row(
+                                        children: [
+                                          if (context.currentUser == user || context.currentUser?.role=="admin")
+                                              IconButton(onPressed:(){
+                                                context.read<UsersBloc>().add(UserSelect(user: user));
+                                              }, icon: Icon(Icons.edit, color: Theme.of(context).primaryColor,)),
+
+                                          IconButton(onPressed:(){
+                                            context.read<UsersBloc>().add(UserSelect(user: user));
+                                          }, icon: Icon(Icons.remove_red_eye_outlined, color: Theme.of(context).primaryColor,)),
+                                        ]
+                                      )
                                   ],
                                 ),
                               )).toList(),

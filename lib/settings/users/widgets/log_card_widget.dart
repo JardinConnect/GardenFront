@@ -5,7 +5,7 @@ import 'package:garden_ui/ui/widgets/atoms/Card/card.dart' show GardenCard;
 
 class LogCardWidget extends StatelessWidget {
   const LogCardWidget({super.key, required this.logs});
-  final Logs logs;
+  final List<Log> logs;
 
   @override
   Widget build(BuildContext context) {
@@ -35,14 +35,10 @@ class LogCardWidget extends StatelessWidget {
                   thumbVisibility: true,
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding: const EdgeInsetsGeometry.directional(
-                        top: 20,
-                        start: 60,
-                        end: 60,
-                      ),
+                      padding: const EdgeInsets.all(20.0),
                       child: Column(
                         children: [
-                          for (final log in logs.logs)
+                          for (final log in logs)
                             Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Container(
@@ -54,7 +50,7 @@ class LogCardWidget extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(30),
                                 ),
                                 child: Text(
-                                  log,
+                                  log.value,
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontStyle: Theme.of(context).textTheme.bodyMedium?.fontStyle
