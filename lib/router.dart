@@ -7,13 +7,15 @@ import 'package:garden_connect/cells/pages/cell_detail_page.dart';
 import 'package:garden_connect/settings/area/page/area_add_edit_page.dart';
 import 'package:garden_connect/settings/area/page/area_settings_page.dart';
 import 'package:go_router/go_router.dart';
-import 'package:garden_connect/auth/auth.dart';
-import 'package:garden_connect/menu/view/menu_page.dart';
-import 'package:garden_connect/dashboard/view/dashboard_page.dart';
-import 'package:garden_connect/areas/pages/areas_page.dart';
-import 'package:garden_connect/cells/pages/cells_page.dart';
 import 'package:garden_connect/alerts/page/alerts_page.dart';
+import 'package:garden_connect/areas/pages/areas_page.dart';
+import 'package:garden_connect/auth/auth.dart';
+import 'package:garden_connect/dashboard/view/dashboard_page.dart';
+import 'package:garden_connect/cells/pages/cells_page.dart';
+import 'package:garden_connect/menu/view/menu_page.dart';
 import 'package:garden_connect/settings/dashboard/page/settings_page.dart';
+import 'package:garden_connect/settings/users/bloc/users_bloc.dart';
+import 'package:garden_connect/settings/users/page/users_page.dart';
 
 import 'alerts/bloc/alert_bloc.dart';
 import 'analytics/bloc/analytics_bloc.dart';
@@ -126,6 +128,16 @@ class AppRouter {
             path: '/settings',
             pageBuilder: (context, state) => NoTransitionPage(
               child: const SettingsPage(),
+            ),
+          ),
+          GoRoute(
+            path: '/settings/users',
+            pageBuilder: (context, state) => NoTransitionPage(
+              child:
+                   BlocProvider(
+                    create: (context) => UsersBloc(),
+               child:
+               UsersPage(),)
             ),
           ),
           GoRoute(
