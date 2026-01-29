@@ -22,18 +22,6 @@ class AlertsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AlertBloc(),
-      child: const AlertsPageView(),
-    );
-  }
-}
-
-class AlertsPageView extends StatelessWidget {
-  const AlertsPageView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
     return BlocConsumer<AlertBloc, AlertState>(
       listener: (context, state) {
         if (state is AlertError) {

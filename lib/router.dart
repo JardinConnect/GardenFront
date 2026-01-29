@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_connect/cells/bloc/cell_bloc.dart';
 import 'package:garden_connect/cells/pages/cell_detail_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:garden_connect/auth/auth.dart';
@@ -10,6 +12,10 @@ import 'package:garden_connect/areas/pages/areas_page.dart';
 import 'package:garden_connect/cells/pages/cells_page.dart';
 import 'package:garden_connect/alerts/page/alerts_page.dart';
 import 'package:garden_connect/settings/dashboard/page/settings_page.dart';
+
+import 'alerts/bloc/alert_bloc.dart';
+import 'analytics/bloc/analytics_bloc.dart';
+import 'areas/bloc/area_bloc.dart';
 
 class AppRouter {
   final AuthBloc authBloc;
@@ -39,7 +45,23 @@ class AppRouter {
       ShellRoute(
         pageBuilder: (context, state, child) {
           return NoTransitionPage(
-            child: MenuPage(child: child),
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider<AnalyticsBloc>(
+                  create: (context) => AnalyticsBloc(),
+                ),
+                BlocProvider<AreaBloc>(
+                  create: (context) => AreaBloc(),
+                ),
+                BlocProvider<CellBloc>(
+                  create: (context) => CellBloc(),
+                ),
+                BlocProvider<AlertBloc>(
+                  create: (context) => AlertBloc(),
+                ),
+              ],
+              child: MenuPage(child: child),
+            ),
           );
         },
         routes: [
@@ -57,9 +79,18 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: 'cells/:id',
-                pageBuilder: (context, GoRouterState state) => NoTransitionPage(
-                  child: CellDetailPage(id: int.parse(state.pathParameters['id']!)),
-                ),
+                pageBuilder: (context, GoRouterState state) {
+                  final id = int.parse(state.pathParameters['id']!);
+                  return NoTransitionPage(
+                    child: BlocProvider(
+                      create: (context) => CellBloc()..add(LoadCellDetail(id: id)),
+                      child: CellDetailPage(
+                        id: id,
+                        isFromAreaPage: true,
+                      ),
+                    ),
+                  );
+                },
               ),
             ],
           ),
@@ -70,12 +101,18 @@ class AppRouter {
             ),
             routes: [
               GoRoute(
-                path: '/:id',
-                pageBuilder: (context, GoRouterState state) => NoTransitionPage(
-                  child: CellDetailPage(id: int.parse(state.pathParameters['id']!)),
-                )
+                path: ':id',
+                pageBuilder: (context, GoRouterState state) {
+                  final id = int.parse(state.pathParameters['id']!);
+                  return NoTransitionPage(
+                    child: BlocProvider(
+                      create: (context) => CellBloc()..add(LoadCellDetail(id: id)),
+                      child: CellDetailPage(id: id),
+                    ),
+                  );
+                },
               )
-            ]
+            ],
           ),
           GoRoute(
             path: '/alerts',

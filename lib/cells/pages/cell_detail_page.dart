@@ -57,10 +57,8 @@ class CellDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget body = Builder(
-      builder: (context) {
-        final cellState = context.watch<CellBloc>().state;
-
+    Widget body = BlocBuilder<CellBloc, CellState>(
+      builder: (context, cellState) {
         if (cellState is CellInitial || cellState is CellDetailShimmer) {
           return const Center(child: CircularProgressIndicator());
         } else if (cellState is CellError) {
@@ -68,10 +66,12 @@ class CellDetailPage extends StatelessWidget {
         } else if (cellState is CellDetailLoaded) {
           return SingleChildScrollView(
             child: Padding(
-              padding: !isFromAreaPage ? EdgeInsets.symmetric(
+              padding: !isFromAreaPage
+                  ? EdgeInsets.symmetric(
                 horizontal: GardenSpace.paddingLg,
                 vertical: GardenSpace.paddingLg,
-              ) : EdgeInsets.zero,
+              )
+                  : EdgeInsets.zero,
               child: Column(
                 spacing: GardenSpace.gapLg,
                 children: [
@@ -86,7 +86,7 @@ class CellDetailPage extends StatelessWidget {
                             BackTextButton(backFunction: () => context.pop()),
                             IconButton.filled(
                               icon: Icon(Icons.refresh),
-                              onPressed: () => _handleRefreshCellDetail,
+                              onPressed: () => _handleRefreshCellDetail(context),
                             ),
                           ],
                         ),
@@ -104,11 +104,8 @@ class CellDetailPage extends StatelessWidget {
                               ),
                               GardenToggle(
                                 isEnabled: cellState.cell.isTracked,
-                                onToggle:
-                                    (bool value) => _handleChangeCellTracking(
-                                      context,
-                                      value,
-                                    ),
+                                onToggle: (bool value) =>
+                                    _handleChangeCellTracking(context, value),
                                 enabledIcon: Icons.visibility_outlined,
                                 disabledIcon: Icons.visibility_off_outlined,
                               ),
@@ -136,9 +133,7 @@ class CellDetailPage extends StatelessWidget {
                       ),
                     ],
                   ),
-
                   AnalyticsCardsGridWidget(analytics: cellState.cell.analytics),
-
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: GardenSpace.gapSm,
