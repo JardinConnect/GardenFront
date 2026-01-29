@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/design_system.dart';
-import 'package:garden_ui/ui/foundation/color/color_design_system.dart';
 
+import '../../analytics/widgets/analytics_cards_grid.dart';
 import '../../analytics/widgets/graphic_widget.dart';
 import '../../areas/models/area.dart';
 import '../../common/widgets/custom_tab_selector.dart';
@@ -70,10 +70,7 @@ class HexagonDialogBoxWidget extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: CustomTabSelector(
-                      tabs: const [
-                        "Vues d'ensemble",
-                        "Historique",
-                      ],
+                      tabs: const ["Vues d'ensemble", "Historique"],
                     ),
                   ),
                 ),
@@ -82,14 +79,19 @@ class HexagonDialogBoxWidget extends StatelessWidget {
                     children: [
                       SingleChildScrollView(
                         padding: EdgeInsets.all(14),
-                        child: Text("Contenu Vue d'ensemble"),
+                        child:
+                            area.analytics != null
+                                ? AnalyticsCardsGridWidget(
+                                  analytics: area.analytics!,
+                                )
+                                : Text("Aucun espaces disponible"),
                       ),
                       SingleChildScrollView(
                         padding: EdgeInsets.all(14),
                         child:
                             area.analytics != null
                                 ? GraphicWidget(analytics: area.analytics!)
-                                : Text("Aucune donnée disponible"),
+                                : Text("Aucun espaces disponible"),
                       ),
                     ],
                   ),

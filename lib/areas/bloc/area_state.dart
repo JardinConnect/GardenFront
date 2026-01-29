@@ -30,6 +30,11 @@ final class AreasShimmer extends AreaState {
 final class AreasLoaded extends AreaState {
   final List<Area> areas;
   final bool showAddForm;
+  final bool showEditForm;
+  final bool toggleAnalyticsWidget;
+  final bool showCellsListWidget;
+  final bool showAreasListWidget;
+  final int? selectedLevel;
 
   const AreasLoaded({
     required this.areas,
@@ -37,6 +42,11 @@ final class AreasLoaded extends AreaState {
     super.selectedCell,
     super.isAreaSelected,
     this.showAddForm = false,
+    this.showEditForm = false,
+    this.toggleAnalyticsWidget = false,
+    this.showCellsListWidget = false,
+    this.showAreasListWidget = true,
+    this.selectedLevel,
   });
 
   AreasLoaded copyWith({
@@ -45,7 +55,13 @@ final class AreasLoaded extends AreaState {
     Cell? selectedCell,
     bool? isAreaSelected,
     bool? showAddForm,
+    bool? showEditForm,
+    bool? toggleAnalyticsWidget,
+    bool? showCellsListWidget,
+    bool? showAreasListWidget,
+    int? selectedLevel,
     bool clearSelection = false,
+    bool clearLevel = false,
   }) {
     return AreasLoaded(
       areas: areas ?? this.areas,
@@ -53,6 +69,11 @@ final class AreasLoaded extends AreaState {
       selectedCell: clearSelection ? null : selectedCell,
       isAreaSelected: clearSelection ? false : (isAreaSelected ?? this.isAreaSelected),
       showAddForm: showAddForm ?? this.showAddForm,
+      showEditForm: showEditForm ?? this.showEditForm,
+      toggleAnalyticsWidget: toggleAnalyticsWidget ?? this.toggleAnalyticsWidget,
+      showCellsListWidget: showCellsListWidget ?? this.showCellsListWidget,
+      showAreasListWidget: showAreasListWidget ?? this.showAreasListWidget,
+      selectedLevel: clearLevel ? null : (selectedLevel ?? this.selectedLevel),
     );
   }
 }

@@ -16,7 +16,7 @@ class AuthRepository {
         body: jsonEncode({'email': email, 'password': password}),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         String token = responseData['access_token'];
         User user = User.fromJson(responseData['user']);

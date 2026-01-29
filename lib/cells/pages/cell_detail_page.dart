@@ -10,8 +10,13 @@ import 'package:go_router/go_router.dart';
 
 class CellDetailPage extends StatelessWidget {
   final int id;
+  final bool isFromAreaPage;
 
-  const CellDetailPage({super.key, required this.id});
+  const CellDetailPage({
+    super.key,
+    required this.id,
+    this.isFromAreaPage = false,
+  });
 
   void _handleChangeCellTracking(BuildContext context, bool newTrackingValue) {
     context.read<CellBloc>().add(
@@ -30,13 +35,21 @@ class CellDetailPage extends StatelessWidget {
     Duration difference = DateTime.now().difference(lastUpdateAt);
 
     if (difference.inSeconds < 60) {
-      result.write(" ${difference.inSeconds} ${difference.inSeconds == 1 ? 'seconde' : 'secondes'}");
+      result.write(
+        " ${difference.inSeconds} ${difference.inSeconds == 1 ? 'seconde' : 'secondes'}",
+      );
     } else if (difference.inMinutes < 60) {
-      result.write(" ${difference.inMinutes} ${difference.inMinutes == 1 ? 'minute' : 'minutes'}");
+      result.write(
+        " ${difference.inMinutes} ${difference.inMinutes == 1 ? 'minute' : 'minutes'}",
+      );
     } else if (difference.inHours < 24) {
-      result.write(" ${difference.inHours} ${difference.inHours == 1 ? 'heure' : 'heures'}");
+      result.write(
+        " ${difference.inHours} ${difference.inHours == 1 ? 'heure' : 'heures'}",
+      );
     } else {
-      result.write(" ${difference.inDays} ${difference.inDays == 1 ? 'jour' : 'jours'}");
+      result.write(
+        " ${difference.inDays} ${difference.inDays == 1 ? 'jour' : 'jours'}",
+      );
     }
 
     return result.toString();
@@ -44,116 +57,108 @@ class CellDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => CellBloc()..add(LoadCellDetail(id: id)),
-          ),
-        ],
-        child: Builder(
-          builder: (context) {
-            final cellState = context.watch<CellBloc>().state;
+    Widget body = Builder(
+      builder: (context) {
+        final cellState = context.watch<CellBloc>().state;
 
-            if (cellState is CellInitial || cellState is CellDetailShimmer) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (cellState is CellError) {
-              return Center(child: Text('Erreur: ${cellState.message}'));
-            } else if (cellState is CellDetailLoaded) {
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: GardenSpace.paddingLg,
-                    vertical: GardenSpace.paddingLg,
-                  ),
-                  child: Column(
-                    spacing: GardenSpace.gapLg,
+        if (cellState is CellInitial || cellState is CellDetailShimmer) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (cellState is CellError) {
+          return Center(child: Text('Erreur: ${cellState.message}'));
+        } else if (cellState is CellDetailLoaded) {
+          return SingleChildScrollView(
+            child: Padding(
+              padding: !isFromAreaPage ? EdgeInsets.symmetric(
+                horizontal: GardenSpace.paddingLg,
+                vertical: GardenSpace.paddingLg,
+              ) : EdgeInsets.zero,
+              child: Column(
+                spacing: GardenSpace.gapLg,
+                children: [
+                  Column(
+                    spacing: GardenSpace.gapSm,
                     children: [
-                      Column(
-                        spacing: GardenSpace.gapSm,
+                      if (!isFromAreaPage)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            BackTextButton(backFunction: () => context.pop()),
+                            IconButton.filled(
+                              icon: Icon(Icons.refresh),
+                              onPressed: () => _handleRefreshCellDetail,
+                            ),
+                          ],
+                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            spacing: GardenSpace.gapSm,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              BackTextButton(backFunction: () => context.pop()),
-                              IconButton.filled(
-                                icon: Icon(Icons.refresh),
-                                onPressed: () => _handleRefreshCellDetail,
+                              Text(
+                                cellState.cell.name,
+                                style: GardenTypography.headingLg,
+                              ),
+                              GardenToggle(
+                                isEnabled: cellState.cell.isTracked,
+                                onToggle:
+                                    (bool value) => _handleChangeCellTracking(
+                                      context,
+                                      value,
+                                    ),
+                                enabledIcon: Icons.visibility_outlined,
+                                disabledIcon: Icons.visibility_off_outlined,
                               ),
                             ],
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Row(
-                                spacing: GardenSpace.gapSm,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    cellState.cell.name,
-                                    style: GardenTypography.headingLg,
-                                  ),
-                                  GardenToggle(
-                                    isEnabled: cellState.cell.isTracked,
-                                    onToggle:
-                                        (bool value) =>
-                                            _handleChangeCellTracking(
-                                              context,
-                                              value,
-                                            ),
-                                    enabledIcon: Icons.visibility_outlined,
-                                    disabledIcon: Icons.visibility_off_outlined,
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                getLastUpdate(cellState.cell.lastUpdateAt),
-                                style: GardenTypography.caption,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                cellState.cell.location,
-                                style: GardenTypography.caption,
-                              ),
-                              BatteryIndicator(
-                                batteryPercentage: cellState.cell.battery,
-                                size: BatteryIndicatorSize.sm,
-                              ),
-                            ],
+                          Text(
+                            getLastUpdate(cellState.cell.lastUpdateAt),
+                            style: GardenTypography.caption,
                           ),
                         ],
                       ),
-
-                      AnalyticsCardsGridWidget(analytics: cellState.cell.analytics),
-
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: GardenSpace.gapSm,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            "Évolution des données",
-                            style: GardenTypography.headingLg,
+                            cellState.cell.location,
+                            style: GardenTypography.caption,
                           ),
-                          GraphicWidget(analytics: cellState.cell.analytics),
+                          BatteryIndicator(
+                            batteryPercentage: cellState.cell.battery,
+                            size: BatteryIndicatorSize.sm,
+                          ),
                         ],
                       ),
                     ],
                   ),
-                ),
-              );
-            } else {
-              return const Center(child: Text('Erreur'));
-            }
-          },
-        ),
-      ),
+
+                  AnalyticsCardsGridWidget(analytics: cellState.cell.analytics),
+
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: GardenSpace.gapSm,
+                    children: [
+                      Text(
+                        "Évolution des données",
+                        style: GardenTypography.headingLg,
+                      ),
+                      GraphicWidget(analytics: cellState.cell.analytics),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        } else {
+          return const Center(child: Text('Erreur'));
+        }
+      },
     );
+    return isFromAreaPage ? body : Scaffold(body: body);
   }
 }
