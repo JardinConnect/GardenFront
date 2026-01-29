@@ -34,101 +34,89 @@ class CellsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (context) => CellBloc()..add(LoadCells())),
-        ],
-
-        child: Builder(
-          builder: (context) {
-            final cellsState = context.watch<CellBloc>().state;
-
-            if (cellsState is CellInitial || cellsState is CellsShimmer) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (cellsState is CellError) {
-              return Center(child: Text('Erreur: ${cellsState.message}'));
-            } else if (cellsState is CellsLoaded) {
-              return Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: GardenSpace.paddingLg,
-                  vertical: GardenSpace.paddingLg,
-                ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    spacing: GardenSpace.gapLg,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 2,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              spacing: GardenSpace.gapSm,
-                              children: [
-                                if (!cellsState.isList)
-                                  CellsFilterWidget(
-                                    filter: cellsState.filter,
-                                    onChanged:
-                                        (newFilter) => _onFilterChanged(
-                                          context,
-                                          newFilter,
-                                        ),
-                                  ),
-                                TextField(
-                                  onChanged: (text) => _onSearch(context, text),
-                                  decoration: InputDecoration(
-                                    hintText: 'Rechercher',
-                                    prefixIcon: Icon(Icons.search),
-                                    hintStyle: GardenTypography.bodyLg.copyWith(
-                                      color: GardenColors.typography.shade200,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Row(
+      body: BlocBuilder<CellBloc, CellState>(
+        builder: (context, cellsState) {
+          if (cellsState is CellInitial || cellsState is CellsShimmer) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (cellsState is CellError) {
+            return Center(child: Text('Erreur: ${cellsState.message}'));
+          } else if (cellsState is CellsLoaded) {
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: GardenSpace.paddingLg,
+                vertical: GardenSpace.paddingLg,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  spacing: GardenSpace.gapLg,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 2,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             spacing: GardenSpace.gapSm,
                             children: [
-                              IconButton.filled(
-                                onPressed: () => _onToggleListFormat(context),
-                                icon: Icon(
-                                  cellsState.isList
-                                      ? Icons.grid_view
-                                      : Icons.list,
+                              if (!cellsState.isList)
+                                CellsFilterWidget(
+                                  filter: cellsState.filter,
+                                  onChanged: (newFilter) =>
+                                      _onFilterChanged(context, newFilter),
                                 ),
-                              ),
-                              IconButton.filled(
-                                onPressed: () => _onRefresh(context),
-                                icon: Icon(Icons.refresh),
+                              TextField(
+                                onChanged: (text) => _onSearch(context, text),
+                                decoration: InputDecoration(
+                                  hintText: 'Rechercher',
+                                  prefixIcon: Icon(Icons.search),
+                                  hintStyle: GardenTypography.bodyLg.copyWith(
+                                    color: GardenColors.typography.shade200,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
-                        ],
-                      ),
-
-                      if (cellsState.isList)
-                        CellsListWidget(
-                          cells: cellsState.filteredCells,
-                          onPressed: _onCellPressed,
-                        )
-                      else
-                        CellsCardsWidget(
-                          cells: cellsState.filteredCells,
-                          filter: cellsState.filter,
-                          onPressed: _onCellPressed,
                         ),
-                    ],
-                  ),
+                        Row(
+                          spacing: GardenSpace.gapSm,
+                          children: [
+                            IconButton.filled(
+                              onPressed: () => _onToggleListFormat(context),
+                              icon: Icon(
+                                cellsState.isList
+                                    ? Icons.grid_view
+                                    : Icons.list,
+                              ),
+                            ),
+                            IconButton.filled(
+                              onPressed: () => _onRefresh(context),
+                              icon: Icon(Icons.refresh),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    if (cellsState.isList)
+                      CellsListWidget(
+                        cells: cellsState.filteredCells,
+                        onPressed: _onCellPressed,
+                      )
+                    else
+                      CellsCardsWidget(
+                        cells: cellsState.filteredCells,
+                        filter: cellsState.filter,
+                        onPressed: _onCellPressed,
+                      ),
+                  ],
                 ),
-              );
-            } else {
-              return const Center(child: Text('Erreur'));
-            }
-          },
-        ),
+              ),
+            );
+          } else {
+            return const Center(child: Text('Erreur'));
+          }
+        },
       ),
     );
   }

@@ -43,7 +43,7 @@ dependencies:
   garden_ui:
     git:
       url: https://github.com/JardinConnect/GardenUI.git
-      ref: v0.3.6
+      ref: v0.3.8
   fl_chart: ^1.1.1
   intl: ^0.20.2
   hexagon: ^0.2.0

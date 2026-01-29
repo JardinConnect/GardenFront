@@ -19,6 +19,8 @@ class CellBloc extends Bloc<CellEvent, CellState> {
     on<LoadCellDetail>(_loadCellDetail);
     on<CellTrackingChanged>(_changeCellTracking);
     on<RefreshCellDetail>(_refreshCellDetail);
+
+    add(LoadCells());
   }
 
   _loadCells(LoadCells event, Emitter<CellState> emit) async {
