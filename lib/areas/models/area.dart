@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../analytics/models/analytics.dart';
 import '../../cells/models/cell.dart';
 import '../../common/models/base_item.dart';
 
