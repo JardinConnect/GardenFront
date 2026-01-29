@@ -54,6 +54,14 @@ class AppRouter {
             pageBuilder: (context, state) => NoTransitionPage(
               child: const AreasPage(),
             ),
+            routes: [
+              GoRoute(
+                path: 'cells/:id',
+                pageBuilder: (context, GoRouterState state) => NoTransitionPage(
+                  child: CellDetailPage(id: int.parse(state.pathParameters['id']!)),
+                ),
+              ),
+            ],
           ),
           GoRoute(
             path: '/cells',

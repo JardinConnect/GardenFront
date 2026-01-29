@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_connect/areas/widgets/edit_area_form_widget.dart';
 import 'package:garden_connect/areas/widgets/summary_zones_widget.dart';
 import 'package:garden_ui/ui/components.dart';
+import 'package:go_router/go_router.dart';
+import '../../cells/bloc/cell_bloc.dart';
 import '../../cells/models/cell.dart';
+import '../../cells/pages/cell_detail_page.dart';
 import '../models/area.dart';
 import '../bloc/area_bloc.dart';
 import 'add_area_form_widget.dart';
@@ -16,6 +20,8 @@ class TabZonesWidget extends StatelessWidget {
   final bool isExpanded;
   final bool isOverview;
   final bool showAddForm;
+  final bool showEditForm;
+  final bool toggleAnalyticsWidget;
 
   const TabZonesWidget({
     super.key,
@@ -27,6 +33,8 @@ class TabZonesWidget extends StatelessWidget {
     this.isExpanded = true,
     this.isOverview = false,
     this.showAddForm = false,
+    this.showEditForm = false,
+    this.toggleAnalyticsWidget = false,
   });
 
   HierarchicalMenuItem _areaToMenuItem(Area area, BuildContext context) {
@@ -41,11 +49,11 @@ class TabZonesWidget extends StatelessWidget {
     if (area.cells != null && area.cells!.isNotEmpty) {
       children.addAll(
         area.cells!.map(
-          (cell) => HierarchicalMenuItem(
+              (cell) => HierarchicalMenuItem(
             id: 'cell_${cell.name}',
             title: cell.name,
             level: area.level + 1,
-            isExpanded: isExpanded,
+            // ✅ PAS de isExpanded ici
             onTap: () {
               print(
                 'Cellule sélectionnée: ${cell.name} dans la zone ${area.name}',
@@ -61,7 +69,8 @@ class TabZonesWidget extends StatelessWidget {
       id: area.name,
       title: area.name,
       level: area.level,
-      isExpanded: isExpanded,
+      // ✅ PAS de isExpanded ici - c'est CRITIQUE !
+      // Le HierarchicalMenu gérera l'état lui-même
       onTap: () {
         print('Zone sélectionnée: ${area.name}');
         context.read<AreaBloc>().add(SelectArea(area));
@@ -73,7 +82,15 @@ class TabZonesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final menuItems =
-        areas.map((area) => _areaToMenuItem(area, context)).toList();
+    areas.map((area) => _areaToMenuItem(area, context)).toList();
+
+    // Déterminer l'ID de l'item sélectionné
+    String? selectedId;
+    if (selectedCell != null) {
+      selectedId = 'cell_${selectedCell!.name}';
+    } else if (selectedArea != null) {
+      selectedId = selectedArea!.name;
+    }
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +99,10 @@ class TabZonesWidget extends StatelessWidget {
           flex: 1,
           child: Padding(
             padding: const EdgeInsets.only(top: 25.0),
-            child: HierarchicalMenu(items: menuItems),
+            child: HierarchicalMenu(
+              items: menuItems,
+              selectedItemId: selectedId,
+            ),
           ),
         ),
         const SizedBox(width: 25),
@@ -90,16 +110,28 @@ class TabZonesWidget extends StatelessWidget {
           flex: 3,
           child: Padding(
             padding: const EdgeInsets.only(top: 25.0),
-            child: _buildDetailsPanel(),
+            child: _buildDetailsPanel(context),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildDetailsPanel() {
+  Widget _buildDetailsPanel(BuildContext context) {
     if (showAddForm) {
       return AddAreaFormWidget(availableAreas: areas);
+    }
+
+    if (showEditForm && selectedArea != null) {
+      return EditAreaFormWidget(availableAreas: areas, areaToEdit: selectedArea!);
+    }
+
+    if (selectedCell != null) {
+      return BlocProvider(
+        key: ValueKey(selectedCell!.id),
+        create: (_) => CellBloc()..add(LoadCellDetail(id: selectedCell!.id)),
+        child: CellDetailPage(id: selectedCell!.id, isFromAreaPage: true),
+      );
     }
 
     if (isOverview) {
@@ -108,6 +140,8 @@ class TabZonesWidget extends StatelessWidget {
         level: 0,
         areas: areas,
         analytics: null,
+        toggleAnalyticsWidget: toggleAnalyticsWidget,
+        currentLevel: 0,
       );
     }
 
@@ -126,8 +160,10 @@ class TabZonesWidget extends StatelessWidget {
     return SummaryZonesWidget(
       title: areaToDisplay.name,
       level: areaToDisplay.level,
-      areas: areaToDisplay.areas ?? [],
+      areas: [areaToDisplay],
       analytics: areaToDisplay.analytics,
+      toggleAnalyticsWidget: toggleAnalyticsWidget,
+      currentLevel: areaToDisplay.level,
     );
   }
 }

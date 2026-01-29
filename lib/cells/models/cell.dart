@@ -1,23 +1,22 @@
 import 'package:garden_connect/analytics/models/analytics.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../common/models/base_item.dart';
+
 part 'cell.g.dart';
 
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
-class Cell {
-  final int id;
-  final String name;
+class Cell extends BaseItem {
   final int battery;
-  final Analytics analytics;
   final String location;
   final DateTime lastUpdateAt;
   final bool isTracked;
 
   Cell({
-    required this.id,
-    required this.name,
+    required super.id,
+    required super.name,
     required this.battery,
-    required this.analytics,
+    required super.analytics,
     required this.location,
     required this.lastUpdateAt,
     required this.isTracked

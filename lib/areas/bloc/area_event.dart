@@ -32,3 +32,15 @@ final class AddArea extends AreaEvent {
 }
 
 final class ShowAddAreaForm extends AreaEvent {}
+
+final class ShowEditAreaForm extends AreaEvent {}
+
+final class ToggleAnalyticsWidget extends AreaEvent {}
+
+final class ShowCellsListWidget extends AreaEvent {}
+
+class ShowAreasListWidget extends AreaEvent {
+  final int? level;
+
+  ShowAreasListWidget({this.level});
+}

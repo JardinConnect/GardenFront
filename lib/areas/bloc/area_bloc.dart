@@ -21,6 +21,10 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
     on<ClearSelection>(_clearSelection);
     on<AddArea>(_addArea);
     on<ShowAddAreaForm>(_showAddAreaForm);
+    on<ShowEditAreaForm>(_showEditAreaForm);
+    on<ToggleAnalyticsWidget>(_toggleAnalyticsWidget);
+    on<ShowCellsListWidget>(_showCellsListWidget);
+    on<ShowAreasListWidget>(_showAreasListWidget);
 
     add(LoadAreas());
   }
@@ -29,7 +33,13 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
     emit(const AreasShimmer());
     try {
       final areas = await _areaRepository.fetchAreas();
-      emit(AreasLoaded(areas: areas));
+      emit(
+        AreasLoaded(
+          areas: areas,
+          showAreasListWidget: false,
+          showCellsListWidget: false,
+        ),
+      );
     } catch (e) {
       emit(AreaError(message: e.toString()));
     }
@@ -44,6 +54,10 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
           selectedCell: null,
           isAreaSelected: true,
           showAddForm: false,
+          showEditForm: false,
+          showAreasListWidget: false,
+          showCellsListWidget: false,
+          clearLevel: true,
         ),
       );
     }
@@ -58,6 +72,10 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
           selectedCell: event.cell,
           isAreaSelected: false,
           showAddForm: false,
+          showEditForm: false,
+          showAreasListWidget: false,
+          showCellsListWidget: false,
+          clearLevel: true,
         ),
       );
     }
@@ -66,7 +84,16 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
   _clearSelection(ClearSelection event, Emitter<AreaState> emit) {
     final currentState = state;
     if (currentState is AreasLoaded) {
-      emit(currentState.copyWith(clearSelection: true, showAddForm: false));
+      emit(
+        currentState.copyWith(
+          clearSelection: true,
+          showAddForm: false,
+          showEditForm: false,
+          showAreasListWidget: false,
+          showCellsListWidget: false,
+          clearLevel: true,
+        ),
+      );
     }
   }
 
@@ -74,7 +101,10 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
     final currentState = state;
     if (currentState is AreasLoaded) {
       try {
-        final colorHex = event.color.value.toRadixString(16).toUpperCase().padLeft(8, '0');
+        final colorHex = event.color.value
+            .toRadixString(16)
+            .toUpperCase()
+            .padLeft(8, '0');
 
         final newArea = await _areaRepository.createArea(
           name: event.name,
@@ -93,6 +123,50 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
     final currentState = state;
     if (currentState is AreasLoaded) {
       emit(currentState.copyWith(showAddForm: true));
+    }
+  }
+
+  _showEditAreaForm(ShowEditAreaForm event, Emitter<AreaState> emit) {
+    final currentState = state;
+    if (currentState is AreasLoaded) {
+      emit(currentState.copyWith(showEditForm: true));
+    }
+  }
+
+  _toggleAnalyticsWidget(ToggleAnalyticsWidget event, Emitter<AreaState> emit) {
+    final currentState = state;
+    if (currentState is AreasLoaded) {
+      emit(
+        currentState.copyWith(
+          toggleAnalyticsWidget: !currentState.toggleAnalyticsWidget,
+        ),
+      );
+    }
+  }
+
+  _showCellsListWidget(ShowCellsListWidget event, Emitter<AreaState> emit) {
+    final currentState = state;
+    if (currentState is AreasLoaded) {
+      emit(
+        currentState.copyWith(
+          showAreasListWidget: false,
+          showCellsListWidget: true,
+          clearLevel: true,
+        ),
+      );
+    }
+  }
+
+  _showAreasListWidget(ShowAreasListWidget event, Emitter<AreaState> emit) {
+    final currentState = state;
+    if (currentState is AreasLoaded) {
+      emit(
+        currentState.copyWith(
+          showCellsListWidget: false,
+          showAreasListWidget: true,
+          selectedLevel: event.level,
+        ),
+      );
     }
   }
 }

@@ -17,6 +17,7 @@ class AreaRepository {
       // Données initiales
       _cachedAreas = [
         {
+          "id": 1,
           "name": "Parcelle Nord",
           "color": "FFE74C3C",
           "level": 1,
@@ -132,6 +133,7 @@ class AreaRepository {
           },
           "areas": [
             {
+              "id": 2,
               "name": "Planche Tomates Nord",
               "color": "FFE74C3C",
               "level": 2,
@@ -247,8 +249,8 @@ class AreaRepository {
               },
               "cells": [
                 {
-                  "id": 14,
-                  "name": "Tomate Serre Nord A1",
+                  "id": 1,
+                  "name": "Tomate Serre Nord",
                   "battery": 67,
                   "is_tracked": true,
                   "last_update_at": "2026-01-09 09:46:26",
@@ -487,6 +489,7 @@ class AreaRepository {
           ]
         },
         {
+          "id": 1,
           "name": "Parcelle Sud",
           "color": "FF3498DB",
           "level": 1,
@@ -602,6 +605,7 @@ class AreaRepository {
           },
           "areas": [
             {
+              "id": 3,
               "name": "Planche Tomates Sud",
               "color": "FF3498DB",
               "level": 2,
@@ -976,6 +980,7 @@ class AreaRepository {
 
       // Créer la nouvelle area
       final newAreaJson = {
+        "id": 1,
         "name": name,
         "color": color,
         "level": parentArea != null ? parentArea.level + 1 : 1,
