@@ -8,12 +8,14 @@ final class LoadAreas extends AreaEvent {}
 
 final class SelectArea extends AreaEvent {
   final Area area;
+
   SelectArea(this.area);
 }
 
 final class SelectCell extends AreaEvent {
   final Cell cell;
   final Area parentArea;
+
   SelectCell(this.cell, this.parentArea);
 }
 
@@ -24,14 +26,30 @@ final class AddArea extends AreaEvent {
   final Color color;
   final Area? parentArea;
 
-  AddArea({
+  AddArea({required this.name, required this.color, this.parentArea});
+}
+
+final class ShowAddAreaForm extends AreaEvent {}
+
+final class SearchAreas extends AreaEvent {
+  final String? search;
+
+  SearchAreas({required this.search});
+}
+
+final class UpdateArea extends AreaEvent {
+  final int? id;
+  final String name;
+  final Color color;
+  final Area? parentArea;
+
+  UpdateArea({
+    required this.id,
     required this.name,
     required this.color,
     this.parentArea,
   });
 }
-
-final class ShowAddAreaForm extends AreaEvent {}
 
 final class ShowEditAreaForm extends AreaEvent {}
 

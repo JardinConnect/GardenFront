@@ -17,7 +17,7 @@ class AreaRepository {
       // Données initiales
       _cachedAreas = [
         {
-          "id": 1,
+          "id": 3,
           "name": "Parcelle Nord",
           "color": "FFE74C3C",
           "level": 1,
@@ -133,7 +133,7 @@ class AreaRepository {
           },
           "areas": [
             {
-              "id": 2,
+              "id": 7,
               "name": "Planche Tomates Nord",
               "color": "FFE74C3C",
               "level": 2,
@@ -249,7 +249,7 @@ class AreaRepository {
               },
               "cells": [
                 {
-                  "id": 1,
+                  "id": 14,
                   "name": "Tomate Serre Nord",
                   "battery": 67,
                   "is_tracked": true,
@@ -489,7 +489,7 @@ class AreaRepository {
           ]
         },
         {
-          "id": 1,
+          "id": 4,
           "name": "Parcelle Sud",
           "color": "FF3498DB",
           "level": 1,
@@ -605,7 +605,7 @@ class AreaRepository {
           },
           "areas": [
             {
-              "id": 3,
+              "id": 8,
               "name": "Planche Tomates Sud",
               "color": "FF3498DB",
               "level": 2,
@@ -999,6 +999,110 @@ class AreaRepository {
       throw Exception('Failed to create area: $e');
     }
   }
+
+// Ajoutez cette méthode après fetchAreas()
+  Future<Area?> fetchAreaById(int id) async {
+    try {
+      // Utiliser le cache si disponible
+      if (_cachedAreas != null) {
+        final allAreas = _cachedAreas!.map((area) => Area.fromJson(area)).toList();
+        final flattenedAreas = Area.getAllAreasFlattened(allAreas);
+        return flattenedAreas.cast<Area?>().firstWhere(
+              (area) => area?.id == id,
+          orElse: () => null,
+        );
+      }
+
+      // Si pas de cache, charger d'abord les areas
+      await fetchAreas();
+      return fetchAreaById(id);
+    } catch (e) {
+      throw Exception('Failed to load area with id $id: $e');
+    }
+  }
+
+  Future<Area> updateArea({
+    required int id,
+    required String name,
+    required Color color,
+    Area? parentArea,
+  }) async {
+    try {
+      // Simuler un délai réseau
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      if (_cachedAreas == null) {
+        throw Exception('Cache not initialized');
+      }
+
+      // Trouver et mettre à jour l'area
+      final updated = _updateAreaInList(
+        _cachedAreas!,
+        id,
+        name,
+        color,
+        parentArea,
+      );
+
+      if (!updated) {
+        throw Exception('Area with id $id not found');
+      }
+
+      // Récupérer l'area mise à jour
+      final allAreas = _cachedAreas!.map((area) => Area.fromJson(area)).toList();
+      final flattenedAreas = Area.getAllAreasFlattened(allAreas);
+
+      return flattenedAreas.firstWhere((area) => area.id != null && area.id == id);
+    } catch (e) {
+      throw Exception('Failed to update area: $e');
+    }
+  }
+
+  bool _updateAreaInList(
+      List<Map<String, dynamic>> areas,
+      int id,
+      String name,
+      Color color,
+      Area? parentArea,
+      ) {
+    for (var i = 0; i < areas.length; i++) {
+      final area = areas[i];
+
+      if (area['id'] == id) {
+        // Area trouvée, la mettre à jour
+        area['name'] = name;
+        area['color'] = color.value.toRadixString(16).toUpperCase();
+
+        // Si on change de parent, il faut déplacer l'area
+        if (parentArea != null) {
+          // Retirer de la liste actuelle
+          final areaToMove = areas.removeAt(i);
+          // Calculer le nouveau niveau
+          areaToMove['level'] = parentArea.level + 1;
+          // Ajouter au nouveau parent
+          _addAreaToParent(_cachedAreas!, parentArea.name, areaToMove);
+        }
+
+        return true;
+      }
+
+      // Chercher récursivement dans les sous-areas
+      if (area['areas'] != null && area['areas'] is List) {
+        if (_updateAreaInList(
+          (area['areas'] as List).cast<Map<String, dynamic>>(),
+          id,
+          name,
+          color,
+          parentArea,
+        )) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
 
   bool _addAreaToParent(
       List<Map<String, dynamic>> areas,

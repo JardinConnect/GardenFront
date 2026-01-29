@@ -35,6 +35,7 @@ final class AreasLoaded extends AreaState {
   final bool showCellsListWidget;
   final bool showAreasListWidget;
   final int? selectedLevel;
+  final String? search;
 
   const AreasLoaded({
     required this.areas,
@@ -47,7 +48,39 @@ final class AreasLoaded extends AreaState {
     this.showCellsListWidget = false,
     this.showAreasListWidget = true,
     this.selectedLevel,
+    this.search,
   });
+
+  List<Area> get filteredAreas {
+    final allAreas = Area.getAllAreasFlattened(areas);
+    if (search == null || search!.isEmpty) {
+      return allAreas;
+    }
+    return allAreas
+        .where(
+          (area) => area.name.toLowerCase().contains(search!.toLowerCase()),
+        )
+        .toList();
+  }
+
+  List<Area> getAvailableParents(Area? currentArea) {
+    final allAreas = Area.getAllAreasFlattened(areas);
+
+    if (currentArea == null) {
+      // Mode ajout : tous les espaces sont disponibles
+      return allAreas;
+    }
+
+    // Mode édition : exclure l'espace courant et ses descendants
+    final descendants = Area.getDescendants(currentArea);
+    return allAreas.where((area) {
+      // Si un des ids est null, on ne peut pas comparer, donc on l'exclut par sécurité
+      if (area.id == null || currentArea.id == null) return false;
+
+      return area.id != currentArea.id &&
+          !descendants.any((desc) => desc.id != null && desc.id == area.id);
+    }).toList();
+  }
 
   AreasLoaded copyWith({
     List<Area>? areas,
@@ -60,6 +93,7 @@ final class AreasLoaded extends AreaState {
     bool? showCellsListWidget,
     bool? showAreasListWidget,
     int? selectedLevel,
+    String? search,
     bool clearSelection = false,
     bool clearLevel = false,
   }) {
@@ -74,6 +108,7 @@ final class AreasLoaded extends AreaState {
       showCellsListWidget: showCellsListWidget ?? this.showCellsListWidget,
       showAreasListWidget: showAreasListWidget ?? this.showAreasListWidget,
       selectedLevel: clearLevel ? null : (selectedLevel ?? this.selectedLevel),
+      search: search ?? this.search,
     );
   }
 }

@@ -25,6 +25,8 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
     on<ToggleAnalyticsWidget>(_toggleAnalyticsWidget);
     on<ShowCellsListWidget>(_showCellsListWidget);
     on<ShowAreasListWidget>(_showAreasListWidget);
+    on<UpdateArea>(_onUpdateArea);
+    on<SearchAreas>(_searchAreas);
 
     add(LoadAreas());
   }
@@ -167,6 +169,39 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
           selectedLevel: event.level,
         ),
       );
+    }
+  }
+
+  _searchAreas(SearchAreas event, Emitter<AreaState> emit) {
+    final currentState = state;
+    if (currentState is AreasLoaded) {
+      emit(currentState.copyWith(search: event.search));
+    }
+  }
+
+  Future<void> _onUpdateArea(UpdateArea event, Emitter<AreaState> emit) async {
+    try {
+      final currentState = state;
+      if (currentState is! AreasLoaded) return;
+
+      // Vérifier que l'id n'est pas null
+      if (event.id == null) {
+        emit(AreaError(message: 'Cannot update area without an ID'));
+        return;
+      }
+
+      // Appeler le repository pour mettre à jour l'area
+      await _areaRepository.updateArea(
+        id: event.id!,
+        name: event.name,
+        color: event.color,
+        parentArea: event.parentArea,
+      );
+
+      final areas = await _areaRepository.fetchAreas();
+      emit(currentState.copyWith(areas: areas));
+    } catch (e) {
+      emit(AreaError(message: e.toString()));
     }
   }
 }
