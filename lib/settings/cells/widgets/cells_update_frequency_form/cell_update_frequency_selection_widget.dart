@@ -45,7 +45,7 @@ class CellUpdateFrequencySelectionWidget extends StatelessWidget {
         color: GardenColors.typography.shade900,
       ),
       isExpanded: true,
-      value: state.measurementFrequency,
+      initialValue: state.measurementFrequency,
       items: [
         ..._items.map((item) {
           return DropdownMenuItem<Duration>(

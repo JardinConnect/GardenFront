@@ -28,7 +28,7 @@ class CellNumberDailyUpdateSelectionWidget extends StatelessWidget {
         color: GardenColors.typography.shade900,
       ),
       isExpanded: true,
-      value: state.dailyUpdateCount,
+      initialValue: state.dailyUpdateCount,
       items: _items,
       onChanged: (int? value) {
         if (value != null) {
