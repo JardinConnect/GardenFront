@@ -31,6 +31,11 @@ class CellUpdateScheduleListWidget extends StatelessWidget {
                       final TimeOfDay? newTime = await showTimePicker(
                         context: context,
                         initialTime: time,
+                        cancelText: "Annuler",
+                        confirmText: "Confirmer",
+                        hourLabelText: "Heures",
+                        minuteLabelText: "Minutes",
+                        helpText: "Mise à jour n°${index + 1}",
                         builder: (context, child) {
                           return MediaQuery(
                             data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),

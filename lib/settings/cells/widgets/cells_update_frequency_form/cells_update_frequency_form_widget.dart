@@ -93,6 +93,7 @@ class CellsUpdateFrequencyFormWidget extends StatelessWidget {
 
           Button(
             label: "Sauvegarder",
+            icon: Icons.check_circle_outline,
             onPressed: () {
               context.read<CellsUpdateFrequencyFormBloc>().add(
                 FormSubmitted(cells: cells),
