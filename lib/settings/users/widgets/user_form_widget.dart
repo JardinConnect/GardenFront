@@ -33,6 +33,7 @@ class _UserFormWidget extends State<UserFormWidget> {
     super.initState();
     if(user == null) {
       user = User(
+        id: '',
         firstName: '',
         lastName: '',
         email: '',
@@ -228,7 +229,7 @@ class _UserFormWidget extends State<UserFormWidget> {
                   {
                     userForm.currentState?.save(),
                     context.read<UsersBloc>().add(UserUpdateEvent(user: User(
-                      id: user?.id,
+                      id: user!.id,
                       firstName: firstnameController.text,
                       lastName: lastnameController.text,
                       email: emailController.text,
