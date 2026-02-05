@@ -56,7 +56,7 @@ class DangerZone extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.red, width: 2),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: GardenRadius.radiusMd,
       ),
       child: GardenCard(
         child: Padding(

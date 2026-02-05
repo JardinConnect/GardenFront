@@ -1,30 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:garden_connect/areas/models/area.dart';
+import 'package:garden_connect/common/models/base_item.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:go_router/go_router.dart';
 
-class AreaFormCard extends StatefulWidget {
-  final Area? area;
+class BaseItemEditFormCard extends StatefulWidget {
+  final BaseItem? item;
   final List<Area> availableParents;
   final Function(String name, Area? parentArea) onSave;
   final VoidCallback onCancel;
   final bool isViewMode;
+  final IconData icon;
+  final String? infoText;
 
-  const AreaFormCard({
+  const BaseItemEditFormCard({
     super.key,
-    this.area,
+    this.item,
     required this.availableParents,
     required this.onSave,
     required this.onCancel,
+    required this.icon,
     this.isViewMode = false,
+    this.infoText,
   });
 
   @override
-  State<AreaFormCard> createState() => _AreaFormCardState();
+  State<BaseItemEditFormCard> createState() => _BaseItemEditFormCardState();
 }
 
-class _AreaFormCardState extends State<AreaFormCard> {
+class _BaseItemEditFormCardState extends State<BaseItemEditFormCard> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   Area? _selectedParentArea;
@@ -32,8 +37,14 @@ class _AreaFormCardState extends State<AreaFormCard> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.area?.name ?? '');
-    _selectedParentArea = widget.area?.parent;
+    _nameController = TextEditingController(text: widget.item?.name ?? '');
+    _selectedParentArea =
+        widget.item == null || widget.item!.parentId == null
+            ? null
+            : widget.availableParents.cast<Area?>().firstWhere(
+              (area) => area!.id == widget.item!.parentId!,
+              orElse: () => null,
+            );
   }
 
   @override
@@ -50,7 +61,7 @@ class _AreaFormCardState extends State<AreaFormCard> {
 
   @override
   Widget build(BuildContext context) {
-    final isEdit = widget.area != null;
+    final isEdit = widget.item != null;
 
     return GardenCard(
       child: Padding(
@@ -63,52 +74,46 @@ class _AreaFormCardState extends State<AreaFormCard> {
             children: [
               isEdit
                   ? Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: GardenSpace.gapSm,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Icon(
-                            Icons.hexagon_outlined,
-                            color: Theme.of(context).colorScheme.primary,
-                            size: 32,
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            spacing: GardenSpace.gapXs,
-                            children: [
-                              Text(
-                                widget.area!.name,
-                                style: GardenTypography.headingLg,
-                              ),
-                              Text(
-                                'Niveau ${widget.area!.level}',
-                                style: GardenTypography.bodyMd.copyWith(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
-                  : Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      spacing: GardenSpace.gapSm,
-                      children: [
-                        Icon(
-                          Icons.hexagon_outlined,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: GardenSpace.gapSm,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Icon(
+                          widget.icon,
                           color: Theme.of(context).colorScheme.primary,
                           size: 32,
                         ),
-                        Text(
-                          'Ajoutez un nouvel espace',
-                          style: GardenTypography.headingLg,
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: GardenSpace.gapXs,
+                          children: [
+                            Text(
+                              widget.item!.name,
+                              style: GardenTypography.headingLg,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  )
+                  : Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    spacing: GardenSpace.gapSm,
+                    children: [
+                      Icon(
+                        Icons.hexagon_outlined,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 32,
+                      ),
+                      Text(
+                        'Ajoutez un nouvel espace',
+                        style: GardenTypography.headingLg,
+                      ),
+                    ],
+                  ),
               SizedBox(height: GardenSpace.gapMd),
               TextFormField(
                 controller: _nameController,
@@ -138,53 +143,54 @@ class _AreaFormCardState extends State<AreaFormCard> {
                   fillColor: Colors.grey[50],
                 ),
                 isExpanded: true,
-                items: widget.isViewMode
-                    ? null
-                    : [
-                        DropdownMenuItem<Area?>(
-                          value: null,
-                          child: Text(
-                            'Aucun (espace racine)',
-                            style: GardenTypography.bodyLg,
+                items:
+                    widget.isViewMode
+                        ? null
+                        : [
+                          DropdownMenuItem<Area?>(
+                            value: null,
+                            child: Text(
+                              'Aucun (espace racine)',
+                              style: GardenTypography.bodyLg,
+                            ),
                           ),
-                        ),
-                        ...widget.availableParents.map((area) {
-                          return DropdownMenuItem<Area>(
-                            value: area,
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: LevelIndicator(
-                                    level: area.level,
-                                    size: LevelIndicatorSize.sm,
+                          ...widget.availableParents.map((area) {
+                            return DropdownMenuItem<Area>(
+                              value: area,
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: LevelIndicator(
+                                      level: area.level,
+                                      size: LevelIndicatorSize.sm,
+                                    ),
                                   ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    area.name,
+                                  Expanded(
+                                    child: Text(
+                                      area.name,
+                                      style: GardenTypography.bodyLg,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Niveau ${area.level}',
                                     style: GardenTypography.bodyLg,
                                   ),
-                                ),
-                                Text(
-                                  'Niveau ${area.level}',
-                                  style: GardenTypography.bodyLg,
-                                ),
-                              ],
-                            ),
-                          );
-                        }),
-                      ],
-                onChanged: widget.isViewMode
-                    ? null
-                    : (Area? newValue) {
-                        setState(() {
-                          _selectedParentArea = newValue;
-                        });
-                      },
+                                ],
+                              ),
+                            );
+                          }),
+                        ],
+                onChanged:
+                    widget.isViewMode
+                        ? null
+                        : (Area? newValue) {
+                          setState(() {
+                            _selectedParentArea = newValue;
+                          });
+                        },
               ),
-              if (isEdit) const Spacer(),
-              if (!widget.isViewMode && isEdit)
+              if (!widget.isViewMode && isEdit && widget.infoText != null)
                 Container(
                   padding: EdgeInsets.all(GardenSpace.paddingMd),
                   decoration: BoxDecoration(
@@ -202,7 +208,7 @@ class _AreaFormCardState extends State<AreaFormCard> {
                       SizedBox(width: GardenSpace.gapSm),
                       Expanded(
                         child: Text(
-                          'La modification de l\'emplacement de cet élément entraînera automatiquement le déplacement de l\'ensemble des espaces qui lui sont rattachés. Cette action impactera la structure globale et repositionnera tous les éléments dépendants selon la nouvelle hiérarchie définie.',
+                          widget.infoText!,
                           style: GardenTypography.bodyLg.copyWith(
                             color: Colors.grey[700],
                           ),
@@ -211,13 +217,14 @@ class _AreaFormCardState extends State<AreaFormCard> {
                     ],
                   ),
                 ),
+              const Spacer(),
               if (widget.isViewMode)
                 Center(
                   child: Button(
                     label: 'Modifier',
                     icon: Icons.edit,
                     onPressed: () {
-                      context.go('/settings/areas/${widget.area?.id}');
+                      context.go('/settings/areas/${widget.item?.id}');
                     },
                   ),
                 )

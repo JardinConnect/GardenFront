@@ -6,6 +6,7 @@ import 'package:garden_connect/cells/bloc/cell_bloc.dart';
 import 'package:garden_connect/cells/pages/cell_detail_page.dart';
 import 'package:garden_connect/settings/area/page/area_add_edit_page.dart';
 import 'package:garden_connect/settings/area/page/area_settings_page.dart';
+import 'package:garden_connect/settings/cells/pages/cell_detail_settings_page.dart';
 import 'package:garden_connect/settings/cells/pages/cells_settings_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:garden_connect/auth/auth.dart';
@@ -145,6 +146,21 @@ class AppRouter {
                 pageBuilder:
                     (context, state) =>
                         NoTransitionPage(child: const CellsSettingsPage()),
+                routes: [
+                  GoRoute(
+                    path: ":id",
+                    pageBuilder: (context, state) {
+                      final viewMode =
+                          state.uri.queryParameters['view'] == 'true';
+                      return NoTransitionPage(
+                        child: CellDetailSettingsPage(
+                          id: int.parse(state.pathParameters['id']!),
+                          isViewMode: viewMode,
+                        ),
+                      );
+                    }
+                  )
+                ]
               ),
             ],
           ),

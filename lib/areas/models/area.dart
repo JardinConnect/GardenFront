@@ -77,8 +77,6 @@ class Area extends BaseItem {
     return flatList;
   }
 
-  Area? parent;
-
   /**
    * Méthode pour récupérer tous les descendants d'une area (enfants, petits-enfants, etc.)
    */
