@@ -7,6 +7,9 @@ import 'package:garden_connect/cells/pages/cell_detail_page.dart';
 import 'package:garden_connect/settings/area/page/area_add_edit_page.dart';
 import 'package:garden_connect/settings/area/page/area_settings_page.dart';
 import 'package:garden_connect/settings/cells/pages/cells_settings_page.dart';
+import 'package:garden_connect/settings/cells/views/cell_add_view.dart';
+import 'package:garden_connect/settings/cells/views/cell_configure_view.dart';
+import 'package:garden_connect/settings/cells/views/cell_pair_pending_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:garden_connect/auth/auth.dart';
 import 'package:garden_connect/menu/view/menu_page.dart';
@@ -145,6 +148,32 @@ class AppRouter {
                 pageBuilder:
                     (context, state) =>
                         NoTransitionPage(child: const CellsSettingsPage()),
+                routes: [
+                  GoRoute(
+                    path: 'add',
+                    pageBuilder:
+                        (context, state) =>
+                            NoTransitionPage(child: const CellAddView()),
+                    routes: [
+                      GoRoute(
+                        path: 'pairing',
+                        pageBuilder:
+                            (context, state) => NoTransitionPage(
+                              child: const CellPairPendingView(),
+                            ),
+                        routes: [
+                          GoRoute(
+                            path: 'configure',
+                            pageBuilder:
+                                (context, state) => NoTransitionPage(
+                                  child: const CellConfigureView(),
+                                ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),
