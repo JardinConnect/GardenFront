@@ -145,20 +145,29 @@ class AppRouter {
               ),
               GoRoute(
                 path: '/cells',
-                builder: (context, state) => const CellsSettingsPage(),
+                pageBuilder:
+                    (context, state) =>
+                        NoTransitionPage(child: const CellsSettingsPage()),
                 routes: [
                   GoRoute(
                     path: 'add',
-                    builder: (context, state) => CellAddView(),
+                    pageBuilder:
+                        (context, state) =>
+                            NoTransitionPage(child: const CellAddView()),
                     routes: [
                       GoRoute(
                         path: 'pairing',
-                        builder: (context, state) => CellPairPendingView(),
+                        pageBuilder:
+                            (context, state) => NoTransitionPage(
+                              child: const CellPairPendingView(),
+                            ),
                         routes: [
                           GoRoute(
                             path: 'configure',
-                            builder:
-                                (context, state) => const CellConfigureView(),
+                            pageBuilder:
+                                (context, state) => NoTransitionPage(
+                                  child: const CellConfigureView(),
+                                ),
                           ),
                         ],
                       ),
