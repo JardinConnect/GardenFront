@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:garden_connect/common/models/base_item.dart';
 import 'package:meta/meta.dart';
 
 import '../models/area.dart';
