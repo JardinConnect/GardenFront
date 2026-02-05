@@ -52,7 +52,7 @@ class CellsSettingsPage extends StatelessWidget {
                         style: GardenTypography.headingXl,
                       ),
                       IconButton.filled(
-                        onPressed: () => {},
+                        onPressed: () => context.go('/settings/cells/add'),
                         icon: Icon(Icons.add),
                       ),
                     ],

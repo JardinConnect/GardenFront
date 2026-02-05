@@ -26,6 +26,7 @@ class AuthRepository {
           'last_name': 'Garden',
           'phone_number': '0201920192',
           'token': 'dummy_token_123456',
+          'role':'employee'
         });
 
         // await _secureStorage.write(key: 'auth_token', value: token);
@@ -41,6 +42,7 @@ class AuthRepository {
           lastName: user.lastName,
           phoneNumber: user.phoneNumber,
           token: 'dummy_token_123456',
+          role: user.role,
         );
       // } else {
       //   return null;
