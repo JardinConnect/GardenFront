@@ -41,13 +41,6 @@ class CellDetailSettingsPage extends StatelessWidget {
 
             final cell = cellsState.cell;
             final areas = areasState.areas;
-            final parent =
-                cell.parentId != null
-                    ? areas.cast<Area?>().firstWhere(
-                      (area) => area!.id == cell.parentId,
-                      orElse: () => null,
-                    )
-                    : null;
 
             return SafeArea(
               child: SingleChildScrollView(
