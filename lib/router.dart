@@ -6,6 +6,10 @@ import 'package:garden_connect/cells/bloc/cell_bloc.dart';
 import 'package:garden_connect/cells/pages/cell_detail_page.dart';
 import 'package:garden_connect/settings/area/page/area_add_edit_page.dart';
 import 'package:garden_connect/settings/area/page/area_settings_page.dart';
+import 'package:garden_connect/settings/cells/pages/cells_settings_page.dart';
+import 'package:garden_connect/settings/cells/views/cell_add_view.dart';
+import 'package:garden_connect/settings/cells/views/cell_configure_view.dart';
+import 'package:garden_connect/settings/cells/views/cell_pair_pending_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:garden_connect/alerts/page/alerts_page.dart';
 import 'package:garden_connect/areas/pages/areas_page.dart';
@@ -54,15 +58,9 @@ class AppRouter {
                 BlocProvider<AnalyticsBloc>(
                   create: (context) => AnalyticsBloc(),
                 ),
-                BlocProvider<AreaBloc>(
-                  create: (context) => AreaBloc(),
-                ),
-                BlocProvider<CellBloc>(
-                  create: (context) => CellBloc(),
-                ),
-                BlocProvider<AlertBloc>(
-                  create: (context) => AlertBloc(),
-                ),
+                BlocProvider<AreaBloc>(create: (context) => AreaBloc()),
+                BlocProvider<CellBloc>(create: (context) => CellBloc()),
+                BlocProvider<AlertBloc>(create: (context) => AlertBloc()),
               ],
               child: MenuPage(child: child),
             ),
@@ -71,15 +69,14 @@ class AppRouter {
         routes: [
           GoRoute(
             path: '/dashboard',
-            pageBuilder: (context, state) => NoTransitionPage(
-              child: const DashboardPage(),
-            ),
+            pageBuilder:
+                (context, state) =>
+                    NoTransitionPage(child: const DashboardPage()),
           ),
           GoRoute(
             path: '/areas',
-            pageBuilder: (context, state) => NoTransitionPage(
-              child: const AreasPage(),
-            ),
+            pageBuilder:
+                (context, state) => NoTransitionPage(child: const AreasPage()),
             routes: [
               GoRoute(
                 path: 'cells/:id',
@@ -87,11 +84,9 @@ class AppRouter {
                   final id = int.parse(state.pathParameters['id']!);
                   return NoTransitionPage(
                     child: BlocProvider(
-                      create: (context) => CellBloc()..add(LoadCellDetail(id: id)),
-                      child: CellDetailPage(
-                        id: id,
-                        isFromAreaPage: true,
-                      ),
+                      create:
+                          (context) => CellBloc()..add(LoadCellDetail(id: id)),
+                      child: CellDetailPage(id: id, isFromAreaPage: true),
                     ),
                   );
                 },
@@ -100,9 +95,8 @@ class AppRouter {
           ),
           GoRoute(
             path: '/cells',
-            pageBuilder: (context, state) => NoTransitionPage(
-              child: const CellsPage(),
-            ),
+            pageBuilder:
+                (context, state) => NoTransitionPage(child: const CellsPage()),
             routes: [
               GoRoute(
                 path: ':id',
@@ -110,19 +104,19 @@ class AppRouter {
                   final id = int.parse(state.pathParameters['id']!);
                   return NoTransitionPage(
                     child: BlocProvider(
-                      create: (context) => CellBloc()..add(LoadCellDetail(id: id)),
+                      create:
+                          (context) => CellBloc()..add(LoadCellDetail(id: id)),
                       child: CellDetailPage(id: id),
                     ),
                   );
                 },
-              )
+              ),
             ],
           ),
           GoRoute(
             path: '/alerts',
-            pageBuilder: (context, state) => NoTransitionPage(
-              child: const AlertsPage(),
-            ),
+            pageBuilder:
+                (context, state) => NoTransitionPage(child: const AlertsPage()),
           ),
           GoRoute(
             path: '/settings',
@@ -142,25 +136,63 @@ class AppRouter {
           ),
           GoRoute(
             path: '/settings/areas',
-            builder: (context, state) => const AreaSettingsPage(),
+            pageBuilder: (context, state) => NoTransitionPage(child: const AreaSettingsPage()),
             routes: [
               GoRoute(
-                path: 'add',
-                builder: (context, state) => const AreaAddEditPage(),
+                path: '/areas',
+                builder: (context, state) => const AreaSettingsPage(),
+                routes: [
+                  GoRoute(
+                    path: 'add',
+                    builder: (context, state) => const AreaAddEditPage(),
+                  ),
+                  GoRoute(
+                    path: ':id',
+                    builder: (context, GoRouterState state) {
+                      final viewMode =
+                          state.uri.queryParameters['view'] == 'true';
+                      return AreaAddEditPage(
+                        id: int.parse(state.pathParameters['id']!),
+                        isViewMode: viewMode,
+                      );
+                    },
+                  ),
+                ],
               ),
               GoRoute(
-                path: ':id',
-                builder: (context, GoRouterState state) {
-                  final viewMode = state.uri.queryParameters['view'] == 'true';
-                  return AreaAddEditPage(
-                    id: int.parse(state.pathParameters['id']!),
-                    isViewMode: viewMode,
-                  );
-                },
+                path: '/cells',
+                pageBuilder:
+                    (context, state) =>
+                        NoTransitionPage(child: const CellsSettingsPage()),
+                routes: [
+                  GoRoute(
+                    path: 'add',
+                    pageBuilder:
+                        (context, state) =>
+                            NoTransitionPage(child: const CellAddView()),
+                    routes: [
+                      GoRoute(
+                        path: 'pairing',
+                        pageBuilder:
+                            (context, state) => NoTransitionPage(
+                              child: const CellPairPendingView(),
+                            ),
+                        routes: [
+                          GoRoute(
+                            path: 'configure',
+                            pageBuilder:
+                                (context, state) => NoTransitionPage(
+                                  child: const CellConfigureView(),
+                                ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),
-
         ],
       ),
     ],

@@ -37,27 +37,30 @@ class GenericListWidget extends StatelessWidget {
         itemBuilder: (context, index) {
           final item = items[index];
 
-          return GestureDetector(
-            onTap: item.onTap,
-            child: GardenCard(
-              hasBorder: true,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(item.label, style: GardenTypography.bodyLg),
-                  ),
-                  GestureDetector(
-                    onTap: item.onEdit,
-                    child: Padding(
-                      padding: EdgeInsets.all(GardenSpace.paddingXs),
-                      child: Icon(
-                        item.icon,
-                        color: Theme.of(context).colorScheme.primary,
+          return MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: item.onTap,
+              child: GardenCard(
+                hasBorder: true,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(item.label, style: GardenTypography.bodyLg),
+                    ),
+                    GestureDetector(
+                      onTap: item.onEdit,
+                      child: Padding(
+                        padding: EdgeInsets.all(GardenSpace.paddingXs),
+                        child: Icon(
+                          item.icon,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
