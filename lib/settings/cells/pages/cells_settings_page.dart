@@ -6,6 +6,7 @@ import 'package:garden_connect/common/widgets/generic_list_item.dart';
 import 'package:garden_connect/settings/cells/bloc/cells_update_frequency_form_bloc.dart';
 import 'package:garden_connect/settings/cells/widgets/cells_update_frequency_form/cells_update_frequency_form_widget.dart';
 import 'package:garden_ui/ui/design_system.dart';
+import 'package:go_router/go_router.dart';
 
 class CellsSettingsPage extends StatelessWidget {
   const CellsSettingsPage({super.key});
@@ -51,7 +52,7 @@ class CellsSettingsPage extends StatelessWidget {
                         style: GardenTypography.headingXl,
                       ),
                       IconButton.filled(
-                        onPressed: () => {},
+                        onPressed: () => context.go('/settings/cells/add'),
                         icon: Icon(Icons.add),
                       ),
                     ],
