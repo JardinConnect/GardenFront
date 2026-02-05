@@ -27,6 +27,10 @@ class CellRepository {
   Future<void> refreshCell(int id) async {
   }
 
+  // PUT /cells/settings
+  Future<void> updateCellsSettings(List<int> ids, int dailyUpdateCount, int measurementFrequency, List<String> updateTimes) async {
+  }
+
   List<Cell> _mockedCells() {
     final mockedJson = List.empty(growable: true);
 
