@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 class BaseItemEditFormCard extends StatefulWidget {
   final BaseItem? item;
   final List<Area> availableParents;
+  final Area? initialParent;
   final Function(String name, Area? parentArea) onSave;
   final VoidCallback onCancel;
   final bool isViewMode;
@@ -22,6 +23,7 @@ class BaseItemEditFormCard extends StatefulWidget {
     required this.onCancel,
     required this.icon,
     this.isViewMode = false,
+    this.initialParent,
     this.infoText,
   });
 
@@ -38,13 +40,9 @@ class _BaseItemEditFormCardState extends State<BaseItemEditFormCard> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.item?.name ?? '');
-    _selectedParentArea =
-        widget.item == null || widget.item!.parentId == null
-            ? null
-            : widget.availableParents.cast<Area?>().firstWhere(
-              (area) => area!.id == widget.item!.parentId!,
-              orElse: () => null,
-            );
+    if (widget.initialParent != null) {
+      _selectedParentArea = widget.initialParent;
+    }
   }
 
   @override
@@ -143,44 +141,41 @@ class _BaseItemEditFormCardState extends State<BaseItemEditFormCard> {
                   fillColor: Colors.grey[50],
                 ),
                 isExpanded: true,
-                items:
-                    widget.isViewMode
-                        ? null
-                        : [
-                          DropdownMenuItem<Area?>(
-                            value: null,
+                items: [
+                  DropdownMenuItem<Area?>(
+                    value: null,
+                    child: Text(
+                      'Aucun (espace racine)',
+                      style: GardenTypography.bodyLg,
+                    ),
+                  ),
+                  ...widget.availableParents.map((area) {
+                    return DropdownMenuItem<Area>(
+                      value: area,
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: LevelIndicator(
+                              level: area.level,
+                              size: LevelIndicatorSize.sm,
+                            ),
+                          ),
+                          Expanded(
                             child: Text(
-                              'Aucun (espace racine)',
+                              area.name,
                               style: GardenTypography.bodyLg,
                             ),
                           ),
-                          ...widget.availableParents.map((area) {
-                            return DropdownMenuItem<Area>(
-                              value: area,
-                              child: Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: LevelIndicator(
-                                      level: area.level,
-                                      size: LevelIndicatorSize.sm,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      area.name,
-                                      style: GardenTypography.bodyLg,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Niveau ${area.level}',
-                                    style: GardenTypography.bodyLg,
-                                  ),
-                                ],
-                              ),
-                            );
-                          }),
+                          Text(
+                            'Niveau ${area.level}',
+                            style: GardenTypography.bodyLg,
+                          ),
                         ],
+                      ),
+                    );
+                  }),
+                ],
                 onChanged:
                     widget.isViewMode
                         ? null
@@ -224,7 +219,11 @@ class _BaseItemEditFormCardState extends State<BaseItemEditFormCard> {
                     label: 'Modifier',
                     icon: Icons.edit,
                     onPressed: () {
-                      context.go('/settings/areas/${widget.item?.id}');
+                      if (widget.item is Area) {
+                        context.go('/settings/areas/${widget.item?.id}');
+                      } else {
+                        context.go('/settings/cells/${widget.item?.id}');
+                      }
                     },
                   ),
                 )

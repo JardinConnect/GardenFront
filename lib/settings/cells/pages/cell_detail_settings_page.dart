@@ -65,8 +65,10 @@ class CellDetailSettingsPage extends StatelessWidget {
                             flex: 10,
                             child: BaseItemEditFormCard(
                               item: cell,
-                              availableParents: areasState.getAvailableParents(
-                                parent,
+                              availableParents: areas,
+                              initialParent: areas.cast<Area?>().firstWhere(
+                                (area) => area!.id == cell.parentId,
+                                orElse: () => null,
                               ),
                               isViewMode: isViewMode,
                               icon: Icons.sensors,

@@ -54,22 +54,31 @@ class AreaAddEditPage extends StatelessWidget {
                               flex: 10,
                               child: BaseItemEditFormCard(
                                 item: area,
-                                availableParents: state.getAvailableParents(area),
+                                availableParents: state.getAvailableParents(
+                                  area,
+                                ),
+                                initialParent: state.areas
+                                    .cast<Area?>()
+                                    .firstWhere(
+                                      (area) => area!.id == area.parentId,
+                                      orElse: () => null,
+                                    ),
                                 isViewMode: isViewMode,
                                 icon: Icons.hexagon_outlined,
                                 onSave: (name, parentArea) {
                                   context.read<AreaBloc>().add(
-                                        UpdateArea(
-                                          id: area.id,
-                                          name: name,
-                                          color: area.color,
-                                          parentArea: parentArea,
-                                        ),
-                                      );
+                                    UpdateArea(
+                                      id: area.id,
+                                      name: name,
+                                      color: area.color,
+                                      parentArea: parentArea,
+                                    ),
+                                  );
                                   context.go('/settings/areas');
                                 },
                                 onCancel: () => context.go('/settings/areas'),
-                                infoText: 'La modification de l\'emplacement de cet élément entraînera automatiquement le déplacement de l\'ensemble des espaces qui lui sont rattachés. Cette action impactera la structure globale et repositionnera tous les éléments dépendants selon la nouvelle hiérarchie définie.',
+                                infoText:
+                                    'La modification de l\'emplacement de cet élément entraînera automatiquement le déplacement de l\'ensemble des espaces qui lui sont rattachés. Cette action impactera la structure globale et repositionnera tous les éléments dépendants selon la nouvelle hiérarchie définie.',
                               ),
                             ),
                             SizedBox(width: GardenSpace.gapLg),
@@ -98,7 +107,8 @@ class AreaAddEditPage extends StatelessWidget {
                                   SizedBox(height: GardenSpace.gapLg),
                                   DangerZone(
                                     title: 'Zone de danger',
-                                    description: 'Actions irréversibles sur l\'ensemble des comptes de la ferme.',
+                                    description:
+                                        'Actions irréversibles sur l\'ensemble des comptes de la ferme.',
                                     deleteButtonLabel: 'Supprimer l\'espace',
                                     onDelete: () {
                                       // TODO: Implémenter la logique de suppression
@@ -115,15 +125,19 @@ class AreaAddEditPage extends StatelessWidget {
                       BaseItemEditFormCard(
                         item: area,
                         availableParents: state.getAvailableParents(area),
+                        initialParent: state.areas.cast<Area?>().firstWhere(
+                          (area) => area!.id == area.parentId,
+                          orElse: () => null,
+                        ),
                         icon: Icons.hexagon_outlined,
                         onSave: (name, parentArea) {
                           context.read<AreaBloc>().add(
-                                AddArea(
-                                  name: name,
-                                  color: const Color(0xFFE74C3C),
-                                  parentArea: parentArea,
-                                ),
-                              );
+                            AddArea(
+                              name: name,
+                              color: const Color(0xFFE74C3C),
+                              parentArea: parentArea,
+                            ),
+                          );
                           context.go('/settings/areas');
                         },
                         onCancel: () => context.go('/settings/areas'),
