@@ -120,23 +120,9 @@ class AppRouter {
           ),
           GoRoute(
             path: '/settings',
-            pageBuilder: (context, state) => NoTransitionPage(
-              child: const SettingsPage(),
-            ),
-          ),
-          GoRoute(
-            path: '/settings/users',
-            pageBuilder: (context, state) => NoTransitionPage(
-              child:
-                   BlocProvider(
-                    create: (context) => UsersBloc(),
-               child:
-               UsersPage(),)
-            ),
-          ),
-          GoRoute(
-            path: '/settings/areas',
-            pageBuilder: (context, state) => NoTransitionPage(child: const AreaSettingsPage()),
+            pageBuilder:
+                (context, state) =>
+                    NoTransitionPage(child: const SettingsPage()),
             routes: [
               GoRoute(
                 path: '/areas',
@@ -158,6 +144,16 @@ class AppRouter {
                     },
                   ),
                 ],
+              ),
+              GoRoute(
+                path: '/users',
+                pageBuilder:
+                    (context, state) => NoTransitionPage(
+                      child: BlocProvider(
+                        create: (context) => UsersBloc(),
+                        child: UsersPage(),
+                      ),
+                    ),
               ),
               GoRoute(
                 path: '/cells',
