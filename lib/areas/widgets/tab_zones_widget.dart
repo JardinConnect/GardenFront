@@ -22,6 +22,7 @@ class TabZonesWidget extends StatelessWidget {
   final bool showAddForm;
   final bool showEditForm;
   final bool toggleAnalyticsWidget;
+  final bool toggleAreaTracking;
 
   const TabZonesWidget({
     super.key,
@@ -35,6 +36,7 @@ class TabZonesWidget extends StatelessWidget {
     this.showAddForm = false,
     this.showEditForm = false,
     this.toggleAnalyticsWidget = false,
+    this.toggleAreaTracking = false,
   });
 
   HierarchicalMenuItem _areaToMenuItem(Area area, BuildContext context) {
@@ -49,7 +51,7 @@ class TabZonesWidget extends StatelessWidget {
     if (area.cells != null && area.cells!.isNotEmpty) {
       children.addAll(
         area.cells!.map(
-              (cell) => HierarchicalMenuItem(
+          (cell) => HierarchicalMenuItem(
             id: 'cell_${cell.name}',
             title: cell.name,
             level: area.level + 1,
@@ -82,7 +84,7 @@ class TabZonesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final menuItems =
-    areas.map((area) => _areaToMenuItem(area, context)).toList();
+        areas.map((area) => _areaToMenuItem(area, context)).toList();
 
     // Déterminer l'ID de l'item sélectionné
     String? selectedId;
@@ -123,7 +125,10 @@ class TabZonesWidget extends StatelessWidget {
     }
 
     if (showEditForm && selectedArea != null) {
-      return EditAreaFormWidget(availableAreas: areas, areaToEdit: selectedArea!);
+      return EditAreaFormWidget(
+        availableAreas: areas,
+        areaToEdit: selectedArea!,
+      );
     }
 
     if (selectedCell != null) {
@@ -136,6 +141,7 @@ class TabZonesWidget extends StatelessWidget {
 
     if (isOverview) {
       return SummaryZonesWidget(
+        id: '',
         title: title,
         level: 0,
         areas: areas,
@@ -158,6 +164,7 @@ class TabZonesWidget extends StatelessWidget {
     }
 
     return SummaryZonesWidget(
+      id: areaToDisplay.id,
       title: areaToDisplay.name,
       level: areaToDisplay.level,
       areas: [areaToDisplay],

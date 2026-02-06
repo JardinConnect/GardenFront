@@ -27,6 +27,7 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
     on<ShowAreasListWidget>(_showAreasListWidget);
     on<UpdateArea>(_onUpdateArea);
     on<SearchAreas>(_searchAreas);
+    on<ToggleAreaTracking>(_toggleAreaTracking);
 
     add(LoadAreas());
   }
@@ -40,6 +41,8 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
           areas: areas,
           showAreasListWidget: false,
           showCellsListWidget: false,
+          selectedArea: areas.first,
+          isAreaSelected: true
         ),
       );
     } catch (e) {
@@ -146,6 +149,32 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
     }
   }
 
+  _toggleAreaTracking(ToggleAreaTracking event, Emitter<AreaState> emit) async {
+    final currentState = state;
+    if (currentState is AreasLoaded) {
+      final selectedArea = currentState.selectedArea;
+      if (selectedArea == null) return;
+
+      await _areaRepository.updateArea(
+        id: selectedArea.id,
+        name: selectedArea.name,
+        color: selectedArea.color,
+        parentArea: null,
+        isTracked: !selectedArea.isTracked,
+      );
+
+      final areas = await _areaRepository.fetchAreas();
+      final updatedSelectedArea = Area.findAreaById(areas, selectedArea.id);
+
+      emit(
+        currentState.copyWith(
+          areas: areas,
+          selectedArea: updatedSelectedArea,
+        ),
+      );
+    }
+  }
+
   _showCellsListWidget(ShowCellsListWidget event, Emitter<AreaState> emit) {
     final currentState = state;
     if (currentState is AreasLoaded) {
@@ -196,6 +225,7 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
         name: event.name,
         color: event.color,
         parentArea: event.parentArea,
+        isTracked: event.isTracked,
       );
 
       final areas = await _areaRepository.fetchAreas();

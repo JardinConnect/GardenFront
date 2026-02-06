@@ -6,7 +6,7 @@ sealed class CellEvent {}
 final class LoadCells extends CellEvent {}
 
 final class LoadCellDetail extends CellEvent {
-  final int id;
+  final String id;
 
   LoadCellDetail({required this.id});
 }
@@ -28,28 +28,28 @@ final class SearchCells extends CellEvent {
 }
 
 final class CellTrackingChanged extends CellEvent {
-  final int id;
+  final String id;
   final bool newTrackingValue;
 
   CellTrackingChanged({required this.id, required this.newTrackingValue});
 }
 
 final class RefreshCellDetail extends CellEvent {
-  final int id;
+  final String id;
 
   RefreshCellDetail({required this.id});
 }
 
 final class UpdateCell extends CellEvent {
-  final int id;
+  final String id;
   final String name;
-  final int? parentId;
+  final String? parentId;
 
   UpdateCell({required this.id, required this.name, this.parentId});
 }
 
 final class DeleteCell extends CellEvent {
-  final int id;
+  final String id;
 
   DeleteCell({required this.id});
 }

@@ -10,7 +10,6 @@ class Cell extends BaseItem {
   final int battery;
   final String location;
   final DateTime lastUpdateAt;
-  final bool isTracked;
 
   Cell({
     required super.id,
@@ -19,7 +18,7 @@ class Cell extends BaseItem {
     required super.analytics,
     required this.location,
     required this.lastUpdateAt,
-    required this.isTracked
+    required super.isTracked,
   });
 
   factory Cell.fromJson(Map<String, dynamic> json) => _$CellFromJson(json);

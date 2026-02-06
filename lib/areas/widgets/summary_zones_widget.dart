@@ -13,6 +13,7 @@ import '../bloc/area_bloc.dart';
 import '../models/area.dart';
 
 class SummaryZonesWidget extends StatefulWidget {
+  final String id;
   final String title;
   final int level;
   final List<Area> areas;
@@ -22,6 +23,7 @@ class SummaryZonesWidget extends StatefulWidget {
 
   const SummaryZonesWidget({
     super.key,
+    required this.id,
     required this.title,
     required this.level,
     required this.areas,
@@ -124,7 +126,7 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
     return result;
   }
 
-  void _onBaseItemPressed(BuildContext context, int id) {
+  void _onBaseItemPressed(BuildContext context, String id) {
     print("BaseItem pressed: $id");
   }
 
@@ -138,6 +140,7 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
     final state = context.watch<AreaBloc>().state;
     final showingCellsList = state is AreasLoaded && state.showCellsListWidget;
     final showingAreasList = state is AreasLoaded && state.showAreasListWidget;
+    final isTracked = state is AreasLoaded && (state.selectedArea?.isTracked ?? false);
     final selectedLevel = state is AreasLoaded ? state.selectedLevel : null;
 
     final areas =
@@ -149,7 +152,14 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
         Row(
           children: [
             Text(widget.title, style: GardenTypography.headingLg),
-            Switch(value: true, onChanged: (bool value) {}),
+            GardenToggle(
+              isEnabled: isTracked,
+              enabledIcon: Icons.visibility_outlined,
+              disabledIcon: Icons.visibility_off_outlined,
+              onToggle: (bool value) {
+                context.read<AreaBloc>().add(ToggleAreaTracking());
+              },
+            ),
           ],
         ),
         const SizedBox(height: 16),
