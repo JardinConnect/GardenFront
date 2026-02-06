@@ -50,7 +50,7 @@ class UsersRepository {
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: jsonEncode(user.toJson()),
+        body:  jsonEncode(user.toJson()),
       );
       if (response.statusCode == 201) {
         final responseData = jsonDecode(response.body);
@@ -85,6 +85,29 @@ class UsersRepository {
       }
     } catch (e) {
       throw Exception('Failed to update user: $e');
+    }
+  }
+
+  Future<String> deleteUser(String userId) async {
+    try {
+      final storage = FlutterSecureStorage();
+
+      String? token = await storage.read(key: 'auth_token');
+      final response = await http.delete(
+        Uri.parse('$baseUrl/users/$userId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        return 'Utilisateur supprimé avec succès';
+      } else {
+        throw Exception('Failed to delete user');
+      }
+    } catch (e) {
+      throw Exception('Failed to delete user: $e');
     }
   }
 

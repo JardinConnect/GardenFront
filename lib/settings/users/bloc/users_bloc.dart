@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -19,6 +21,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     on<UsersUnselectEvent>(_unselectUser);
     on<UserUpdateEvent>(_updateUser);
     on<UserAddEvent>(_addUser);
+    on<UserDeleteEvent>(_deleteUser);
     on<UsersCreationEvent>((event, emit) => emit(UserCreation()));
 
     add(UsersLoad());
@@ -66,7 +69,14 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
   _updateUser(UserUpdateEvent event, Emitter<UsersState> emit) async {
     final _ = await _usersRepository.updateUser(event.user);
   }
+  _deleteUser(UserDeleteEvent event, Emitter<UsersState> emit) async {
+    if(event.user.id != null){
+      final _ = await _usersRepository.deleteUser(event.user.id!);
+    }
+  }
   _addUser(UserAddEvent event, Emitter<UsersState> emit) async {
+    var oui = jsonEncode(event.user.toJson());
+    print( oui);
     final _ = await _usersRepository.addUser(event.user);
   }
 }
