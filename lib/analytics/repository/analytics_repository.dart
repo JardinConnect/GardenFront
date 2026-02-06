@@ -1,65 +1,50 @@
+import 'dart:math';
 import '../../analytics/models/analytics.dart';
 
 class AnalyticsRepository {
   Future<Analytics> fetchAnalytics() async {
     // TODO call API route to fetch analytics data
     try {
+      final random = Random();
+      final now = DateTime.now();
+
+      // Générateur de statut d'alerte aléatoire avec probabilités
+      String getRandomAlertStatus() {
+        final value = random.nextInt(100);
+        if (value < 70) return "OK";           // 70% OK
+        if (value < 90) return "WARNING";      // 20% WARNING
+        return "ALERT";                         // 10% ALERT
+      }
+
+      // Générer les données pour 365 jours
+      List<Map<String, dynamic>> generateAnalyticsForDays(
+          double baseValue,
+          double variation,
+          ) {
+        return List.generate(365, (index) {
+          final date = now.subtract(Duration(days: 365 - index));
+          // Ajouter plusieurs mesures par jour (par exemple 4 mesures espacées de 6h)
+          return List.generate(4, (hourIndex) {
+            final measureDate = date.add(Duration(hours: hourIndex * 6));
+            return {
+              "value": (baseValue + (random.nextDouble() * variation * 2 - variation)).toDouble(),
+              "occurred_at": measureDate.toIso8601String(),
+              "sensor_id": 12,
+              "alert_status": getRandomAlertStatus(),
+            };
+          });
+        }).expand((element) => element).toList();
+      }
+
       var response = {
-        "air_temperature": [
-          {"value": 18, "occurred_at": "2025-11-05T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 20, "occurred_at": "2025-11-06T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 19, "occurred_at": "2025-11-07T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 21, "occurred_at": "2025-11-08T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 22, "occurred_at": "2025-11-09T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 20, "occurred_at": "2025-11-10T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 34, "occurred_at": "2025-11-11T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-        ],
-        "soil_temperature": [
-          {"value": 15, "occurred_at": "2025-11-05T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 16, "occurred_at": "2025-11-06T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 15, "occurred_at": "2025-11-07T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 17, "occurred_at": "2025-11-08T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 18, "occurred_at": "2025-11-09T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 16, "occurred_at": "2025-11-10T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 15, "occurred_at": "2025-11-11T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-        ],
-        "air_humidity": [
-          {"value": 65, "occurred_at": "2025-11-05T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 70, "occurred_at": "2025-11-06T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 68, "occurred_at": "2025-11-07T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 72, "occurred_at": "2025-11-08T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 75, "occurred_at": "2025-11-09T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 70, "occurred_at": "2025-11-10T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 68, "occurred_at": "2025-11-11T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-        ],
-        "soil_humidity": [
-          {"value": 45, "occurred_at": "2025-11-05T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 50, "occurred_at": "2025-11-06T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 48, "occurred_at": "2025-11-07T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 52, "occurred_at": "2025-11-08T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 55, "occurred_at": "2025-11-09T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 50, "occurred_at": "2025-11-10T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 48, "occurred_at": "2025-11-11T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-        ],
-        "deep_soil_humidity": [
-          {"value": 52, "occurred_at": "2025-11-05T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 34, "occurred_at": "2025-11-06T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 48, "occurred_at": "2025-11-07T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 52, "occurred_at": "2025-11-08T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 55, "occurred_at": "2025-11-09T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 65, "occurred_at": "2025-11-10T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 48, "occurred_at": "2025-11-11T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-        ],
-        "light": [
-          {"value": 35, "occurred_at": "2025-11-05T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 40, "occurred_at": "2025-11-06T08:00:00Z", "sensor_id": 12, "alert_status": "ALERT"},
-          {"value": 32, "occurred_at": "2025-11-07T08:00:00Z", "sensor_id": 12, "alert_status": "WARNING"},
-          {"value": 45, "occurred_at": "2025-11-08T08:00:00Z", "sensor_id": 12, "alert_status": "WARNING"},
-          {"value": 38, "occurred_at": "2025-11-09T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-          {"value": 41, "occurred_at": "2025-11-10T08:00:00Z", "sensor_id": 12, "alert_status": "ALERT"},
-          {"value": 34, "occurred_at": "2025-11-11T08:00:00Z", "sensor_id": 12, "alert_status": "OK"},
-        ],
+        "air_temperature": generateAnalyticsForDays(20.0, 5.0),
+        "soil_temperature": generateAnalyticsForDays(16.0, 3.0),
+        "air_humidity": generateAnalyticsForDays(70.0, 10.0),
+        "soil_humidity": generateAnalyticsForDays(50.0, 8.0),
+        "deep_soil_humidity": generateAnalyticsForDays(52.0, 7.0),
+        "light": generateAnalyticsForDays(38.0, 12.0),
       };
+
       return Analytics.fromJson(response);
     } catch (e) {
       throw Exception('Failed to load analytics: $e');

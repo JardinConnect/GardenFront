@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
+import '../../analytics/models/analytics.dart';
 import '../../analytics/widgets/analytics_cards_grid.dart';
 import '../../analytics/widgets/graphic_widget.dart';
-import '../../areas/models/area.dart';
 import '../../common/widgets/custom_tab_selector.dart';
 
-class HexagonDialogBoxWidget extends StatelessWidget {
-  final Area area;
+class DialogBoxWidget extends StatelessWidget {
+  final String title;
+  final int? level;
+  final Analytics analytics;
 
-  const HexagonDialogBoxWidget({super.key, required this.area});
+  const DialogBoxWidget({
+    super.key,
+    required this.title,
+    this.level,
+    required this.analytics,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +35,7 @@ class HexagonDialogBoxWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                area.name,
+                title,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),
@@ -49,20 +56,19 @@ class HexagonDialogBoxWidget extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Niveau ${area.level}',
-                      style: GardenTypography.bodyLg,
-                    ),
-                    Text(
-                      'Dernière mise à jour: il y a 2 minutes',
-                      style: GardenTypography.caption,
-                    ),
-                  ],
-                ),
+                level != null
+                    ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text('Niveau $level', style: GardenTypography.bodyLg),
+                        Text(
+                          'Dernière mise à jour: il y a 2 minutes',
+                          style: GardenTypography.caption,
+                        ),
+                      ],
+                    )
+                    : SizedBox.shrink(),
                 Padding(
                   padding: EdgeInsets.symmetric(
                     vertical: GardenSpace.paddingMd,
@@ -79,19 +85,11 @@ class HexagonDialogBoxWidget extends StatelessWidget {
                     children: [
                       SingleChildScrollView(
                         padding: EdgeInsets.all(14),
-                        child:
-                            area.analytics != null
-                                ? AnalyticsCardsGridWidget(
-                                  analytics: area.analytics!,
-                                )
-                                : Text("Aucun espaces disponible"),
+                        child: AnalyticsCardsGridWidget(analytics: analytics),
                       ),
                       SingleChildScrollView(
                         padding: EdgeInsets.all(14),
-                        child:
-                            area.analytics != null
-                                ? GraphicWidget(analytics: area.analytics!)
-                                : Text("Aucun espaces disponible"),
+                        child: GraphicWidget(analytics: analytics),
                       ),
                     ],
                   ),
