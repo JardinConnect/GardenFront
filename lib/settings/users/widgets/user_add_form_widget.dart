@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_connect/alerts/widgets/common/snackbar.dart';
 import 'package:garden_ui/ui/components.dart';
 
 import '../../../auth/models/user.dart';
@@ -30,7 +31,7 @@ class _UserFormWidget extends State<UserAddFormWidget> {
         lastName: '',
         email: '',
         phoneNumber: '',
-        role: '',
+        role: Role.trainee,
         password: '',
       );
     passwordController = TextEditingController();
@@ -110,6 +111,15 @@ class _UserFormWidget extends State<UserAddFormWidget> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Veuillez entrer une adresse email';
+                        }
+                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                          return 'Veuillez entrer une adresse email valide';
+                        }
+                        return null;
+                      },
                     keyboardType: TextInputType.emailAddress,
                     controller: emailController,
                     decoration: const InputDecoration(labelText: 'Email')
@@ -118,6 +128,15 @@ class _UserFormWidget extends State<UserAddFormWidget> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Veuillez entrer un numéro de téléphone';
+                        }
+                        if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+                          return 'Veuillez entrer un numéro de téléphone valide (10 chiffres)';
+                        }
+                        return null;
+                      },
                     keyboardType: TextInputType.phone,
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
@@ -131,6 +150,15 @@ class _UserFormWidget extends State<UserAddFormWidget> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
                     controller: passwordController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Veuillez entrer un mot de passe';
+                      }
+                      if (value.length < 8) {
+                        return 'Le mot de passe doit contenir au moins 8 caractères';
+                      }
+                      return null;
+                    },
                     decoration: const InputDecoration(labelText: 'Mot de passe'),
                     obscureText: true,
                   ),
@@ -138,29 +166,47 @@ class _UserFormWidget extends State<UserAddFormWidget> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child:
-                    DropdownButtonFormField<String>(
-                      initialValue: user?.role.isNotEmpty == true ? user?.role : null,
+                    DropdownButtonFormField<Role>(
+                      initialValue: user?.role ?? Role.trainee,
                       decoration: const InputDecoration(labelText: 'Rôle'),
-                      items: <String>['admin', 'employees'].map((String value) {
-                        return DropdownMenuItem<String>(
+                      items: <Role>[Role.admin, Role.employees,Role.trainee].map((Role value) {
+                        return DropdownMenuItem<Role>(
                           value: value,
-                          child: Text(value, style: Theme.of(context).textTheme.bodyLarge),
+                          child: Text(value.displayName, style: Theme.of(context).textTheme.bodyLarge),
                         );
                       }).toList(),
-                      onChanged: (String? value) { },
+                      onChanged: (Role? value) {
+                        setState(() {
+                          user = UserAddDto(
+                            firstName: user?.firstName ?? '',
+                            lastName: user?.lastName ?? '',
+                            email: user?.email ?? '',
+                            phoneNumber: user?.phoneNumber ?? '',
+                            role: value ?? Role.trainee,
+                            password: user?.password ?? '',
+                          );
+                        });
+                      },
                     ),
                   ),
                   Button(label: "Créer", icon: Icons.check_circle, onPressed: ()=>
                   {
-                    userForm.currentState?.save(),
-                    context.read<UsersBloc>().add(UserAddEvent(user: UserAddDto(
-                      firstName: firstnameController.text,
-                      lastName: lastnameController.text,
-                      email: emailController.text,
-                      phoneNumber: phoneController.text,
-                      password: passwordController.text,
-                      role: user?.role ?? 'employees',
-                    ))),
+                    if (userForm.currentState?.validate() == true){
+                      userForm.currentState?.save(),
+                      context.read<UsersBloc>().add(
+                          UserAddEvent(user: UserAddDto(
+                            firstName: firstnameController.text,
+                            lastName: lastnameController.text,
+                            email: emailController.text,
+                            phoneNumber: phoneController.text,
+                            password: passwordController.text,
+                            role: user?.role ?? Role.trainee,
+                          ))),
+                      showSnackBarSucces(context, "Utilisateur créé avec succès"),
+                      context.read<UsersBloc>().add(UsersUnselectEvent())
+                    }else{
+                      showSnackBarError(context, "Veuillez corriger les erreurs dans le formulaire")
+                    }
                   } )
               ],
             ),

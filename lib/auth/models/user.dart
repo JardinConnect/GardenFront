@@ -3,16 +3,16 @@ part 'user.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class User {
-  final String id;
+  final String? id;
   final String email;
   final String firstName;
   final String lastName;
   final String phoneNumber;
-  final String role;
+  final Role role;
   final String? token;
 
   User({
-    required this.id,
+    this.id,
     required this.email,
     required this.firstName,
     required this.lastName,
@@ -32,7 +32,7 @@ class UserAddDto{
   final String firstName;
   final String lastName;
   final String phoneNumber;
-  final String role;
+  final Role role;
   final String password;
 
   UserAddDto({
@@ -47,4 +47,25 @@ class UserAddDto{
   factory UserAddDto.fromJson(Map<String, dynamic> json) => _$UserAddDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserAddDtoToJson(this);
+}
+
+@JsonEnum(fieldRename: FieldRename.snake)
+enum Role {
+  superadmin,
+  admin,
+  employees,
+  trainee;
+
+  String get displayName {
+    switch (this) {
+      case Role.superadmin:
+        return 'Super Admin';
+      case Role.admin:
+        return 'Admin';
+      case Role.employees:
+        return 'Employé';
+      case Role.trainee:
+        return 'Saisonnié';
+    }
+  }
 }

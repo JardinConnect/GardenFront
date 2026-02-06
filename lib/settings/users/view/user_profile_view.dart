@@ -1,10 +1,16 @@
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_connect/common/widgets/danger_zone.dart';
 import 'package:garden_connect/settings/users/bloc/users_bloc.dart';
 import 'package:garden_connect/settings/users/widgets/log_card_widget.dart';
 import 'package:garden_connect/settings/users/widgets/user_form_widget.dart';
 import 'package:garden_connect/settings/users/widgets/user_info_widget.dart';
+
+import '../../../auth/models/user.dart';
+import '../../../auth/utils/auth_extension.dart';
 
 
 class UserProfileView extends StatelessWidget {
@@ -14,7 +20,7 @@ class UserProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.watch<UsersBloc>().selectedUser;
     final logs = context.read<UsersBloc>().userLogs;
-
+    final currentUser = context.currentUser;
     if (user == null) {
       return const Text('Utilisateur non connecté');
     }
@@ -66,7 +72,17 @@ class UserProfileView extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: UserInfoWidget(user: user),
-                          )
+                          ),
+                          if (currentUser?.role == Role.admin || context.currentUser == user)
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child:DangerZone(title: "Zone de danger", description: "La suppression d'un utilisateur est irréverssible", deleteButtonLabel: "Supprimer",
+                                  onDelete: (){
+                                context.read<UsersBloc>().add(UserDeleteEvent(user: user));
+                                sleep(Duration(seconds: 1));
+                                context.read<UsersBloc>().add(UsersUnselectEvent());
+                              }),
+                            ),
                         ],
                       ),
                     )

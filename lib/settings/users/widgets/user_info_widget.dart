@@ -37,7 +37,7 @@ class UserInfoWidget extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(4.0),
-            child: Text(user.role, style: Theme.of(context).textTheme.bodyLarge),
+            child: Text(user.role.displayName, style: Theme.of(context).textTheme.bodyLarge),
           ),
           Padding(
             padding: const EdgeInsets.all(4.0),

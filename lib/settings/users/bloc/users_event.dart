@@ -20,6 +20,11 @@ final class UserAddEvent extends UsersEvent {
 
   UserAddEvent({required this.user});
 }
+final class UserDeleteEvent extends UsersEvent {
+  final User user;
+
+  UserDeleteEvent({required this.user});
+}
 
 final class UsersUnselectEvent extends UsersEvent {}
 

@@ -8,6 +8,7 @@ import 'package:garden_connect/settings/users/widgets/log_card_widget.dart';
 import 'package:garden_connect/settings/users/bloc/users_bloc.dart';
 import 'package:garden_connect/settings/users/view/user_add_view.dart';
 import 'package:garden_connect/settings/users/view/user_profile_view.dart';
+import '../../../auth/models/user.dart';
 import '../../../auth/utils/auth_extension.dart';
 import '../../../common/widgets/global_stat_card_widget.dart';
 import '../widgets/users_list_card_widget.dart';
@@ -46,7 +47,7 @@ class UsersPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text("Bonjour ${user.firstName} ${user.lastName}", style: Theme.of(context).textTheme.headlineLarge,),
-                              if (user.role == 'admin')
+                              if (user.role == Role.admin)
                                 FloatingActionButton(
                                   onPressed: ()=> context.read<UsersBloc>().add(UsersCreationEvent()),
                                   backgroundColor: Theme.of(context).primaryColor,
@@ -75,7 +76,7 @@ class UsersPage extends StatelessWidget {
                                 padding: const EdgeInsets.all(8.0),
                                 child: GlobalStatCardWidget(
                                   title: "Admins",
-                                  data: "2",
+                                  data: users.where((u) => u.role == Role.admin).length.toString(),
                                 ),
                               ),
                             ),
@@ -84,7 +85,7 @@ class UsersPage extends StatelessWidget {
                                 padding: const EdgeInsets.all(8.0),
                                 child: GlobalStatCardWidget(
                                   title: "Salariés",
-                                  data: "3",
+                                  data: users.where((u) => u.role == Role.employees).length.toString(),
                                 ),
                               ),
                             ),
@@ -93,7 +94,7 @@ class UsersPage extends StatelessWidget {
                                 padding: const EdgeInsets.all(8.0),
                                 child: GlobalStatCardWidget(
                                   title: "Saisonnier",
-                                  data: "0",
+                                  data: users.where((u) => u.role == Role.trainee).length.toString(),
                                 ),
                               ),
                             ),
@@ -107,7 +108,7 @@ class UsersPage extends StatelessWidget {
                             flex: 7,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: UserListCardWidget(users: users, isEditable: true,),
+                              child: Expanded(child: UserListCardWidget(users: users, isEditable: true,)),
                             ),
                           ),
                           Expanded(

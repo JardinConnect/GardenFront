@@ -104,6 +104,7 @@ class Log{
   factory Log.fromJson(Map<String, dynamic> json) =>
       _$LogFromJson(json);
 }
+
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class Logs {
   final List<Log> logs;
