@@ -11,7 +11,7 @@ import '../../../common/widgets/base_item_edit_form_card.dart';
 import '../../../common/widgets/danger_zone.dart';
 
 class AreaAddEditPage extends StatelessWidget {
-  final int? id;
+  final String? id;
   final bool isViewMode;
 
   const AreaAddEditPage({super.key, this.id, this.isViewMode = false});
