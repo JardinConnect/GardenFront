@@ -10,7 +10,7 @@ class CellRepository {
     }
   }
 
-  Future<Cell> fetchCellDetail(int id) async {
+  Future<Cell> fetchCellDetail(String id) async {
     try {
       return _mockedCellDetail();
     } catch(e) {
@@ -18,24 +18,24 @@ class CellRepository {
     }
   }
 
-  Future<void> changeCellTracking(int id, bool newTrackingValue) async {
+  Future<void> changeCellTracking(String id, bool newTrackingValue) async {
   }
 
   Future<void> refreshCells() async {
   }
 
-  Future<void> refreshCell(int id) async {
+  Future<void> refreshCell(String id) async {
   }
 
-  Future<void> updateCell(int id, String name, int? parentId) async {
+  Future<void> updateCell(String id, String name, String? parentId) async {
 
   }
 
   // PUT /cells/settings
-  Future<void> updateCellsSettings(List<int> ids, int dailyUpdateCount, int measurementFrequency, List<String> updateTimes) async {
+  Future<void> updateCellsSettings(List<String> ids, int dailyUpdateCount, int measurementFrequency, List<String> updateTimes) async {
   }
 
-  Future<void> deleteCell(int id) async {
+  Future<void> deleteCell(String id) async {
 
   }
 
@@ -44,7 +44,7 @@ class CellRepository {
 
     for (int i = 0; i < 10; i++) {
       mockedJson.add({
-        "id": i + 1,
+        "id": (i + 1).toString(),
         "name": "Tomate Serre Nord $i",
         "battery": 67,
         "is_tracked": true,
@@ -79,7 +79,7 @@ class CellRepository {
 
   Cell _mockedCellDetail() {
     final json = {
-      "id": 14,
+      "id": "14",
       "name": "Tomate Serre Nord",
       "battery": 67,
       "is_tracked": true,

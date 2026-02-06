@@ -19,7 +19,7 @@ class AnalyticListItem {
 
 class AnalyticsListWidget extends StatelessWidget {
   final List<BaseItem> items;
-  final Function(BuildContext context, int id) onPressed;
+  final Function(BuildContext context, String id) onPressed;
 
   const AnalyticsListWidget({
     super.key,

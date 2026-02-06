@@ -17,9 +17,10 @@ class AreaRepository {
       // Données initiales
       _cachedAreas = [
         {
-          "id": 3,
+          "id": "3",
           "name": "Parcelle Nord",
           "color": "FFE74C3C",
+          "is_tracked": true,
           "level": 1,
           "analytics": {
             "air_temperature": [
@@ -133,9 +134,10 @@ class AreaRepository {
           },
           "areas": [
             {
-              "id": 7,
+              "id": "7",
               "name": "Planche Tomates Nord",
               "color": "FFE74C3C",
+              "is_tracked": true,
               "level": 2,
               "analytics": {
                 "air_temperature": [
@@ -249,7 +251,7 @@ class AreaRepository {
               },
               "cells": [
                 {
-                  "id": 14,
+                  "id": "14",
                   "name": "Tomate Serre Nord",
                   "battery": 67,
                   "is_tracked": true,
@@ -367,7 +369,7 @@ class AreaRepository {
                   }
                 },
                 {
-                  "id": 15,
+                  "id": "15",
                   "name": "Tomate Serre Nord A2",
                   "battery": 67,
                   "is_tracked": true,
@@ -489,8 +491,9 @@ class AreaRepository {
           ]
         },
         {
-          "id": 4,
+          "id": "4",
           "name": "Parcelle Sud",
+          "is_tracked": true,
           "color": "FF3498DB",
           "level": 1,
           "analytics": {
@@ -605,8 +608,9 @@ class AreaRepository {
           },
           "areas": [
             {
-              "id": 8,
+              "id": "8",
               "name": "Planche Tomates Sud",
+              "is_tracked": true,
               "color": "FF3498DB",
               "level": 2,
               "analytics": {
@@ -721,7 +725,7 @@ class AreaRepository {
               },
               "cells": [
                 {
-                  "id": 15,
+                  "id": "15",
                   "name": "Tomate Serre Sud A1",
                   "battery": 67,
                   "is_tracked": true,
@@ -839,7 +843,7 @@ class AreaRepository {
                   }
                 },
                 {
-                  "id": 15,
+                  "id": "15",
                   "name": "Tomate Serre Sud A2",
                   "battery": 67,
                   "is_tracked": true,
@@ -980,11 +984,12 @@ class AreaRepository {
 
       // Créer la nouvelle area
       final newAreaJson = {
-        "id": 1,
+        "id": "1",
         "name": name,
         "color": color,
         "level": parentArea != null ? parentArea.level + 1 : 1,
         "areas": <Map<String, dynamic>>[],
+        "is_tracked": false,
       };
 
       if (parentArea == null) {
@@ -1022,9 +1027,10 @@ class AreaRepository {
   }
 
   Future<Area> updateArea({
-    required int id,
+    required String id,
     required String name,
     required Color color,
+    required bool isTracked,
     Area? parentArea,
   }) async {
     try {
@@ -1042,6 +1048,7 @@ class AreaRepository {
         name,
         color,
         parentArea,
+        isTracked
       );
 
       if (!updated) {
@@ -1060,10 +1067,11 @@ class AreaRepository {
 
   bool _updateAreaInList(
       List<Map<String, dynamic>> areas,
-      int id,
+      String id,
       String name,
       Color color,
       Area? parentArea,
+      bool isTracked,
       ) {
     for (var i = 0; i < areas.length; i++) {
       final area = areas[i];
@@ -1072,6 +1080,7 @@ class AreaRepository {
         // Area trouvée, la mettre à jour
         area['name'] = name;
         area['color'] = color.value.toRadixString(16).toUpperCase();
+        area['is_tracked'] = isTracked;
 
         // Si on change de parent, il faut déplacer l'area
         if (parentArea != null) {
@@ -1094,6 +1103,7 @@ class AreaRepository {
           name,
           color,
           parentArea,
+          isTracked,
         )) {
           return true;
         }

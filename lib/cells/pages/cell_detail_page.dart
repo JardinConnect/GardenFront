@@ -9,7 +9,7 @@ import 'package:garden_ui/ui/design_system.dart';
 import 'package:go_router/go_router.dart';
 
 class CellDetailPage extends StatelessWidget {
-  final int id;
+  final String id;
   final bool isFromAreaPage;
 
   const CellDetailPage({

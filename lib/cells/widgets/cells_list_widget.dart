@@ -17,7 +17,7 @@ class CellAnalyticListItem {
 
 class CellsListWidget extends StatelessWidget {
   final List<Cell> cells;
-  final Function(BuildContext context, int id) onPressed;
+  final Function(BuildContext context, String id) onPressed;
 
   const CellsListWidget({
     super.key,

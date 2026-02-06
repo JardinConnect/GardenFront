@@ -6,7 +6,7 @@ import 'package:garden_ui/ui/design_system.dart';
 
 class CellsCardsWidget extends StatelessWidget {
   final List<Cell> cells;
-  final Function(BuildContext context, int id) onPressed;
+  final Function(BuildContext context, String id) onPressed;
   final AnalyticType? filter;
 
   const CellsCardsWidget({

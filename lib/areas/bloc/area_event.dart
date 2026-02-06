@@ -38,22 +38,26 @@ final class SearchAreas extends AreaEvent {
 }
 
 final class UpdateArea extends AreaEvent {
-  final int? id;
+  final String? id;
   final String name;
   final Color color;
   final Area? parentArea;
+  final bool isTracked;
 
   UpdateArea({
     required this.id,
     required this.name,
     required this.color,
     this.parentArea,
+    this.isTracked = false,
   });
 }
 
 final class ShowEditAreaForm extends AreaEvent {}
 
 final class ToggleAnalyticsWidget extends AreaEvent {}
+
+final class ToggleAreaTracking extends AreaEvent {}
 
 final class ShowCellsListWidget extends AreaEvent {}
 

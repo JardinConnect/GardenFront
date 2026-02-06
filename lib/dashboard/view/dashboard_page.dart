@@ -4,6 +4,8 @@ import 'package:garden_connect/auth/utils/auth_extension.dart';
 import 'package:garden_ui/ui/components.dart';
 
 import '../../areas/bloc/area_bloc.dart';
+import '../../areas/models/area.dart';
+import '../../cells/bloc/cell_bloc.dart';
 import '../../core/app_assets.dart';
 import '../../analytics/bloc/analytics_bloc.dart';
 import '../widgets/activity_sensors.dart';
@@ -28,6 +30,7 @@ class DashboardPage extends StatelessWidget {
         builder: (context) {
           final analyticsState = context.watch<AnalyticsBloc>().state;
           final areaState = context.watch<AreaBloc>().state;
+          final cellState = context.watch<CellBloc>().state;
 
           if (analyticsState is AnalyticsShimmer ||
               analyticsState is AnalyticsInitial ||
@@ -38,17 +41,11 @@ class DashboardPage extends StatelessWidget {
             return Center(child: Text('Erreur: ${areaState.message}'));
           } else if (analyticsState is AnalyticsError) {
             return Center(child: Text('Erreur: ${analyticsState.message}'));
-          } else if (areaState is AreasLoaded) {
-            final areas = areaState.areas;
-
-            final allAreas = <dynamic>[];
-            for (var area in areas) {
-              allAreas.add(area);
-              final subareas = area.areas;
-              if (subareas != null && subareas.isNotEmpty) {
-                allAreas.addAll(subareas);
-              }
-            }
+          } else if (areaState is AreasLoaded && cellState is CellsLoaded) {
+            final areas = Area.getAllAreasFlattened(areaState.areas);
+            final trackedAreas = areas.where((area) => area.isTracked).toList();
+            final trackedCells =
+                cellState.cells.where((cell) => cell.isTracked).toList();
 
             return Padding(
               padding: const EdgeInsets.all(16.0),
@@ -88,11 +85,11 @@ class DashboardPage extends StatelessWidget {
                             spacing: 16,
                             runSpacing: 16,
                             children:
-                                allAreas.map((area) {
+                                trackedCells.map((cell) {
                                   return SizedBox(
                                     width: (constraints.maxWidth - 32) / 3,
                                     child: AnalyticsSummaryCard(
-                                      name: area.name,
+                                      name: cell.name,
                                       batteryPercentage: 89,
                                       onPressed: () {},
                                       light: 3,
@@ -117,7 +114,7 @@ class DashboardPage extends StatelessWidget {
                             spacing: 16,
                             runSpacing: 16,
                             children:
-                                allAreas.map((area) {
+                                trackedAreas.map((area) {
                                   return SizedBox(
                                     width: (constraints.maxWidth - 32) / 3,
                                     child: AnalyticsSummaryCard(

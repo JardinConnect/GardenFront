@@ -27,7 +27,7 @@ class CellsPage extends StatelessWidget {
     context.read<CellBloc>().add(SearchCells(search: text));
   }
 
-  _onCellPressed(BuildContext context, int id) {
+  _onCellPressed(BuildContext context, String id) {
     context.go('/cells/$id');
   }
 

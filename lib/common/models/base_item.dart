@@ -1,15 +1,17 @@
 import '../../analytics/models/analytics.dart';
 
 class BaseItem {
-  final int id;
+  final String id;
   final String name;
   final Analytics analytics;
   int? parentId;
+  final bool isTracked;
 
   BaseItem({
     required this.id,
     required this.name,
     required this.analytics,
-    this.parentId
+    this.parentId,
+    this.isTracked = false,
   });
 }

@@ -22,11 +22,34 @@ class Area extends BaseItem {
     required this.color,
     required this.level,
     required super.analytics,
+    required super.isTracked,
     this.areas,
     this.cells,
   });
 
   factory Area.fromJson(Map<String, dynamic> json) => _$AreaFromJson(json);
+
+  copyWith({
+    String? id,
+    String? name,
+    Color? color,
+    int? level,
+    Analytics? analytics,
+    List<Area>? areas,
+    List<Cell>? cells,
+    bool? isTracked,
+  }) {
+    return Area(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      color: color ?? this.color,
+      level: level ?? this.level,
+      analytics: analytics ?? this.analytics,
+      areas: areas ?? this.areas,
+      cells: cells ?? this.cells,
+      isTracked: isTracked ?? this.isTracked,
+    );
+  }
 
   static Color _colorFromJson(String colorString) {
     return Color(int.parse(colorString, radix: 16));
@@ -96,5 +119,20 @@ class Area extends BaseItem {
 
     collectDescendants(area.areas);
     return descendants;
+  }
+
+  static Area? findAreaById(List<Area> areas, String id) {
+    for (final area in areas) {
+      if (area.id == id) {
+        return area;
+      }
+      if (area.areas != null && area.areas!.isNotEmpty) {
+        final found = findAreaById(area.areas!, id);
+        if (found != null) {
+          return found;
+        }
+      }
+    }
+    return null;
   }
 }

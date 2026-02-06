@@ -5,11 +5,13 @@ sealed class AreaState {
   final Area? selectedArea;
   final Cell? selectedCell;
   final bool isAreaSelected;
+  final bool isAreaTracked;
 
   const AreaState({
     this.selectedArea,
     this.selectedCell,
     this.isAreaSelected = false,
+    this.isAreaTracked = false,
   });
 }
 
@@ -42,6 +44,7 @@ final class AreasLoaded extends AreaState {
     super.selectedArea,
     super.selectedCell,
     super.isAreaSelected,
+    super.isAreaTracked,
     this.showAddForm = false,
     this.showEditForm = false,
     this.toggleAnalyticsWidget = false,
@@ -87,9 +90,11 @@ final class AreasLoaded extends AreaState {
     Area? selectedArea,
     Cell? selectedCell,
     bool? isAreaSelected,
+    bool? isAreaTracked,
     bool? showAddForm,
     bool? showEditForm,
     bool? toggleAnalyticsWidget,
+    bool? toggleAreaTracking,
     bool? showCellsListWidget,
     bool? showAreasListWidget,
     int? selectedLevel,
@@ -101,10 +106,13 @@ final class AreasLoaded extends AreaState {
       areas: areas ?? this.areas,
       selectedArea: clearSelection ? null : (selectedArea ?? this.selectedArea),
       selectedCell: clearSelection ? null : selectedCell,
-      isAreaSelected: clearSelection ? false : (isAreaSelected ?? this.isAreaSelected),
+      isAreaSelected:
+          clearSelection ? false : (isAreaSelected ?? this.isAreaSelected),
+      isAreaTracked: isAreaTracked ?? this.isAreaTracked,
       showAddForm: showAddForm ?? this.showAddForm,
       showEditForm: showEditForm ?? this.showEditForm,
-      toggleAnalyticsWidget: toggleAnalyticsWidget ?? this.toggleAnalyticsWidget,
+      toggleAnalyticsWidget:
+          toggleAnalyticsWidget ?? this.toggleAnalyticsWidget,
       showCellsListWidget: showCellsListWidget ?? this.showCellsListWidget,
       showAreasListWidget: showAreasListWidget ?? this.showAreasListWidget,
       selectedLevel: clearLevel ? null : (selectedLevel ?? this.selectedLevel),

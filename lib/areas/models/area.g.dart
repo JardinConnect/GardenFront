@@ -1,17 +1,24 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'cell.dart';
+part of 'area.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Cell _$CellFromJson(Map<String, dynamic> json) => Cell(
+Area _$AreaFromJson(Map<String, dynamic> json) => Area(
   id: json['id'] as String,
   name: json['name'] as String,
-  battery: (json['battery'] as num).toInt(),
+  color: Area._colorFromJson(json['color'] as String),
+  level: (json['level'] as num).toInt(),
   analytics: Analytics.fromJson(json['analytics'] as Map<String, dynamic>),
-  location: json['location'] as String,
-  lastUpdateAt: DateTime.parse(json['last_update_at'] as String),
   isTracked: json['is_tracked'] as bool,
+  areas:
+      (json['areas'] as List<dynamic>?)
+          ?.map((e) => Area.fromJson(e as Map<String, dynamic>))
+          .toList(),
+  cells:
+      (json['cells'] as List<dynamic>?)
+          ?.map((e) => Cell.fromJson(e as Map<String, dynamic>))
+          .toList(),
 )..parentId = (json['parent_id'] as num?)?.toInt();

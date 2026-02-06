@@ -82,7 +82,7 @@ class AppRouter {
               GoRoute(
                 path: 'cells/:id',
                 pageBuilder: (context, GoRouterState state) {
-                  final id = int.parse(state.pathParameters['id']!);
+                  final id = state.pathParameters['id']!;
                   return NoTransitionPage(
                     child: BlocProvider(
                       create:
@@ -102,7 +102,7 @@ class AppRouter {
               GoRoute(
                 path: ':id',
                 pageBuilder: (context, GoRouterState state) {
-                  final id = int.parse(state.pathParameters['id']!);
+                  final String id = state.pathParameters['id']!;
                   return NoTransitionPage(
                     child: BlocProvider(
                       create:
@@ -193,17 +193,17 @@ class AppRouter {
                     ],
                   ),
                   GoRoute(
-                      path: ":id",
-                      pageBuilder: (context, state) {
-                        final viewMode =
-                            state.uri.queryParameters['view'] == 'true';
-                        return NoTransitionPage(
-                          child: CellDetailSettingsPage(
-                            id: int.parse(state.pathParameters['id']!),
-                            isViewMode: viewMode,
-                          ),
-                        );
-                      }
+                    path: ":id",
+                    pageBuilder: (context, state) {
+                      final viewMode =
+                          state.uri.queryParameters['view'] == 'true';
+                      return NoTransitionPage(
+                        child: CellDetailSettingsPage(
+                          id: state.pathParameters['id']!,
+                          isViewMode: viewMode,
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

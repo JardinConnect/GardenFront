@@ -225,18 +225,20 @@ class _CellConfigureViewState extends State<CellConfigureView> {
 
     final List<Area> areas = [
       Area(
-        id: 1,
+        id: '1',
         name: 'Parcelle',
         level: 1,
         color: Colors.red,
         analytics: Analytics(),
+        isTracked: true,
       ),
       Area(
-        id: 2,
+        id: '2',
         name: 'Planche',
         level: 2,
         color: Colors.red,
         analytics: Analytics(),
+        isTracked: true,
       ),
     ];
 
@@ -258,7 +260,7 @@ class _CellConfigureViewState extends State<CellConfigureView> {
     ];
 
     final Cell lastCell = Cell(
-      id: 1,
+      id: '1',
       name: 'Cellule #4-1',
       location: 'Espace 2 > Serre A > planche 23',
       lastUpdateAt: DateTime.now(),

@@ -11,7 +11,7 @@ import 'package:garden_ui/ui/design_system.dart';
 import 'package:go_router/go_router.dart';
 
 class CellDetailSettingsPage extends StatelessWidget {
-  final int id;
+  final String id;
   final bool isViewMode;
 
   CellDetailSettingsPage({
