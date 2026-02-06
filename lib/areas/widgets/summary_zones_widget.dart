@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garden_connect/analytics/widgets/analytics_cards_grid.dart';
 import 'package:garden_connect/analytics/widgets/analytics_list_widget.dart';
-import 'package:garden_connect/cells/widgets/cells_list_widget.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -140,7 +139,8 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
     final state = context.watch<AreaBloc>().state;
     final showingCellsList = state is AreasLoaded && state.showCellsListWidget;
     final showingAreasList = state is AreasLoaded && state.showAreasListWidget;
-    final isTracked = state is AreasLoaded && (state.selectedArea?.isTracked ?? false);
+    final isTracked =
+        state is AreasLoaded && (state.selectedArea?.isTracked ?? false);
     final selectedLevel = state is AreasLoaded ? state.selectedLevel : null;
 
     final areas =
@@ -152,14 +152,15 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
         Row(
           children: [
             Text(widget.title, style: GardenTypography.headingLg),
-            GardenToggle(
-              isEnabled: isTracked,
-              enabledIcon: Icons.visibility_outlined,
-              disabledIcon: Icons.visibility_off_outlined,
-              onToggle: (bool value) {
-                context.read<AreaBloc>().add(ToggleAreaTracking());
-              },
-            ),
+            if (widget.level > 0)
+              GardenToggle(
+                isEnabled: isTracked,
+                enabledIcon: Icons.visibility_outlined,
+                disabledIcon: Icons.visibility_off_outlined,
+                onToggle: (bool value) {
+                  context.read<AreaBloc>().add(ToggleAreaTracking());
+                },
+              ),
           ],
         ),
         const SizedBox(height: 16),

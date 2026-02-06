@@ -4,7 +4,6 @@ import 'package:garden_connect/auth/utils/auth_extension.dart';
 import 'package:garden_connect/common/widgets/custom_tab_selector.dart';
 import '../../areas/bloc/area_bloc.dart';
 import '../../analytics/bloc/analytics_bloc.dart';
-import '../../cells/bloc/cell_bloc.dart';
 import '../widgets/tab_zones_widget.dart';
 
 class AreasPage extends StatelessWidget {
@@ -54,9 +53,8 @@ class AreasPage extends StatelessWidget {
                             'Gestion des espaces',
                             style: Theme.of(context).textTheme.headlineLarge,
                           ),
-                          Row(
-                            children: [
-                              IconButton.filled(
+                          areaState.selectedCell == null
+                              ? IconButton.filled(
                                 onPressed: () {
                                   context.read<AreaBloc>().add(
                                     ToggleAnalyticsWidget(),
@@ -72,37 +70,8 @@ class AreasPage extends StatelessWidget {
                                       Theme.of(context).colorScheme.primary,
                                   foregroundColor: Colors.white,
                                 ),
-                              ),
-                              const SizedBox(width: 10),
-                              IconButton.filled(
-                                onPressed: () {
-                                  context.read<AreaBloc>().add(
-                                    ShowEditAreaForm(),
-                                  );
-                                },
-                                icon: Icon(Icons.edit),
-                                style: IconButton.styleFrom(
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.primary,
-                                  foregroundColor: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              IconButton.filled(
-                                onPressed: () {
-                                  context.read<AreaBloc>().add(
-                                    ShowAddAreaForm(),
-                                  );
-                                },
-                                icon: const Icon(Icons.add),
-                                style: IconButton.styleFrom(
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.primary,
-                                  foregroundColor: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
+                              )
+                              : SizedBox.shrink(),
                         ],
                       ),
                       const SizedBox(height: 50),
@@ -120,8 +89,6 @@ class AreasPage extends StatelessWidget {
                                 selectedArea: areaState.selectedArea,
                                 selectedCell: areaState.selectedCell,
                                 isAreaSelected: areaState.isAreaSelected,
-                                showAddForm: areaState.showAddForm,
-                                showEditForm: areaState.showEditForm,
                                 toggleAnalyticsWidget:
                                     areaState.toggleAnalyticsWidget,
                               ),
@@ -131,13 +98,8 @@ class AreasPage extends StatelessWidget {
                               child: TabZonesWidget(
                                 title: "NomDeLaFerme",
                                 areas: areaState.areas,
-                                selectedArea: areaState.selectedArea,
-                                selectedCell: areaState.selectedCell,
-                                isAreaSelected: areaState.isAreaSelected,
                                 isExpanded: false,
                                 isOverview: true,
-                                showAddForm: areaState.showAddForm,
-                                showEditForm: areaState.showEditForm,
                                 toggleAnalyticsWidget:
                                     areaState.toggleAnalyticsWidget,
                               ),

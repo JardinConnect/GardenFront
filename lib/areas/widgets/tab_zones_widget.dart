@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:garden_connect/areas/widgets/edit_area_form_widget.dart';
 import 'package:garden_connect/areas/widgets/summary_zones_widget.dart';
 import 'package:garden_ui/ui/components.dart';
-import 'package:go_router/go_router.dart';
 import '../../cells/bloc/cell_bloc.dart';
 import '../../cells/models/cell.dart';
 import '../../cells/pages/cell_detail_page.dart';
 import '../models/area.dart';
 import '../bloc/area_bloc.dart';
-import 'add_area_form_widget.dart';
 
 class TabZonesWidget extends StatelessWidget {
   final String title;
@@ -19,8 +16,6 @@ class TabZonesWidget extends StatelessWidget {
   final bool isAreaSelected;
   final bool isExpanded;
   final bool isOverview;
-  final bool showAddForm;
-  final bool showEditForm;
   final bool toggleAnalyticsWidget;
   final bool toggleAreaTracking;
 
@@ -33,8 +28,6 @@ class TabZonesWidget extends StatelessWidget {
     this.isAreaSelected = false,
     this.isExpanded = true,
     this.isOverview = false,
-    this.showAddForm = false,
-    this.showEditForm = false,
     this.toggleAnalyticsWidget = false,
     this.toggleAreaTracking = false,
   });
@@ -55,13 +48,11 @@ class TabZonesWidget extends StatelessWidget {
             id: 'cell_${cell.name}',
             title: cell.name,
             level: area.level + 1,
-            // ✅ PAS de isExpanded ici
-            onTap: () {
-              print(
-                'Cellule sélectionnée: ${cell.name} dans la zone ${area.name}',
-              );
-              context.read<AreaBloc>().add(SelectCell(cell, area));
-            },
+            onTap:
+                () =>
+                    !isOverview
+                        ? context.read<AreaBloc>().add(SelectCell(cell, area))
+                        : null,
           ),
         ),
       );
@@ -71,12 +62,12 @@ class TabZonesWidget extends StatelessWidget {
       id: area.name,
       title: area.name,
       level: area.level,
-      // ✅ PAS de isExpanded ici - c'est CRITIQUE !
-      // Le HierarchicalMenu gérera l'état lui-même
-      onTap: () {
-        print('Zone sélectionnée: ${area.name}');
-        context.read<AreaBloc>().add(SelectArea(area));
-      },
+      isExpanded: isOverview ? false : true,
+      onTap:
+          () =>
+              !isOverview
+                  ? context.read<AreaBloc>().add(SelectArea(area))
+                  : null,
       children: children,
     );
   }
@@ -120,17 +111,6 @@ class TabZonesWidget extends StatelessWidget {
   }
 
   Widget _buildDetailsPanel(BuildContext context) {
-    if (showAddForm) {
-      return AddAreaFormWidget(availableAreas: areas);
-    }
-
-    if (showEditForm && selectedArea != null) {
-      return EditAreaFormWidget(
-        availableAreas: areas,
-        areaToEdit: selectedArea!,
-      );
-    }
-
     if (selectedCell != null) {
       return BlocProvider(
         key: ValueKey(selectedCell!.id),
@@ -145,7 +125,7 @@ class TabZonesWidget extends StatelessWidget {
         title: title,
         level: 0,
         areas: areas,
-        analytics: null,
+        analytics: areas.first.analytics,
         toggleAnalyticsWidget: toggleAnalyticsWidget,
         currentLevel: 0,
       );
