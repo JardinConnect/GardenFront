@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
 
 import '../../areas/models/area.dart';
-import 'hexagon_dialog_box_widget.dart';
+import 'dialog_box_widget.dart';
 
 class HexagonesWidget extends StatefulWidget {
   final List<Area> areas;
@@ -83,7 +83,11 @@ class _HexagonesWidgetState extends State<HexagonesWidget> {
           showDialog(
             context: context,
             builder:
-                (BuildContext context) => HexagonDialogBoxWidget(area: area),
+                (BuildContext context) => DialogBoxWidget(
+                  title: area.name,
+                  analytics: area.analytics,
+                  level: area.level,
+                ),
           );
         },
         child: HexagonWidget.flat(

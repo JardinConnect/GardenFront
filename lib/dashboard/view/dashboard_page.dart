@@ -10,7 +10,6 @@ import '../../core/app_assets.dart';
 import '../../analytics/bloc/analytics_bloc.dart';
 import '../widgets/activity_sensors.dart';
 import '../widgets/expandable_card.dart';
-import '../../analytics/widgets/graphic_widget.dart';
 import '../widgets/hexagones_widget.dart';
 import '../widgets/node_comparison.dart';
 
@@ -41,7 +40,9 @@ class DashboardPage extends StatelessWidget {
             return Center(child: Text('Erreur: ${areaState.message}'));
           } else if (analyticsState is AnalyticsError) {
             return Center(child: Text('Erreur: ${analyticsState.message}'));
-          } else if (areaState is AreasLoaded && cellState is CellsLoaded) {
+          } else if (areaState is AreasLoaded &&
+              cellState is CellsLoaded &&
+              analyticsState is AnalyticsLoaded) {
             final areas = Area.getAllAreasFlattened(areaState.areas);
             final trackedAreas = areas.where((area) => area.isTracked).toList();
             final trackedCells =
@@ -63,12 +64,7 @@ class DashboardPage extends StatelessWidget {
                       icon: AppAssets.activity,
                       title: 'Activité des capteurs (365 derniers jours)',
                       child: ActivitySensors(
-                        activityData: List.generate(365, (index) {
-                          if (index % 7 == 0 || index % 7 == 6) return 0;
-                          if (index % 10 < 3) return 1;
-                          if (index % 10 < 6) return 2;
-                          return 3;
-                        }),
+                        analytics: analyticsState.analytics,
                       ),
                     ),
                     ExpandableCard(

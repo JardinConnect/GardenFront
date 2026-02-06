@@ -29,6 +29,40 @@ class Analytics {
   factory Analytics.fromJson(Map<String, dynamic> json) =>
       _$AnalyticsFromJson(json);
 
+  List<Analytic> getAllAnalytics() {
+    return [
+      ...?airTemperature,
+      ...?soilTemperature,
+      ...?airHumidity,
+      ...?soilHumidity,
+      ...?deepSoilHumidity,
+      ...?light,
+    ];
+  }
+
+  Analytics filterByDateRange(DateTime start, DateTime end) {
+    return Analytics(
+      airTemperature: airTemperature
+          ?.where((a) => a.occurredAt.isAfter(start) && a.occurredAt.isBefore(end))
+          .toList(),
+      soilTemperature: soilTemperature
+          ?.where((a) => a.occurredAt.isAfter(start) && a.occurredAt.isBefore(end))
+          .toList(),
+      airHumidity: airHumidity
+          ?.where((a) => a.occurredAt.isAfter(start) && a.occurredAt.isBefore(end))
+          .toList(),
+      soilHumidity: soilHumidity
+          ?.where((a) => a.occurredAt.isAfter(start) && a.occurredAt.isBefore(end))
+          .toList(),
+      deepSoilHumidity: deepSoilHumidity
+          ?.where((a) => a.occurredAt.isAfter(start) && a.occurredAt.isBefore(end))
+          .toList(),
+      light: light
+          ?.where((a) => a.occurredAt.isAfter(start) && a.occurredAt.isBefore(end))
+          .toList(),
+    );
+  }
+
   List<Analytic> getAnalyticsByType(AnalyticType type) {
     switch (type) {
       case AnalyticType.airTemperature:
