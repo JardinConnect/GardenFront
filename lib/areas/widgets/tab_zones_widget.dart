@@ -48,12 +48,11 @@ class TabZonesWidget extends StatelessWidget {
             id: 'cell_${cell.name}',
             title: cell.name,
             level: area.level + 1,
-            onTap: () {
-              print(
-                'Cellule sélectionnée: ${cell.name} dans la zone ${area.name}',
-              );
-              context.read<AreaBloc>().add(SelectCell(cell, area));
-            },
+            onTap:
+                () =>
+                    !isOverview
+                        ? context.read<AreaBloc>().add(SelectCell(cell, area))
+                        : null,
           ),
         ),
       );
@@ -64,10 +63,11 @@ class TabZonesWidget extends StatelessWidget {
       title: area.name,
       level: area.level,
       isExpanded: isOverview ? false : true,
-      onTap: () {
-        print('Zone sélectionnée: ${area.name}');
-        context.read<AreaBloc>().add(SelectArea(area));
-      },
+      onTap:
+          () =>
+              !isOverview
+                  ? context.read<AreaBloc>().add(SelectArea(area))
+                  : null,
       children: children,
     );
   }
@@ -125,7 +125,7 @@ class TabZonesWidget extends StatelessWidget {
         title: title,
         level: 0,
         areas: areas,
-        analytics: null,
+        analytics: areas.first.analytics,
         toggleAnalyticsWidget: toggleAnalyticsWidget,
         currentLevel: 0,
       );

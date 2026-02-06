@@ -99,9 +99,6 @@ class AreasPage extends StatelessWidget {
                               child: TabZonesWidget(
                                 title: "NomDeLaFerme",
                                 areas: areaState.areas,
-                                selectedArea: areaState.selectedArea,
-                                selectedCell: areaState.selectedCell,
-                                isAreaSelected: areaState.isAreaSelected,
                                 isExpanded: false,
                                 isOverview: true,
                                 toggleAnalyticsWidget:

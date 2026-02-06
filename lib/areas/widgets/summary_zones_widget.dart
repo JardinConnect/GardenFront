@@ -140,7 +140,8 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
     final state = context.watch<AreaBloc>().state;
     final showingCellsList = state is AreasLoaded && state.showCellsListWidget;
     final showingAreasList = state is AreasLoaded && state.showAreasListWidget;
-    final isTracked = state is AreasLoaded && (state.selectedArea?.isTracked ?? false);
+    final isTracked =
+        state is AreasLoaded && (state.selectedArea?.isTracked ?? false);
     final selectedLevel = state is AreasLoaded ? state.selectedLevel : null;
 
     final areas =
@@ -152,14 +153,15 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
         Row(
           children: [
             Text(widget.title, style: GardenTypography.headingLg),
-            GardenToggle(
-              isEnabled: isTracked,
-              enabledIcon: Icons.visibility_outlined,
-              disabledIcon: Icons.visibility_off_outlined,
-              onToggle: (bool value) {
-                context.read<AreaBloc>().add(ToggleAreaTracking());
-              },
-            ),
+            if (widget.level > 0)
+              GardenToggle(
+                isEnabled: isTracked,
+                enabledIcon: Icons.visibility_outlined,
+                disabledIcon: Icons.visibility_off_outlined,
+                onToggle: (bool value) {
+                  context.read<AreaBloc>().add(ToggleAreaTracking());
+                },
+              ),
           ],
         ),
         const SizedBox(height: 16),
