@@ -43,13 +43,16 @@ class AnalyticCardWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: GardenSpace.gapSm,
             children: [
-              Text(
-                analytic.getType().name,
-                style: GardenTypography.bodyMd.copyWith(
-                  fontWeight: FontWeight.w700,
+              Flexible(
+                child: Text(
+                  analytic.getType().name,
+                  style: GardenTypography.bodyMd.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-
               if (analytic.alertStatus != AnalyticAlertStatus.ok)
                 AlertIndicator(
                   alertType:
@@ -59,37 +62,60 @@ class AnalyticCardWidget extends StatelessWidget {
                 ),
             ],
           ),
+          SizedBox(height: GardenSpace.gapMd),
           Expanded(
-            child: Row(
-              spacing: GardenSpace.gapLg,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                GardenIcon(
-                  iconName: analytic.getType().iconName,
-                  fillPercentage: _fillPercentage,
-                  color: analytic.getType().iconColor,
-                  size: GardenIconSize.lg,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      analytic.value.toString(),
-                      style: GardenTypography.headingXl.copyWith(
-                        fontWeight: FontWeight.bold,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final isCompact = constraints.maxWidth < 130;
+                
+                final valueStyle = (isCompact 
+                  ? GardenTypography.headingLg 
+                  : GardenTypography.headingXl).copyWith(
+                    fontWeight: FontWeight.bold,
+                  );
+                
+                final unitStyle = (isCompact 
+                  ? GardenTypography.bodyMd 
+                  : GardenTypography.headingMd).copyWith(
+                    fontStyle: FontStyle.italic,
+                  );
+
+                final iconSize = isCompact ? GardenIconSize.md : GardenIconSize.lg;
+
+                return Center(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: GardenSpace.gapSm),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: isCompact ? GardenSpace.gapSm : GardenSpace.gapLg,
+                        children: [
+                          GardenIcon(
+                            iconName: analytic.getType().iconName,
+                            fillPercentage: _fillPercentage,
+                            color: analytic.getType().iconColor,
+                            size: iconSize,
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                analytic.value.toString(),
+                                style: valueStyle,
+                              ),
+                              Text(
+                                analytic.getType().unit,
+                                style: unitStyle,
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                    Text(
-                      analytic.getType().unit,
-                      style: GardenTypography.headingMd.copyWith(
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                  ),
+                );
+              },
             ),
           ),
         ],

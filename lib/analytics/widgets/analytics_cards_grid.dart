@@ -10,32 +10,37 @@ class AnalyticsCardsGridWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 3,
-      mainAxisSpacing: GardenSpace.gapMd,
-      crossAxisSpacing: GardenSpace.gapXl,
-      childAspectRatio: 2.5,
-      shrinkWrap: true,
-      children: <Widget>[
-        AnalyticCardWidget(
-          analytic: analytics.getLastAnalyticByType(AnalyticType.airHumidity)!,
-        ),
-        AnalyticCardWidget(
-          analytic: analytics.getLastAnalyticByType(AnalyticType.light)!,
-        ),
-        AnalyticCardWidget(
-          analytic: analytics.getLastAnalyticByType(AnalyticType.airTemperature)!,
-        ),
-        AnalyticCardWidget(
-          analytic: analytics.getLastAnalyticByType(AnalyticType.soilTemperature)!,
-        ),
-        AnalyticCardWidget(
-          analytic: analytics.getLastAnalyticByType(AnalyticType.soilHumidity)!,
-        ),
-        AnalyticCardWidget(
-          analytic: analytics.getLastAnalyticByType(AnalyticType.deepSoilHumidity)!,
-        ),
-      ],
+    final types = [
+      AnalyticType.airHumidity,
+      AnalyticType.light,
+      AnalyticType.airTemperature,
+      AnalyticType.soilTemperature,
+      AnalyticType.soilHumidity,
+      AnalyticType.deepSoilHumidity,
+    ];
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final crossAxisCount = (constraints.maxWidth / 300).floor().clamp(1, 3);
+
+        return GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            mainAxisSpacing: GardenSpace.gapMd,
+            crossAxisSpacing: GardenSpace.gapXl,
+            childAspectRatio: 2.5,
+            mainAxisExtent: 130,
+          ),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: types.length,
+          itemBuilder: (context, index) {
+            final analytic = analytics.getLastAnalyticByType(types[index]);
+            if (analytic == null) return const SizedBox.shrink();
+            return AnalyticCardWidget(analytic: analytic);
+          },
+        );
+      },
     );
   }
 }
