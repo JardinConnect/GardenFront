@@ -54,23 +54,25 @@ class AreasPage extends StatelessWidget {
                             'Gestion des espaces',
                             style: Theme.of(context).textTheme.headlineLarge,
                           ),
-                          IconButton.filled(
-                            onPressed: () {
-                              context.read<AreaBloc>().add(
-                                ToggleAnalyticsWidget(),
-                              );
-                            },
-                            icon: Icon(
-                              areaState.toggleAnalyticsWidget
-                                  ? Icons.grid_view
-                                  : Icons.show_chart,
-                            ),
-                            style: IconButton.styleFrom(
-                              backgroundColor:
-                              Theme.of(context).colorScheme.primary,
-                              foregroundColor: Colors.white,
-                            ),
-                          ),
+                          areaState.selectedCell == null
+                              ? IconButton.filled(
+                                onPressed: () {
+                                  context.read<AreaBloc>().add(
+                                    ToggleAnalyticsWidget(),
+                                  );
+                                },
+                                icon: Icon(
+                                  areaState.toggleAnalyticsWidget
+                                      ? Icons.grid_view
+                                      : Icons.show_chart,
+                                ),
+                                style: IconButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.primary,
+                                  foregroundColor: Colors.white,
+                                ),
+                              )
+                              : SizedBox.shrink(),
                         ],
                       ),
                       const SizedBox(height: 50),

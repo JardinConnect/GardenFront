@@ -48,7 +48,6 @@ class TabZonesWidget extends StatelessWidget {
             id: 'cell_${cell.name}',
             title: cell.name,
             level: area.level + 1,
-            // ✅ PAS de isExpanded ici
             onTap: () {
               print(
                 'Cellule sélectionnée: ${cell.name} dans la zone ${area.name}',
@@ -64,8 +63,7 @@ class TabZonesWidget extends StatelessWidget {
       id: area.name,
       title: area.name,
       level: area.level,
-      // ✅ PAS de isExpanded ici - c'est CRITIQUE !
-      // Le HierarchicalMenu gérera l'état lui-même
+      isExpanded: isOverview ? false : true,
       onTap: () {
         print('Zone sélectionnée: ${area.name}');
         context.read<AreaBloc>().add(SelectArea(area));
