@@ -54,54 +54,22 @@ class AreasPage extends StatelessWidget {
                             'Gestion des espaces',
                             style: Theme.of(context).textTheme.headlineLarge,
                           ),
-                          Row(
-                            children: [
-                              IconButton.filled(
-                                onPressed: () {
-                                  context.read<AreaBloc>().add(
-                                    ToggleAnalyticsWidget(),
-                                  );
-                                },
-                                icon: Icon(
-                                  areaState.toggleAnalyticsWidget
-                                      ? Icons.grid_view
-                                      : Icons.show_chart,
-                                ),
-                                style: IconButton.styleFrom(
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.primary,
-                                  foregroundColor: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              IconButton.filled(
-                                onPressed: () {
-                                  context.read<AreaBloc>().add(
-                                    ShowEditAreaForm(),
-                                  );
-                                },
-                                icon: Icon(Icons.edit),
-                                style: IconButton.styleFrom(
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.primary,
-                                  foregroundColor: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              IconButton.filled(
-                                onPressed: () {
-                                  context.read<AreaBloc>().add(
-                                    ShowAddAreaForm(),
-                                  );
-                                },
-                                icon: const Icon(Icons.add),
-                                style: IconButton.styleFrom(
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.primary,
-                                  foregroundColor: Colors.white,
-                                ),
-                              ),
-                            ],
+                          IconButton.filled(
+                            onPressed: () {
+                              context.read<AreaBloc>().add(
+                                ToggleAnalyticsWidget(),
+                              );
+                            },
+                            icon: Icon(
+                              areaState.toggleAnalyticsWidget
+                                  ? Icons.grid_view
+                                  : Icons.show_chart,
+                            ),
+                            style: IconButton.styleFrom(
+                              backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                              foregroundColor: Colors.white,
+                            ),
                           ),
                         ],
                       ),
@@ -120,8 +88,6 @@ class AreasPage extends StatelessWidget {
                                 selectedArea: areaState.selectedArea,
                                 selectedCell: areaState.selectedCell,
                                 isAreaSelected: areaState.isAreaSelected,
-                                showAddForm: areaState.showAddForm,
-                                showEditForm: areaState.showEditForm,
                                 toggleAnalyticsWidget:
                                     areaState.toggleAnalyticsWidget,
                               ),
@@ -136,8 +102,6 @@ class AreasPage extends StatelessWidget {
                                 isAreaSelected: areaState.isAreaSelected,
                                 isExpanded: false,
                                 isOverview: true,
-                                showAddForm: areaState.showAddForm,
-                                showEditForm: areaState.showEditForm,
                                 toggleAnalyticsWidget:
                                     areaState.toggleAnalyticsWidget,
                               ),

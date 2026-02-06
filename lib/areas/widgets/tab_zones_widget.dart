@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:garden_connect/areas/widgets/edit_area_form_widget.dart';
 import 'package:garden_connect/areas/widgets/summary_zones_widget.dart';
 import 'package:garden_ui/ui/components.dart';
-import 'package:go_router/go_router.dart';
 import '../../cells/bloc/cell_bloc.dart';
 import '../../cells/models/cell.dart';
 import '../../cells/pages/cell_detail_page.dart';
 import '../models/area.dart';
 import '../bloc/area_bloc.dart';
-import 'add_area_form_widget.dart';
 
 class TabZonesWidget extends StatelessWidget {
   final String title;
@@ -19,8 +16,6 @@ class TabZonesWidget extends StatelessWidget {
   final bool isAreaSelected;
   final bool isExpanded;
   final bool isOverview;
-  final bool showAddForm;
-  final bool showEditForm;
   final bool toggleAnalyticsWidget;
   final bool toggleAreaTracking;
 
@@ -33,8 +28,6 @@ class TabZonesWidget extends StatelessWidget {
     this.isAreaSelected = false,
     this.isExpanded = true,
     this.isOverview = false,
-    this.showAddForm = false,
-    this.showEditForm = false,
     this.toggleAnalyticsWidget = false,
     this.toggleAreaTracking = false,
   });
@@ -120,17 +113,6 @@ class TabZonesWidget extends StatelessWidget {
   }
 
   Widget _buildDetailsPanel(BuildContext context) {
-    if (showAddForm) {
-      return AddAreaFormWidget(availableAreas: areas);
-    }
-
-    if (showEditForm && selectedArea != null) {
-      return EditAreaFormWidget(
-        availableAreas: areas,
-        areaToEdit: selectedArea!,
-      );
-    }
-
     if (selectedCell != null) {
       return BlocProvider(
         key: ValueKey(selectedCell!.id),
