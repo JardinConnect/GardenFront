@@ -144,7 +144,7 @@ class AppRouter {
                           state.uri.queryParameters['view'] == 'true';
                       return NoTransitionPage(
                         child: AreaAddEditPage(
-                          id: int.parse(state.pathParameters['id']!),
+                          id: state.pathParameters['id']!,
                           isViewMode: viewMode,
                         ),
                       );

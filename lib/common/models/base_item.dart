@@ -4,7 +4,7 @@ class BaseItem {
   final String id;
   final String name;
   final Analytics analytics;
-  int? parentId;
+  String? parentId;
   final bool isTracked;
 
   BaseItem({
