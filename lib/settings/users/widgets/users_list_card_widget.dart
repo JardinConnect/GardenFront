@@ -14,7 +14,7 @@ class UserListCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final User currentUser = context.currentUser!;
+    final User? currentUser = context.currentUser;
     return GardenCard(
       child: Column(
         children: [
@@ -49,8 +49,8 @@ class UserListCardWidget extends StatelessWidget {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            if (currentUser == user ||
-                                currentUser.role == Role.admin)
+                            if (currentUser != null && (currentUser == user ||
+                                currentUser.role == Role.admin))
                               IconButton(
                                 icon: Icon(Icons.edit,
                                     color: Theme.of(context).primaryColor),
