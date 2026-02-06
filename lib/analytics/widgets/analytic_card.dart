@@ -101,7 +101,7 @@ class AnalyticCardWidget extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                analytic.value.toString(),
+                                analytic.value.toStringAsFixed(1),
                                 style: valueStyle,
                               ),
                               Text(
