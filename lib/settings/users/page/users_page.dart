@@ -85,7 +85,7 @@ class UsersPage extends StatelessWidget {
                                 padding: const EdgeInsets.all(8.0),
                                 child: GlobalStatCardWidget(
                                   title: "Salariés",
-                                  data: users.where((u) => u.role == Role.employees).length.toString(),
+                                  data: users.where((u) => u.role == Role.employee).length.toString(),
                                 ),
                               ),
                             ),

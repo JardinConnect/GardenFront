@@ -169,7 +169,7 @@ class _UserFormWidget extends State<UserAddFormWidget> {
                     DropdownButtonFormField<Role>(
                       initialValue: user?.role ?? Role.trainee,
                       decoration: const InputDecoration(labelText: 'Rôle'),
-                      items: <Role>[Role.admin, Role.employees,Role.trainee].map((Role value) {
+                      items: <Role>[Role.admin, Role.employee,Role.trainee].map((Role value) {
                         return DropdownMenuItem<Role>(
                           value: value,
                           child: Text(value.displayName, style: Theme.of(context).textTheme.bodyLarge),

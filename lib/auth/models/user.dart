@@ -3,7 +3,7 @@ part 'user.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class User {
-  final String? id;
+  final String id;
   final String email;
   final String firstName;
   final String lastName;
@@ -12,7 +12,7 @@ class User {
   final String? token;
 
   User({
-    this.id,
+    required this.id,
     required this.email,
     required this.firstName,
     required this.lastName,
@@ -53,7 +53,7 @@ class UserAddDto{
 enum Role {
   superadmin,
   admin,
-  employees,
+  employee,
   trainee;
 
   String get displayName {
@@ -62,7 +62,7 @@ enum Role {
         return 'Super Admin';
       case Role.admin:
         return 'Admin';
-      case Role.employees:
+      case Role.employee:
         return 'Employé';
       case Role.trainee:
         return 'Saisonnié';
