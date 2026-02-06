@@ -10,10 +10,10 @@ class AnalyticsRepository {
 
       // Générateur de statut d'alerte aléatoire avec probabilités
       String getRandomAlertStatus() {
-        final value = random.nextInt(100);
-        if (value < 70) return "OK";           // 70% OK
-        if (value < 90) return "WARNING";      // 20% WARNING
-        return "ALERT";                         // 10% ALERT
+        final value = random.nextInt(1000); // Sur 1000 au lieu de 100
+        if (value < 950) return "OK";       // 95% OK
+        if (value < 980) return "WARNING";  // 3% WARNING
+        return "ALERT";                      // 2% ALERT
       }
 
       // Générer les données pour 365 jours

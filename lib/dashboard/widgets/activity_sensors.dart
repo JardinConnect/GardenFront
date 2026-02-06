@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garden_connect/dashboard/widgets/dialog_box_widget.dart';
 import 'package:garden_ui/ui/foundation/color/color_design_system.dart';
+import 'package:intl/intl.dart';
 
 import '../../analytics/models/analytics.dart';
 
@@ -19,7 +20,7 @@ class ActivitySensors extends StatelessWidget {
 
     switch (status) {
       case AnalyticAlertStatus.ok:
-        return GardenColors.tertiary.shade700;
+        return GardenColors.primary.shade700;
       case AnalyticAlertStatus.warning:
         return GardenColors.yellowWarning.shade400;
       case AnalyticAlertStatus.alert:
@@ -87,7 +88,7 @@ class ActivitySensors extends StatelessWidget {
                     showDialog(
                       context: context,
                       builder: (context) => DialogBoxWidget(
-                        title: 'Activité du ${dayDate.day}/${dayDate.month}/${dayDate.year}',
+                        title: DateFormat('d MMMM yyyy', 'fr_FR').format(dayDate),
                         analytics: dayAnalytics,
                       ),
                     );

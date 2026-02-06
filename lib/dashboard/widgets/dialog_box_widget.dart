@@ -20,8 +20,10 @@ class DialogBoxWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tabs = ['Vue d\ensemble', if (level != null) 'Historique'];
+
     return DefaultTabController(
-      length: 2,
+      length: tabs.length,
       child: AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         clipBehavior: Clip.antiAlias,
@@ -56,28 +58,25 @@ class DialogBoxWidget extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                level != null
-                    ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text('Niveau $level', style: GardenTypography.bodyLg),
-                        Text(
-                          'Dernière mise à jour: il y a 2 minutes',
-                          style: GardenTypography.caption,
-                        ),
-                      ],
-                    )
-                    : SizedBox.shrink(),
+                if (level != null)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('Niveau $level', style: GardenTypography.bodyLg),
+                      Text(
+                        'Dernière mise à jour: il y a 2 minutes',
+                        style: GardenTypography.caption,
+                      ),
+                    ],
+                  ),
                 Padding(
                   padding: EdgeInsets.symmetric(
                     vertical: GardenSpace.paddingMd,
                   ),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: CustomTabSelector(
-                      tabs: const ["Vues d'ensemble", "Historique"],
-                    ),
+                    child: CustomTabSelector(tabs: tabs),
                   ),
                 ),
                 Expanded(
@@ -87,10 +86,11 @@ class DialogBoxWidget extends StatelessWidget {
                         padding: EdgeInsets.all(14),
                         child: AnalyticsCardsGridWidget(analytics: analytics),
                       ),
-                      SingleChildScrollView(
-                        padding: EdgeInsets.all(14),
-                        child: GraphicWidget(analytics: analytics),
-                      ),
+                      if (level != null)
+                        SingleChildScrollView(
+                          padding: EdgeInsets.all(14),
+                          child: GraphicWidget(analytics: analytics),
+                        ),
                     ],
                   ),
                 ),
