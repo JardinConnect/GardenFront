@@ -5,15 +5,11 @@ import 'package:garden_ui/ui/design_system.dart';
 
 class InfoCard extends StatelessWidget {
   final IconData leadingIcon;
-  final String title;
-  final String subtitle;
   final List<InfoSectionData> sections;
 
   const InfoCard({
     super.key,
     required this.leadingIcon,
-    required this.title,
-    required this.subtitle,
     required this.sections,
   });
 
@@ -36,21 +32,9 @@ class InfoCard extends StatelessWidget {
                   size: 32,
                 ),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: GardenSpace.gapXs,
-                    children: [
-                      Text(
-                        title,
-                        style: GardenTypography.headingMd,
-                      ),
-                      Text(
-                        subtitle,
-                        style: GardenTypography.bodyMd.copyWith(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    "Informations",
+                    style: GardenTypography.headingMd,
                   ),
                 ),
               ],
@@ -105,7 +89,7 @@ class InfoCard extends StatelessWidget {
             SizedBox(width: GardenSpace.gapXs),
             Text(
               label,
-              style: GardenTypography.bodyMd.copyWith(
+              style: GardenTypography.bodyLg.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),

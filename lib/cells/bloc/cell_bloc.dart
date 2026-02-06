@@ -5,6 +5,7 @@ import 'package:garden_connect/cells/repository/cell_repository.dart';
 import 'package:meta/meta.dart';
 
 part 'cell_event.dart';
+
 part 'cell_state.dart';
 
 class CellBloc extends Bloc<CellEvent, CellState> {
@@ -19,6 +20,8 @@ class CellBloc extends Bloc<CellEvent, CellState> {
     on<LoadCellDetail>(_loadCellDetail);
     on<CellTrackingChanged>(_changeCellTracking);
     on<RefreshCellDetail>(_refreshCellDetail);
+    on<UpdateCell>(_updateCell);
+    on<DeleteCell>(_deleteCell);
 
     add(LoadCells());
   }
@@ -106,19 +109,23 @@ class CellBloc extends Bloc<CellEvent, CellState> {
     emit(const CellDetailShimmer());
     try {
       final cell = await _cellRepository.fetchCellDetail(event.id);
-      emit(
-        CellDetailLoaded(cell: cell),
-      );
+      emit(CellDetailLoaded(cell: cell));
     } catch (e) {
       emit(CellError(message: e.toString()));
     }
   }
 
-  _changeCellTracking(CellTrackingChanged event, Emitter<CellState> emit) async {
+  _changeCellTracking(
+    CellTrackingChanged event,
+    Emitter<CellState> emit,
+  ) async {
     try {
-      await _cellRepository.changeCellTracking(event.id, event.newTrackingValue);
+      await _cellRepository.changeCellTracking(
+        event.id,
+        event.newTrackingValue,
+      );
       add(LoadCellDetail(id: event.id));
-    } catch(e) {
+    } catch (e) {
       emit(CellError(message: e.toString()));
     }
   }
@@ -126,6 +133,23 @@ class CellBloc extends Bloc<CellEvent, CellState> {
   _refreshCellDetail(RefreshCellDetail event, Emitter<CellState> emit) async {
     try {
       await _cellRepository.refreshCell(event.id);
+      add(LoadCellDetail(id: event.id));
+    } catch (e) {
+      emit(CellError(message: e.toString()));
+    }
+  }
+
+  _updateCell(UpdateCell event, Emitter<CellState> emit) async {
+    try {
+      await _cellRepository.updateCell(event.id, event.name, event.parentId);
+    } catch (e) {
+      emit(CellError(message: e.toString()));
+    }
+  }
+
+  _deleteCell(DeleteCell event, Emitter<CellState> emit) async {
+    try {
+      await _cellRepository.deleteCell(event.id);
       add(LoadCellDetail(id: event.id));
     } catch (e) {
       emit(CellError(message: e.toString()));

@@ -34,12 +34,6 @@ const _$SettingTypeEnumMap = {
   SettingType.allowAreaDeletion: 'allowAreaDeletion',
 };
 
-Log _$LogFromJson(Map<String, dynamic> json) =>
-    Log(userId: json['user_id'] as String, value: json['value'] as String);
-
 Logs _$LogsFromJson(Map<String, dynamic> json) => Logs(
-  logs:
-      (json['logs'] as List<dynamic>)
-          .map((e) => Log.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  logs: (json['logs'] as List<dynamic>).map((e) => e as String).toList(),
 );

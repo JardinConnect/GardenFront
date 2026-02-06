@@ -88,7 +88,15 @@ class CellsSettingsPage extends StatelessWidget {
                                           cellsState.filteredCells.map((cell) {
                                             return GenericListItem(
                                               label: cell.name,
-                                              icon: Icons.info_outline,
+                                              icon: Icons.edit,
+                                              onTap:
+                                                  () => context.go(
+                                                    '/settings/cells/${cell.id}?view=true',
+                                                  ),
+                                              onEdit:
+                                                  () => context.go(
+                                                    '/settings/cells/${cell.id}',
+                                                  ),
                                             );
                                           }).toList(),
                                     ),

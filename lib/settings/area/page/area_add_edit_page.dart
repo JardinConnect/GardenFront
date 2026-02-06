@@ -7,7 +7,7 @@ import 'package:garden_ui/ui/design_system.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../common/widgets/info_card.dart';
-import '../widget/area_form_card.dart';
+import '../../../common/widgets/base_item_edit_form_card.dart';
 import '../../../common/widgets/danger_zone.dart';
 
 class AreaAddEditPage extends StatelessWidget {
@@ -52,22 +52,33 @@ class AreaAddEditPage extends StatelessWidget {
                           children: [
                             Expanded(
                               flex: 10,
-                              child: AreaFormCard(
-                                area: area,
-                                availableParents: state.getAvailableParents(area),
+                              child: BaseItemEditFormCard(
+                                item: area,
+                                availableParents: state.getAvailableParents(
+                                  area,
+                                ),
+                                initialParent: state.areas
+                                    .cast<Area?>()
+                                    .firstWhere(
+                                      (area) => area!.id == area.parentId,
+                                      orElse: () => null,
+                                    ),
                                 isViewMode: isViewMode,
+                                icon: Icons.hexagon_outlined,
                                 onSave: (name, parentArea) {
                                   context.read<AreaBloc>().add(
-                                        UpdateArea(
-                                          id: area.id,
-                                          name: name,
-                                          color: area.color,
-                                          parentArea: parentArea,
-                                        ),
-                                      );
+                                    UpdateArea(
+                                      id: area.id,
+                                      name: name,
+                                      color: area.color,
+                                      parentArea: parentArea,
+                                    ),
+                                  );
                                   context.go('/settings/areas');
                                 },
                                 onCancel: () => context.go('/settings/areas'),
+                                infoText:
+                                    'La modification de l\'emplacement de cet élément entraînera automatiquement le déplacement de l\'ensemble des espaces qui lui sont rattachés. Cette action impactera la structure globale et repositionnera tous les éléments dépendants selon la nouvelle hiérarchie définie.',
                               ),
                             ),
                             SizedBox(width: GardenSpace.gapLg),
@@ -78,8 +89,6 @@ class AreaAddEditPage extends StatelessWidget {
                                 children: [
                                   InfoCard(
                                     leadingIcon: Icons.hexagon_outlined,
-                                    title: area.name,
-                                    subtitle: 'Niveau ${area.level}',
                                     sections: const [
                                       InfoSectionData(
                                         icon: Icons.person_add_outlined,
@@ -98,7 +107,8 @@ class AreaAddEditPage extends StatelessWidget {
                                   SizedBox(height: GardenSpace.gapLg),
                                   DangerZone(
                                     title: 'Zone de danger',
-                                    description: 'Actions irréversibles sur l\'ensemble des comptes de la ferme.',
+                                    description:
+                                        'Actions irréversibles sur l\'ensemble des comptes de la ferme.',
                                     deleteButtonLabel: 'Supprimer l\'espace',
                                     onDelete: () {
                                       // TODO: Implémenter la logique de suppression
@@ -112,17 +122,22 @@ class AreaAddEditPage extends StatelessWidget {
                         ),
                       )
                     else
-                      AreaFormCard(
-                        area: area,
+                      BaseItemEditFormCard(
+                        item: area,
                         availableParents: state.getAvailableParents(area),
+                        initialParent: state.areas.cast<Area?>().firstWhere(
+                          (area) => area!.id == area.parentId,
+                          orElse: () => null,
+                        ),
+                        icon: Icons.hexagon_outlined,
                         onSave: (name, parentArea) {
                           context.read<AreaBloc>().add(
-                                AddArea(
-                                  name: name,
-                                  color: const Color(0xFFE74C3C),
-                                  parentArea: parentArea,
-                                ),
-                              );
+                            AddArea(
+                              name: name,
+                              color: const Color(0xFFE74C3C),
+                              parentArea: parentArea,
+                            ),
+                          );
                           context.go('/settings/areas');
                         },
                         onCancel: () => context.go('/settings/areas'),

@@ -27,8 +27,16 @@ class CellRepository {
   Future<void> refreshCell(int id) async {
   }
 
+  Future<void> updateCell(int id, String name, int? parentId) async {
+
+  }
+
   // PUT /cells/settings
   Future<void> updateCellsSettings(List<int> ids, int dailyUpdateCount, int measurementFrequency, List<String> updateTimes) async {
+  }
+
+  Future<void> deleteCell(int id) async {
+
   }
 
   List<Cell> _mockedCells() {
@@ -41,7 +49,8 @@ class CellRepository {
         "battery": 67,
         "is_tracked": true,
         "last_update_at": "2026-01-09 09:46:26",
-        "location": "Champ #1 > Parcelle #3 > Planche A",
+        "location": "Champ #1 > Parcelle #3 > Planche A", // TODO: à supprimer
+        "parent_id": 3,
         "analytics": {
           "air_temperature": [
             {"value": 18, "occurred_at": "2025-11-05T08:00:00Z", "sensor_id": 12, "alert_status":  "ALERT"}
@@ -75,7 +84,8 @@ class CellRepository {
       "battery": 67,
       "is_tracked": true,
       "last_update_at": "2026-01-09 09:46:26",
-      "location": "Champ #1 > Parcelle #3 > Planche A",
+      "location": "Champ #1 > Parcelle #3 > Planche A", // TODO: à supprimer
+      "parent_id": 3,
       "analytics": {
         "air_temperature": [
           {

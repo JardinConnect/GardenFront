@@ -39,3 +39,17 @@ final class RefreshCellDetail extends CellEvent {
 
   RefreshCellDetail({required this.id});
 }
+
+final class UpdateCell extends CellEvent {
+  final int id;
+  final String name;
+  final int? parentId;
+
+  UpdateCell({required this.id, required this.name, this.parentId});
+}
+
+final class DeleteCell extends CellEvent {
+  final int id;
+
+  DeleteCell({required this.id});
+}
