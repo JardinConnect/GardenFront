@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garden_connect/analytics/widgets/analytics_cards_grid.dart';
 import 'package:garden_connect/analytics/widgets/analytics_list_widget.dart';
-import 'package:garden_connect/cells/widgets/cells_list_widget.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

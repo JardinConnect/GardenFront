@@ -4,7 +4,6 @@ import 'package:garden_connect/auth/utils/auth_extension.dart';
 import 'package:garden_connect/common/widgets/custom_tab_selector.dart';
 import '../../areas/bloc/area_bloc.dart';
 import '../../analytics/bloc/analytics_bloc.dart';
-import '../../cells/bloc/cell_bloc.dart';
 import '../widgets/tab_zones_widget.dart';
 
 class AreasPage extends StatelessWidget {
