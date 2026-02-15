@@ -178,7 +178,7 @@ class _AreaSettingsPageState extends State<AreaSettingsPage> {
                                             onTap: () {
                                               // Clic sur la ligne -> mode vue
                                               context.go(
-                                                '/settings/areas/${area.id}?view=true',
+                                                '/settings/areas/${area.id}?pages=true',
                                               );
                                             },
                                             onEdit: () {

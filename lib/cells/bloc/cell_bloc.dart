@@ -22,8 +22,6 @@ class CellBloc extends Bloc<CellEvent, CellState> {
     on<RefreshCellDetail>(_refreshCellDetail);
     on<UpdateCell>(_updateCell);
     on<DeleteCell>(_deleteCell);
-
-    add(LoadCells());
   }
 
   _loadCells(LoadCells event, Emitter<CellState> emit) async {

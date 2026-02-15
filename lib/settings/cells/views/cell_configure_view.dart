@@ -230,7 +230,6 @@ class _CellConfigureViewState extends State<CellConfigureView> {
         level: 1,
         color: Colors.red,
         analytics: Analytics(),
-        isTracked: true,
       ),
       Area(
         id: '2',
@@ -238,7 +237,6 @@ class _CellConfigureViewState extends State<CellConfigureView> {
         level: 2,
         color: Colors.red,
         analytics: Analytics(),
-        isTracked: true,
       ),
     ];
 
@@ -263,7 +261,7 @@ class _CellConfigureViewState extends State<CellConfigureView> {
       id: '1',
       name: 'Cellule #4-1',
       location: 'Espace 2 > Serre A > planche 23',
-      lastUpdateAt: DateTime.now(),
+      updatedAt: DateTime.now(),
       isTracked: false,
       battery: 0,
       analytics: Analytics(),

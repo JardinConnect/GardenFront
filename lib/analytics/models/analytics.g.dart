@@ -42,10 +42,13 @@ Analytics _$AnalyticsFromJson(Map<String, dynamic> json) => Analytics(
 AirTemperatureAnalytic _$AirTemperatureAnalyticFromJson(
   Map<String, dynamic> json,
 ) => AirTemperatureAnalytic(
-  value: (json['value'] as num).toDouble(),
+  value: Analytic._valueFromJson(json['value']),
   occurredAt: DateTime.parse(json['occurred_at'] as String),
-  sensorId: (json['sensor_id'] as num).toInt(),
-  alertStatus: $enumDecode(_$AnalyticAlertStatusEnumMap, json['alert_status']),
+  sensorCode: Analytic._sensorCodeFromJson(json['sensor_code']),
+  alertStatus: $enumDecodeNullable(
+    _$AnalyticAlertStatusEnumMap,
+    json['alert_status'],
+  ),
 );
 
 const _$AnalyticAlertStatusEnumMap = {
@@ -57,18 +60,21 @@ const _$AnalyticAlertStatusEnumMap = {
 SoilTemperatureAnalytic _$SoilTemperatureAnalyticFromJson(
   Map<String, dynamic> json,
 ) => SoilTemperatureAnalytic(
-  value: (json['value'] as num).toDouble(),
+  value: Analytic._valueFromJson(json['value']),
   occurredAt: DateTime.parse(json['occurred_at'] as String),
-  sensorId: (json['sensor_id'] as num).toInt(),
-  alertStatus: $enumDecode(_$AnalyticAlertStatusEnumMap, json['alert_status']),
+  sensorCode: Analytic._sensorCodeFromJson(json['sensor_code']),
+  alertStatus: $enumDecodeNullable(
+    _$AnalyticAlertStatusEnumMap,
+    json['alert_status'],
+  ),
 );
 
 AirHumidityAnalytic _$AirHumidityAnalyticFromJson(Map<String, dynamic> json) =>
     AirHumidityAnalytic(
-      value: (json['value'] as num).toDouble(),
+      value: Analytic._valueFromJson(json['value']),
       occurredAt: DateTime.parse(json['occurred_at'] as String),
-      sensorId: (json['sensor_id'] as num).toInt(),
-      alertStatus: $enumDecode(
+      sensorCode: Analytic._sensorCodeFromJson(json['sensor_code']),
+      alertStatus: $enumDecodeNullable(
         _$AnalyticAlertStatusEnumMap,
         json['alert_status'],
       ),
@@ -77,27 +83,33 @@ AirHumidityAnalytic _$AirHumidityAnalyticFromJson(Map<String, dynamic> json) =>
 SoilHumidityAnalytic _$SoilHumidityAnalyticFromJson(
   Map<String, dynamic> json,
 ) => SoilHumidityAnalytic(
-  value: (json['value'] as num).toDouble(),
+  value: Analytic._valueFromJson(json['value']),
   occurredAt: DateTime.parse(json['occurred_at'] as String),
-  sensorId: (json['sensor_id'] as num).toInt(),
-  alertStatus: $enumDecode(_$AnalyticAlertStatusEnumMap, json['alert_status']),
+  sensorCode: Analytic._sensorCodeFromJson(json['sensor_code']),
+  alertStatus: $enumDecodeNullable(
+    _$AnalyticAlertStatusEnumMap,
+    json['alert_status'],
+  ),
 );
 
 DeepSoilHumidityAnalytic _$DeepSoilHumidityAnalyticFromJson(
   Map<String, dynamic> json,
 ) => DeepSoilHumidityAnalytic(
-  value: (json['value'] as num).toDouble(),
+  value: Analytic._valueFromJson(json['value']),
   occurredAt: DateTime.parse(json['occurred_at'] as String),
-  sensorId: (json['sensor_id'] as num).toInt(),
-  alertStatus: $enumDecode(_$AnalyticAlertStatusEnumMap, json['alert_status']),
+  sensorCode: Analytic._sensorCodeFromJson(json['sensor_code']),
+  alertStatus: $enumDecodeNullable(
+    _$AnalyticAlertStatusEnumMap,
+    json['alert_status'],
+  ),
 );
 
 LightAnalytic _$LightAnalyticFromJson(Map<String, dynamic> json) =>
     LightAnalytic(
-      value: (json['value'] as num).toDouble(),
+      value: Analytic._valueFromJson(json['value']),
       occurredAt: DateTime.parse(json['occurred_at'] as String),
-      sensorId: (json['sensor_id'] as num).toInt(),
-      alertStatus: $enumDecode(
+      sensorCode: Analytic._sensorCodeFromJson(json['sensor_code']),
+      alertStatus: $enumDecodeNullable(
         _$AnalyticAlertStatusEnumMap,
         json['alert_status'],
       ),

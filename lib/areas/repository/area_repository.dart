@@ -1,4 +1,8 @@
+import 'dart:convert';
 import 'dart:ui';
+
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 
 import '../models/area.dart';
 
@@ -6,7 +10,7 @@ class AreaRepository {
   // Liste en mémoire pour simuler la persistance
   List<Map<String, dynamic>>? _cachedAreas;
 
-  Future<List<Area>> fetchAreas() async {
+  Future<List<Area>> fetchMockedAreas() async {
     // TODO call API route to fetch areas data
     try {
       // Utiliser le cache si disponible
@@ -969,6 +973,35 @@ class AreaRepository {
       return _cachedAreas!.map((area) => Area.fromJson(area)).toList();
     } catch (e) {
       throw Exception('Failed to load areas: $e');
+    }
+  }
+
+  Future<List<Area>> fetchAreas() async {
+    try {
+      final storage = FlutterSecureStorage();
+
+      String? token = await storage.read(key: 'auth_token');
+      final response = await http.get(
+        Uri.parse('http://127.0.0.1:8000/area'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+
+      );
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        final areas = (responseData as List)
+            .map((area) => Area.fromJson(area))
+            .toList();
+        return areas;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print('Erreur de chargement des espaces: $e');
+      return [];
     }
   }
 

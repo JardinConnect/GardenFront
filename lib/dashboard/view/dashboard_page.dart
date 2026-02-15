@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/auth/utils/auth_extension.dart';
 import 'package:garden_ui/ui/components.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../areas/bloc/area_bloc.dart';
 import '../../areas/models/area.dart';
@@ -44,9 +45,11 @@ class DashboardPage extends StatelessWidget {
               cellState is CellsLoaded &&
               analyticsState is AnalyticsLoaded) {
             final areas = Area.getAllAreasFlattened(areaState.areas);
-            final trackedAreas = areas.where((area) => area.isTracked).toList();
-            final trackedCells =
-                cellState.cells.where((cell) => cell.isTracked).toList();
+            // final trackedAreas = areas.where((area) => area.isTracked).toList();
+            // final trackedCells =
+            //     cellState.cells.where((cell) => cell.isTracked).toList();
+            final trackedAreas = [];
+            final trackedCells = [];
 
             return Padding(
               padding: const EdgeInsets.all(16.0),
@@ -87,13 +90,44 @@ class DashboardPage extends StatelessWidget {
                                     child: AnalyticsSummaryCard(
                                       name: cell.name,
                                       batteryPercentage: 89,
-                                      onPressed: () {},
-                                      light: 3,
-                                      rain: 7,
-                                      humiditySurface: 2,
-                                      humidityDepth: 8,
-                                      temperatureSurface: 15,
-                                      temperatureDepth: 18,
+                                      onPressed:
+                                          () => context.go('/cells/${cell.id}'),
+                                      light:
+                                          cell.analytics.light!.first.value
+                                              .toInt(),
+                                      rain:
+                                          cell
+                                              .analytics
+                                              .airHumidity!
+                                              .first
+                                              .value
+                                              .toInt(),
+                                      humiditySurface:
+                                          cell
+                                              .analytics
+                                              .soilHumidity!
+                                              .first
+                                              .value
+                                              .toInt(),
+                                      humidityDepth:
+                                          cell
+                                              .analytics
+                                              .deepSoilHumidity!
+                                              .first
+                                              .value
+                                              .toInt(),
+                                      temperatureSurface:
+                                          cell
+                                              .analytics
+                                              .airTemperature!
+                                              .first
+                                              .value,
+                                      temperatureDepth:
+                                          cell
+                                              .analytics
+                                              .soilTemperature!
+                                              .first
+                                              .value,
                                     ),
                                   );
                                 }).toList(),
@@ -116,12 +150,42 @@ class DashboardPage extends StatelessWidget {
                                     child: AnalyticsSummaryCard(
                                       name: area.name,
                                       onPressed: () {},
-                                      light: 3,
-                                      rain: 7,
-                                      humiditySurface: 2,
-                                      humidityDepth: 8,
-                                      temperatureSurface: 15,
-                                      temperatureDepth: 18,
+                                      light:
+                                          area.analytics.light!.first.value
+                                              .toInt(),
+                                      rain:
+                                          area
+                                              .analytics
+                                              .airHumidity!
+                                              .first
+                                              .value
+                                              .toInt(),
+                                      humiditySurface:
+                                          area
+                                              .analytics
+                                              .soilHumidity!
+                                              .first
+                                              .value
+                                              .toInt(),
+                                      humidityDepth:
+                                          area
+                                              .analytics
+                                              .deepSoilHumidity!
+                                              .first
+                                              .value
+                                              .toInt(),
+                                      temperatureSurface:
+                                          area
+                                              .analytics
+                                              .airTemperature!
+                                              .first
+                                              .value,
+                                      temperatureDepth:
+                                          area
+                                              .analytics
+                                              .soilTemperature!
+                                              .first
+                                              .value,
                                     ),
                                   );
                                 }).toList(),

@@ -39,7 +39,7 @@ class _UserFormWidget extends State<UserFormWidget> {
         lastName: '',
         email: '',
         phoneNumber: '',
-        role: Role.employee,
+        role: Role.employees,
       );
       inUserCreation = true;
     }
@@ -221,7 +221,7 @@ class _UserFormWidget extends State<UserFormWidget> {
                           disabledBorder: InputBorder.none,
                           labelText: 'Rôle'
                       ),
-                      items: <Role>[Role.admin, Role.employee,Role.trainee].map((Role value) {
+                      items: <Role>[Role.admin, Role.employees,Role.trainee].map((Role value) {
                         return DropdownMenuItem<Role>(
                           value: value,
                           child: Text(value.displayName, style: Theme.of(context).textTheme.bodyLarge),
@@ -265,7 +265,7 @@ class _UserFormWidget extends State<UserFormWidget> {
                       lastName: lastnameController.text,
                       email: emailController.text,
                       phoneNumber: phoneController.text,
-                      role: user?.role ?? Role.employee,
+                      role: user?.role ?? Role.employees,
                     ))),
                     setState(() {
                       inEditionMode = !inEditionMode;

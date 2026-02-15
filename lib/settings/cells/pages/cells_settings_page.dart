@@ -91,7 +91,7 @@ class CellsSettingsPage extends StatelessWidget {
                                               icon: Icons.edit,
                                               onTap:
                                                   () => context.go(
-                                                    '/settings/cells/${cell.id}?view=true',
+                                                    '/settings/cells/${cell.id}?pages=true',
                                                   ),
                                               onEdit:
                                                   () => context.go(

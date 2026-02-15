@@ -103,7 +103,8 @@ class CellDetailPage extends StatelessWidget {
                                 style: GardenTypography.headingLg,
                               ),
                               GardenToggle(
-                                isEnabled: cellState.cell.isTracked,
+                                // isEnabled: cellState.cell.isTracked,
+                                isEnabled: false,
                                 onToggle: (bool value) =>
                                     _handleChangeCellTracking(context, value),
                                 enabledIcon: Icons.visibility_outlined,
@@ -112,7 +113,7 @@ class CellDetailPage extends StatelessWidget {
                             ],
                           ),
                           Text(
-                            getLastUpdate(cellState.cell.lastUpdateAt),
+                            getLastUpdate(cellState.cell.updatedAt),
                             style: GardenTypography.caption,
                           ),
                         ],
@@ -122,11 +123,11 @@ class CellDetailPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            cellState.cell.location,
+                            cellState.cell.location ?? "Pas de localisation",
                             style: GardenTypography.caption,
                           ),
                           BatteryIndicator(
-                            batteryPercentage: cellState.cell.battery,
+                            batteryPercentage: cellState.cell.battery ?? 0,
                             size: BatteryIndicatorSize.sm,
                           ),
                         ],
@@ -150,7 +151,7 @@ class CellDetailPage extends StatelessWidget {
             ),
           );
         } else {
-          return const Center(child: Text('Erreur'));
+          return const Center(child: Text('Erreur fojefijezfzenf'));
         }
       },
     );

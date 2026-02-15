@@ -9,7 +9,7 @@ import 'package:garden_connect/cells/bloc/cell_bloc.dart';
 import 'package:garden_connect/cells/pages/cell_detail_page.dart';
 import 'package:garden_connect/cells/pages/cells_page.dart';
 import 'package:garden_connect/dashboard/view/dashboard_page.dart';
-import 'package:garden_connect/menu/view/menu_page.dart';
+import 'package:garden_connect/menu/pages/menu_page.dart';
 import 'package:garden_connect/settings/area/page/area_add_edit_page.dart';
 import 'package:garden_connect/settings/area/page/area_settings_page.dart';
 import 'package:garden_connect/settings/cells/pages/cell_detail_settings_page.dart';
@@ -60,7 +60,9 @@ class AppRouter {
                   create: (context) => AnalyticsBloc(),
                 ),
                 BlocProvider<AreaBloc>(create: (context) => AreaBloc()),
-                BlocProvider<CellBloc>(create: (context) => CellBloc()),
+                BlocProvider<CellBloc>(
+                  create: (context) => CellBloc()..add(LoadCells()),
+                ),
                 BlocProvider<AlertBloc>(create: (context) => AlertBloc()),
               ],
               child: MenuPage(child: child),
@@ -141,7 +143,7 @@ class AppRouter {
                     path: ':id',
                     pageBuilder: (context, GoRouterState state) {
                       final viewMode =
-                          state.uri.queryParameters['view'] == 'true';
+                          state.uri.queryParameters['pages'] == 'true';
                       return NoTransitionPage(
                         child: AreaAddEditPage(
                           id: state.pathParameters['id']!,
@@ -196,7 +198,7 @@ class AppRouter {
                     path: ":id",
                     pageBuilder: (context, state) {
                       final viewMode =
-                          state.uri.queryParameters['view'] == 'true';
+                          state.uri.queryParameters['pages'] == 'true';
                       return NoTransitionPage(
                         child: CellDetailSettingsPage(
                           id: state.pathParameters['id']!,

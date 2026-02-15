@@ -22,7 +22,6 @@ class Area extends BaseItem {
     required this.color,
     required this.level,
     required super.analytics,
-    required super.isTracked,
     this.areas,
     this.cells,
   });
@@ -47,12 +46,12 @@ class Area extends BaseItem {
       analytics: analytics ?? this.analytics,
       areas: areas ?? this.areas,
       cells: cells ?? this.cells,
-      isTracked: isTracked ?? this.isTracked,
     );
   }
 
   static Color _colorFromJson(String colorString) {
-    return Color(int.parse(colorString, radix: 16));
+    final hexColor = colorString.replaceAll('#', '');
+    return Color(int.parse('FF$hexColor', radix: 16));
   }
 
   /**
