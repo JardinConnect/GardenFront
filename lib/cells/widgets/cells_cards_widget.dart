@@ -13,7 +13,7 @@ class CellsCardsWidget extends StatelessWidget {
     super.key,
     required this.cells,
     required this.filter,
-    required this.onPressed
+    required this.onPressed,
   });
 
   AnalyticsSummaryFilter? get _filter {
@@ -49,6 +49,7 @@ class CellsCardsWidget extends StatelessWidget {
       itemCount: cells.length,
       itemBuilder: (context, index) {
         final cell = cells[index];
+        final analytics = cell.analytics;
 
         return FittedBox(
           fit: BoxFit.scaleDown,
@@ -60,18 +61,41 @@ class CellsCardsWidget extends StatelessWidget {
               batteryPercentage: cell.battery,
               filter: _filter,
               onPressed: () => onPressed(context, cell.id),
-              light: cell.analytics.getLastAnalyticByType(AnalyticType.light)!
-                  .value.toInt(),
-              rain: cell.analytics.getLastAnalyticByType(
-                  AnalyticType.airHumidity)!.value.toInt(),
-              humiditySurface: cell.analytics.getLastAnalyticByType(
-                  AnalyticType.soilHumidity)!.value.toInt(),
-              humidityDepth: cell.analytics.getLastAnalyticByType(
-                  AnalyticType.deepSoilHumidity)!.value.toInt(),
-              temperatureSurface: cell.analytics.getLastAnalyticByType(
-                  AnalyticType.airTemperature)!.value,
-              temperatureDepth: cell.analytics.getLastAnalyticByType(
-                  AnalyticType.soilTemperature)!.value,
+              //TODO : Enelver les "?? 0" une fois que sur GardenUI, les valeurs pourront être nulles
+              light:
+                  analytics
+                      .getLastAnalyticByType(AnalyticType.light)
+                      ?.value
+                      .toInt() ??
+                  0,
+              rain:
+                  analytics
+                      .getLastAnalyticByType(AnalyticType.airHumidity)
+                      ?.value
+                      .toInt() ??
+                  0,
+              humiditySurface:
+                  analytics
+                      .getLastAnalyticByType(AnalyticType.soilHumidity)
+                      ?.value
+                      .toInt() ??
+                  0,
+              humidityDepth:
+                  analytics
+                      .getLastAnalyticByType(AnalyticType.deepSoilHumidity)
+                      ?.value
+                      .toInt() ??
+                  0,
+              temperatureSurface:
+                  analytics
+                      .getLastAnalyticByType(AnalyticType.airTemperature)
+                      ?.value ??
+                  0.0,
+              temperatureDepth:
+                  analytics
+                      .getLastAnalyticByType(AnalyticType.soilTemperature)
+                      ?.value ??
+                  0.0,
             ),
           ),
         );

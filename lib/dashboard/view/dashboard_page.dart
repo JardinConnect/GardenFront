@@ -45,9 +45,11 @@ class DashboardPage extends StatelessWidget {
               cellState is CellsLoaded &&
               analyticsState is AnalyticsLoaded) {
             final areas = Area.getAllAreasFlattened(areaState.areas);
-            final trackedAreas = areas.where((area) => area.isTracked).toList();
-            final trackedCells =
-                cellState.cells.where((cell) => cell.isTracked).toList();
+            // final trackedAreas = areas.where((area) => area.isTracked).toList();
+            // final trackedCells =
+            //     cellState.cells.where((cell) => cell.isTracked).toList();
+            final trackedAreas = [];
+            final trackedCells = [];
 
             return Padding(
               padding: const EdgeInsets.all(16.0),

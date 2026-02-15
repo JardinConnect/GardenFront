@@ -160,7 +160,7 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
         name: selectedArea.name,
         color: selectedArea.color,
         parentArea: null,
-        isTracked: !selectedArea.isTracked,
+        isTracked: false,
       );
 
       final areas = await _areaRepository.fetchAreas();

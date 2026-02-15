@@ -274,19 +274,37 @@ enum AnalyticAlertStatus {
 }
 
 abstract class Analytic {
+  @JsonKey(fromJson: _valueFromJson)
   final double value;
   final DateTime occurredAt;
-  final int sensorId;
-  final AnalyticAlertStatus alertStatus;
+  @JsonKey(name: 'sensor_code', fromJson: _sensorCodeFromJson)
+  final int? sensorCode;
+  final AnalyticAlertStatus? alertStatus;
 
   Analytic({
     required this.value,
     required this.occurredAt,
-    required this.sensorId,
-    required this.alertStatus,
+    this.sensorCode,
+    this.alertStatus,
   });
 
   AnalyticType getType();
+
+  // TODO:Convertisseur temporaire - À SUPPRIMER quand le backend sera fixé
+  static double _valueFromJson(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is int) return value.toDouble();
+    if (value is double) return value;
+    return double.tryParse(value.toString()) ?? 0.0;
+  }
+
+  // TODO: Convertisseur temporaire - À SUPPRIMER quand le backend sera fixé
+  static int? _sensorCodeFromJson(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    return int.tryParse(value.toString());
+  }
 }
 
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
@@ -294,8 +312,8 @@ class AirTemperatureAnalytic extends Analytic {
   AirTemperatureAnalytic({
     required super.value,
     required super.occurredAt,
-    required super.sensorId,
-    required super.alertStatus,
+    super.sensorCode,
+    super.alertStatus,
   });
 
   factory AirTemperatureAnalytic.fromJson(Map<String, dynamic> json) =>
@@ -312,8 +330,8 @@ class SoilTemperatureAnalytic extends Analytic {
   SoilTemperatureAnalytic({
     required super.value,
     required super.occurredAt,
-    required super.sensorId,
-    required super.alertStatus,
+    super.sensorCode,
+    super.alertStatus,
   });
 
   factory SoilTemperatureAnalytic.fromJson(Map<String, dynamic> json) =>
@@ -330,8 +348,8 @@ class AirHumidityAnalytic extends Analytic {
   AirHumidityAnalytic({
     required super.value,
     required super.occurredAt,
-    required super.sensorId,
-    required super.alertStatus,
+    super.sensorCode,
+    super.alertStatus,
   });
 
   factory AirHumidityAnalytic.fromJson(Map<String, dynamic> json) =>
@@ -348,8 +366,8 @@ class SoilHumidityAnalytic extends Analytic {
   SoilHumidityAnalytic({
     required super.value,
     required super.occurredAt,
-    required super.sensorId,
-    required super.alertStatus,
+    super.sensorCode,
+    super.alertStatus,
   });
 
   factory SoilHumidityAnalytic.fromJson(Map<String, dynamic> json) =>
@@ -366,8 +384,8 @@ class DeepSoilHumidityAnalytic extends Analytic {
   DeepSoilHumidityAnalytic({
     required super.value,
     required super.occurredAt,
-    required super.sensorId,
-    required super.alertStatus,
+    super.sensorCode,
+    super.alertStatus,
   });
 
   factory DeepSoilHumidityAnalytic.fromJson(Map<String, dynamic> json) =>
@@ -384,8 +402,8 @@ class LightAnalytic extends Analytic {
   LightAnalytic({
     required super.value,
     required super.occurredAt,
-    required super.sensorId,
-    required super.alertStatus,
+    super.sensorCode,
+    super.alertStatus,
   });
 
   factory LightAnalytic.fromJson(Map<String, dynamic> json) =>

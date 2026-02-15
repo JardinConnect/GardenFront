@@ -10,26 +10,18 @@ class AuthRepository {
 
   Future<User?> login(String email, String password) async {
     try {
-      // final response = await http.post(
-      //   Uri.parse('$baseUrl/login'),
-      //   headers: {'Content-Type': 'application/json'},
-      //   body: jsonEncode({'email': email, 'password': password}),
-      // );
+      final response = await http.post(
+        Uri.parse('$baseUrl/login'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'password': password}),
+      );
 
-      // if (response.statusCode == 200) {
-      //   final responseData = jsonDecode(response.body);
-      //   String token = responseData['access_token'];
-        User user = User.fromJson({
-          'id': '1',
-          'email': 'sam@garden.com',
-          'first_name': 'Sam',
-          'last_name': 'Garden',
-          'phone_number': '0201920192',
-          'token': 'dummy_token_123456',
-          'role':'employee'
-        });
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        String token = responseData['access_token'];
+        User user = User.fromJson(responseData['user']);
 
-        // await _secureStorage.write(key: 'auth_token', value: token);
+        await _secureStorage.write(key: 'auth_token', value: token);
         await _secureStorage.write(
           key: 'user',
           value: jsonEncode(user.toJson()),
@@ -41,12 +33,12 @@ class AuthRepository {
           firstName: user.firstName,
           lastName: user.lastName,
           phoneNumber: user.phoneNumber,
-          token: 'dummy_token_123456',
+          token: user.token,
           role: user.role,
         );
-      // } else {
-      //   return null;
-      // }
+      } else {
+        return null;
+      }
     } catch (e) {
       print('Erreur lors de la connexion: $e');
       return null;

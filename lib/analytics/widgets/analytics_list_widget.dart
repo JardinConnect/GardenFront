@@ -81,27 +81,27 @@ class AnalyticsListWidget extends StatelessWidget {
               var values = [
                 AnalyticListItem(
                     value: "${light?.value} ${AnalyticsFilterEnum.light.unit}",
-                    alertStatus: light!.alertStatus),
+                    alertStatus:  AnalyticAlertStatus.ok),
                 AnalyticListItem(value: "${airTemperature?.value
                     .toStringAsFixed(1)} ${AnalyticsFilterEnum.temperature
-                    .unit}", alertStatus: airTemperature!.alertStatus),
+                    .unit}", alertStatus:  AnalyticAlertStatus.ok),
                 AnalyticListItem(
                     value: "${soilTemperature?.value
                         .toStringAsFixed(1)} ${AnalyticsFilterEnum.temperature
                         .unit}",
-                    alertStatus: soilTemperature!.alertStatus),
+                    alertStatus: AnalyticAlertStatus.ok),
                 AnalyticListItem(
                     value: "${airHumidity?.value
                         .toString()} ${AnalyticsFilterEnum.humidity.unit}",
-                    alertStatus: airHumidity!.alertStatus),
+                    alertStatus: AnalyticAlertStatus.ok),
                 AnalyticListItem(
                     value: "${soilHumidity?.value
                         .toString()} ${AnalyticsFilterEnum.humidity.unit}",
-                    alertStatus: soilHumidity!.alertStatus),
+                    alertStatus: AnalyticAlertStatus.ok),
                 AnalyticListItem(
                     value: "${deepSoilHumidity?.value
                         .toString()} ${AnalyticsFilterEnum.humidity.unit}",
-                    alertStatus: deepSoilHumidity!.alertStatus)
+                    alertStatus: AnalyticAlertStatus.ok)
               ];
 
               return GestureDetector(

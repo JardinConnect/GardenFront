@@ -53,7 +53,7 @@ class UserAddDto{
 enum Role {
   superadmin,
   admin,
-  employee,
+  employees,
   trainee;
 
   String get displayName {
@@ -62,7 +62,7 @@ enum Role {
         return 'Super Admin';
       case Role.admin:
         return 'Admin';
-      case Role.employee:
+      case Role.employees:
         return 'Employé';
       case Role.trainee:
         return 'Saisonnié';

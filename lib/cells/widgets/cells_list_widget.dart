@@ -79,27 +79,27 @@ class CellsListWidget extends StatelessWidget {
               var values = [
                 CellAnalyticListItem(
                     value: "${light?.value} ${AnalyticsFilterEnum.light.unit}",
-                    alertStatus: light!.alertStatus),
+                    alertStatus:  AnalyticAlertStatus.ok),
                 CellAnalyticListItem(value: "${airTemperature?.value
                     .toStringAsFixed(1)} ${AnalyticsFilterEnum.temperature
-                    .unit}", alertStatus: airTemperature!.alertStatus),
+                    .unit}", alertStatus: AnalyticAlertStatus.ok),
                 CellAnalyticListItem(
                     value: "${soilTemperature?.value
                         .toStringAsFixed(1)} ${AnalyticsFilterEnum.temperature
                         .unit}",
-                    alertStatus: soilTemperature!.alertStatus),
+                    alertStatus:  AnalyticAlertStatus.ok),
                 CellAnalyticListItem(
                     value: "${airHumidity?.value
                         .toString()} ${AnalyticsFilterEnum.humidity.unit}",
-                    alertStatus: airHumidity!.alertStatus),
+                    alertStatus:  AnalyticAlertStatus.ok),
                 CellAnalyticListItem(
                     value: "${soilHumidity?.value
                         .toString()} ${AnalyticsFilterEnum.humidity.unit}",
-                    alertStatus: soilHumidity!.alertStatus),
+                    alertStatus:  AnalyticAlertStatus.ok),
                 CellAnalyticListItem(
                     value: "${deepSoilHumidity?.value
                         .toString()} ${AnalyticsFilterEnum.humidity.unit}",
-                    alertStatus: deepSoilHumidity!.alertStatus)
+                    alertStatus:  AnalyticAlertStatus.ok)
               ];
 
               return MouseRegion(
