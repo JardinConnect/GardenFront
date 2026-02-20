@@ -8,7 +8,16 @@ import '../../../auth/models/user.dart';
 import '../bloc/users_bloc.dart';
 
 class UserAddFormWidget extends StatefulWidget {
-  const UserAddFormWidget({super.key});
+  final dynamic isSuperAdminCreation;
+  final Function(UserAddDto)? onDataChanged;
+  final GlobalKey<FormState>? formKey;
+
+  const UserAddFormWidget({
+    super.key,
+    this.isSuperAdminCreation = false,
+    this.onDataChanged,
+    this.formKey,
+  });
 
   @override
   State<UserAddFormWidget> createState() => _UserFormWidget();
@@ -22,6 +31,7 @@ class _UserFormWidget extends State<UserAddFormWidget> {
   late TextEditingController lastnameController;
   late TextEditingController phoneController;
   late TextEditingController emailController;
+  bool _passwordVisible = false;
 
   @override
   void initState() {
@@ -31,7 +41,7 @@ class _UserFormWidget extends State<UserAddFormWidget> {
         lastName: '',
         email: '',
         phoneNumber: '',
-        role: Role.trainee,
+        role: widget.isSuperAdminCreation ? Role.superadmin :Role.trainee,
         password: '',
       );
     passwordController = TextEditingController();
@@ -39,6 +49,20 @@ class _UserFormWidget extends State<UserAddFormWidget> {
     phoneController = TextEditingController(text: user?.phoneNumber);
     firstnameController = TextEditingController(text: user?.firstName);
     lastnameController = TextEditingController(text: user?.lastName);
+    _passwordVisible = false;
+
+    if (widget.isSuperAdminCreation) {
+      emailController.addListener(_onDataChanged);
+      firstnameController.addListener(_onDataChanged);
+      lastnameController.addListener(_onDataChanged);
+      phoneController.addListener(_onDataChanged);
+      passwordController.addListener(_onDataChanged);
+
+    }
+  }
+
+  void _onDataChanged() {
+    widget.onDataChanged?.call(user!);
   }
 
   @override
@@ -56,33 +80,31 @@ class _UserFormWidget extends State<UserAddFormWidget> {
 
 
     return GardenCard(
-      hasBorder: true,
+      hasBorder: !widget.isSuperAdminCreation,
+      hasShadow: !widget.isSuperAdminCreation,
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.person_outline,
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 32,
-                    ),
-                    Text(
-                      "Nouvel Utilisateur",
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                  ],
+                if(!widget.isSuperAdminCreation)
+                Icon(
+                  Icons.person_outline,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 32,
+                ),
+                if(!widget.isSuperAdminCreation)
+                Text(
+                  "Nouvel Utilisateur",
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ],
             ),
           ),
           Form(
-            key: userForm,
+            key: widget.formKey ?? userForm,
             child: Column(
               children: [
                 Row(
@@ -159,55 +181,71 @@ class _UserFormWidget extends State<UserAddFormWidget> {
                       }
                       return null;
                     },
-                    decoration: const InputDecoration(labelText: 'Mot de passe'),
-                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: "Mot de passe",
+                      suffixIcon: IconButton(
+                        onPressed: ()=>
+                            setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            }),
+                        icon: Icon(
+                          _passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ),
+                    obscureText: !_passwordVisible,
                   ),
                 ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child:
-                    DropdownButtonFormField<Role>(
-                      initialValue: user?.role ?? Role.trainee,
-                      decoration: const InputDecoration(labelText: 'Rôle'),
-                      items: <Role>[Role.admin, Role.employees,Role.trainee].map((Role value) {
-                        return DropdownMenuItem<Role>(
-                          value: value,
-                          child: Text(value.displayName, style: Theme.of(context).textTheme.bodyLarge),
-                        );
-                      }).toList(),
-                      onChanged: (Role? value) {
-                        setState(() {
-                          user = UserAddDto(
-                            firstName: user?.firstName ?? '',
-                            lastName: user?.lastName ?? '',
-                            email: user?.email ?? '',
-                            phoneNumber: user?.phoneNumber ?? '',
-                            role: value ?? Role.trainee,
-                            password: user?.password ?? '',
+                  if(!widget.isSuperAdminCreation)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child:
+                      DropdownButtonFormField<Role>(
+                        initialValue: user?.role ?? Role.trainee,
+                        decoration: const InputDecoration(labelText: 'Rôle'),
+                        items: <Role>[Role.admin, Role.employees,Role.trainee].map((Role value) {
+                          return DropdownMenuItem<Role>(
+                            value: value,
+                            child: Text(value.displayName, style: Theme.of(context).textTheme.bodyLarge),
                           );
-                        });
-                      },
+                        }).toList(),
+                        onChanged: (Role? value) {
+                          setState(() {
+                            user = UserAddDto(
+                              firstName: user?.firstName ?? '',
+                              lastName: user?.lastName ?? '',
+                              email: user?.email ?? '',
+                              phoneNumber: user?.phoneNumber ?? '',
+                              role: value ?? Role.trainee,
+                              password: user?.password ?? '',
+                            );
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                  Button(label: "Créer", icon: Icons.check_circle, onPressed: ()=>
-                  {
-                    if (userForm.currentState?.validate() == true){
-                      userForm.currentState?.save(),
-                      context.read<UsersBloc>().add(
-                          UserAddEvent(user: UserAddDto(
-                            firstName: firstnameController.text,
-                            lastName: lastnameController.text,
-                            email: emailController.text,
-                            phoneNumber: phoneController.text,
-                            password: passwordController.text,
-                            role: user?.role ?? Role.trainee,
-                          ))),
-                      showSnackBarSucces(context, "Utilisateur créé avec succès"),
-                      context.read<UsersBloc>().add(UsersUnselectEvent())
-                    }else{
-                      showSnackBarError(context, "Veuillez corriger les erreurs dans le formulaire")
-                    }
-                  } )
+                  if(!widget.isSuperAdminCreation)
+                    Button(label: "Créer", icon: Icons.check_circle, onPressed: ()=>
+                    {
+                      if (userForm.currentState?.validate() == true){
+                        userForm.currentState?.save(),
+                        context.read<UsersBloc>().add(
+                            UserAddEvent(user: UserAddDto(
+                              firstName: firstnameController.text,
+                              lastName: lastnameController.text,
+                              email: emailController.text,
+                              phoneNumber: phoneController.text,
+                              password: passwordController.text,
+                              role: user?.role ?? Role.trainee,
+                            ))),
+                        showSnackBarSucces(context, "Utilisateur créé avec succès"),
+                        context.read<UsersBloc>().add(UsersUnselectEvent())
+                      }else{
+                        showSnackBarError(context, "Veuillez corriger les erreurs dans le formulaire")
+                      }
+                    } )
               ],
             ),
           ),

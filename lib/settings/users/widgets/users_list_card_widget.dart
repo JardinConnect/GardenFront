@@ -20,48 +20,38 @@ class UserListCardWidget extends StatelessWidget {
         children: [
           SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: Expanded(
-            child: DataTable(
-              headingRowHeight: 38,
-              dataRowMinHeight: 52,
-              dataRowMaxHeight: 64,
-              columns: [
-                const DataColumn(label: Text('Nom / Prénom')),
-                const DataColumn(label: Text('Email')),
-                const DataColumn(label: Text('Rôle')),
-                if(isEditable != null && isEditable == true)
-                  const DataColumn(label: Text('Actions')),
-              ],
-              rows: users.map((user) {
-                return DataRow(
-                  cells: [
+          child: DataTable(
+            headingRowHeight: 38,
+            dataRowMinHeight: 52,
+            dataRowMaxHeight: 64,
+            columns: [
+              const DataColumn(label: Text('Nom / Prénom')),
+              const DataColumn(label: Text('Email')),
+              const DataColumn(label: Text('Rôle')),
+              if(isEditable != null && isEditable == true)
+                const DataColumn(label: Text('Actions')),
+            ],
+            rows: users.map((user) {
+              return DataRow(
+                cells: [
+                  DataCell(
+                    Text('${user.firstName} ${user.lastName}'),
+                  ),
+                  DataCell(
+                    Text(user.email),
+                  ),
+                  DataCell(
+                    Text(user.role.displayName)
+                  ),
+                  if(isEditable != null && isEditable == true)
                     DataCell(
-                      Text('${user.firstName} ${user.lastName}'),
-                    ),
-                    DataCell(
-                      Text(user.email),
-                    ),
-                    DataCell(
-                      Text(user.role.displayName)
-                    ),
-                    if(isEditable != null && isEditable == true)
-                      DataCell(
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (currentUser != null && (currentUser == user ||
-                                currentUser.role == Role.admin))
-                              IconButton(
-                                icon: Icon(Icons.edit,
-                                    color: Theme.of(context).primaryColor),
-                                onPressed: () {
-                                  context
-                                      .read<UsersBloc>()
-                                      .add(UserSelect(user: user));
-                                },
-                              ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (currentUser != null && (currentUser == user ||
+                              currentUser.role == Role.admin))
                             IconButton(
-                              icon: Icon(Icons.remove_red_eye_outlined,
+                              icon: Icon(Icons.edit,
                                   color: Theme.of(context).primaryColor),
                               onPressed: () {
                                 context
@@ -69,13 +59,21 @@ class UserListCardWidget extends StatelessWidget {
                                     .add(UserSelect(user: user));
                               },
                             ),
-                          ],
-                        ),
-                    ),
-                  ],
-                );
-              }).toList(),
-            ),
+                          IconButton(
+                            icon: Icon(Icons.remove_red_eye_outlined,
+                                color: Theme.of(context).primaryColor),
+                            onPressed: () {
+                              context
+                                  .read<UsersBloc>()
+                                  .add(UserSelect(user: user));
+                            },
+                          ),
+                        ],
+                      ),
+                  ),
+                ],
+              );
+            }).toList(),
           ),
               ),
         ],

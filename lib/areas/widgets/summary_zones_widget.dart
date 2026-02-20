@@ -177,7 +177,6 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
                 return Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      print('Show Areas List Widget for level $lvl');
                       context.read<AreaBloc>().add(
                         ShowAreasListWidget(level: lvl),
                       );
@@ -221,7 +220,6 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      print('Show Cells List Widget');
                       context.read<AreaBloc>().add(ShowCellsListWidget());
                     },
                     child: GardenCard(
