@@ -95,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                                     color: Theme.of(context).primaryColor,
                                   ),
                             ),),
-                            obscureText: _passwordVisible,
+                            obscureText: !_passwordVisible,
                             onFieldSubmitted: (value) => context.read<AuthBloc>().add(
                                 AuthLoginRequested(
                                   email: _emailController.text,
