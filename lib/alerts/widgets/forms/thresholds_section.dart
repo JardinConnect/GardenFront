@@ -1,8 +1,9 @@
+import 'package:syncfusion_flutter_core/theme.dart' show SfRangeSliderTheme, SfRangeSliderThemeData;
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_sliders/sliders.dart';
-import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
+
 import 'sensors_section.dart';
 import 'single_sensor_icon.dart';
 

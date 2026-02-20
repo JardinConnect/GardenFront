@@ -20,7 +20,7 @@ class DialogBoxWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tabs = ['Vue d\ensemble', if (level != null) 'Historique'];
+    final tabs = ['Vue d\'ensemble', if (level != null) 'Historique'];
 
     return DefaultTabController(
       length: tabs.length,

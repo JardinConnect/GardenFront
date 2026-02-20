@@ -1,10 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
+
 import '../data/auth_repository.dart';
 import '../models/user.dart';
 
 part 'auth_event.dart';
-
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
@@ -36,7 +36,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthUnauthenticated());
       }
     } catch (e) {
-      print('Erreur lors de la vérification au démarrage: $e');
+      if (kDebugMode) {
+        print('Erreur lors de la vérification au démarrage: $e');
+      }
       emit(AuthUnauthenticated());
     }
   }

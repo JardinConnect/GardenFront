@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -1000,7 +1001,9 @@ class AreaRepository {
         return [];
       }
     } catch (e) {
-      print('Erreur de chargement des espaces: $e');
+      if (kDebugMode) {
+        print('Erreur de chargement des espaces: $e');
+      }
       return [];
     }
   }
@@ -1039,7 +1042,7 @@ class AreaRepository {
   }
 
 // Ajoutez cette méthode après fetchAreas()
-  Future<Area?> fetchAreaById(int id) async {
+  Future<Area?> fetchAreaById(String id) async {
     try {
       // Utiliser le cache si disponible
       if (_cachedAreas != null) {
@@ -1092,7 +1095,7 @@ class AreaRepository {
       final allAreas = _cachedAreas!.map((area) => Area.fromJson(area)).toList();
       final flattenedAreas = Area.getAllAreasFlattened(allAreas);
 
-      return flattenedAreas.firstWhere((area) => area.id != null && area.id == id);
+      return flattenedAreas.firstWhere((area) => area.id == id);
     } catch (e) {
       throw Exception('Failed to update area: $e');
     }
@@ -1112,7 +1115,7 @@ class AreaRepository {
       if (area['id'] == id) {
         // Area trouvée, la mettre à jour
         area['name'] = name;
-        area['color'] = color.value.toRadixString(16).toUpperCase();
+        area['color'] = color.toARGB32().toRadixString(16).toUpperCase();
         area['is_tracked'] = isTracked;
 
         // Si on change de parent, il faut déplacer l'area

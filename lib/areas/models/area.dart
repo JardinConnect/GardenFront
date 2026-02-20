@@ -54,9 +54,7 @@ class Area extends BaseItem {
     return Color(int.parse('FF$hexColor', radix: 16));
   }
 
-  /**
-   * Méthode statique pour compter le nombre d'areas par niveau dans la hiérarchie
-   */
+  /// Méthode statique pour compter le nombre d'areas par niveau dans la hiérarchie
   static Map<int, int> countAreasByLevel(List<Area> areas) {
     final Map<int, int> count = {};
 
@@ -76,10 +74,8 @@ class Area extends BaseItem {
     return count;
   }
 
-  /**
-   * Méthode statique pour aplatir la hiérarchie des areas en une liste unique
-   * pour les afficher dans la recherche
-   */
+  /// Méthode statique pour aplatir la hiérarchie des areas en une liste unique
+  /// pour les afficher dans la recherche
   static List<Area> getAllAreasFlattened(List<Area> areas) {
     final List<Area> flatList = [];
 
@@ -99,9 +95,7 @@ class Area extends BaseItem {
     return flatList;
   }
 
-  /**
-   * Méthode pour récupérer tous les descendants d'une area (enfants, petits-enfants, etc.)
-   */
+  /// Méthode pour récupérer tous les descendants d'une area (enfants, petits-enfants, etc.)
   static List<Area> getDescendants(Area area) {
     final List<Area> descendants = [];
 
