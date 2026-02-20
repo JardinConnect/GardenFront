@@ -106,12 +106,12 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
     final currentState = state;
     if (currentState is AreasLoaded) {
       try {
-        final colorHex = event.color.value
+        final colorHex = event.color.toARGB32()
             .toRadixString(16)
             .toUpperCase()
             .padLeft(8, '0');
 
-        final newArea = await _areaRepository.createArea(
+        final _ = await _areaRepository.createArea(
           name: event.name,
           color: colorHex,
           parentArea: event.parentArea,

@@ -1,5 +1,4 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:garden_connect/farm-setup/widgets/wifi_setup_widget.dart';
 
@@ -28,12 +27,13 @@ class FarmStepper extends StatefulWidget {
   });
 
   @override
-  _FarmStepperState createState() =>
-      _FarmStepperState();
+  FarmStepperState createState() {
+    return FarmStepperState();
+  }
 }
 
 
-class _FarmStepperState extends State<FarmStepper> {
+class FarmStepperState extends State<FarmStepper> {
   int _currentStep = 0;
   final GlobalKey<FormState> _userFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _wifiFormKey = GlobalKey<FormState>();

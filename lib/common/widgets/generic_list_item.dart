@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
-/**
- * Composant générique pour afficher une liste d'éléments avec une icône et une action au clic.
- */
+/// Composant générique pour afficher une liste d'éléments avec une icône et une action au clic.
 class GenericListItem {
   final String label;
   final IconData icon;

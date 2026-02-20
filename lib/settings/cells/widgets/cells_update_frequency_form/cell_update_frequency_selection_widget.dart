@@ -3,32 +3,32 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/settings/cells/bloc/cells_update_frequency_form_bloc.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
-class _CellUpdateFrequencyItem {
+class CellUpdateFrequencyItem {
   final String name;
   final Duration value;
 
-  const _CellUpdateFrequencyItem({required this.name, required this.value});
+  const CellUpdateFrequencyItem({required this.name, required this.value});
 }
 
 class CellUpdateFrequencySelectionWidget extends StatelessWidget {
-  final List<_CellUpdateFrequencyItem> _items;
+  final List<CellUpdateFrequencyItem> _items;
 
   const CellUpdateFrequencySelectionWidget({
     super.key,
-    List<_CellUpdateFrequencyItem> items = const [
-      _CellUpdateFrequencyItem(
+    List<CellUpdateFrequencyItem> items = const [
+      CellUpdateFrequencyItem(
         name: "Toutes les 15 min",
         value: Duration(minutes: 15),
       ),
-      _CellUpdateFrequencyItem(
+      CellUpdateFrequencyItem(
         name: "Toutes les 30 min",
         value: Duration(minutes: 30),
       ),
-      _CellUpdateFrequencyItem(
+      CellUpdateFrequencyItem(
         name: "Toutes les heures",
         value: Duration(hours: 1),
       ),
-      _CellUpdateFrequencyItem(
+      CellUpdateFrequencyItem(
         name: "Toutes les 2 heures",
         value: Duration(hours: 2),
       ),

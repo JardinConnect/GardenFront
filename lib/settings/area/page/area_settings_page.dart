@@ -11,7 +11,7 @@ import '../../../common/widgets/global_stat_card_widget.dart';
 import '../../../common/widgets/generic_list_item.dart';
 
 class AreaSettingsPage extends StatefulWidget {
-  const AreaSettingsPage({Key? key}) : super(key: key);
+  const AreaSettingsPage({super.key});
 
   @override
   State<AreaSettingsPage> createState() => _AreaSettingsPageState();

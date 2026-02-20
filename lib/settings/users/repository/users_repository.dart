@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:garden_connect/auth/models/user.dart';
 import 'package:http/http.dart' as http;
@@ -34,7 +35,9 @@ class UsersRepository {
         return [];
       }
     } catch (e) {
-      print('Erreur lors de la connexion: $e');
+      if (kDebugMode) {
+        print('Erreur lors de la connexion: $e');
+      }
       return [];
     }
   }

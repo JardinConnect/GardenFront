@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -40,7 +41,9 @@ class AuthRepository {
         return null;
       }
     } catch (e) {
-      print('Erreur lors de la connexion: $e');
+      if (kDebugMode) {
+        print('Erreur lors de la connexion: $e');
+      }
       return null;
     }
   }
