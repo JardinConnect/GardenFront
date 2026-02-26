@@ -97,5 +97,20 @@ class CellRepository {
     List<String> updateTimes,
   ) async {}
 
-  Future<void> deleteCell(String id) async {}
+  Future<void> deleteCell(String id) async {
+    try {
+      final storage = FlutterSecureStorage();
+      String? token = await storage.read(key: 'auth_token');
+      await http.delete(
+        Uri.parse('$baseUrl/cell/$id'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+    } catch (e) {
+      print('Erreur lors de la suppression de la cellule: $e');
+    }
+  }
 }
