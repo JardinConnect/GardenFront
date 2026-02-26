@@ -70,6 +70,7 @@ class CellDetailSettingsPage extends StatelessWidget {
                                   UpdateCell(
                                     id: cell.id,
                                     name: name,
+                                    isTracked: cell.isTracked!,
                                     parentId: parentArea?.id,
                                   ),
                                 );

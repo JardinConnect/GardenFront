@@ -118,9 +118,11 @@ class CellBloc extends Bloc<CellEvent, CellState> {
     Emitter<CellState> emit,
   ) async {
     try {
-      await _cellRepository.changeCellTracking(
+      await _cellRepository.updateCell(
         event.id,
+        event.name,
         event.newTrackingValue,
+        event.parentId,
       );
       add(LoadCellDetail(id: event.id));
     } catch (e) {
@@ -139,7 +141,7 @@ class CellBloc extends Bloc<CellEvent, CellState> {
 
   _updateCell(UpdateCell event, Emitter<CellState> emit) async {
     try {
-      await _cellRepository.updateCell(event.id, event.name, event.parentId);
+      await _cellRepository.updateCell(event.id, event.name, event.isTracked, event.parentId);
     } catch (e) {
       emit(CellError(message: e.toString()));
     }

@@ -18,9 +18,9 @@ class CellDetailPage extends StatelessWidget {
     this.isFromAreaPage = false,
   });
 
-  void _handleChangeCellTracking(BuildContext context, bool newTrackingValue) {
+  void _handleChangeCellTracking(BuildContext context, String name, bool newTrackingValue, String? parentId) {
     context.read<CellBloc>().add(
-      CellTrackingChanged(id: id, newTrackingValue: newTrackingValue),
+      CellTrackingChanged(id: id, name: name, newTrackingValue: newTrackingValue, parentId: parentId),
     );
   }
 
@@ -103,10 +103,9 @@ class CellDetailPage extends StatelessWidget {
                                 style: GardenTypography.headingLg,
                               ),
                               GardenToggle(
-                                // isEnabled: cellState.cell.isTracked,
-                                isEnabled: false,
+                                isEnabled: cellState.cell.isTracked!,
                                 onToggle: (bool value) =>
-                                    _handleChangeCellTracking(context, value),
+                                    _handleChangeCellTracking(context, cellState.cell.name, value, cellState.cell.parentId),
                                 enabledIcon: Icons.visibility_outlined,
                                 disabledIcon: Icons.visibility_off_outlined,
                               ),
