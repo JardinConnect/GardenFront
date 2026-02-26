@@ -33,7 +33,7 @@ class AppRouter {
   AppRouter(this.authBloc);
 
   late final GoRouter router = GoRouter(
-    initialLocation: '/dashboard',
+    initialLocation: '/farm',
     refreshListenable: GoRouterRefreshStream(authBloc.stream),
     redirect: (context, state) {
       final authState = authBloc.state;
@@ -45,7 +45,7 @@ class AppRouter {
       }
 
       if (isLoggedIn && isLoggingIn) {
-        return '/dashboard';
+        return '/farm';
       }
 
       return null;

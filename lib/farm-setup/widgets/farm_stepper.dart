@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:garden_connect/farm-setup/models/network_info.dart';
 import 'package:garden_connect/farm-setup/widgets/wifi_setup_widget.dart';
 
 import '../../analytics/models/analytics.dart';
@@ -16,6 +17,8 @@ class FarmStepper extends StatefulWidget {
   final Function(UserAddDto)? onUserDataChanged;
   final Function(String, String)? onWifiDataChanged;
   final Function(Farm)? onFarmDataChanged;
+  final Function()? onRefreshWifiList;
+  final List<NetworkInfo> wifiList;
 
   const FarmStepper({
     super.key,
@@ -23,7 +26,9 @@ class FarmStepper extends StatefulWidget {
     this.onCompleted,
     this.onUserDataChanged,
     this.onWifiDataChanged,
+    this.onRefreshWifiList,
     this.onFarmDataChanged,
+    required this.wifiList,
   });
 
   @override
@@ -129,6 +134,8 @@ class FarmStepperState extends State<FarmStepper> {
         Step(
           title: const Text('Wifi'),
           content: WifiSetupWidget(
+            wifiList: widget.wifiList,
+            onRefreshWifiList:()=> widget.onRefreshWifiList?.call(),
             formKey: _wifiFormKey,
             onDataChanged: (ssid, password) {
               widget.onWifiDataChanged?.call(ssid, password);

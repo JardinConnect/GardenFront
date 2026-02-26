@@ -25,53 +25,74 @@ class _FarmSetupPageState extends State<FarmSetupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:
-      BlocProvider(
+      body:BlocProvider(
         create: (context) => FarmSetupBloc(),
         child: BlocBuilder<FarmSetupBloc,FarmState>(
-          builder: (BuildContext context, state) {
-            return Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: Text(_title,style: Theme.of(context).textTheme.headlineMedium,),
-              ),
-              Expanded(
-                child: Padding(
-                  padding:EdgeInsetsGeometry.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1, vertical:20),
-                  child: GardenCard(
-                      hasBorder: true,
-                      hasShadow: true,
-                      child: FarmStepper(
-                        onStepChanged: (step) => setState(() => _stepChanged(step)),
-                        onUserDataChanged: (user) {
-                          setState(() {
-                            _user = user;
-                          });
-                        },
-                        onWifiDataChanged: (ssid, password) {
-                          setState(() {
-                            _wifiSsid = ssid;
-                            _wifiPassword = password;
-                          });
-                        },
-                        onFarmDataChanged: (farm) {
-                          setState(() {
-                            _farm = farm;
-                          });
-                        },
-                        onCompleted: ()=>
-                            context.read<FarmSetupBloc>().add(FarmCreateEvent(farm: _farm!, user: _user!, wifiSsid: _wifiSsid!, wifiPassword: _wifiPassword!)),
-                      )
-                  ),
+          builder: (context, state) {
+            if (state is FarmLoading || state is FarmInitial) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is FarmLoaded) {
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Text(_title, style: Theme
+                          .of(context)
+                          .textTheme
+                          .headlineMedium,),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsetsGeometry.symmetric(
+                            horizontal: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.1, vertical: 20),
+                        child: GardenCard(
+                            hasBorder: true,
+                            hasShadow: true,
+                            child: FarmStepper(
+                              wifiList: state.wifiList,
+                              onRefreshWifiList: () => context.read<FarmSetupBloc>().add(RefreshWifiListEvent()),
+                              onStepChanged: (step) =>
+                                  setState(() => _stepChanged(step)),
+                              onUserDataChanged: (user) {
+                                setState(() {
+                                  _user = user;
+                                });
+                              },
+                              onWifiDataChanged: (ssid, password) {
+                                setState(() {
+                                  _wifiSsid = ssid;
+                                  _wifiPassword = password;
+                                });
+                              },
+                              onFarmDataChanged: (farm) {
+                                setState(() {
+                                  _farm = farm;
+                                });
+                              },
+                              onCompleted: () =>
+                                  context.read<FarmSetupBloc>().add(
+                                      FarmCreateEvent(farm: _farm!,
+                                          user: _user!,
+                                          wifiSsid: _wifiSsid!,
+                                          wifiPassword: _wifiPassword!)),
+                            )
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
               );
-            },
+            }else if(state is FarmError){
+              return Center(child: Text('Erreur: ${state.message}'));
+            } else {
+              return const Center(child: Text('État inconnu'));
+            }
+          }
         ),
       )
     );
