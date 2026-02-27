@@ -53,7 +53,7 @@ class Area extends BaseItem {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is BaseItem &&
+    return other is Area &&
         other.runtimeType == runtimeType &&
         other.id == id;
   }
