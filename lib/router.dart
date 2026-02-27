@@ -78,8 +78,20 @@ class AppRouter {
           GoRoute(
             path: '/dashboard',
             pageBuilder:
-                (context, state) =>
-                NoTransitionPage(child: const DashboardPage()),
+                (context, state) => NoTransitionPage(
+                  child: MultiBlocProvider(
+                    providers: [
+                      BlocProvider<AnalyticsBloc>(
+                        create: (context) => AnalyticsBloc(),
+                      ),
+                      BlocProvider<AreaBloc>(create: (context) => AreaBloc()),
+                      BlocProvider<CellBloc>(
+                        create: (context) => CellBloc()..add(LoadCells()),
+                      ),
+                    ],
+                    child: DashboardPage(),
+                  ),
+                ),
           ),
           GoRoute(
             path: '/areas',
