@@ -35,7 +35,8 @@ class DashboardPage extends StatelessWidget {
           if (analyticsState is AnalyticsShimmer ||
               analyticsState is AnalyticsInitial ||
               areaState is AreasShimmer ||
-              areaState is AreaInitial) {
+              areaState is AreaInitial || cellState is CellsShimmer ||
+              cellState is CellInitial) {
             return const Center(child: CircularProgressIndicator());
           } else if (areaState is AreaError) {
             return Center(child: Text('Erreur: ${areaState.message}'));
