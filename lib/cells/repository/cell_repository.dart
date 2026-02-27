@@ -5,6 +5,8 @@ import 'package:garden_connect/cells/models/cell.dart';
 import 'package:http/http.dart' as http;
 
 class CellRepository {
+  static const String baseUrl = 'http://127.0.0.1:8000';
+
   Future<List<Cell>> fetchCells() async {
     try {
       final storage = FlutterSecureStorage();
@@ -57,13 +59,31 @@ class CellRepository {
     }
   }
 
-  Future<void> changeCellTracking(String id, bool newTrackingValue) async {}
-
   Future<void> refreshCells() async {}
 
   Future<void> refreshCell(String id) async {}
 
-  Future<void> updateCell(String id, String name, String? parentId) async {}
+  Future<void> updateCell(String id, String name, bool isTracked, String? parentId) async {
+    try {
+      final storage = FlutterSecureStorage();
+      String? token = await storage.read(key: 'auth_token');
+      await http.put(
+        Uri.parse('$baseUrl/cell/$id'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'name': name,
+          'is_tracked': isTracked,
+          'area_id': parentId,
+        }),
+      );
+    } catch (e) {
+      print('Erreur lors de la mise à jour de la cellule: $e');
+    }
+  }
 
   // PUT /cells/settings
   Future<void> updateCellsSettings(
@@ -73,7 +93,20 @@ class CellRepository {
     List<String> updateTimes,
   ) async {}
 
-  Future<void> deleteCell(String id) async {}
-
-
+  Future<void> deleteCell(String id) async {
+    try {
+      final storage = FlutterSecureStorage();
+      String? token = await storage.read(key: 'auth_token');
+      await http.delete(
+        Uri.parse('$baseUrl/cell/$id'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+    } catch (e) {
+      print('Erreur lors de la suppression de la cellule: $e');
+    }
+  }
 }

@@ -30,8 +30,10 @@ final class SearchCells extends CellEvent {
 final class CellTrackingChanged extends CellEvent {
   final String id;
   final bool newTrackingValue;
+  final String name;
+  final String? parentId;
 
-  CellTrackingChanged({required this.id, required this.newTrackingValue});
+  CellTrackingChanged({required this.id, required this.name, required this.newTrackingValue, this.parentId});
 }
 
 final class RefreshCellDetail extends CellEvent {
@@ -43,9 +45,10 @@ final class RefreshCellDetail extends CellEvent {
 final class UpdateCell extends CellEvent {
   final String id;
   final String name;
+  final bool isTracked;
   final String? parentId;
 
-  UpdateCell({required this.id, required this.name, this.parentId});
+  UpdateCell({required this.id, required this.name, required this.isTracked, this.parentId});
 }
 
 final class DeleteCell extends CellEvent {
