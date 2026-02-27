@@ -74,7 +74,7 @@ class AreaRepository {
   }
 
 // Ajoutez cette méthode après fetchAreas()
-  Future<Area?> fetchAreaById(int id) async {
+  Future<Area?> fetchAreaById(String id) async {
     try {
       // Utiliser le cache si disponible
       if (_cachedAreas != null) {
@@ -108,7 +108,7 @@ class AreaRepository {
 
       final Map<String, dynamic> body = {};
       if (name != null) body['name'] = name;
-      if (color != null) body['color'] = color.value.toRadixString(16);
+      if (color != null) body['color'] = color.toARGB32().toRadixString(16);
       if (parentId != null) body['parent_id'] = parentId;
       if (isTracked != null) body['is_tracked'] = isTracked;
 

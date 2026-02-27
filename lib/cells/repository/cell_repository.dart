@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:garden_connect/cells/models/cell.dart';
 import 'package:http/http.dart' as http;
@@ -81,7 +82,9 @@ class CellRepository {
         }),
       );
     } catch (e) {
-      print('Erreur lors de la mise à jour de la cellule: $e');
+      if (kDebugMode) {
+        print('Erreur lors de la mise à jour de la cellule: $e');
+      }
     }
   }
 
@@ -106,7 +109,9 @@ class CellRepository {
         },
       );
     } catch (e) {
-      print('Erreur lors de la suppression de la cellule: $e');
+      if (kDebugMode) {
+        print('Erreur lors de la suppression de la cellule: $e');
+      }
     }
   }
 }
