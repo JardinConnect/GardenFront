@@ -4,11 +4,11 @@ import 'package:garden_connect/auth/utils/auth_extension.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../analytics/bloc/analytics_bloc.dart';
 import '../../areas/bloc/area_bloc.dart';
 import '../../areas/models/area.dart';
 import '../../cells/bloc/cell_bloc.dart';
 import '../../core/app_assets.dart';
-import '../../analytics/bloc/analytics_bloc.dart';
 import '../widgets/activity_sensors.dart';
 import '../widgets/expandable_card.dart';
 import '../widgets/hexagones_widget.dart';
@@ -94,41 +94,47 @@ class DashboardPage extends StatelessWidget {
                                       onPressed:
                                           () => context.go('/cells/${cell.id}'),
                                       light:
-                                          cell.analytics.light!.first.value
-                                              .toInt(),
+                                          cell.analytics.light?.first.value
+                                              .toInt() ??
+                                          0,
                                       rain:
                                           cell
                                               .analytics
-                                              .airHumidity!
-                                              .first
+                                              .airHumidity
+                                              ?.first
                                               .value
-                                              .toInt(),
+                                              .toInt() ??
+                                          0,
                                       humiditySurface:
                                           cell
                                               .analytics
-                                              .soilHumidity!
-                                              .first
+                                              .soilHumidity
+                                              ?.first
                                               .value
-                                              .toInt(),
+                                              .toInt() ??
+                                          0,
                                       humidityDepth:
                                           cell
                                               .analytics
-                                              .deepSoilHumidity!
-                                              .first
+                                              .deepSoilHumidity
+                                              ?.first
                                               .value
-                                              .toInt(),
+                                              .toInt() ??
+                                          0,
                                       temperatureSurface:
                                           cell
                                               .analytics
-                                              .airTemperature!
-                                              .first
-                                              .value,
+                                              .airTemperature
+                                              ?.first
+                                              .value ??
+                                          0,
                                       temperatureDepth:
                                           cell
                                               .analytics
-                                              .soilTemperature!
-                                              .first
-                                              .value,
+                                              .soilTemperature
+                                              ?.first
+                                              .value ??
+                                          0,
                                     ),
                                   );
                                 }).toList(),
@@ -152,8 +158,7 @@ class DashboardPage extends StatelessWidget {
                                   crossAxisCount: crossAxisCount,
                                   mainAxisSpacing: 16,
                                   crossAxisSpacing: 16,
-                                  mainAxisExtent:
-                                      220,
+                                  mainAxisExtent: 220,
                                 ),
                             itemCount: trackedAreas.length,
                             itemBuilder: (context, index) {
