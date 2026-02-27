@@ -71,7 +71,7 @@ class AreaAddEditPage extends StatelessWidget {
                                       id: area.id,
                                       name: name,
                                       color: area.color,
-                                      parentArea: parentArea,
+                                      parentId: parentArea?.id,
                                     ),
                                   );
                                   context.go('/settings/areas');

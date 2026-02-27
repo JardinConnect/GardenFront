@@ -59,22 +59,21 @@ class _HexagonesWidgetState extends State<HexagonesWidget> {
     return filteredAreas;
   }
 
-  // // Compte le nombre total de nœuds actifs
-  // int _countActiveNodes() {
-  //   int count = 0;
-  //   for (var area in widget.areas) {
-  //     count++; // L'area elle-même
-  //     if (area.areas != null) {
-  //       count += area.areas!.length; // Les sous-areas
-  //       for (var subArea in area.areas!) {
-  //         if (subArea.cells != null) {
-  //           count += subArea.cells!.length; // Les cellules
-  //         }
-  //       }
-  //     }
-  //   }
-  //   return count;
-  // }
+  int _countActiveNodes() {
+    int count = 0;
+    for (var area in widget.areas) {
+      count++;
+      if (area.areas != null) {
+        count += area.areas!.length;
+        for (var subArea in area.areas!) {
+          if (subArea.cells != null) {
+            count += subArea.cells!.length;
+          }
+        }
+      }
+    }
+    return count;
+  }
 
   List<Widget> _buildHexagons(BuildContext context, List<Area> filteredAreas) {
     return filteredAreas.map((area) {
@@ -115,7 +114,7 @@ class _HexagonesWidgetState extends State<HexagonesWidget> {
   Widget build(BuildContext context) {
     final availableLevels = _getAvailableLevels();
     final filteredAreas = _getFilteredAreas();
-    // final activeNodesCount = _countActiveNodes();
+    final activeNodesCount = _countActiveNodes();
 
     return Column(
       children: [
@@ -171,7 +170,7 @@ class _HexagonesWidgetState extends State<HexagonesWidget> {
                   vertical: 2,
                 ),
                 child: Text(
-                  '18 nœuds actifs',
+                  '$activeNodesCount nœuds actifs',
                   style: const TextStyle(color: Colors.white),
                 ),
               ),

@@ -24,6 +24,8 @@ class Area extends BaseItem {
     required super.analytics,
     this.areas,
     this.cells,
+    super.parentId,
+    super.isTracked,
   });
 
   factory Area.fromJson(Map<String, dynamic> json) => _$AreaFromJson(json);
@@ -46,6 +48,7 @@ class Area extends BaseItem {
       analytics: analytics ?? this.analytics,
       areas: areas ?? this.areas,
       cells: cells ?? this.cells,
+      isTracked: isTracked ?? this.isTracked,
     );
   }
 

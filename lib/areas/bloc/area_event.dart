@@ -41,14 +41,14 @@ final class UpdateArea extends AreaEvent {
   final String? id;
   final String name;
   final Color color;
-  final Area? parentArea;
+  final String? parentId;
   final bool isTracked;
 
   UpdateArea({
     required this.id,
     required this.name,
     required this.color,
-    this.parentArea,
+    this.parentId,
     this.isTracked = false,
   });
 }

@@ -44,12 +44,13 @@ class DashboardPage extends StatelessWidget {
           } else if (areaState is AreasLoaded &&
               cellState is CellsLoaded &&
               analyticsState is AnalyticsLoaded) {
-            final areas = Area.getAllAreasFlattened(areaState.areas);
-            // final trackedAreas = areas.where((area) => area.isTracked).toList();
-            // final trackedCells =
-            //     cellState.cells.where((cell) => cell.isTracked).toList();
-            final trackedAreas = [];
-            final trackedCells = [];
+            final areas = areaState.areas;
+            final trackedAreas =
+                Area.getAllAreasFlattened(
+                  areas,
+                ).where((area) => area.isTracked).toList();
+            final trackedCells =
+                cellState.cells.where((cell) => cell.isTracked).toList();
 
             return Padding(
               padding: const EdgeInsets.all(16.0),
@@ -73,7 +74,7 @@ class DashboardPage extends StatelessWidget {
                     ExpandableCard(
                       icon: AppAssets.hexagon,
                       title: 'Comparaison entre noeuds',
-                      child: NodeComparison(),
+                      child: NodeComparison(areas: areas),
                     ),
                     ExpandableCard(
                       icon: AppAssets.radio,
@@ -140,55 +141,43 @@ class DashboardPage extends StatelessWidget {
                       title: 'Espaces en surveillance',
                       child: LayoutBuilder(
                         builder: (context, constraints) {
-                          return Wrap(
-                            spacing: 16,
-                            runSpacing: 16,
-                            children:
-                                trackedAreas.map((area) {
-                                  return SizedBox(
-                                    width: (constraints.maxWidth - 32) / 3,
-                                    child: AnalyticsSummaryCard(
-                                      name: area.name,
-                                      onPressed: () {},
-                                      light:
-                                          area.analytics.light!.first.value
-                                              .toInt(),
-                                      rain:
-                                          area
-                                              .analytics
-                                              .airHumidity!
-                                              .first
-                                              .value
-                                              .toInt(),
-                                      humiditySurface:
-                                          area
-                                              .analytics
-                                              .soilHumidity!
-                                              .first
-                                              .value
-                                              .toInt(),
-                                      humidityDepth:
-                                          area
-                                              .analytics
-                                              .deepSoilHumidity!
-                                              .first
-                                              .value
-                                              .toInt(),
-                                      temperatureSurface:
-                                          area
-                                              .analytics
-                                              .airTemperature!
-                                              .first
-                                              .value,
-                                      temperatureDepth:
-                                          area
-                                              .analytics
-                                              .soilTemperature!
-                                              .first
-                                              .value,
-                                    ),
-                                  );
-                                }).toList(),
+                          final crossAxisCount = (constraints.maxWidth / 300)
+                              .floor()
+                              .clamp(1, 3);
+                          return GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: crossAxisCount,
+                                  mainAxisSpacing: 16,
+                                  crossAxisSpacing: 16,
+                                  mainAxisExtent:
+                                      220,
+                                ),
+                            itemCount: trackedAreas.length,
+                            itemBuilder: (context, index) {
+                              final area = trackedAreas[index];
+                              return AnalyticsSummaryCard(
+                                name: area.name,
+                                onPressed: () {},
+                                light:
+                                    area.analytics.light!.first.value.toInt(),
+                                rain:
+                                    area.analytics.airHumidity!.first.value
+                                        .toInt(),
+                                humiditySurface:
+                                    area.analytics.soilHumidity!.first.value
+                                        .toInt(),
+                                humidityDepth:
+                                    area.analytics.deepSoilHumidity!.first.value
+                                        .toInt(),
+                                temperatureSurface:
+                                    area.analytics.airTemperature!.first.value,
+                                temperatureDepth:
+                                    area.analytics.soilTemperature!.first.value,
+                              );
+                            },
                           );
                         },
                       ),

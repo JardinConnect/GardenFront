@@ -16,16 +16,9 @@ enum AnalyticsFilterEnum {
         return 'lux';
     }
   }
-}
-
-class AnalyticsFilter {
-  final AnalyticsFilterEnum filterType;
-  final Analytics analytics;
-
-  AnalyticsFilter({required this.filterType, required this.analytics});
 
   String get displayName {
-    switch (filterType) {
+    switch (this) {
       case AnalyticsFilterEnum.humidity:
         return 'Humidité';
       case AnalyticsFilterEnum.temperature:
@@ -34,6 +27,35 @@ class AnalyticsFilter {
         return 'Luminosité';
     }
   }
+
+  Color get color {
+    switch (this) {
+      case AnalyticsFilterEnum.humidity:
+        return GardenColors.blueInfo.shade400;
+      case AnalyticsFilterEnum.temperature:
+        return GardenColors.redAlert.shade500;
+      case AnalyticsFilterEnum.light:
+        return GardenColors.yellowWarning.shade500;
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case AnalyticsFilterEnum.humidity:
+        return Icons.water_drop_outlined;
+      case AnalyticsFilterEnum.temperature:
+        return Icons.thermostat_outlined;
+      case AnalyticsFilterEnum.light:
+        return Icons.wb_sunny_outlined;
+    }
+  }
+}
+
+class AnalyticsFilter {
+  final AnalyticsFilterEnum filterType;
+  final Analytics analytics;
+
+  AnalyticsFilter({required this.filterType, required this.analytics});
 
   List<AnalyticType> get analyticTypes {
     switch (filterType) {
