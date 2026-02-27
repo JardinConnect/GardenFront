@@ -20,9 +20,11 @@ class AuthRepository {
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         String token = responseData['access_token'];
+        String refreshToken = responseData['refresh_token'];
         User user = User.fromJson(responseData['user']);
 
         await _secureStorage.write(key: 'auth_token', value: token);
+        await _secureStorage.write(key: 'refresh_token', value: refreshToken);
         await _secureStorage.write(
           key: 'user',
           value: jsonEncode(user.toJson()),
@@ -54,6 +56,33 @@ class AuthRepository {
 
   Future<String?> getToken() async {
     return await _secureStorage.read(key: 'auth_token');
+  }
+
+  Future<String?> getRefreshToken() async {
+    return await _secureStorage.read(key: 'refresh_token');
+  }
+
+  Future<bool> refreshAccessToken() async {
+    try {
+      final refreshToken = await getRefreshToken();
+      if (refreshToken == null) return false;
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/refresh-token'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'refresh_token': refreshToken}),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        await _secureStorage.write(key: 'auth_token', value: responseData['access_token']);
+        await _secureStorage.write(key: 'refresh_token', value: responseData['refresh_token']);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<User?> getUser() async {

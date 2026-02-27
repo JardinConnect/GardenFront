@@ -27,6 +27,7 @@ class ExpandableCard extends StatelessWidget {
         hasBorder: hasBorder ?? true,
         child: ExpansionTile(
           initiallyExpanded: true,
+          collapsedIconColor: Theme.of(context).colorScheme.primary,
           shape: const Border(),
           title: Row(
             children: [

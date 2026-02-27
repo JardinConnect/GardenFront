@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,11 +11,25 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository _authRepository;
+  Timer? _refreshTimer;
+
+  void _startRefreshTimer() {
+    _refreshTimer?.cancel();
+    _refreshTimer = Timer.periodic(const Duration(minutes: 9), (_) {
+      add(AuthTokenRefreshRequested());
+    });
+  }
+
+  void _stopRefreshTimer() {
+    _refreshTimer?.cancel();
+    _refreshTimer = null;
+  }
 
   AuthBloc() : _authRepository = AuthRepository(), super(AuthInitial()) {
     on<AuthLoginRequested>(_onLoginRequested);
     on<AuthLogoutRequested>(_onLogoutRequested);
     on<AuthAppStarted>(_onAppStarted);
+    on<AuthTokenRefreshRequested>(_onTokenRefreshRequested);
 
     add(AuthAppStarted());
   }
@@ -29,8 +45,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final user = await _authRepository.getUser();
 
       if (token != null && user != null) {
-        //TODO vérifier si le token est encore valide
-
+        _startRefreshTimer();
         emit(AuthAuthenticated(user: user, isAutoLogin: true));
       } else {
         emit(AuthUnauthenticated());
@@ -53,6 +68,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final user = await _authRepository.login(event.email, event.password);
 
       if (user != null) {
+        _startRefreshTimer();
         emit(AuthAuthenticated(user: user));
       } else {
         emit(AuthUnauthenticated(error: "Identifiants incorrects"));
@@ -66,6 +82,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthLogoutRequested event,
     Emitter<AuthState> emit,
   ) async {
+    _startRefreshTimer();
     emit(AuthLoading());
 
     try {
@@ -74,6 +91,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (e) {
       emit(AuthUnauthenticated(error: "Erreur lors de la déconnexion"));
     }
+  }
+
+  Future<void> _onTokenRefreshRequested(
+      AuthTokenRefreshRequested event,
+      Emitter<AuthState> emit,
+      ) async {
+    final success = await _authRepository.refreshAccessToken();
+    if (!success) {
+      _stopRefreshTimer();
+      await _authRepository.logout();
+      emit(AuthUnauthenticated(error: "Session expirée, veuillez vous reconnecter"));
+    }
+  }
+
+  @override
+  Future<void> close() {
+    _stopRefreshTimer();
+    return super.close();
   }
 
   User? get currentUser {
