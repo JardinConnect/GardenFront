@@ -49,6 +49,18 @@ class Area extends BaseItem {
     );
   }
 
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is BaseItem &&
+        other.runtimeType == runtimeType &&
+        other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+
   static Color _colorFromJson(String colorString) {
     final hexColor = colorString.replaceAll('#', '');
     return Color(int.parse('FF$hexColor', radix: 16));
