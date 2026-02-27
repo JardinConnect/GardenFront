@@ -104,7 +104,7 @@ class InfoCard extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'Par \: ',
+                    'Par : ',
                     style: GardenTypography.bodyMd.copyWith(
                       color: Colors.grey[600],
                     ),
@@ -118,7 +118,7 @@ class InfoCard extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'Date \: ',
+                    'Date : ',
                     style: GardenTypography.bodyMd.copyWith(
                       color: Colors.grey[600],
                     ),

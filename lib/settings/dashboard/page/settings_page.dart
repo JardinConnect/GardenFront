@@ -84,16 +84,6 @@ class SettingsPage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: GlobalStatCardWidget(
-                                    title: "Activités (24h)",
-                                    icon: Icons.bar_chart_outlined,
-                                    data: "840",
-                                  ),
-                                ),
-                              ),
                             ],
                           ),
                         ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
-import 'package:garden_ui/ui/enums/sensor_type.dart';
 import '../../models/alert_models.dart';
 
 /// Classe représentant un capteur sélectionné avec son type et son index

@@ -18,6 +18,7 @@ class TabZonesWidget extends StatelessWidget {
   final bool isOverview;
   final bool toggleAnalyticsWidget;
   final bool toggleAreaTracking;
+  final bool displayDetailsPanel;
 
   const TabZonesWidget({
     super.key,
@@ -30,6 +31,7 @@ class TabZonesWidget extends StatelessWidget {
     this.isOverview = false,
     this.toggleAnalyticsWidget = false,
     this.toggleAreaTracking = false,
+    this.displayDetailsPanel = true,
   });
 
   HierarchicalMenuItem _areaToMenuItem(Area area, BuildContext context) {
@@ -98,14 +100,16 @@ class TabZonesWidget extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 25),
-        Flexible(
-          flex: 3,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 25.0),
-            child: _buildDetailsPanel(context),
+        if (displayDetailsPanel)
+          const SizedBox(width: 25),
+        if (displayDetailsPanel)
+          Flexible(
+            flex: 3,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 25.0),
+              child: _buildDetailsPanel(context),
+            ),
           ),
-        ),
       ],
     );
   }

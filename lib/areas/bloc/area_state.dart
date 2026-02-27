@@ -78,10 +78,8 @@ final class AreasLoaded extends AreaState {
     final descendants = Area.getDescendants(currentArea);
     return allAreas.where((area) {
       // Si un des ids est null, on ne peut pas comparer, donc on l'exclut par sécurité
-      if (area.id == null || currentArea.id == null) return false;
-
       return area.id != currentArea.id &&
-          !descendants.any((desc) => desc.id != null && desc.id == area.id);
+          !descendants.any((desc) => desc.id == area.id);
     }).toList();
   }
 

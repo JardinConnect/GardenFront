@@ -14,7 +14,7 @@ class CellDetailSettingsPage extends StatelessWidget {
   final String id;
   final bool isViewMode;
 
-  CellDetailSettingsPage({
+  const CellDetailSettingsPage({
     super.key,
     required this.id,
     this.isViewMode = false,

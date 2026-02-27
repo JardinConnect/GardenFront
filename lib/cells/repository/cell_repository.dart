@@ -59,10 +59,6 @@ class CellRepository {
     }
   }
 
-  Future<void> changeCellTracking(String id, bool newTrackingValue) async {
-
-  }
-
   Future<void> refreshCells() async {}
 
   Future<void> refreshCell(String id) async {}

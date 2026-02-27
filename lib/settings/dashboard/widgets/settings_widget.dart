@@ -50,7 +50,7 @@ class _GlobalSettingsWidgetState extends State<GlobalSettingsWidget> {
             const SizedBox(height: 10),
             for (var category in groupedSettings.keys)
               ExpansionTile(
-                initiallyExpanded: category == 1,
+                initiallyExpanded: category == groupedSettings.keys.elementAt(0) || category == groupedSettings.keys.elementAt(1),
                 shape: const Border(),
                 title: Text(category,
                   style: Theme.of(context).textTheme.bodyLarge,

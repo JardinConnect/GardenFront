@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:garden_connect/analytics/widgets/analytics_cards_grid.dart';
 import 'package:garden_connect/analytics/widgets/analytics_list_widget.dart';
@@ -126,7 +127,9 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
   }
 
   void _onBaseItemPressed(BuildContext context, String id) {
-    print("BaseItem pressed: $id");
+    if (kDebugMode) {
+      print("BaseItem pressed: $id");
+    }
   }
 
   @override
@@ -177,7 +180,6 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
                 return Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      print('Show Areas List Widget for level $lvl');
                       context.read<AreaBloc>().add(
                         ShowAreasListWidget(level: lvl),
                       );
@@ -221,7 +223,6 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      print('Show Cells List Widget');
                       context.read<AreaBloc>().add(ShowCellsListWidget());
                     },
                     child: GardenCard(

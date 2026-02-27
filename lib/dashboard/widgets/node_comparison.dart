@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/design_system.dart';
-import 'package:garden_ui/ui/foundation/color/color_design_system.dart';
 
 class NodeComparison extends StatelessWidget {
   const NodeComparison({super.key});

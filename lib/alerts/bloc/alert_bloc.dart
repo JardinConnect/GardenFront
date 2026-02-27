@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
 
 import '../models/alert_models.dart';
@@ -168,7 +167,7 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
 
     try {
       // Appel au repository pour archiver tous les événements
-      final archivedCount = await _alertRepository.archiveAllAlertEvents();
+      final _ = await _alertRepository.archiveAllAlertEvents();
 
       emit(
         currentState.copyWith(
@@ -193,7 +192,7 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
 
     try {
       // Appel au repository pour archiver les événements de la cellule
-      final archivedCount = await _alertRepository.archiveAlertEventsByCell(
+      final _ = await _alertRepository.archiveAlertEventsByCell(
         event.cellId,
       );
 

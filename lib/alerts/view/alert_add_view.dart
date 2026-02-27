@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_ui/ui/components.dart';
+
 import '../bloc/alert_bloc.dart';
+import '../widgets/common/snackbar.dart' as custom_snackbar;
 import '../widgets/forms/alert_add_header.dart';
 import '../widgets/forms/alert_configuration_form.dart';
-import '../widgets/forms/sensors_section.dart';
 import '../widgets/forms/alert_table_section.dart';
-import '../widgets/common/snackbar.dart' as custom_snackbar;
 
 /// Vue pour créer une nouvelle alerte
 /// Permet de configurer le nom, les capteurs et les seuils d'alerte
