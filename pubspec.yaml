@@ -51,6 +51,7 @@ dependencies:
   google_fonts: ^6.3.2
   syncfusion_flutter_gauges: 31.2.18
   syncfusion_flutter_sliders: 31.2.18
+  syncfusion_flutter_core: ^latest_version
   go_router: ^17.0.1
   shimmer: ^3.0.0
   jwt_decoder: ^2.0.1

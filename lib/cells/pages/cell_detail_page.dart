@@ -104,7 +104,7 @@ class CellDetailPage extends StatelessWidget {
                                 style: GardenTypography.headingLg,
                               ),
                               GardenToggle(
-                                isEnabled: cellState.cell.isTracked!,
+                                isEnabled: cellState.cell.isTracked,
                                 onToggle: (bool value) =>
                                     _handleChangeCellTracking(context, cellState.cell.name, value, cellState.cell.parentId),
                                 enabledIcon: Icons.visibility_outlined,

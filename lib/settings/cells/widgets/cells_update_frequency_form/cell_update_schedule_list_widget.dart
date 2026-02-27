@@ -43,6 +43,7 @@ class CellUpdateScheduleListWidget extends StatelessWidget {
                           );
                         },
                       );
+                      if(!context.mounted) return;
                       if (newTime != null) {
                         context.read<CellsUpdateFrequencyFormBloc>().add(
                           UpdateTimeChanged(index: index, newTime: newTime),
