@@ -5,7 +5,7 @@ class BaseItem {
   final String name;
   final Analytics analytics;
   String? parentId;
-  final bool? isTracked;
+  final bool isTracked;
 
   BaseItem({
     required this.id,

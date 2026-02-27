@@ -19,6 +19,13 @@ class AnalyticsCardsGridWidget extends StatelessWidget {
       AnalyticType.deepSoilHumidity,
     ];
 
+    final availableAnalytics = types
+        .map((type) => analytics.getLastAnalyticByType(type))
+        .whereType<Analytic>()
+        .toList();
+
+    if (availableAnalytics.isEmpty) return const SizedBox.shrink();
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final crossAxisCount = (constraints.maxWidth / 300).floor().clamp(1, 3);
@@ -33,11 +40,9 @@ class AnalyticsCardsGridWidget extends StatelessWidget {
           ),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: types.length,
+          itemCount: availableAnalytics.length,
           itemBuilder: (context, index) {
-            final analytic = analytics.getLastAnalyticByType(types[index]);
-            if (analytic == null) return const SizedBox.shrink();
-            return AnalyticCardWidget(analytic: analytic);
+            return AnalyticCardWidget(analytic: availableAnalytics[index]);
           },
         );
       },

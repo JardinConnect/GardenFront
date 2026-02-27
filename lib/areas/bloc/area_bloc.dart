@@ -42,7 +42,7 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
           showAreasListWidget: false,
           showCellsListWidget: false,
           selectedArea: areas.first,
-          isAreaSelected: true
+          isAreaSelected: true,
         ),
       );
     } catch (e) {
@@ -155,23 +155,22 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
       final selectedArea = currentState.selectedArea;
       if (selectedArea == null) return;
 
-      await _areaRepository.updateArea(
-        id: selectedArea.id,
-        name: selectedArea.name,
-        color: selectedArea.color,
-        parentArea: null,
-        isTracked: false,
-      );
-
-      final areas = await _areaRepository.fetchAreas();
-      final updatedSelectedArea = Area.findAreaById(areas, selectedArea.id);
-
-      emit(
-        currentState.copyWith(
-          areas: areas,
-          selectedArea: updatedSelectedArea,
-        ),
-      );
+      try {
+        final area = await _areaRepository.updateArea(
+          id: selectedArea.id,
+          isTracked: !selectedArea.isTracked,
+        );
+        final areas = await _areaRepository.fetchAreas();
+        emit(
+          currentState.copyWith(
+            selectedArea: area,
+            areas: areas,
+            toggleAreaTracking: area.isTracked,
+          ),
+        );
+      } catch (e) {
+        emit(AreaError(message: e.toString()));
+      }
     }
   }
 
@@ -213,18 +212,16 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
       final currentState = state;
       if (currentState is! AreasLoaded) return;
 
-      // Vérifier que l'id n'est pas null
       if (event.id == null) {
         emit(AreaError(message: 'Cannot update area without an ID'));
         return;
       }
 
-      // Appeler le repository pour mettre à jour l'area
       await _areaRepository.updateArea(
         id: event.id!,
         name: event.name,
         color: event.color,
-        parentArea: event.parentArea,
+        parentId: event.parentId,
         isTracked: event.isTracked,
       );
 
