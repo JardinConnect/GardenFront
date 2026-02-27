@@ -7,14 +7,12 @@ part 'cell.g.dart';
 
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class Cell extends BaseItem {
-  final int? battery;
   final String? location;
   final DateTime updatedAt;
 
   Cell({
     required super.id,
     required super.name,
-    this.battery,
     required super.analytics,
     this.location,
     required this.updatedAt,

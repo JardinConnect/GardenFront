@@ -262,7 +262,6 @@ class _CellConfigureViewState extends State<CellConfigureView> {
       location: 'Espace 2 > Serre A > planche 23',
       updatedAt: DateTime.now(),
       isTracked: false,
-      battery: 0,
       analytics: Analytics(),
     );
 

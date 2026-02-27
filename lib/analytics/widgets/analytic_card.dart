@@ -25,6 +25,7 @@ class AnalyticCardWidget extends StatelessWidget {
       case AnalyticType.airHumidity:
       case AnalyticType.soilHumidity:
       case AnalyticType.deepSoilHumidity:
+      case AnalyticType.battery:
         return analytic.value;
       case AnalyticType.light:
         return 100;
