@@ -16,6 +16,7 @@ class Analytics {
   final List<SoilHumidityAnalytic>? soilHumidity;
   final List<DeepSoilHumidityAnalytic>? deepSoilHumidity;
   final List<LightAnalytic>? light;
+  final List<BatteryAnalytic>? battery;
 
   Analytics({
     this.airTemperature,
@@ -24,6 +25,7 @@ class Analytics {
     this.soilHumidity,
     this.deepSoilHumidity,
     this.light,
+    this.battery
   });
 
   factory Analytics.fromJson(Map<String, dynamic> json) =>
@@ -77,6 +79,8 @@ class Analytics {
         return deepSoilHumidity ?? [];
       case AnalyticType.light:
         return light ?? [];
+      case AnalyticType.battery:
+        return battery ?? [];
     }
   }
 
@@ -108,6 +112,8 @@ class Analytics {
         case AnalyticType.light:
           filterType = AnalyticsFilterEnum.light;
           break;
+        case AnalyticType.battery:
+          continue;
       }
 
       if (!filterTypes.contains(filterType)) {
@@ -174,7 +180,8 @@ enum AnalyticType {
   airHumidity,
   soilHumidity,
   deepSoilHumidity,
-  light;
+  light,
+  battery;
 
   String get name {
     switch (this) {
@@ -190,6 +197,8 @@ enum AnalyticType {
         return 'Température du sol';
       case AnalyticType.light:
         return 'Luminosité';
+      case AnalyticType.battery:
+        return 'Batterie';
     }
   }
 
@@ -206,6 +215,8 @@ enum AnalyticType {
         return 'Thermometre';
       case AnalyticType.light:
         return 'Soleil';
+      case AnalyticType.battery:
+        return 'Batterie';
     }
   }
 
@@ -221,6 +232,8 @@ enum AnalyticType {
         return Colors.brown;
       case AnalyticType.light:
         return GardenColors.yellowWarning.shade500;
+      case AnalyticType.battery:
+        return Colors.green;
     }
   }
 
@@ -238,6 +251,8 @@ enum AnalyticType {
         return Colors.orange;
       case AnalyticType.light:
         return Colors.yellow;
+      case AnalyticType.battery:
+        return Colors.green;
     }
   }
 
@@ -249,6 +264,7 @@ enum AnalyticType {
       case AnalyticType.airHumidity:
       case AnalyticType.soilHumidity:
       case AnalyticType.deepSoilHumidity:
+      case AnalyticType.battery:
         return AnalyticsFilterEnum.humidity.unit;
       case AnalyticType.light:
         return AnalyticsFilterEnum.light.unit;
@@ -412,5 +428,23 @@ class LightAnalytic extends Analytic {
   @override
   AnalyticType getType() {
     return AnalyticType.light;
+  }
+}
+
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+class BatteryAnalytic extends Analytic {
+  BatteryAnalytic({
+    required super.value,
+    required super.occurredAt,
+    super.sensorCode,
+    super.alertStatus,
+  });
+
+  factory BatteryAnalytic.fromJson(Map<String, dynamic> json) =>
+      _$BatteryAnalyticFromJson(json);
+
+  @override
+  AnalyticType getType() {
+    return AnalyticType.battery;
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_connect/analytics/models/analytics.dart';
 import 'package:garden_connect/analytics/widgets/analytics_cards_grid.dart';
 import 'package:garden_connect/analytics/widgets/graphic_widget.dart';
 import 'package:garden_connect/cells/bloc/cell_bloc.dart';
@@ -127,7 +128,7 @@ class CellDetailPage extends StatelessWidget {
                             style: GardenTypography.caption,
                           ),
                           BatteryIndicator(
-                            batteryPercentage: cellState.cell.battery ?? 0,
+                            batteryPercentage: cellState.cell.analytics.getLastAnalyticByType(AnalyticType.battery)?.value.toInt() ?? 0,
                             size: BatteryIndicatorSize.sm,
                           ),
                         ],

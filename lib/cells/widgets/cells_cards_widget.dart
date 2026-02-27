@@ -58,7 +58,7 @@ class CellsCardsWidget extends StatelessWidget {
             height: 220,
             child: AnalyticsSummaryCard(
               name: cell.name,
-              batteryPercentage: cell.battery,
+              batteryPercentage: cell.analytics.getLastAnalyticByType(AnalyticType.battery)?.value.toInt() ?? 0,
               filter: _filter,
               onPressed: () => onPressed(context, cell.id),
               //TODO : Enelver les "?? 0" une fois que sur GardenUI, les valeurs pourront être nulles
