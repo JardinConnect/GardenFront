@@ -28,13 +28,21 @@ class _SensorConfig {
 
 /// Configurations des capteurs centralisées
 const Map<SensorType, _SensorConfig> _sensorConfigs = {
-  SensorType.temperature: _SensorConfig(
+  SensorType.airTemperature: _SensorConfig(
     min: -20,
     max: 50,
     unit: '°C',
     interval: 10,
     defaultCritical: RangeValues(0, 30),
     defaultWarning: RangeValues(5, 25),
+  ),
+  SensorType.soilTemperature: _SensorConfig(
+    min: -20,
+    max: 50,
+    unit: '°C',
+    interval: 10,
+    defaultCritical: RangeValues(0, 35),
+    defaultWarning: RangeValues(5, 28),
   ),
   SensorType.humiditySurface: _SensorConfig(
     min: 0,
@@ -105,6 +113,16 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
   }
 
   @override
+  void didUpdateWidget(covariant ThresholdsSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isWarningEnabled != widget.isWarningEnabled) {
+      setState(() {
+        _isWarningEnabled = widget.isWarningEnabled;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (widget.selectedSensors.isEmpty) {
       return Container(
@@ -140,6 +158,7 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
                 title,
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: color,
                 ),
               ),
               if (hasToggle)
@@ -194,11 +213,24 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
               data: SfRangeSliderThemeData(
                 activeTrackHeight: 3,
                 inactiveTrackHeight: 3,
-                tooltipBackgroundColor: color.withValues(alpha: 0.95),
+                thumbRadius: 7,
+                overlayRadius: 14,
+                thumbColor: Colors.black,
+                overlayColor: color.withValues(alpha: 0.15),
+                tooltipBackgroundColor: color,
                 tooltipTextStyle: const TextStyle(
                   color: Colors.white,
-                  fontSize: 9,
+                  fontSize: 10,
                   fontWeight: FontWeight.w500,
+                ),
+                labelOffset: const Offset(0, 4),
+                inactiveLabelStyle: const TextStyle(
+                  color: Colors.black87,
+                  fontSize: 11,
+                ),
+                activeLabelStyle: const TextStyle(
+                  color: Colors.black87,
+                  fontSize: 11,
                 ),
               ),
               child: SfRangeSlider(
@@ -209,6 +241,7 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
                 showLabels: true,
                 showTicks: true,
                 enableTooltip: true,
+                tooltipShape: const SfRectangularTooltipShape(),
                 activeColor: color,
                 inactiveColor: color.withValues(alpha: 0.2),
                 tooltipTextFormatterCallback: (dynamic actualValue, String formattedText) {

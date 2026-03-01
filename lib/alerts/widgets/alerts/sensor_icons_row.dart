@@ -23,10 +23,10 @@ class SensorIconsRow extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         // Température rouge
-        _buildSensorIcon(SensorType.temperature, activeSensorTypes.contains(SensorType.temperature), 0),
+        _buildSensorIcon(SensorType.airTemperature, activeSensorTypes.contains(SensorType.airTemperature), 0),
         const SizedBox(width: 6),
         // Température marron (deuxième thermomètre)
-        _buildSensorIcon(SensorType.temperature, activeSensorTypes.contains(SensorType.temperature), 1),
+        _buildSensorIcon(SensorType.soilTemperature, activeSensorTypes.contains(SensorType.soilTemperature), 1),
         const SizedBox(width: 6),
         // Humidité surface
         _buildSensorIcon(SensorType.humiditySurface, activeSensorTypes.contains(SensorType.humiditySurface), 2),

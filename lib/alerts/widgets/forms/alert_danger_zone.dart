@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_ui/ui/components.dart';
+import 'package:garden_ui/ui/design_system.dart';
+import '../../../common/widgets/generic_dialog.dart';
 import '../../bloc/alert_bloc.dart';
 import '../../models/alert_models.dart';
 
@@ -87,38 +89,75 @@ class AlertDangerZone extends StatelessWidget {
 
   /// Affiche une boîte de dialogue de confirmation pour la suppression
   Future<bool?> _showDeleteConfirmationDialog(BuildContext context) {
-    return showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Row(
+    return StyledDialog.show<bool>(
+      context,
+      title: 'Confirmer la suppression',
+      dismissible: false,
+      widthFactor: 0.3,
+      content: _DeleteConfirmContent(alertTitle: alert.title),
+    );
+  }
+}
+
+/// Contenu de la dialog de suppression — utilise son propre contexte pour les pops
+class _DeleteConfirmContent extends StatelessWidget {
+  final String alertTitle;
+
+  const _DeleteConfirmContent({required this.alertTitle});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: EdgeInsets.all(GardenSpace.paddingSm),
+          decoration: BoxDecoration(
+            color: Colors.red.shade50,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.red, width: 2),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.warning_amber_rounded, color: Colors.red, size: 18),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Êtes-vous sûr de vouloir supprimer l\'alerte "$alertTitle" ?\n'
+                  'Cette action est irréversible et toutes les données associées seront perdues.',
+                  style: GardenTypography.bodyMd.copyWith(
+                    color: Colors.red.shade800,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        SizedBox(height: GardenSpace.gapMd),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Icon(Icons.warning_amber_rounded, color: Colors.red),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('Annuler', style: GardenTypography.bodyMd),
+            ),
             const SizedBox(width: 8),
-            const Text('Confirmer la suppression'),
+            ElevatedButton.icon(
+              onPressed: () => Navigator.of(context).pop(true),
+              icon: const Icon(Icons.delete_forever_rounded, size: 16),
+              label: const Text('Supprimer'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+            ),
           ],
         ),
-        content: Text(
-          'Êtes-vous sûr de vouloir supprimer l\'alerte "${alert.title}" ?\n\n'
-          'Cette action est irréversible et toutes les données seront perdues.',
-          style: const TextStyle(fontSize: 14),
-        ),
-        actions: [
-          // Bouton Annuler
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Annuler'),
-          ),
-          // Bouton Supprimer (en rouge)
-          ElevatedButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Supprimer'),
-          ),
-        ],
-      ),
+      ],
     );
   }
 }
