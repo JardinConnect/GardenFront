@@ -84,6 +84,7 @@ class _UserFormWidget extends State<UserAddFormWidget> {
       hasShadow: !widget.isSuperAdminCreation,
       child: Column(
         children: [
+          if(!widget.isSuperAdminCreation)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
@@ -95,7 +96,6 @@ class _UserFormWidget extends State<UserAddFormWidget> {
                   color: Theme.of(context).colorScheme.primary,
                   size: 32,
                 ),
-                if(!widget.isSuperAdminCreation)
                 Text(
                   "Nouvel Utilisateur",
                   style: Theme.of(context).textTheme.headlineSmall,
@@ -113,9 +113,14 @@ class _UserFormWidget extends State<UserAddFormWidget> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Veuillez entrer un prénom';
+                              }
+                              return null;
+                            },
                           controller: firstnameController,
                           decoration: const InputDecoration(labelText: 'Prénom')
-
                         ),
                       )
                     ),
@@ -123,6 +128,12 @@ class _UserFormWidget extends State<UserAddFormWidget> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Veuillez entrer un nom';
+                              }
+                              return null;
+                            },
                           controller: lastnameController,
                           decoration: const InputDecoration(labelText: 'Nom')
                         ),
