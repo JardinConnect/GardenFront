@@ -4,6 +4,7 @@ import 'package:garden_connect/settings/users/repository/users_repository.dart';
 import 'package:meta/meta.dart';
 
 import '../../../auth/models/user.dart';
+import '../../../auth/models/user.dart';
 import '../models/settings.dart';
 
 part 'settings_state.dart';
@@ -27,7 +28,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     try {
       final settings = await settingsRepository.fetchSettings();
       final users = await usersRepository.fetchUsers();
-      final logs = await usersRepository.fetchLogs();
+      final List<Log> logs;
+      if(event.currentUser.role != Role.admin || event.currentUser.role != Role.superadmin){
+        logs = await usersRepository.fetchLogsByUser(event.currentUser.id);
+      }else {
+        logs = await usersRepository.fetchLogs();
+      }
       emit(SettingsLoaded(settings: settings, users: users, logs: logs));
     } catch (e) {
       emit(SettingsError(message: e.toString()));
