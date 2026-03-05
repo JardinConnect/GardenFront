@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import '../models/alert_models.dart';
-import './http_client.dart';
+import '../../auth/utils/http_client.dart';
 import 'mock_data.dart';
 
 /// Repository pour la gestion des données d'alertes

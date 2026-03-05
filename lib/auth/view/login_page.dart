@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/auth/auth.dart';
 import 'package:garden_ui/ui/components.dart';
 
+import '../../alerts/widgets/common/snackbar.dart' as snackbar;
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -32,19 +34,9 @@ class _LoginPageState extends State<LoginPage> {
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthUnauthenticated && state.error != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.error!),
-                backgroundColor: Colors.red,
-              ),
-            );
+            snackbar.showSnackBarError(context, state.error!);
           } else if (state is AuthAuthenticated && !state.isAutoLogin) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text("Connexion réussie !"),
-                backgroundColor: Colors.green,
-              ),
-            );
+            snackbar.showSnackBarSucces(context, 'Connexion réussie !');
           }
         },
         builder: (context, state) {
