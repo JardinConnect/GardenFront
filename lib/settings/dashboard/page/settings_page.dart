@@ -32,7 +32,7 @@ class SettingsPage extends StatelessWidget {
             create: (context) => SettingsBloc(
               usersRepository: RepositoryProvider.of<UsersRepository>(context),
               settingsRepository: RepositoryProvider.of<SettingsRepository>(context),
-            )..add(SettingsLoad()),
+            )..add(SettingsLoad(currentUser: user)),
             child: BlocBuilder<SettingsBloc, SettingsState>(
             builder: (context, state) {
               if (state is SettingsLoading || state is SettingsInitial) {
