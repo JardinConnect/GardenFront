@@ -3,7 +3,11 @@ part of 'users_bloc.dart';
 @immutable
 sealed class UsersEvent {}
 
-final class UsersLoad extends UsersEvent {}
+final class UsersLoad extends UsersEvent {
+  final User? currentUser;
+
+  UsersLoad({this.currentUser});
+}
 
 final class UserSelect extends UsersEvent {
   final User user;
@@ -25,7 +29,5 @@ final class UserDeleteEvent extends UsersEvent {
 
   UserDeleteEvent({required this.user});
 }
-
-final class UsersUnselectEvent extends UsersEvent {}
 
 final class UsersCreationEvent extends UsersEvent {}

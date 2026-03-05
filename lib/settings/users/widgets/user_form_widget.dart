@@ -28,6 +28,7 @@ class _UserFormWidget extends State<UserFormWidget> {
   late TextEditingController lastnameController;
   late TextEditingController phoneController;
   late TextEditingController emailController;
+  late Role selectedRole;
 
   @override
   void initState() {
@@ -48,6 +49,7 @@ class _UserFormWidget extends State<UserFormWidget> {
     phoneController = TextEditingController(text: user?.phoneNumber);
     firstnameController = TextEditingController(text: user?.firstName);
     lastnameController = TextEditingController(text: user?.lastName);
+    selectedRole = user?.role ?? Role.employees;
   }
 
   @override
@@ -98,11 +100,7 @@ class _UserFormWidget extends State<UserFormWidget> {
                       inEditionMode ? Icons.close : Icons.edit,
                       color: inEditionMode ? Colors.grey : Theme.of(context).colorScheme.primary,
                     ),
-                    onPressed: () {
-                      setState(() {
-                        inEditionMode = !inEditionMode;
-                      });
-                    },
+                    onPressed: ()=> _handleEditToggle(),
                   )
               ],
             ),
@@ -211,7 +209,7 @@ class _UserFormWidget extends State<UserFormWidget> {
                     padding: const EdgeInsets.all(8.0),
                     child:
                     DropdownButtonFormField<Role>(
-                      initialValue: user?.role ?? Role.trainee,
+                      initialValue: selectedRole,
                       decoration: inEditionMode || inUserCreation
                           ? const InputDecoration(labelText: 'Rôle')
                           : const InputDecoration(
@@ -229,14 +227,7 @@ class _UserFormWidget extends State<UserFormWidget> {
                       }).toList(),
                       onChanged: (Role? value) {
                         setState(() {
-                          user = User(
-                              id: user?.id ?? '',
-                              firstName: user?.firstName ?? '',
-                              lastName: user?.lastName ?? '',
-                              email: user?.email ?? '',
-                              phoneNumber: user?.phoneNumber ?? '',
-                              role: value ?? Role.trainee
-                          );
+                          selectedRole = value ?? Role.employees;
                         });
                       },
                     ),
@@ -245,9 +236,9 @@ class _UserFormWidget extends State<UserFormWidget> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
-                      initialValue: user?.role.displayName,
+                      initialValue: selectedRole.displayName,
                       readOnly: true,
-                      decoration:const InputDecoration(labelText: 'Téléphone', hintText: 'Ex: 0612345678',
+                      decoration:const InputDecoration(labelText: 'Role',
                         border: InputBorder.none,
                         enabledBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
@@ -259,17 +250,18 @@ class _UserFormWidget extends State<UserFormWidget> {
                   {
                     if (userForm.currentState?.validate() == true){
                     userForm.currentState?.save(),
-                    context.read<UsersBloc>().add(UserUpdateEvent(user: User(
-                      id: user!.id,
-                      firstName: firstnameController.text,
-                      lastName: lastnameController.text,
-                      email: emailController.text,
-                      phoneNumber: phoneController.text,
-                      role: user?.role ?? Role.employees,
-                    ))),
                     setState(() {
+                      user = User(
+                        id: user!.id,
+                        firstName: firstnameController.text,
+                        lastName: lastnameController.text,
+                        email: emailController.text,
+                        phoneNumber: phoneController.text,
+                        role: selectedRole,
+                      );
                       inEditionMode = !inEditionMode;
                     }),
+                    context.read<UsersBloc>().add(UserUpdateEvent(user: user!)),
                       showSnackBarSucces(context, doesUserOwnProfile ? "Profil mis à jour avec succès" : "Utilisateur mis à jour avec succès")
                     }else{
                       showSnackBarError(context, "Veuillez corriger les erreurs dans le formulaire")
@@ -351,5 +343,18 @@ class _UserFormWidget extends State<UserFormWidget> {
         ],
       ),
     );
+  }
+
+  void _handleEditToggle() {
+    setState(() {
+      inEditionMode = !inEditionMode;
+    });
+    if(!inEditionMode){
+      emailController.text = user?.email ?? '';
+      phoneController.text = user?.phoneNumber ?? '';
+      firstnameController.text = user?.firstName ?? '';
+      lastnameController.text = user?.lastName ?? '';
+      selectedRole = user?.role ?? Role.employees;
+    }
   }
 }
