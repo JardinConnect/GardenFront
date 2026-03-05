@@ -1,5 +1,6 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_connect/auth/utils/auth_utils.dart';
 import 'package:meta/meta.dart';
 
 import '../../../auth/models/user.dart';
@@ -17,33 +18,28 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
   UsersBloc() : _usersRepository = UsersRepository(), super(UsersInitial()){
     on<UsersLoad>(_loadUsers);
     on<UserSelect>(_selectUser);
-    on<UsersUnselectEvent>(_unselectUser);
     on<UserUpdateEvent>(_updateUser);
     on<UserAddEvent>(_addUser);
     on<UserDeleteEvent>(_deleteUser);
     on<UsersCreationEvent>((event, emit) => emit(UserCreation()));
-
-    add(UsersLoad());
   }
 
   _selectUser(UserSelect event, Emitter<UsersState> emit) async {
-
     final logs = await _usersRepository.fetchLogsByUser(event.user.id);
     emit(UserSelected(user: event.user, logs: logs));
-  }
-
-
-  _unselectUser(UsersUnselectEvent event, Emitter<UsersState> emit) {
-    emit(UsersInitial());
-    add(UsersLoad());
   }
 
 
   _loadUsers(UsersLoad event, Emitter<UsersState> emit) async {
     emit(UsersLoading());
     try {
-      final users = await _usersRepository.fetchUsers() ;
-      final logs = await _usersRepository.fetchLogs();
+      final users = await _usersRepository.fetchUsers();
+      late final List<Log> logs;
+      if(event.currentUser?.role != Role.admin || event.currentUser?.role != Role.superadmin){
+        logs = await _usersRepository.fetchLogs();
+      }else{
+        logs = await _usersRepository.fetchLogsByUser(event.currentUser);
+      }
       emit(UsersLoaded( users: users,logs: logs));
     } catch (e) {
       emit(UsersError(message: e.toString()));
@@ -70,8 +66,10 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
   }
   _deleteUser(UserDeleteEvent event, Emitter<UsersState> emit) async {
     final _ = await _usersRepository.deleteUser(event.user.id);
-    }
+    add(UsersLoad());
+  }
   _addUser(UserAddEvent event, Emitter<UsersState> emit) async {
     final _ = await _usersRepository.addUser(event.user);
+    add(UsersLoad());
   }
 }

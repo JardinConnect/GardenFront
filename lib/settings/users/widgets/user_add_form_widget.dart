@@ -5,6 +5,7 @@ import 'package:garden_connect/alerts/widgets/common/snackbar.dart';
 import 'package:garden_ui/ui/components.dart';
 
 import '../../../auth/models/user.dart';
+import '../../../auth/utils/auth_extension.dart';
 import '../bloc/users_bloc.dart';
 
 class UserAddFormWidget extends StatefulWidget {
@@ -252,7 +253,7 @@ class _UserFormWidget extends State<UserAddFormWidget> {
                               role: user?.role ?? Role.trainee,
                             ))),
                         showSnackBarSucces(context, "Utilisateur créé avec succès"),
-                        context.read<UsersBloc>().add(UsersUnselectEvent())
+                        context.read<UsersBloc>().add(UsersLoad(currentUser: context.currentUser!)),
                       }else{
                         showSnackBarError(context, "Veuillez corriger les erreurs dans le formulaire")
                       }

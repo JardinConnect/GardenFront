@@ -21,8 +21,11 @@ class UserProfileView extends StatelessWidget {
     final user = context.watch<UsersBloc>().selectedUser;
     final logs = context.read<UsersBloc>().userLogs;
     final currentUser = context.currentUser;
-    if (user == null) {
+    if (currentUser == null) {
       return const Text('Utilisateur non connecté');
+    }
+    if (user == null) {
+      return const Text('Utilisateur introuvable');
     }
     return
       Scaffold(
@@ -35,9 +38,7 @@ class UserProfileView extends StatelessWidget {
                 children: [
                   IconButton(
                     icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).textTheme.bodyMedium?.color,size: 16,),
-                    onPressed: () {
-                      context.read<UsersBloc>().add(UsersUnselectEvent());
-                    },
+                    onPressed: () =>context.read<UsersBloc>().add(UsersLoad(currentUser: currentUser)),
                   ),
                   Text(
                     'retour',
@@ -73,14 +74,13 @@ class UserProfileView extends StatelessWidget {
                             padding: const EdgeInsets.all(16.0),
                             child: UserInfoWidget(user: user),
                           ),
-                          if (currentUser?.role == Role.admin || context.currentUser == user)
+                          if (currentUser.role == Role.admin || context.currentUser == user)
                             Padding(
                               padding: const EdgeInsets.all(16.0),
                               child:DangerZone(title: "Zone de danger", description: "La suppression d'un utilisateur est irréverssible", deleteButtonLabel: "Supprimer",
                                   onDelete: (){
                                 context.read<UsersBloc>().add(UserDeleteEvent(user: user));
-                                sleep(Duration(seconds: 1));
-                                context.read<UsersBloc>().add(UsersUnselectEvent());
+                                context.read<UsersBloc>().add(UsersLoad(currentUser: currentUser));
                               }),
                             ),
                         ],
