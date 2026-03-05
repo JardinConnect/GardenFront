@@ -26,7 +26,7 @@ class UserAddView extends StatelessWidget {
           IconButton(
           icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).textTheme.bodyMedium?.color,size: 16,),
           onPressed: () {
-            context.read<UsersBloc>().add(UsersUnselectEvent());
+            context.read<UsersBloc>().add(UsersLoad(currentUser: user));
           },
         ),
         Text(
