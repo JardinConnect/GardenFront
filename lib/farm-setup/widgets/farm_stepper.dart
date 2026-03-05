@@ -104,12 +104,11 @@ class FarmStepperState extends State<FarmStepper> {
     return Stepper(
       type: StepperType.horizontal,
       elevation: 0,
-
       currentStep: _currentStep,
       onStepContinue: _continue,
       onStepCancel: _cancel,
       onStepTapped: (step) {
-        if(_validateCurrentStep()) {
+        if(_validateCurrentStep() || step < _currentStep) {
           setState(() {
             _currentStep = step;
           });
