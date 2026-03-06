@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/components.dart';
+import 'package:garden_ui/ui/design_system.dart';
 
-/// Composant pour la section du tableau de sélection des espaces
+import '../../models/alert_models.dart';
+
+/// Composant pour la section du tableau de sélection des cellules
 class AlertTableSection extends StatefulWidget {
-  final List<Map<String, dynamic>> spaces;
-  final List<String>? selectedSpaceIds;
+  final List<CellItem> cells;
+  final List<String>? selectedCellIds;
   final ValueChanged<List<String>>? onSelectionChanged;
 
   const AlertTableSection({
     super.key,
-    required this.spaces,
-    this.selectedSpaceIds,
+    required this.cells,
+    this.selectedCellIds,
     this.onSelectionChanged,
   });
 
@@ -28,31 +31,28 @@ class _AlertTableSectionState extends State<AlertTableSection> {
     _applyInitialSelections();
   }
 
-  /// Applique les sélections initiales si fournies
   void _applyInitialSelections() {
-    if (widget.selectedSpaceIds != null) {
-      _selectedIds.addAll(widget.selectedSpaceIds!);
+    if (widget.selectedCellIds != null) {
+      _selectedIds.addAll(widget.selectedCellIds!);
     }
     _updateSelectAllState();
   }
 
-  /// Met à jour l'état "tout sélectionner"
   void _updateSelectAllState() {
-    _selectAll = widget.spaces.isNotEmpty && 
-                 widget.spaces.every((space) => _selectedIds.contains(space['id']));
+    _selectAll =
+        widget.cells.isNotEmpty &&
+        widget.cells.every((cell) => _selectedIds.contains(cell.id));
   }
 
-  /// Notifie le parent que la sélection a changé
   void _notifySelectionChanged() {
     widget.onSelectionChanged?.call(_selectedIds.toList());
   }
 
-  /// Bascule la sélection de tous les espaces
   void _toggleSelectAll(bool? value) {
     setState(() {
       _selectAll = value ?? false;
       if (_selectAll) {
-        _selectedIds.addAll(widget.spaces.map((space) => space['id'] as String));
+        _selectedIds.addAll(widget.cells.map((cell) => cell.id));
       } else {
         _selectedIds.clear();
       }
@@ -60,165 +60,140 @@ class _AlertTableSectionState extends State<AlertTableSection> {
     _notifySelectionChanged();
   }
 
-  /// Bascule la sélection d'un espace spécifique
-  void _toggleSpaceSelection(Map<String, dynamic> space, bool? value) {
+  void _toggleCellSelection(CellItem cell) {
     setState(() {
-      final id = space['id'] as String;
-      if (value == true) {
-        _selectedIds.add(id);
+      if (_selectedIds.contains(cell.id)) {
+        _selectedIds.remove(cell.id);
       } else {
-        _selectedIds.remove(id);
+        _selectedIds.add(cell.id);
       }
       _updateSelectAllState();
     });
     _notifySelectionChanged();
   }
 
+  static const double _colGap = 16;
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // Compteur de sélection
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Text(
-              '${_selectedIds.length} / ${widget.spaces.length} sélectionnés',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey[600],
-              ),
+    return Padding(
+      padding: EdgeInsets.all(GardenSpace.paddingXs),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildTableHeader(),
+          SizedBox(height: GardenSpace.gapXs),
+          Expanded(
+            child: ListView.separated(
+              itemCount: widget.cells.length,
+              separatorBuilder: (_, __) => SizedBox(height: GardenSpace.gapXs),
+              itemBuilder: (_, index) => _buildCellRow(widget.cells[index]),
             ),
-          ],
-        ),
-        const SizedBox(height: 16),
-
-        // En-tête du tableau
-        _buildTableHeader(),
-        const SizedBox(height: 8),
-
-        // Lignes du tableau
-        Expanded(
-          child: ListView.builder(
-            itemCount: widget.spaces.length,
-            itemBuilder: (context, index) {
-              return Container(
-                margin: const EdgeInsets.only(bottom: 6),
-                child: _buildSpaceRow(widget.spaces[index]),
-              );
-            },
           ),
-        ),
-      ],
-    );
-  }
-
-  /// Construit l'en-tête du tableau avec la checkbox de sélection globale
-  Widget _buildTableHeader() {
-    return GardenCard(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        child: Row(
-          children: [
-            // Checkbox pour sélectionner/désélectionner tous les espaces
-            SizedBox(
-              width: 32,
-              child: Checkbox(
-                value: _selectAll,
-                onChanged: _toggleSelectAll,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-            ),
-            const SizedBox(width: 12),
-
-            // Colonne : Nom de la cellule
-            Expanded(
-              flex: 2,
-              child: Center(
-                child: Text(
-                  'Cellule',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-              ),
-            ),
-
-            // Colonne : Localisation hiérarchique
-            Expanded(
-              flex: 3,
-              child: Text(
-                'Localisation',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }
 
-  /// Construit une ligne du tableau pour un espace donné
-  Widget _buildSpaceRow(Map<String, dynamic> space) {
-    final id = space['id'] as String;
-    final name = space['name'] as String;
-    final serre = space['serre'] as String;
-    final chapelle = space['chapelle'] as String;
-    final planche = space['planche'] as String;
-    final fullLocation = '$serre > $chapelle > $planche';
-    
-    return GardenCard(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
-        child: Row(
-          children: [
-            // Checkbox de sélection
-            SizedBox(
-              width: 32,
-              child: Checkbox(
-                value: _selectedIds.contains(id),
-                onChanged: (value) => _toggleSpaceSelection(space, value),
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
+  Widget _buildTableHeader() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            width: 20,
+            child: Checkbox(
+              value: _selectAll,
+              onChanged: _toggleSelectAll,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              visualDensity: VisualDensity.compact,
             ),
-            const SizedBox(width: 12),
+          ),
+          const SizedBox(width: _colGap),
+          Expanded(flex: 2, child: _headerCell('Cellule')),
+          const SizedBox(width: _colGap),
+          Expanded(flex: 3, child: _headerCell('Localisation')),
+          const SizedBox(width: _colGap),
+          Text(
+            '${_selectedIds.length}/${widget.cells.length}',
+            style: GardenTypography.bodyMd.copyWith(
+              color: GardenColors.typography.shade400,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-            // Nom de la cellule
-            Expanded(
-              flex: 2,
-              child: Center(
+  Widget _headerCell(String label) {
+    return Text(
+      label,
+      style: GardenTypography.bodyMd.copyWith(
+        fontWeight: FontWeight.w600,
+        color: Colors.grey.shade600,
+      ),
+    );
+  }
+
+  Widget _buildCellRow(CellItem cell) {
+    final isSelected = _selectedIds.contains(cell.id);
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () => _toggleCellSelection(cell),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.grey.shade200, width: 1),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: 20,
+                child: Checkbox(
+                  value: isSelected,
+                  onChanged: (_) => _toggleCellSelection(cell),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  visualDensity: VisualDensity.compact,
+                ),
+              ),
+              const SizedBox(width: _colGap),
+              Expanded(
+                flex: 2,
                 child: Text(
-                  name,
-                  style: const TextStyle(
-                    fontSize: 13,
+                  cell.name,
+                  style: GardenTypography.bodyMd.copyWith(
                     fontWeight: FontWeight.w500,
-                    height: 1.1,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-            ),
-
-            // Localisation complète (Serre > Chapelle > Planche)
-            Expanded(
-              flex: 3,
-              child: Text(
-                fullLocation,
-                style: TextStyle(
-                  fontSize: 12,
-                  height: 1.1,
-                  color: Colors.grey.shade600,
+              const SizedBox(width: _colGap),
+              Expanded(
+                flex: 3,
+                child: Text(
+                  cell.location.isNotEmpty ? cell.location : '—',
+                  style: GardenTypography.bodyMd.copyWith(
+                    color: Colors.grey.shade600,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-                overflow: TextOverflow.ellipsis,
               ),
-            ),
-          ],
+              const SizedBox(width: _colGap),
+              const SizedBox(width: 20),
+            ],
+          ),
         ),
       ),
     );

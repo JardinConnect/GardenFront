@@ -62,7 +62,7 @@ class AppRouter {
                 ),
                 BlocProvider<AreaBloc>(create: (context) => AreaBloc()),
                 BlocProvider<CellBloc>(create: (context) => CellBloc()..add(LoadCells())),
-                BlocProvider<AlertBloc>(create: (context) => AlertBloc()),
+                BlocProvider<AlertBloc>(create: (context) => AlertBloc()..add(const AlertLoadData())),
               ],
               child: MenuPage(child: child),
             ),

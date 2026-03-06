@@ -243,16 +243,12 @@ class _CellConfigureViewState extends State<CellConfigureView> {
       Alert(
         id: "1",
         title: 'Alerte #1',
-        description: 'Description de l\'alerte #1',
-        isActive: true,
-        sensorTypes: [],
+        isActive: true, sensors: [], warningEnabled: true,
       ),
       Alert(
         id: "2",
         title: 'Alerte #2',
-        description: 'Description de l\'alerte #2',
-        isActive: false,
-        sensorTypes: [],
+        isActive: false, sensors: [], warningEnabled: true,
       ),
     ];
 

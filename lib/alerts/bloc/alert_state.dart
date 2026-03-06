@@ -14,23 +14,36 @@ final class AlertError extends AlertState {
 }
 
 final class AlertLoaded extends AlertState {
+  // Données
   final List<Alert> alerts;
   final List<SensorAlertData> sensorAlerts;
   final List<AlertEvent> alertEvents;
+  final List<Map<String, dynamic>> spaces;
+  final List<Map<String, dynamic>> availableSensors;
+  final List<CellItem> cells;
+
+  // Navigation
   final DisplayMode displayMode;
   final AlertTabType selectedTab;
-  final String? successMessage;
   final bool isShowingAddView;
   final bool isShowingEditView;
   final String? editingAlertId;
   final Alert? editingAlert;
-  final List<Map<String, dynamic>> spaces;
   final Map<String, dynamic>? alertDetails;
-  final List<Map<String, dynamic>> availableSensors;
+
+  // Formulaire capteurs
   final List<SelectedSensor> selectedSensors;
   final Map<String, RangeValues> criticalRanges;
   final Map<String, RangeValues> warningRanges;
   final bool isWarningEnabled;
+
+  // Conflit en attente de confirmation
+  final List<AlertConflict>? pendingConflicts;
+  final AlertCreationRequest? pendingRequest;
+
+  // Messages UI
+  final String? successMessage;
+  final String? errorMessage;
 
   AlertLoaded({
     required this.alerts,
@@ -38,58 +51,79 @@ final class AlertLoaded extends AlertState {
     required this.alertEvents,
     required this.displayMode,
     required this.selectedTab,
-    this.successMessage,
+    this.spaces = const [],
+    this.availableSensors = const [],
+    this.cells = const [],
     this.isShowingAddView = false,
     this.isShowingEditView = false,
     this.editingAlertId,
     this.editingAlert,
-    this.spaces = const [],
     this.alertDetails,
-    this.availableSensors = const [],
     this.selectedSensors = const [],
     this.criticalRanges = const {},
     this.warningRanges = const {},
     this.isWarningEnabled = true,
+    this.pendingConflicts,
+    this.pendingRequest,
+    this.successMessage,
+    this.errorMessage,
   });
 
   AlertLoaded copyWith({
     List<Alert>? alerts,
     List<SensorAlertData>? sensorAlerts,
     List<AlertEvent>? alertEvents,
+    List<Map<String, dynamic>>? spaces,
+    List<Map<String, dynamic>>? availableSensors,
+    List<CellItem>? cells,
     DisplayMode? displayMode,
     AlertTabType? selectedTab,
-    String? successMessage,
     bool? isShowingAddView,
     bool? isShowingEditView,
     String? editingAlertId,
     Alert? editingAlert,
-    List<Map<String, dynamic>>? spaces,
     Map<String, dynamic>? alertDetails,
-    List<Map<String, dynamic>>? availableSensors,
     List<SelectedSensor>? selectedSensors,
     Map<String, RangeValues>? criticalRanges,
     Map<String, RangeValues>? warningRanges,
     bool? isWarningEnabled,
+    List<AlertConflict>? pendingConflicts,
+    bool clearPendingConflicts = false,
+    AlertCreationRequest? pendingRequest,
+    bool clearPendingRequest = false,
+    String? successMessage,
     bool clearSuccessMessage = false,
+    String? errorMessage,
+    bool clearErrorMessage = false,
   }) {
     return AlertLoaded(
       alerts: alerts ?? this.alerts,
       sensorAlerts: sensorAlerts ?? this.sensorAlerts,
       alertEvents: alertEvents ?? this.alertEvents,
+      spaces: spaces ?? this.spaces,
+      availableSensors: availableSensors ?? this.availableSensors,
+      cells: cells ?? this.cells,
       displayMode: displayMode ?? this.displayMode,
       selectedTab: selectedTab ?? this.selectedTab,
-      successMessage: clearSuccessMessage ? null : (successMessage ?? this.successMessage),
       isShowingAddView: isShowingAddView ?? this.isShowingAddView,
       isShowingEditView: isShowingEditView ?? this.isShowingEditView,
       editingAlertId: editingAlertId ?? this.editingAlertId,
       editingAlert: editingAlert ?? this.editingAlert,
-      spaces: spaces ?? this.spaces,
       alertDetails: alertDetails ?? this.alertDetails,
-      availableSensors: availableSensors ?? this.availableSensors,
       selectedSensors: selectedSensors ?? this.selectedSensors,
       criticalRanges: criticalRanges ?? this.criticalRanges,
       warningRanges: warningRanges ?? this.warningRanges,
       isWarningEnabled: isWarningEnabled ?? this.isWarningEnabled,
+      pendingConflicts:
+          clearPendingConflicts
+              ? null
+              : (pendingConflicts ?? this.pendingConflicts),
+      pendingRequest:
+          clearPendingRequest ? null : (pendingRequest ?? this.pendingRequest),
+      successMessage:
+          clearSuccessMessage ? null : (successMessage ?? this.successMessage),
+      errorMessage:
+          clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
     );
   }
 }

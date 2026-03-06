@@ -5,6 +5,7 @@ import '../../analytics/models/analytics.dart';
 import '../../analytics/widgets/analytics_cards_grid.dart';
 import '../../analytics/widgets/graphic_widget.dart';
 import '../../common/widgets/custom_tab_selector.dart';
+import '../../common/widgets/generic_dialog.dart';
 
 class DialogBoxWidget extends StatelessWidget {
   final String title;
@@ -24,79 +25,49 @@ class DialogBoxWidget extends StatelessWidget {
 
     return DefaultTabController(
       length: tabs.length,
-      child: AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        clipBehavior: Clip.antiAlias,
-        titlePadding: EdgeInsets.zero,
-        contentPadding: EdgeInsets.zero,
-        insetPadding: EdgeInsets.symmetric(horizontal: 40, vertical: 24),
-        title: Container(
-          color: Theme.of(context).colorScheme.primary,
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
+      child: StyledDialog(
+        title: title,
+        widthFactor: 0.5,
+        heightFactor: 0.5,
+        contentPadding: const EdgeInsets.all(14),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (level != null)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text('Niveau $level', style: GardenTypography.bodyLg),
+                  Text(
+                    'Dernière mise à jour: il y a 2 minutes',
+                    style: GardenTypography.caption,
+                  ),
+                ],
               ),
-              IconButton(
-                icon: Icon(Icons.close_rounded),
-                color: Theme.of(context).colorScheme.onPrimary,
-                onPressed: () => Navigator.of(context).pop(),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: GardenSpace.paddingMd),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: CustomTabSelector(tabs: tabs),
               ),
-            ],
-          ),
-        ),
-        content: Padding(
-          padding: const EdgeInsets.all(14),
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.5,
-            height: MediaQuery.of(context).size.height * 0.5,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (level != null)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text('Niveau $level', style: GardenTypography.bodyLg),
-                      Text(
-                        'Dernière mise à jour: il y a 2 minutes',
-                        style: GardenTypography.caption,
-                      ),
-                    ],
-                  ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: GardenSpace.paddingMd,
-                  ),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: CustomTabSelector(tabs: tabs),
-                  ),
-                ),
-                Expanded(
-                  child: TabBarView(
-                    children: [
-                      SingleChildScrollView(
-                        padding: EdgeInsets.all(14),
-                        child: AnalyticsCardsGridWidget(analytics: analytics),
-                      ),
-                      if (level != null)
-                        SingleChildScrollView(
-                          padding: EdgeInsets.all(14),
-                          child: GraphicWidget(analytics: analytics),
-                        ),
-                    ],
-                  ),
-                ),
-              ],
             ),
-          ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  SingleChildScrollView(
+                    padding: const EdgeInsets.all(14),
+                    child: AnalyticsCardsGridWidget(analytics: analytics),
+                  ),
+                  if (level != null)
+                    SingleChildScrollView(
+                      padding: const EdgeInsets.all(14),
+                      child: GraphicWidget(analytics: analytics),
+                    ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

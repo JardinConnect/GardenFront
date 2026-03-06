@@ -1,94 +1,135 @@
+import 'dart:convert';
+
 import '../models/alert_models.dart';
+import '../../auth/utils/http_client.dart';
 import 'mock_data.dart';
 
 /// Repository pour la gestion des données d'alertes
 /// Centralise tous les appels API liés aux alertes
 class AlertRepository {
-  // TODO: Injecter le client HTTP (Dio, http, etc.) via le constructeur
-  // final HttpClient _httpClient;
+  final HttpClient _httpClient = HttpClient();
 
   /// Récupère la liste complète des alertes depuis l'API
   Future<List<Alert>> fetchAlerts() async {
-    // TODO: Remplacer par un vrai appel HTTP
-    await Future.delayed(const Duration(milliseconds: 300));
-
     try {
-      return (AlertMockData.alerts)
-          .map((alertJson) => Alert.fromJson(alertJson))
-          .toList();
+      final response = await _httpClient.get("/alert");
+      final jsonData = jsonDecode(response.body);
+      return (jsonData as List).map((json) => Alert.fromJson(json)).toList();
     } catch (e) {
       throw Exception('Erreur lors de la récupération des alertes: $e');
     }
   }
 
-  /// Récupère les données détaillées des capteurs avec leurs seuils
-  Future<List<SensorAlertData>> fetchSensorAlerts() async {
-    // TODO: Remplacer par un vrai appel HTTP
-    await Future.delayed(const Duration(milliseconds: 500));
-
+  /// Active ou désactive une alerte spécifique
+  Future<bool> toggleAlert(String alertId, bool isActive) async {
     try {
-      return (AlertMockData.sensorAlerts)
-          .map((alertJson) => SensorAlertData.fromJson(alertJson))
-          .toList();
+      final response = await _httpClient.patch(
+        "/alert/$alertId/toggle",
+        body: {"isActive": isActive},
+      );
+      return response.statusCode == 200;
     } catch (e) {
-      throw Exception('Erreur lors de la récupération des alertes capteurs: $e');
+      throw Exception('Erreur lors du toggle de l\'alerte: $e');
     }
   }
 
   /// Récupère l'historique complet des événements d'alerte
   Future<List<AlertEvent>> fetchAlertHistory() async {
-    // TODO: Remplacer par un vrai appel HTTP
-    await Future.delayed(const Duration(milliseconds: 400));
-
     try {
-      return (AlertMockData.alertHistory)
-          .map((eventJson) => AlertEvent.fromJson(eventJson))
+      final response = await _httpClient.get("/alert/events/");
+      final jsonData = jsonDecode(response.body);
+      return (jsonData as List)
+          .map((json) => AlertEvent.fromJson(json))
           .toList();
     } catch (e) {
       throw Exception('Erreur lors de la récupération de l\'historique: $e');
     }
   }
 
-  /// Active ou désactive une alerte spécifique
-  Future<bool> toggleAlert(String alertId, bool isActive) async {
-    // TODO: Remplacer par un vrai appel HTTP
-    await Future.delayed(const Duration(milliseconds: 200));
-    return true;
-  }
-
   /// Archive un événement d'alerte spécifique
   Future<bool> archiveAlertEvent(String eventId) async {
-    // TODO: Remplacer par un vrai appel HTTP
-    await Future.delayed(const Duration(milliseconds: 300));
-    return true;
+    try {
+      final response = await _httpClient.patch(
+        "/alert/events/$eventId/archive",
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      throw Exception('Erreur lors de l\'archivage de l\'événement: $e');
+    }
   }
 
   /// Archive tous les événements d'alerte
   Future<int> archiveAllAlertEvents() async {
-    // TODO: Remplacer par un vrai appel HTTP
-    await Future.delayed(const Duration(milliseconds: 500));
-    return 0;
+    try {
+      final response = await _httpClient.post("/alert/events/archive-all");
+      return response.statusCode == 200 ? 1 : 0;
+    } catch (e) {
+      throw Exception('Erreur lors de l\'archivage de tous les événements: $e');
+    }
   }
 
   /// Archive tous les événements d'une cellule spécifique
   Future<int> archiveAlertEventsByCell(String cellId) async {
-    // TODO: Remplacer par un vrai appel HTTP
-    await Future.delayed(const Duration(milliseconds: 400));
-    return 0;
+    try {
+      final response = await _httpClient.post(
+        "/alert/events/archive-by-cell",
+        body: {"cellId": cellId},
+      );
+      return response.statusCode == 200 ? 1 : 0;
+    } catch (e) {
+      throw Exception('Erreur lors de l\'archivage par cellule: $e');
+    }
   }
 
-  /// Récupère la liste des cellules disponibles
-  Future<List<Map<String, dynamic>>> fetchCells() async {
-    // TODO: Remplacer par un vrai appel HTTP
-    await Future.delayed(const Duration(milliseconds: 300));
-    return AlertMockData.cells;
+  /// Vérifie les conflits avant de créer une alerte (POST /alert/validate)
+  Future<AlertValidationResponse> validateAlert(
+    AlertValidationRequest request,
+  ) async {
+    try {
+      final response = await _httpClient.post(
+        "/alert/validate",
+        body: request.toJson(),
+      );
+      final jsonData = jsonDecode(response.body);
+      return AlertValidationResponse.fromJson(jsonData);
+    } catch (e) {
+      throw Exception('Erreur lors de la validation de l\'alerte: $e');
+    }
+  }
+
+  /// Créer une alerte
+  Future<String> createAlert(AlertCreationRequest request) async {
+    try {
+      final response = await _httpClient.post("/alert", body: request.toJson());
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final jsonData = jsonDecode(response.body);
+        return jsonData['id'] ??
+            'alert_${DateTime.now().millisecondsSinceEpoch}';
+      }
+      throw Exception(
+        'Erreur lors de la création de l\'alerte: ${response.statusCode}',
+      );
+    } catch (e) {
+      throw Exception('Erreur lors de la création de l\'alerte: $e');
+    }
+  }
+
+  /// Récupère la liste des cellules disponibles depuis GET /cell/
+  Future<List<CellItem>> fetchCells() async {
+    try {
+      final response = await _httpClient.get("/cell/");
+      final jsonData = jsonDecode(response.body);
+      return (jsonData as List).map((json) => CellItem.fromJson(json)).toList();
+    } catch (e) {
+      throw Exception('Erreur lors de la récupération des cellules: $e');
+    }
   }
 
   /// Récupère la liste complète des espaces avec leur localisation hiérarchique
   Future<List<Map<String, dynamic>>> fetchSpaces() async {
     // TODO: Remplacer par un vrai appel HTTP
     await Future.delayed(const Duration(milliseconds: 300));
-    
+
     try {
       return AlertMockData.spaces;
     } catch (e) {
@@ -96,37 +137,61 @@ class AlertRepository {
     }
   }
 
-  /// Récupère la liste des types de capteurs disponibles
+  /// Retourne la liste des types de capteurs disponibles (basée sur l'enum SensorType)
   Future<List<Map<String, dynamic>>> fetchAvailableSensors() async {
-    // TODO: Remplacer par un vrai appel HTTP
-    return AlertMockData.availableSensors;
+    return [
+      {"type": "airTemperature", "displayName": "Température air", "index": 0},
+      {"type": "soilTemperature", "displayName": "Température sol", "index": 0},
+      {
+        "type": "humiditySurface",
+        "displayName": "Humidité surface",
+        "index": 0,
+      },
+      {
+        "type": "humidityDepth",
+        "displayName": "Humidité profondeur",
+        "index": 0,
+      },
+      {"type": "light", "displayName": "Luminosité", "index": 0},
+      {"type": "rain", "displayName": "Humidité air", "index": 0},
+    ];
   }
 
-  /// Crée une nouvelle alerte
-  Future<String> createAlert({
-    required String name,
-    required List<String> cellIds,
-    required Map<String, dynamic> sensors,
-    required bool isWarningEnabled,
-  }) async {
-    // TODO: Remplacer par un vrai appel HTTP
-    await Future.delayed(const Duration(milliseconds: 500));
-    return 'alert_${DateTime.now().millisecondsSinceEpoch}';
-  }
-
-  /// Récupère les détails complets d'une alerte pour modification/visualisation
+  /// Récupère les détails complets d'une alerte depuis GET /alert/{id}
   Future<Map<String, dynamic>> fetchAlertDetails(String alertId) async {
-    // TODO: Remplacer par un vrai appel HTTP
-    await Future.delayed(const Duration(milliseconds: 400));
-    return AlertMockData.alertDetails(alertId);
+    try {
+      final response = await _httpClient.get("/alert/$alertId");
+      return jsonDecode(response.body) as Map<String, dynamic>;
+    } catch (e) {
+      throw Exception(
+        'Erreur lors de la récupération des détails de l\'alerte: $e',
+      );
+    }
   }
 
-  /// Supprime une alerte définitivement
+  /// Met à jour une alerte existante via PUT /alert/{id}
+  /// TODO : En attente du fix backend afin de valider le dev de cette fonctionnalité
+  Future<void> updateAlert(String alertId, AlertCreationRequest request) async {
+    try {
+      final response = await _httpClient.put(
+        "/alert/$alertId",
+        body: request.toJson(),
+      );
+      if (response.statusCode != 200 && response.statusCode != 204) {
+        throw Exception('Erreur HTTP ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Erreur lors de la mise à jour de l\'alerte: $e');
+    }
+  }
+
+  /// Supprime une alerte définitivement via DELETE /alert/{id}
   Future<bool> deleteAlert(String alertId) async {
-    // TODO: Remplacer par un vrai appel HTTP
-    await Future.delayed(const Duration(milliseconds: 300));
-    return true;
+    try {
+      final response = await _httpClient.delete("/alert/$alertId");
+      return response.statusCode == 200 || response.statusCode == 204;
+    } catch (e) {
+      throw Exception('Erreur lors de la suppression de l\'alerte: $e');
+    }
   }
 }
-
-

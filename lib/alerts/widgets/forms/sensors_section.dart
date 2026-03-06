@@ -47,9 +47,6 @@ class SensorsSection extends StatefulWidget {
 }
 
 class _SensorsSectionState extends State<SensorsSection> {
-  // Liste interne des capteurs sélectionnés pour la gestion de l'état
-  late List<_SensorData> _selectedSensors;
-
   // Liste de tous les capteurs disponibles chargés depuis l'API
   List<_SensorData> _allSensors = [];
 
@@ -67,19 +64,17 @@ class _SensorsSectionState extends State<SensorsSection> {
   void _loadAvailableSensors() {
     try {
       // Convertit les données JSON en objets _SensorData
-      final loadedSensors = widget.availableSensors.map((json) {
-        return _SensorData(
-          _parseSensorType(json['type'] as String),
-          json['displayName'] as String,
-          json['index'] as int,
-        );
-      }).toList();
+      final loadedSensors =
+          widget.availableSensors.map((json) {
+            return _SensorData(
+              _parseSensorType(json['type'] as String),
+              json['displayName'] as String,
+              json['index'] as int,
+            );
+          }).toList();
 
       setState(() {
         _allSensors = loadedSensors;
-
-        // Initialiser la sélection à partir des props
-        _selectedSensors = _convertToSensorDataList(widget.selectedSensors);
 
         _isLoading = false;
       });
@@ -94,8 +89,10 @@ class _SensorsSectionState extends State<SensorsSection> {
   /// Parse une chaîne de caractères en SensorType
   SensorType _parseSensorType(String typeString) {
     switch (typeString) {
-      case 'temperature':
-        return SensorType.temperature;
+      case 'airTemperature':
+        return SensorType.airTemperature;
+      case 'soilTemperature':
+        return SensorType.soilTemperature;
       case 'humiditySurface':
         return SensorType.humiditySurface;
       case 'humidityDepth':
@@ -105,23 +102,11 @@ class _SensorsSectionState extends State<SensorsSection> {
       case 'rain':
         return SensorType.rain;
       default:
-        return SensorType.temperature;
+        return SensorType.airTemperature;
     }
   }
 
-  /// Convertit une liste de SelectedSensor en liste de _SensorData
-  List<_SensorData> _convertToSensorDataList(List<SelectedSensor> sensors) {
-    final List<_SensorData> result = [];
-    for (final sensor in sensors) {
-      final matching = _allSensors.where(
-        (s) => s.type == sensor.type && s.index == sensor.index
-      ).toList();
-      result.addAll(matching);
-    }
-    return result;
-  }
-
-  @override
+  /// Parse une chaîne de caractères en SensorType
   Widget build(BuildContext context) {
     // Afficher un indicateur de chargement
     if (_isLoading) {
@@ -192,12 +177,10 @@ class _SensorsSectionState extends State<SensorsSection> {
       onTap: () => _toggleSensor(sensor),
       child: Container(
         decoration: BoxDecoration(
-          border: isSelected
-              ? Border.all(
-                  color: GardenColors.primary.shade500,
-                  width: 1,
-                )
-              : null,
+          border:
+              isSelected
+                  ? Border.all(color: GardenColors.primary.shade500, width: 1)
+                  : null,
           borderRadius: BorderRadius.circular(8),
         ),
         child: GardenCard(
@@ -232,47 +215,41 @@ class _SensorsSectionState extends State<SensorsSection> {
         height: 20,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isSelected ? GardenColors.primary.shade500 : Colors.transparent,
+          color:
+              isSelected ? GardenColors.primary.shade500 : Colors.transparent,
           border: Border.all(
-            color: isSelected
-                ? GardenColors.primary.shade500
-                : Colors.grey.shade400,
+            color:
+                isSelected
+                    ? GardenColors.primary.shade500
+                    : Colors.grey.shade400,
             width: 2,
           ),
         ),
-        child: isSelected
-            ? const Icon(Icons.check, size: 12, color: Colors.white)
-            : null,
+        child:
+            isSelected
+                ? const Icon(Icons.check, size: 12, color: Colors.white)
+                : null,
       ),
     );
   }
 
-  /// Vérifie si un capteur est sélectionné
+  /// Vérifie si un capteur est sélectionné — compare uniquement sur le type
   bool _isSensorSelected(_SensorData sensor) {
-    return _selectedSensors.any(
-      (s) => s.type == sensor.type && s.index == sensor.index
-    );
+    return widget.selectedSensors.any((s) => s.type == sensor.type);
   }
 
-  /// Bascule la sélection d'un capteur (sélectionner/désélectionner)
+  /// Bascule la sélection d'un capteur
   void _toggleSensor(_SensorData sensor) {
-    setState(() {
-      if (_isSensorSelected(sensor)) {
-        // Retirer le capteur de la sélection
-        _selectedSensors.removeWhere(
-          (s) => s.type == sensor.type && s.index == sensor.index
-        );
-      } else {
-        // Ajouter le capteur à la sélection
-        _selectedSensors.add(sensor);
-      }
-    });
+    final current = List<SelectedSensor>.from(widget.selectedSensors);
+    final alreadySelected = current.any((s) => s.type == sensor.type);
 
-    // Notifier le parent du changement
-    final selectedSensorTypes = _selectedSensors
-        .map((s) => SelectedSensor(s.type, s.index))
-        .toList();
-    widget.onSelectionChanged?.call(selectedSensorTypes);
+    if (alreadySelected) {
+      current.removeWhere((s) => s.type == sensor.type);
+    } else {
+      current.add(SelectedSensor(sensor.type, 0));
+    }
+
+    widget.onSelectionChanged?.call(current);
   }
 }
 

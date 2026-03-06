@@ -1,4 +1,5 @@
-import 'package:syncfusion_flutter_core/theme.dart' show SfRangeSliderTheme, SfRangeSliderThemeData;
+import 'package:syncfusion_flutter_core/theme.dart'
+    show SfRangeSliderTheme, SfRangeSliderThemeData;
 import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
@@ -28,13 +29,21 @@ class _SensorConfig {
 
 /// Configurations des capteurs centralisées
 const Map<SensorType, _SensorConfig> _sensorConfigs = {
-  SensorType.temperature: _SensorConfig(
+  SensorType.airTemperature: _SensorConfig(
     min: -20,
     max: 50,
     unit: '°C',
     interval: 10,
     defaultCritical: RangeValues(0, 30),
     defaultWarning: RangeValues(5, 25),
+  ),
+  SensorType.soilTemperature: _SensorConfig(
+    min: -20,
+    max: 50,
+    unit: '°C',
+    interval: 10,
+    defaultCritical: RangeValues(0, 35),
+    defaultWarning: RangeValues(5, 28),
   ),
   SensorType.humiditySurface: _SensorConfig(
     min: 0,
@@ -105,15 +114,25 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
   }
 
   @override
+  void didUpdateWidget(covariant ThresholdsSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isWarningEnabled != widget.isWarningEnabled) {
+      setState(() {
+        _isWarningEnabled = widget.isWarningEnabled;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (widget.selectedSensors.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(12),
         child: Text(
           'Aucun capteur sélectionné. Sélectionnez des capteurs pour configurer des seuils.',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Colors.grey[700],
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
         ),
       );
     }
@@ -122,12 +141,22 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSection('Alerte critique', GardenColors.redAlert.shade500, true),
-        _buildSection('Avertissement', GardenColors.yellowWarning.shade600, false, hasToggle: true),
+        _buildSection(
+          'Avertissement',
+          GardenColors.yellowWarning.shade600,
+          false,
+          hasToggle: true,
+        ),
       ],
     );
   }
 
-  Widget _buildSection(String title, Color color, bool isCritical, {bool hasToggle = false}) {
+  Widget _buildSection(
+    String title,
+    Color color,
+    bool isCritical, {
+    bool hasToggle = false,
+  }) {
     return Container(
       padding: const EdgeInsets.all(12),
       child: Column(
@@ -140,6 +169,7 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
                 title,
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: color,
                 ),
               ),
               if (hasToggle)
@@ -165,12 +195,17 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
     );
   }
 
-  Widget _buildSensorSlider(SelectedSensor sensor, Color color, bool isCritical) {
+  Widget _buildSensorSlider(
+    SelectedSensor sensor,
+    Color color,
+    bool isCritical,
+  ) {
     final config = _sensorConfigs[sensor.type]!;
     final key = '${sensor.type.index}_${sensor.index}';
-    final range = isCritical
-        ? (widget.criticalRanges?[key] ?? config.defaultCritical)
-        : (widget.warningRanges?[key] ?? config.defaultWarning);
+    final range =
+        isCritical
+            ? (widget.criticalRanges?[key] ?? config.defaultCritical)
+            : (widget.warningRanges?[key] ?? config.defaultWarning);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
@@ -194,11 +229,24 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
               data: SfRangeSliderThemeData(
                 activeTrackHeight: 3,
                 inactiveTrackHeight: 3,
-                tooltipBackgroundColor: color.withValues(alpha: 0.95),
+                thumbRadius: 7,
+                overlayRadius: 14,
+                thumbColor: Colors.black,
+                overlayColor: color.withValues(alpha: 0.15),
+                tooltipBackgroundColor: color,
                 tooltipTextStyle: const TextStyle(
                   color: Colors.white,
-                  fontSize: 9,
+                  fontSize: 10,
                   fontWeight: FontWeight.w500,
+                ),
+                labelOffset: const Offset(0, 4),
+                inactiveLabelStyle: const TextStyle(
+                  color: Colors.black87,
+                  fontSize: 11,
+                ),
+                activeLabelStyle: const TextStyle(
+                  color: Colors.black87,
+                  fontSize: 11,
                 ),
               ),
               child: SfRangeSlider(
@@ -209,15 +257,20 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
                 showLabels: true,
                 showTicks: true,
                 enableTooltip: true,
+                tooltipShape: const SfRectangularTooltipShape(),
                 activeColor: color,
                 inactiveColor: color.withValues(alpha: 0.2),
-                tooltipTextFormatterCallback: (dynamic actualValue, String formattedText) {
+                tooltipTextFormatterCallback: (
+                  dynamic actualValue,
+                  String formattedText,
+                ) {
                   return '${actualValue.round()}${config.unit}';
                 },
                 onChanged: (SfRangeValues values) {
-                  final callback = isCritical
-                      ? widget.onCriticalRangeChanged
-                      : widget.onWarningRangeChanged;
+                  final callback =
+                      isCritical
+                          ? widget.onCriticalRangeChanged
+                          : widget.onWarningRangeChanged;
                   callback?.call(sensor, RangeValues(values.start, values.end));
                 },
               ),

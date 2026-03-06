@@ -3,37 +3,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_ui/ui/components.dart';
 
 import '../bloc/alert_bloc.dart';
-import '../widgets/common/snackbar.dart' as custom_snackbar;
+import '../models/alert_models.dart';
 import '../widgets/forms/alert_add_header.dart';
 import '../widgets/forms/alert_configuration_form.dart';
+import '../widgets/forms/alert_conflict_dialog.dart';
 import '../widgets/forms/alert_table_section.dart';
 
-/// Vue pour créer une nouvelle alerte
-/// Permet de configurer le nom, les capteurs et les seuils d'alerte
 class AlertAddView extends StatefulWidget {
-  final List<Map<String, dynamic>> spaces;
   final List<Map<String, dynamic>> availableSensors;
 
-  const AlertAddView({
-    super.key,
-    required this.spaces,
-    required this.availableSensors,
-  });
+  const AlertAddView({super.key, required this.availableSensors});
 
   @override
   State<AlertAddView> createState() => _AlertAddViewState();
 }
 
 class _AlertAddViewState extends State<AlertAddView> {
-  // Contrôleur pour le nom de l'alerte
-  final TextEditingController _nameController = TextEditingController();
+  final _nameController = TextEditingController();
+  List<String> _selectedCellIds = [];
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  // Permet de nettoyer les contrôles lors de la fermeture de la vue
   @override
   void dispose() {
     _nameController.dispose();
@@ -42,82 +30,90 @@ class _AlertAddViewState extends State<AlertAddView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AlertBloc, AlertState>(
+    return BlocConsumer<AlertBloc, AlertState>(
+      // Ouvre la popup de conflits dès qu'ils arrivent dans le state
+      listenWhen:
+          (prev, curr) =>
+              curr is AlertLoaded &&
+              curr.pendingConflicts != null &&
+              curr.pendingConflicts!.isNotEmpty &&
+              (prev is! AlertLoaded ||
+                  prev.pendingConflicts != curr.pendingConflicts),
+      listener: (context, state) {
+        if (state is AlertLoaded)
+          _showConflictDialog(context, state.pendingConflicts!);
+      },
       builder: (context, state) {
-        if (state is! AlertLoaded) {
+        if (state is! AlertLoaded)
           return const Center(child: CircularProgressIndicator());
-        }
 
         return Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // En-tête avec bouton retour et titre
               const AlertAddHeader(),
-
               const SizedBox(height: 24),
-
-              // Contenu principal : configuration et aperçu
               Expanded(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Formulaire de configuration
+                    // Formulaire de configuration (nom + capteurs + seuils)
                     Expanded(
-                      flex: 1,
                       child: AlertConfigurationForm(
                         nameController: _nameController,
-                        nameValidator: _validateAlertName,
+                        nameValidator: _validateName,
                         selectedSensors: state.selectedSensors,
-                        onSensorsChanged: (sensors) {
-                          context.read<AlertBloc>().add(AlertUpdateSensors(sensors: sensors));
-                        },
+                        onSensorsChanged:
+                            (s) => context.read<AlertBloc>().add(
+                              AlertUpdateSensors(sensors: s),
+                            ),
                         criticalRanges: state.criticalRanges,
                         warningRanges: state.warningRanges,
                         isWarningEnabled: state.isWarningEnabled,
-                        onCriticalRangeChanged: (sensor, range) {
-                          context.read<AlertBloc>().add(
-                            AlertUpdateCriticalRange(sensor: sensor, range: range),
-                          );
-                        },
-                        onWarningRangeChanged: (sensor, range) {
-                          context.read<AlertBloc>().add(
-                            AlertUpdateWarningRange(sensor: sensor, range: range),
-                          );
-                        },
-                        onWarningEnabledChanged: (enabled) {
-                          context.read<AlertBloc>().add(
-                            AlertUpdateWarningEnabled(enabled: enabled),
-                          );
-                        },
+                        onCriticalRangeChanged:
+                            (s, r) => context.read<AlertBloc>().add(
+                              AlertUpdateCriticalRange(sensor: s, range: r),
+                            ),
+                        onWarningRangeChanged:
+                            (s, r) => context.read<AlertBloc>().add(
+                              AlertUpdateWarningRange(sensor: s, range: r),
+                            ),
+                        onWarningEnabledChanged:
+                            (e) => context.read<AlertBloc>().add(
+                              AlertUpdateWarningEnabled(enabled: e),
+                            ),
                         availableSensors: widget.availableSensors,
                       ),
                     ),
-
                     const SizedBox(width: 16),
-
-                    // Aperçu du tableau
+                    // Sélection des cellules
                     Expanded(
-                      flex: 1,
                       child: GardenCard(
-                        child: widget.spaces.isEmpty
-                            ? const Center(child: CircularProgressIndicator())
-                            : AlertTableSection(spaces: widget.spaces),
+                        child:
+                            state.cells.isEmpty
+                                ? const Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                                : AlertTableSection(
+                                  cells: state.cells,
+                                  selectedCellIds: _selectedCellIds,
+                                  onSelectionChanged:
+                                      (ids) => setState(
+                                        () => _selectedCellIds = ids,
+                                      ),
+                                ),
                       ),
                     ),
                   ],
                 ),
               ),
-
               const SizedBox(height: 24),
-
-              // Bouton de création
               Center(
                 child: Button(
-                  label: "Créer Alerte",
+                  label: 'Créer l\'alerte',
                   icon: Icons.add_alert,
-                  onPressed: () => _handleCreateAlert(state),
+                  onPressed: () => _submit(state),
                 ),
               ),
             ],
@@ -127,51 +123,78 @@ class _AlertAddViewState extends State<AlertAddView> {
     );
   }
 
-  /// Valide le nom de l'alerte
-  String? _validateAlertName(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Le nom de l\'alerte est obligatoire';
-    }
-    if (value.trim().length < 3) {
+  String? _validateName(String? value) {
+    if (value == null || value.trim().isEmpty) return 'Le nom est obligatoire';
+    if (value.trim().length < 3)
       return 'Le nom doit contenir au moins 3 caractères';
-    }
     return null;
   }
 
-  /// Gère la création de l'alerte
-  void _handleCreateAlert(AlertLoaded state) {
+  void _submit(AlertLoaded state) {
     final name = _nameController.text.trim();
-    final validationError = _validateAlertName(name);
-
-    if (validationError != null) {
-      custom_snackbar.showSnackBarError(context, validationError);
+    final nameError = _validateName(name);
+    if (nameError != null) {
+      context.read<AlertBloc>().add(AlertPushError(message: nameError));
       return;
     }
-
     if (state.selectedSensors.isEmpty) {
-      custom_snackbar.showSnackBarError(
-        context,
-        'Veuillez sélectionner au moins un capteur',
+      context.read<AlertBloc>().add(
+        const AlertPushError(message: 'Sélectionnez au moins un capteur'),
+      );
+      return;
+    }
+    if (_selectedCellIds.isEmpty) {
+      context.read<AlertBloc>().add(
+        const AlertPushError(message: 'Sélectionnez au moins une cellule'),
       );
       return;
     }
 
-    // TODO: Appeler le repository pour créer l'alerte
-    // final alertRepository = context.read<AlertRepository>();
-    // alertRepository.createAlert(
-    //   name: name,
-    //   cellIds: selectedCellIds,
-    //   sensors: {
-    //     'critical': state.criticalRanges,
-    //     'warning': state.isWarningEnabled ? state.warningRanges : null,
-    //   },
-    //   isWarningEnabled: state.isWarningEnabled,
-    // );
+    // Construit la liste de capteurs avec l'index par type
+    final indexByType = <SensorType, int>{};
+    final sensors =
+        state.selectedSensors.map((sensor) {
+          final key = '${sensor.type.index}_${sensor.index}';
+          final typeIndex = indexByType[sensor.type] ?? 0;
+          indexByType[sensor.type] = typeIndex + 1;
+          return SensorRequest(
+            type: sensorTypeToApiString(sensor.type),
+            index: typeIndex,
+            criticalRange: SensorRange(
+              min: state.criticalRanges[key]?.start ?? 0,
+              max: state.criticalRanges[key]?.end ?? 100,
+            ),
+            warningRange: SensorRange(
+              min: state.warningRanges[key]?.start ?? 0,
+              max: state.warningRanges[key]?.end ?? 100,
+            ),
+          );
+        }).toList();
 
-    context.read<AlertBloc>().add(AlertHideAddView());
-    custom_snackbar.showSnackBarSucces(
-      context,
-      'Alerte "$name" créée avec succès !',
+    context.read<AlertBloc>().add(
+      AlertValidateAlert(
+        request: AlertCreationRequest(
+          title: name,
+          isActive: true,
+          cellIds: _selectedCellIds,
+          sensors: sensors,
+          warningEnabled: state.isWarningEnabled,
+        ),
+      ),
+    );
+  }
+
+  // Affiche la popup de résolution des conflits
+  Future<void> _showConflictDialog(
+    BuildContext context,
+    List<AlertConflict> conflicts,
+  ) async {
+    final result = await AlertConflictDialog.show(context, conflicts);
+    if (!context.mounted) return;
+    context.read<AlertBloc>().add(
+      result != null
+          ? AlertConfirmCreate(overwrite: result)
+          : const AlertCancelCreate(),
     );
   }
 }

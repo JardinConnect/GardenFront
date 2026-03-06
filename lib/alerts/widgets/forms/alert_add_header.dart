@@ -39,10 +39,7 @@ class AlertAddHeader extends StatelessWidget {
           SizedBox(width: 4),
           Text(
             'Retour',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
           ),
         ],
       ),
@@ -62,4 +59,3 @@ class AlertAddHeader extends StatelessWidget {
     context.read<AlertBloc>().add(AlertHideAddView());
   }
 }
-

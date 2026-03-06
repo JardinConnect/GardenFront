@@ -1,84 +1,129 @@
 part of 'alert_bloc.dart';
 
 @immutable
-sealed class AlertBlocEvent {}
+sealed class AlertBlocEvent {
+  const AlertBlocEvent();
+}
 
-final class AlertLoadData extends AlertBlocEvent {}
+// -- Chargement --
+final class AlertLoadData extends AlertBlocEvent {
+  const AlertLoadData();
+}
 
-final class AlertChangeDisplayMode extends AlertBlocEvent {
-  final DisplayMode displayMode;
+final class AlertLoadCells extends AlertBlocEvent {
+  const AlertLoadCells();
+}
 
-  AlertChangeDisplayMode({required this.displayMode});
+// -- Navigation --
+final class AlertShowAddView extends AlertBlocEvent {
+  const AlertShowAddView();
+}
+
+final class AlertHideAddView extends AlertBlocEvent {
+  const AlertHideAddView();
+}
+
+final class AlertShowEditView extends AlertBlocEvent {
+  final String alertId;
+  const AlertShowEditView({required this.alertId});
+}
+
+// -- CRUD alertes --
+final class AlertValidateAlert extends AlertBlocEvent {
+  final AlertCreationRequest request;
+  const AlertValidateAlert({required this.request});
+}
+
+final class AlertConfirmCreate extends AlertBlocEvent {
+  final bool overwrite;
+  const AlertConfirmCreate({required this.overwrite});
+}
+
+final class AlertCancelCreate extends AlertBlocEvent {
+  const AlertCancelCreate();
+}
+
+final class AlertCreateAlert extends AlertBlocEvent {
+  final AlertCreationRequest request;
+  const AlertCreateAlert({required this.request});
+}
+
+final class AlertUpdateAlert extends AlertBlocEvent {
+  final String alertId;
+  final AlertCreationRequest request;
+  const AlertUpdateAlert({required this.alertId, required this.request});
+}
+
+final class AlertDeleteAlert extends AlertBlocEvent {
+  final String alertId;
+  const AlertDeleteAlert({required this.alertId});
 }
 
 final class AlertToggleStatus extends AlertBlocEvent {
   final String alertId;
   final bool isActive;
-
-  AlertToggleStatus({required this.alertId, required this.isActive});
+  const AlertToggleStatus({required this.alertId, required this.isActive});
 }
 
+// -- Archivage événements --
 final class AlertDeleteEvent extends AlertBlocEvent {
   final String eventId;
-
-  AlertDeleteEvent({required this.eventId});
+  const AlertDeleteEvent({required this.eventId});
 }
 
-final class AlertArchiveAll extends AlertBlocEvent {}
+final class AlertArchiveAll extends AlertBlocEvent {
+  const AlertArchiveAll();
+}
 
 final class AlertArchiveByCell extends AlertBlocEvent {
   final String cellId;
+  const AlertArchiveByCell({required this.cellId});
+}
 
-  AlertArchiveByCell({required this.cellId});
+// -- UI --
+final class AlertChangeDisplayMode extends AlertBlocEvent {
+  final DisplayMode displayMode;
+  const AlertChangeDisplayMode({required this.displayMode});
 }
 
 final class AlertChangeTab extends AlertBlocEvent {
   final AlertTabType tabType;
-
-  AlertChangeTab({required this.tabType});
-}
-
-final class AlertClearSuccessMessage extends AlertBlocEvent {}
-
-final class AlertShowAddView extends AlertBlocEvent {}
-
-final class AlertHideAddView extends AlertBlocEvent {}
-
-final class AlertShowEditView extends AlertBlocEvent {
-  final String alertId;
-
-  AlertShowEditView({required this.alertId});
-}
-
-final class AlertDeleteAlert extends AlertBlocEvent {
-  final String alertId;
-
-  AlertDeleteAlert({required this.alertId});
+  const AlertChangeTab({required this.tabType});
 }
 
 final class AlertUpdateSensors extends AlertBlocEvent {
   final List<SelectedSensor> sensors;
-
-  AlertUpdateSensors({required this.sensors});
+  const AlertUpdateSensors({required this.sensors});
 }
 
 final class AlertUpdateCriticalRange extends AlertBlocEvent {
   final SelectedSensor sensor;
   final RangeValues range;
-
-  AlertUpdateCriticalRange({required this.sensor, required this.range});
+  const AlertUpdateCriticalRange({required this.sensor, required this.range});
 }
 
 final class AlertUpdateWarningRange extends AlertBlocEvent {
   final SelectedSensor sensor;
   final RangeValues range;
-
-  AlertUpdateWarningRange({required this.sensor, required this.range});
+  const AlertUpdateWarningRange({required this.sensor, required this.range});
 }
 
 final class AlertUpdateWarningEnabled extends AlertBlocEvent {
   final bool enabled;
-
-  AlertUpdateWarningEnabled({required this.enabled});
+  const AlertUpdateWarningEnabled({required this.enabled});
 }
 
+// -- Messages --
+final class AlertClearSuccessMessage extends AlertBlocEvent {
+  const AlertClearSuccessMessage();
+}
+
+final class AlertClearErrorMessage extends AlertBlocEvent {
+  const AlertClearErrorMessage();
+}
+
+/// Pousse un message d'erreur dans le state depuis une vue
+final class AlertPushError extends AlertBlocEvent {
+  final String message;
+  const AlertPushError({required this.message});
+}
