@@ -1,4 +1,5 @@
-import 'package:syncfusion_flutter_core/theme.dart' show SfRangeSliderTheme, SfRangeSliderThemeData;
+import 'package:syncfusion_flutter_core/theme.dart'
+    show SfRangeSliderTheme, SfRangeSliderThemeData;
 import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
@@ -129,9 +130,9 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
         padding: const EdgeInsets.all(12),
         child: Text(
           'Aucun capteur sélectionné. Sélectionnez des capteurs pour configurer des seuils.',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Colors.grey[700],
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
         ),
       );
     }
@@ -140,12 +141,22 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSection('Alerte critique', GardenColors.redAlert.shade500, true),
-        _buildSection('Avertissement', GardenColors.yellowWarning.shade600, false, hasToggle: true),
+        _buildSection(
+          'Avertissement',
+          GardenColors.yellowWarning.shade600,
+          false,
+          hasToggle: true,
+        ),
       ],
     );
   }
 
-  Widget _buildSection(String title, Color color, bool isCritical, {bool hasToggle = false}) {
+  Widget _buildSection(
+    String title,
+    Color color,
+    bool isCritical, {
+    bool hasToggle = false,
+  }) {
     return Container(
       padding: const EdgeInsets.all(12),
       child: Column(
@@ -184,12 +195,17 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
     );
   }
 
-  Widget _buildSensorSlider(SelectedSensor sensor, Color color, bool isCritical) {
+  Widget _buildSensorSlider(
+    SelectedSensor sensor,
+    Color color,
+    bool isCritical,
+  ) {
     final config = _sensorConfigs[sensor.type]!;
     final key = '${sensor.type.index}_${sensor.index}';
-    final range = isCritical
-        ? (widget.criticalRanges?[key] ?? config.defaultCritical)
-        : (widget.warningRanges?[key] ?? config.defaultWarning);
+    final range =
+        isCritical
+            ? (widget.criticalRanges?[key] ?? config.defaultCritical)
+            : (widget.warningRanges?[key] ?? config.defaultWarning);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
@@ -244,13 +260,17 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
                 tooltipShape: const SfRectangularTooltipShape(),
                 activeColor: color,
                 inactiveColor: color.withValues(alpha: 0.2),
-                tooltipTextFormatterCallback: (dynamic actualValue, String formattedText) {
+                tooltipTextFormatterCallback: (
+                  dynamic actualValue,
+                  String formattedText,
+                ) {
                   return '${actualValue.round()}${config.unit}';
                 },
                 onChanged: (SfRangeValues values) {
-                  final callback = isCritical
-                      ? widget.onCriticalRangeChanged
-                      : widget.onWarningRangeChanged;
+                  final callback =
+                      isCritical
+                          ? widget.onCriticalRangeChanged
+                          : widget.onWarningRangeChanged;
                   callback?.call(sensor, RangeValues(values.start, values.end));
                 },
               ),

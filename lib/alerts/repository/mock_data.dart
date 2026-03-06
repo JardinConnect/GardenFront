@@ -8,36 +8,36 @@ class AlertMockData {
       "title": "Alerte température",
       "description": "Surveillance de la température dans les serres",
       "isActive": true,
-      "sensorTypes": ["temperature"]
+      "sensorTypes": ["temperature"],
     },
     {
       "id": "2",
       "title": "Alerte humidité complète",
       "description": "Contrôle humidité surface et profondeur",
       "isActive": true,
-      "sensorTypes": ["humiditySurface", "humidityDepth"]
+      "sensorTypes": ["humiditySurface", "humidityDepth"],
     },
     {
       "id": "3",
       "title": "Alerte conditions climatiques",
       "description": "Surveillance complète des conditions",
       "isActive": false,
-      "sensorTypes": ["temperature", "light", "rain"]
+      "sensorTypes": ["temperature", "light", "rain"],
     },
     {
       "id": "4",
       "title": "Alerte luminosité",
       "description": "Contrôle de l'éclairage optimal",
       "isActive": false,
-      "sensorTypes": ["light"]
+      "sensorTypes": ["light"],
     },
     {
       "id": "5",
       "title": "Alerte pluviosité",
       "description": "Surveillance des précipitations",
       "isActive": false,
-      "sensorTypes": ["rain"]
-    }
+      "sensorTypes": ["rain"],
+    },
   ];
 
   /// Mock des alertes capteurs avec seuils
@@ -48,12 +48,27 @@ class AlertMockData {
       "sensorType": "temperature",
       "threshold": {
         "thresholds": [
-          {"value": 25.0, "unit": "°C", "label": "maximale", "alertType": "warning"},
-          {"value": 18.0, "unit": "°C", "label": "minimale", "alertType": "warning"},
-          {"value": 22.0, "unit": "°C", "label": "optimale", "alertType": "none"}
-        ]
+          {
+            "value": 25.0,
+            "unit": "°C",
+            "label": "maximale",
+            "alertType": "warning",
+          },
+          {
+            "value": 18.0,
+            "unit": "°C",
+            "label": "minimale",
+            "alertType": "warning",
+          },
+          {
+            "value": 22.0,
+            "unit": "°C",
+            "label": "optimale",
+            "alertType": "none",
+          },
+        ],
       },
-      "isEnabled": true
+      "isEnabled": true,
     },
     {
       "id": "2",
@@ -61,12 +76,27 @@ class AlertMockData {
       "sensorType": "humiditySurface",
       "threshold": {
         "thresholds": [
-          {"value": 85.0, "unit": "%", "label": "maximale", "alertType": "warning"},
-          {"value": 65.0, "unit": "%", "label": "optimale", "alertType": "none"},
-          {"value": 40.0, "unit": "%", "label": "minimale", "alertType": "warning"}
-        ]
+          {
+            "value": 85.0,
+            "unit": "%",
+            "label": "maximale",
+            "alertType": "warning",
+          },
+          {
+            "value": 65.0,
+            "unit": "%",
+            "label": "optimale",
+            "alertType": "none",
+          },
+          {
+            "value": 40.0,
+            "unit": "%",
+            "label": "minimale",
+            "alertType": "warning",
+          },
+        ],
       },
-      "isEnabled": true
+      "isEnabled": true,
     },
     {
       "id": "3",
@@ -74,12 +104,27 @@ class AlertMockData {
       "sensorType": "humidityDepth",
       "threshold": {
         "thresholds": [
-          {"value": 90.0, "unit": "%", "label": "maximale", "alertType": "warning"},
-          {"value": 70.0, "unit": "%", "label": "optimale", "alertType": "none"},
-          {"value": 50.0, "unit": "%", "label": "minimale", "alertType": "warning"}
-        ]
+          {
+            "value": 90.0,
+            "unit": "%",
+            "label": "maximale",
+            "alertType": "warning",
+          },
+          {
+            "value": 70.0,
+            "unit": "%",
+            "label": "optimale",
+            "alertType": "none",
+          },
+          {
+            "value": 50.0,
+            "unit": "%",
+            "label": "minimale",
+            "alertType": "warning",
+          },
+        ],
       },
-      "isEnabled": false
+      "isEnabled": false,
     },
     {
       "id": "4",
@@ -87,11 +132,21 @@ class AlertMockData {
       "sensorType": "light",
       "threshold": {
         "thresholds": [
-          {"value": 5000.0, "unit": " lux", "label": "optimale", "alertType": "none"},
-          {"value": 1000.0, "unit": " lux", "label": "minimale", "alertType": "warning"}
-        ]
+          {
+            "value": 5000.0,
+            "unit": " lux",
+            "label": "optimale",
+            "alertType": "none",
+          },
+          {
+            "value": 1000.0,
+            "unit": " lux",
+            "label": "minimale",
+            "alertType": "warning",
+          },
+        ],
       },
-      "isEnabled": false
+      "isEnabled": false,
     },
     {
       "id": "5",
@@ -99,12 +154,22 @@ class AlertMockData {
       "sensorType": "rain",
       "threshold": {
         "thresholds": [
-          {"value": 100.0, "unit": " mm", "label": "maximale", "alertType": "warning"},
-          {"value": 0.0, "unit": " mm", "label": "minimale", "alertType": "none"}
-        ]
+          {
+            "value": 100.0,
+            "unit": " mm",
+            "label": "maximale",
+            "alertType": "warning",
+          },
+          {
+            "value": 0.0,
+            "unit": " mm",
+            "label": "minimale",
+            "alertType": "none",
+          },
+        ],
       },
-      "isEnabled": false
-    }
+      "isEnabled": false,
+    },
   ];
 
   /// Mock de l'historique des événements d'alerte
@@ -115,7 +180,7 @@ class AlertMockData {
       "sensorType": "temperature",
       "cellName": "Cellule 2",
       "dateTime": "2025-12-07T16:45:00",
-      "location": "Parcelle1 > Serre 2 > Chappelle 5 > planche 19"
+      "location": "Parcelle1 > Serre 2 > Chappelle 5 > planche 19",
     },
     {
       "id": "2",
@@ -123,7 +188,7 @@ class AlertMockData {
       "sensorType": "humiditySurface",
       "cellName": "Cellule 5",
       "dateTime": "2025-12-07T14:30:00",
-      "location": "Parcelle2 > Serre 1 > Chappelle 3 > planche 8"
+      "location": "Parcelle2 > Serre 1 > Chappelle 3 > planche 8",
     },
     {
       "id": "3",
@@ -131,7 +196,7 @@ class AlertMockData {
       "sensorType": "light",
       "cellName": "Cellule 1",
       "dateTime": "2025-12-06T12:15:00",
-      "location": "Parcelle1 > Serre 3 > Chappelle 2 > planche 4"
+      "location": "Parcelle1 > Serre 3 > Chappelle 2 > planche 4",
     },
     {
       "id": "4",
@@ -139,7 +204,7 @@ class AlertMockData {
       "sensorType": "humiditySurface",
       "cellName": "Cellule 3",
       "dateTime": "2025-12-06T10:20:00",
-      "location": "Parcelle1 > Serre 1 > Chappelle 1 > planche 12"
+      "location": "Parcelle1 > Serre 1 > Chappelle 1 > planche 12",
     },
     {
       "id": "5",
@@ -147,7 +212,7 @@ class AlertMockData {
       "sensorType": "temperature",
       "cellName": "Cellule 4",
       "dateTime": "2025-12-05T08:05:00",
-      "location": "Parcelle2 > Serre 2 > Chappelle 4 > planche 6"
+      "location": "Parcelle2 > Serre 2 > Chappelle 4 > planche 6",
     },
     {
       "id": "6",
@@ -155,8 +220,8 @@ class AlertMockData {
       "sensorType": "humidityDepth",
       "cellName": "Cellule 1",
       "dateTime": "2025-12-04T22:30:00",
-      "location": "Parcelle1 > Serre 3 > Chappelle 2 > planche 4"
-    }
+      "location": "Parcelle1 > Serre 3 > Chappelle 2 > planche 4",
+    },
   ];
 
   /// Mock des cellules disponibles
@@ -226,19 +291,18 @@ class AlertMockData {
 
   /// Mock des détails d'une alerte pour édition
   static Map<String, dynamic> alertDetails(String alertId) => {
-        "id": alertId,
-        "name": "Alerte température serre 1",
-        "isActive": true,
-        "cellIds": ["1", "2"],
-        "sensors": [
-          {
-            "type": "temperature",
-            "index": 0,
-            "criticalRange": {"start": -10.0, "end": 40.0},
-            "warningRange": {"start": 0.0, "end": 30.0},
-          }
-        ],
-        "isWarningEnabled": true,
-      };
+    "id": alertId,
+    "name": "Alerte température serre 1",
+    "isActive": true,
+    "cellIds": ["1", "2"],
+    "sensors": [
+      {
+        "type": "temperature",
+        "index": 0,
+        "criticalRange": {"start": -10.0, "end": 40.0},
+        "warningRange": {"start": 0.0, "end": 30.0},
+      },
+    ],
+    "isWarningEnabled": true,
+  };
 }
-

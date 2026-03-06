@@ -74,22 +74,28 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
       final spaces = await _alertRepository.fetchSpaces();
       final availableSensors = await _alertRepository.fetchAvailableSensors();
 
-      emit(AlertLoaded(
-        alerts: alerts,
-        sensorAlerts: sensorAlerts,
-        alertEvents: alertEvents,
-        displayMode: DisplayMode.list,
-        selectedTab: AlertTabType.alerts,
-        spaces: spaces,
-        availableSensors: availableSensors,
-      ));
+      emit(
+        AlertLoaded(
+          alerts: alerts,
+          sensorAlerts: sensorAlerts,
+          alertEvents: alertEvents,
+          displayMode: DisplayMode.list,
+          selectedTab: AlertTabType.alerts,
+          spaces: spaces,
+          availableSensors: availableSensors,
+        ),
+      );
     } catch (e) {
       emit(AlertError(message: e.toString()));
     }
   }
 
-  Future<void> _loadCells(AlertLoadCells event, Emitter<AlertState> emit) async {
-    final s = _loaded(); if (s == null) return;
+  Future<void> _loadCells(
+    AlertLoadCells event,
+    Emitter<AlertState> emit,
+  ) async {
+    final s = _loaded();
+    if (s == null) return;
     try {
       final cells = await _alertRepository.fetchCells();
       emit(s.copyWith(cells: cells));
@@ -99,23 +105,36 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
   // -- Navigation --
 
   void _showAddView(AlertShowAddView event, Emitter<AlertState> emit) {
-    final s = _loaded(); if (s == null) return;
+    final s = _loaded();
+    if (s == null) return;
     emit(s.copyWith(isShowingAddView: true, isShowingEditView: false));
     add(const AlertLoadCells());
   }
 
   void _hideAddView(AlertHideAddView event, Emitter<AlertState> emit) {
-    final s = _loaded(); if (s == null) return;
+    final s = _loaded();
+    if (s == null) return;
     emit(s.copyWith(isShowingAddView: false, isShowingEditView: false));
   }
 
-  Future<void> _showEditView(AlertShowEditView event, Emitter<AlertState> emit) async {
-    final s = _loaded(); if (s == null) return;
+  Future<void> _showEditView(
+    AlertShowEditView event,
+    Emitter<AlertState> emit,
+  ) async {
+    final s = _loaded();
+    if (s == null) return;
 
     // Récupère l'alerte depuis la liste locale ou crée un placeholder
     final alert = s.alerts.firstWhere(
       (a) => a.id == event.alertId,
-      orElse: () => Alert(id: event.alertId, title: 'Alerte inconnue', isActive: false, sensors: [], warningEnabled: true),
+      orElse:
+          () => Alert(
+            id: event.alertId,
+            title: 'Alerte inconnue',
+            isActive: false,
+            sensors: [],
+            warningEnabled: true,
+          ),
     );
 
     // Charge détails + cellules en parallèle
@@ -142,41 +161,62 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
 
       if (json['criticalRange'] != null) {
         final cr = json['criticalRange'] as Map<String, dynamic>;
-        criticalRanges[key] = RangeValues((cr['min'] as num).toDouble(), (cr['max'] as num).toDouble());
+        criticalRanges[key] = RangeValues(
+          (cr['min'] as num).toDouble(),
+          (cr['max'] as num).toDouble(),
+        );
       }
       if (json['warningRange'] != null) {
         final wr = json['warningRange'] as Map<String, dynamic>;
-        warningRanges[key] = RangeValues((wr['min'] as num).toDouble(), (wr['max'] as num).toDouble());
+        warningRanges[key] = RangeValues(
+          (wr['min'] as num).toDouble(),
+          (wr['max'] as num).toDouble(),
+        );
       }
     }
 
-    emit(s.copyWith(
-      isShowingEditView: true,
-      isShowingAddView: false,
-      editingAlertId: event.alertId,
-      editingAlert: alert,
-      alertDetails: details,
-      cells: cells,
-      selectedSensors: selectedSensors,
-      criticalRanges: criticalRanges,
-      warningRanges: warningRanges,
-      isWarningEnabled: details['warningEnabled'] as bool? ?? true,
-    ));
+    emit(
+      s.copyWith(
+        isShowingEditView: true,
+        isShowingAddView: false,
+        editingAlertId: event.alertId,
+        editingAlert: alert,
+        alertDetails: details,
+        cells: cells,
+        selectedSensors: selectedSensors,
+        criticalRanges: criticalRanges,
+        warningRanges: warningRanges,
+        isWarningEnabled: details['warningEnabled'] as bool? ?? true,
+      ),
+    );
   }
 
   // -- CRUD Alertes --
 
-  Future<void> _validateAlert(AlertValidateAlert event, Emitter<AlertState> emit) async {
-    final s = _loaded(); if (s == null) return;
+  Future<void> _validateAlert(
+    AlertValidateAlert event,
+    Emitter<AlertState> emit,
+  ) async {
+    final s = _loaded();
+    if (s == null) return;
     try {
-      final sensorTypes = event.request.sensors.map((s) => s.type).toSet().toList();
+      final sensorTypes =
+          event.request.sensors.map((s) => s.type).toSet().toList();
       final validation = await _alertRepository.validateAlert(
-        AlertValidationRequest(cellIds: event.request.cellIds, sensorTypes: sensorTypes),
+        AlertValidationRequest(
+          cellIds: event.request.cellIds,
+          sensorTypes: sensorTypes,
+        ),
       );
 
       if (validation.hasConflicts) {
         // Conflits détectés → on stocke la requête et on attend la décision de l'utilisateur
-        emit(s.copyWith(pendingConflicts: validation.conflicts, pendingRequest: event.request));
+        emit(
+          s.copyWith(
+            pendingConflicts: validation.conflicts,
+            pendingRequest: event.request,
+          ),
+        );
       } else {
         add(AlertCreateAlert(request: event.request));
       }
@@ -186,148 +226,234 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
   }
 
   void _confirmCreate(AlertConfirmCreate event, Emitter<AlertState> emit) {
-    final s = _loaded(); if (s == null) return;
-    final pending = s.pendingRequest; if (pending == null) return;
+    final s = _loaded();
+    if (s == null) return;
+    final pending = s.pendingRequest;
+    if (pending == null) return;
 
     // Vide les conflits puis envoie la création avec le flag overwrite
     emit(s.copyWith(clearPendingConflicts: true, clearPendingRequest: true));
-    add(AlertCreateAlert(request: pending.copyWith(overwriteExisting: event.overwrite)));
+    add(
+      AlertCreateAlert(
+        request: pending.copyWith(overwriteExisting: event.overwrite),
+      ),
+    );
   }
 
   void _cancelCreate(AlertCancelCreate event, Emitter<AlertState> emit) {
-    final s = _loaded(); if (s == null) return;
+    final s = _loaded();
+    if (s == null) return;
     emit(s.copyWith(clearPendingConflicts: true, clearPendingRequest: true));
   }
 
-  Future<void> _createAlert(AlertCreateAlert event, Emitter<AlertState> emit) async {
-    final s = _loaded(); if (s == null) return;
+  Future<void> _createAlert(
+    AlertCreateAlert event,
+    Emitter<AlertState> emit,
+  ) async {
+    final s = _loaded();
+    if (s == null) return;
     try {
       await _alertRepository.createAlert(event.request);
       final (alerts, sensorAlerts) = await _fetchAlerts();
-      emit(s.copyWith(
-        alerts: alerts,
-        sensorAlerts: sensorAlerts,
-        isShowingAddView: false,
-        successMessage: 'Alerte créée avec succès',
-        clearPendingConflicts: true,
-        clearPendingRequest: true,
-      ));
+      emit(
+        s.copyWith(
+          alerts: alerts,
+          sensorAlerts: sensorAlerts,
+          isShowingAddView: false,
+          successMessage: 'Alerte créée avec succès',
+          clearPendingConflicts: true,
+          clearPendingRequest: true,
+        ),
+      );
     } catch (e) {
-      emit(s.copyWith(
-        errorMessage: 'Erreur lors de la création : $e',
-        clearPendingConflicts: true,
-        clearPendingRequest: true,
-      ));
+      emit(
+        s.copyWith(
+          errorMessage: 'Erreur lors de la création : $e',
+          clearPendingConflicts: true,
+          clearPendingRequest: true,
+        ),
+      );
     }
   }
 
-  Future<void> _updateAlert(AlertUpdateAlert event, Emitter<AlertState> emit) async {
-    final s = _loaded(); if (s == null) return;
+  Future<void> _updateAlert(
+    AlertUpdateAlert event,
+    Emitter<AlertState> emit,
+  ) async {
+    final s = _loaded();
+    if (s == null) return;
     try {
       await _alertRepository.updateAlert(event.alertId, event.request);
       final (alerts, sensorAlerts) = await _fetchAlerts();
-      emit(s.copyWith(
-        alerts: alerts,
-        sensorAlerts: sensorAlerts,
-        isShowingEditView: false,
-        successMessage: 'Alerte mise à jour avec succès',
-      ));
+      emit(
+        s.copyWith(
+          alerts: alerts,
+          sensorAlerts: sensorAlerts,
+          isShowingEditView: false,
+          successMessage: 'Alerte mise à jour avec succès',
+        ),
+      );
     } catch (e) {
       emit(s.copyWith(errorMessage: 'Erreur lors de la mise à jour : $e'));
     }
   }
 
-  Future<void> _deleteAlert(AlertDeleteAlert event, Emitter<AlertState> emit) async {
-    final s = _loaded(); if (s == null) return;
+  Future<void> _deleteAlert(
+    AlertDeleteAlert event,
+    Emitter<AlertState> emit,
+  ) async {
+    final s = _loaded();
+    if (s == null) return;
     try {
       await _alertRepository.deleteAlert(event.alertId);
-      emit(s.copyWith(
-        alerts: s.alerts.where((a) => a.id != event.alertId).toList(),
-        sensorAlerts: s.sensorAlerts.where((a) => a.id != event.alertId).toList(),
-        isShowingEditView: false,
-        successMessage: 'Alerte supprimée avec succès',
-      ));
+      emit(
+        s.copyWith(
+          alerts: s.alerts.where((a) => a.id != event.alertId).toList(),
+          sensorAlerts:
+              s.sensorAlerts.where((a) => a.id != event.alertId).toList(),
+          isShowingEditView: false,
+          successMessage: 'Alerte supprimée avec succès',
+        ),
+      );
     } catch (e) {
       emit(s.copyWith(errorMessage: 'Erreur lors de la suppression : $e'));
     }
   }
 
-  Future<void> _toggleStatus(AlertToggleStatus event, Emitter<AlertState> emit) async {
-    final s = _loaded(); if (s == null) return;
+  Future<void> _toggleStatus(
+    AlertToggleStatus event,
+    Emitter<AlertState> emit,
+  ) async {
+    final s = _loaded();
+    if (s == null) return;
     try {
       await _alertRepository.toggleAlert(event.alertId, event.isActive);
-      emit(s.copyWith(
-        alerts: s.alerts.map((a) => a.id == event.alertId
-            ? Alert(id: a.id, title: a.title, isActive: event.isActive, sensors: a.sensors, warningEnabled: a.warningEnabled)
-            : a).toList(),
-        sensorAlerts: s.sensorAlerts.map((a) => a.id == event.alertId
-            ? a.copyWith(isEnabled: event.isActive)
-            : a).toList(),
-        successMessage: 'Statut mis à jour',
-      ));
+      emit(
+        s.copyWith(
+          alerts:
+              s.alerts
+                  .map(
+                    (a) =>
+                        a.id == event.alertId
+                            ? Alert(
+                              id: a.id,
+                              title: a.title,
+                              isActive: event.isActive,
+                              sensors: a.sensors,
+                              warningEnabled: a.warningEnabled,
+                            )
+                            : a,
+                  )
+                  .toList(),
+          sensorAlerts:
+              s.sensorAlerts
+                  .map(
+                    (a) =>
+                        a.id == event.alertId
+                            ? a.copyWith(isEnabled: event.isActive)
+                            : a,
+                  )
+                  .toList(),
+          successMessage: 'Statut mis à jour',
+        ),
+      );
     } catch (e) {
-      emit(s.copyWith(errorMessage: 'Erreur lors de la mise à jour du statut : $e'));
+      emit(
+        s.copyWith(
+          errorMessage: 'Erreur lors de la mise à jour du statut : $e',
+        ),
+      );
     }
   }
 
   // -- Archivage événements --
 
-  Future<void> _deleteEvent(AlertDeleteEvent event, Emitter<AlertState> emit) async {
-    final s = _loaded(); if (s == null) return;
+  Future<void> _deleteEvent(
+    AlertDeleteEvent event,
+    Emitter<AlertState> emit,
+  ) async {
+    final s = _loaded();
+    if (s == null) return;
     try {
       await _alertRepository.archiveAlertEvent(event.eventId);
-      emit(s.copyWith(
-        alertEvents: s.alertEvents.where((e) => e.id != event.eventId).toList(),
-        successMessage: 'Événement archivé',
-      ));
+      emit(
+        s.copyWith(
+          alertEvents:
+              s.alertEvents.where((e) => e.id != event.eventId).toList(),
+          successMessage: 'Événement archivé',
+        ),
+      );
     } catch (e) {
       emit(s.copyWith(errorMessage: 'Erreur lors de l\'archivage : $e'));
     }
   }
 
-  Future<void> _archiveAll(AlertArchiveAll event, Emitter<AlertState> emit) async {
-    final s = _loaded(); if (s == null) return;
+  Future<void> _archiveAll(
+    AlertArchiveAll event,
+    Emitter<AlertState> emit,
+  ) async {
+    final s = _loaded();
+    if (s == null) return;
     if (s.alertEvents.isEmpty) return;
     try {
       await _alertRepository.archiveAllAlertEvents();
-      emit(s.copyWith(
-        alertEvents: [],
-        successMessage: '${s.alertEvents.length} événement(s) archivé(s)',
-      ));
+      emit(
+        s.copyWith(
+          alertEvents: [],
+          successMessage: '${s.alertEvents.length} événement(s) archivé(s)',
+        ),
+      );
     } catch (e) {
       emit(s.copyWith(errorMessage: 'Erreur lors de l\'archivage : $e'));
     }
   }
 
-  Future<void> _archiveByCell(AlertArchiveByCell event, Emitter<AlertState> emit) async {
-    final s = _loaded(); if (s == null) return;
+  Future<void> _archiveByCell(
+    AlertArchiveByCell event,
+    Emitter<AlertState> emit,
+  ) async {
+    final s = _loaded();
+    if (s == null) return;
     try {
       await _alertRepository.archiveAlertEventsByCell(event.cellId);
-      final updated = s.alertEvents.where((e) => e.cellId != event.cellId).toList();
+      final updated =
+          s.alertEvents.where((e) => e.cellId != event.cellId).toList();
       final count = s.alertEvents.length - updated.length;
-      emit(s.copyWith(
-        alertEvents: updated,
-        successMessage: '$count événement(s) archivé(s)',
-      ));
+      emit(
+        s.copyWith(
+          alertEvents: updated,
+          successMessage: '$count événement(s) archivé(s)',
+        ),
+      );
     } catch (e) {
-      emit(s.copyWith(errorMessage: 'Erreur lors de l\'archivage par cellule : $e'));
+      emit(
+        s.copyWith(
+          errorMessage: 'Erreur lors de l\'archivage par cellule : $e',
+        ),
+      );
     }
   }
 
   // -- UI --
 
-  void _changeDisplayMode(AlertChangeDisplayMode event, Emitter<AlertState> emit) {
-    final s = _loaded(); if (s == null) return;
+  void _changeDisplayMode(
+    AlertChangeDisplayMode event,
+    Emitter<AlertState> emit,
+  ) {
+    final s = _loaded();
+    if (s == null) return;
     emit(s.copyWith(displayMode: event.displayMode));
   }
 
   void _changeTab(AlertChangeTab event, Emitter<AlertState> emit) {
-    final s = _loaded(); if (s == null) return;
+    final s = _loaded();
+    if (s == null) return;
     emit(s.copyWith(selectedTab: event.tabType));
   }
 
   void _updateSensors(AlertUpdateSensors event, Emitter<AlertState> emit) {
-    final s = _loaded(); if (s == null) return;
+    final s = _loaded();
+    if (s == null) return;
 
     final critical = Map<String, RangeValues>.from(s.criticalRanges);
     final warning = Map<String, RangeValues>.from(s.warningRanges);
@@ -340,43 +466,76 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
     }
 
     // Supprime les plages des capteurs retirés
-    critical.removeWhere((key, _) => !event.sensors.any((s) => '${s.type.index}_${s.index}' == key));
-    warning.removeWhere((key, _) => !event.sensors.any((s) => '${s.type.index}_${s.index}' == key));
+    critical.removeWhere(
+      (key, _) =>
+          !event.sensors.any((s) => '${s.type.index}_${s.index}' == key),
+    );
+    warning.removeWhere(
+      (key, _) =>
+          !event.sensors.any((s) => '${s.type.index}_${s.index}' == key),
+    );
 
-    emit(s.copyWith(selectedSensors: event.sensors, criticalRanges: critical, warningRanges: warning));
+    emit(
+      s.copyWith(
+        selectedSensors: event.sensors,
+        criticalRanges: critical,
+        warningRanges: warning,
+      ),
+    );
   }
 
-  void _updateCriticalRange(AlertUpdateCriticalRange event, Emitter<AlertState> emit) {
-    final s = _loaded(); if (s == null) return;
+  void _updateCriticalRange(
+    AlertUpdateCriticalRange event,
+    Emitter<AlertState> emit,
+  ) {
+    final s = _loaded();
+    if (s == null) return;
     final key = '${event.sensor.type.index}_${event.sensor.index}';
     emit(s.copyWith(criticalRanges: {...s.criticalRanges, key: event.range}));
   }
 
-  void _updateWarningRange(AlertUpdateWarningRange event, Emitter<AlertState> emit) {
-    final s = _loaded(); if (s == null) return;
+  void _updateWarningRange(
+    AlertUpdateWarningRange event,
+    Emitter<AlertState> emit,
+  ) {
+    final s = _loaded();
+    if (s == null) return;
     final key = '${event.sensor.type.index}_${event.sensor.index}';
     emit(s.copyWith(warningRanges: {...s.warningRanges, key: event.range}));
   }
 
-  void _updateWarningEnabled(AlertUpdateWarningEnabled event, Emitter<AlertState> emit) {
-    final s = _loaded(); if (s == null) return;
+  void _updateWarningEnabled(
+    AlertUpdateWarningEnabled event,
+    Emitter<AlertState> emit,
+  ) {
+    final s = _loaded();
+    if (s == null) return;
     emit(s.copyWith(isWarningEnabled: event.enabled));
   }
 
   // -- Messages --
 
-  void _clearSuccessMessage(AlertClearSuccessMessage event, Emitter<AlertState> emit) {
-    final s = _loaded(); if (s == null) return;
+  void _clearSuccessMessage(
+    AlertClearSuccessMessage event,
+    Emitter<AlertState> emit,
+  ) {
+    final s = _loaded();
+    if (s == null) return;
     emit(s.copyWith(clearSuccessMessage: true));
   }
 
-  void _clearErrorMessage(AlertClearErrorMessage event, Emitter<AlertState> emit) {
-    final s = _loaded(); if (s == null) return;
+  void _clearErrorMessage(
+    AlertClearErrorMessage event,
+    Emitter<AlertState> emit,
+  ) {
+    final s = _loaded();
+    if (s == null) return;
     emit(s.copyWith(clearErrorMessage: true));
   }
 
   void _pushError(AlertPushError event, Emitter<AlertState> emit) {
-    final s = _loaded(); if (s == null) return;
+    final s = _loaded();
+    if (s == null) return;
     emit(s.copyWith(errorMessage: event.message));
   }
 }

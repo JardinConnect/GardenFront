@@ -173,7 +173,6 @@ class AlertEvent {
   }
 }
 
-
 // Convertit une chaîne en SensorType (snake_case API → SensorType)
 SensorType sensorTypeFromString(String type) {
   switch (type) {
@@ -190,7 +189,8 @@ SensorType sensorTypeFromString(String type) {
     case 'air_humidity':
       return SensorType.rain;
     default:
-      return SensorType.airTemperature; // Valeur par défaut pour éviter les erreurs
+      return SensorType
+          .airTemperature; // Valeur par défaut pour éviter les erreurs
   }
 }
 
@@ -247,12 +247,11 @@ SensorThreshold _sensorThresholdFromJson(Map<String, dynamic> json) {
 
 // Retourne la couleur appropriée pour chaque type de capteur
 Color getSensorColor(SensorType sensorType, {int index = 0}) {
-
   // Couleurs par défaut selon le type
   switch (sensorType) {
     case SensorType.airTemperature:
       return GardenColors.redAlert.shade500;
-      case SensorType.soilTemperature:
+    case SensorType.soilTemperature:
       return Colors.brown;
     case SensorType.humiditySurface:
       return GardenColors.blueInfo.shade400;
@@ -455,9 +454,10 @@ class AlertValidationResponse {
 
   factory AlertValidationResponse.fromJson(Map<String, dynamic> json) {
     return AlertValidationResponse(
-      conflicts: (json['conflicts'] as List<dynamic>)
-          .map((c) => AlertConflict.fromJson(c as Map<String, dynamic>))
-          .toList(),
+      conflicts:
+          (json['conflicts'] as List<dynamic>)
+              .map((c) => AlertConflict.fromJson(c as Map<String, dynamic>))
+              .toList(),
       hasConflicts: json['hasConflicts'] as bool,
     );
   }
@@ -478,4 +478,3 @@ class AlertValidationRequest {
     "sensorTypes": sensorTypes,
   };
 }
-

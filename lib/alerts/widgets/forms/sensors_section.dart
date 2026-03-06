@@ -64,13 +64,14 @@ class _SensorsSectionState extends State<SensorsSection> {
   void _loadAvailableSensors() {
     try {
       // Convertit les données JSON en objets _SensorData
-      final loadedSensors = widget.availableSensors.map((json) {
-        return _SensorData(
-          _parseSensorType(json['type'] as String),
-          json['displayName'] as String,
-          json['index'] as int,
-        );
-      }).toList();
+      final loadedSensors =
+          widget.availableSensors.map((json) {
+            return _SensorData(
+              _parseSensorType(json['type'] as String),
+              json['displayName'] as String,
+              json['index'] as int,
+            );
+          }).toList();
 
       setState(() {
         _allSensors = loadedSensors;
@@ -176,12 +177,10 @@ class _SensorsSectionState extends State<SensorsSection> {
       onTap: () => _toggleSensor(sensor),
       child: Container(
         decoration: BoxDecoration(
-          border: isSelected
-              ? Border.all(
-                  color: GardenColors.primary.shade500,
-                  width: 1,
-                )
-              : null,
+          border:
+              isSelected
+                  ? Border.all(color: GardenColors.primary.shade500, width: 1)
+                  : null,
           borderRadius: BorderRadius.circular(8),
         ),
         child: GardenCard(
@@ -216,17 +215,20 @@ class _SensorsSectionState extends State<SensorsSection> {
         height: 20,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isSelected ? GardenColors.primary.shade500 : Colors.transparent,
+          color:
+              isSelected ? GardenColors.primary.shade500 : Colors.transparent,
           border: Border.all(
-            color: isSelected
-                ? GardenColors.primary.shade500
-                : Colors.grey.shade400,
+            color:
+                isSelected
+                    ? GardenColors.primary.shade500
+                    : Colors.grey.shade400,
             width: 2,
           ),
         ),
-        child: isSelected
-            ? const Icon(Icons.check, size: 12, color: Colors.white)
-            : null,
+        child:
+            isSelected
+                ? const Icon(Icons.check, size: 12, color: Colors.white)
+                : null,
       ),
     );
   }

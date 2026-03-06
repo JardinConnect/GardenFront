@@ -39,7 +39,8 @@ class _AlertTableSectionState extends State<AlertTableSection> {
   }
 
   void _updateSelectAllState() {
-    _selectAll = widget.cells.isNotEmpty &&
+    _selectAll =
+        widget.cells.isNotEmpty &&
         widget.cells.every((cell) => _selectedIds.contains(cell.id));
   }
 
@@ -54,7 +55,8 @@ class _AlertTableSectionState extends State<AlertTableSection> {
         _selectedIds.addAll(widget.cells.map((cell) => cell.id));
       } else {
         _selectedIds.clear();
-      }});
+      }
+    });
     _notifySelectionChanged();
   }
 
@@ -64,7 +66,8 @@ class _AlertTableSectionState extends State<AlertTableSection> {
         _selectedIds.remove(cell.id);
       } else {
         _selectedIds.add(cell.id);
-      }_updateSelectAllState();
+      }
+      _updateSelectAllState();
     });
     _notifySelectionChanged();
   }
@@ -113,15 +116,9 @@ class _AlertTableSectionState extends State<AlertTableSection> {
             ),
           ),
           const SizedBox(width: _colGap),
-          Expanded(
-            flex: 2,
-            child: _headerCell('Cellule'),
-          ),
+          Expanded(flex: 2, child: _headerCell('Cellule')),
           const SizedBox(width: _colGap),
-          Expanded(
-            flex: 3,
-            child: _headerCell('Localisation'),
-          ),
+          Expanded(flex: 3, child: _headerCell('Localisation')),
           const SizedBox(width: _colGap),
           Text(
             '${_selectedIds.length}/${widget.cells.length}',
@@ -157,10 +154,7 @@ class _AlertTableSectionState extends State<AlertTableSection> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: Colors.grey.shade200,
-              width: 1,
-            ),
+            border: Border.all(color: Colors.grey.shade200, width: 1),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -204,5 +198,4 @@ class _AlertTableSectionState extends State<AlertTableSection> {
       ),
     );
   }
-
 }

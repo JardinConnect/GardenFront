@@ -74,4 +74,3 @@ class AlertConfigurationForm extends StatelessWidget {
     );
   }
 }
-

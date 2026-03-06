@@ -11,19 +11,13 @@ import '../../models/alert_models.dart';
 class AlertDangerZone extends StatelessWidget {
   final Alert alert;
 
-  const AlertDangerZone({
-    super.key,
-    required this.alert,
-  });
+  const AlertDangerZone({super.key, required this.alert});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.red,
-          width: 2,
-        ),
+        border: Border.all(color: Colors.red, width: 2),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
@@ -34,11 +28,7 @@ class AlertDangerZone extends StatelessWidget {
             // Titre de la zone de danger
             Row(
               children: [
-                Icon(
-                  Icons.warning_amber_rounded,
-                  color: Colors.red,
-                  size: 24,
-                ),
+                Icon(Icons.warning_amber_rounded, color: Colors.red, size: 24),
                 const SizedBox(width: 8),
                 Text(
                   'Zone de danger',
@@ -55,10 +45,7 @@ class AlertDangerZone extends StatelessWidget {
             // Description
             Text(
               'La suppression d\'une alerte est irréversible. Toutes les données associées seront perdues.',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[700],
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey[700]),
             ),
 
             const SizedBox(height: 16),
@@ -121,7 +108,11 @@ class _DeleteConfirmContent extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.warning_amber_rounded, color: Colors.red, size: 18),
+              const Icon(
+                Icons.warning_amber_rounded,
+                color: Colors.red,
+                size: 18,
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -161,4 +152,3 @@ class _DeleteConfirmContent extends StatelessWidget {
     );
   }
 }
-

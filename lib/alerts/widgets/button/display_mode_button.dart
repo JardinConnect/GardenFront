@@ -25,14 +25,10 @@ class DisplayModeButton extends StatelessWidget {
       child: IconButton(
         onPressed: onToggle,
         icon: Icon(
-          isListMode 
-              ? Icons.dashboard 
-              : Icons.format_list_bulleted,
+          isListMode ? Icons.dashboard : Icons.format_list_bulleted,
           color: GardenColors.primary.shade50,
         ),
-        tooltip: isListMode 
-            ? 'Affichage en cartes'
-            : 'Affichage en liste',
+        tooltip: isListMode ? 'Affichage en cartes' : 'Affichage en liste',
       ),
     );
   }

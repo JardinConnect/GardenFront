@@ -6,10 +6,7 @@ class AddAlertButton extends StatelessWidget {
   /// Callback appelé lors du clic sur le bouton
   final VoidCallback onPressed;
 
-  const AddAlertButton({
-    super.key,
-    required this.onPressed,
-  });
+  const AddAlertButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +17,7 @@ class AddAlertButton extends StatelessWidget {
       ),
       child: IconButton(
         onPressed: onPressed,
-        icon: Icon(
-          Icons.add,
-          color: GardenColors.primary.shade50,
-        ),
+        icon: Icon(Icons.add, color: GardenColors.primary.shade50),
         tooltip: 'Ajouter une alerte',
       ),
     );

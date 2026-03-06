@@ -16,8 +16,12 @@ class AlertHistoryView extends StatelessWidget {
     return SingleChildScrollView(
       child: AlertTable(
         events: alertEvents,
-        onArchiveEvent: (event) => context.read<AlertBloc>().add(AlertDeleteEvent(eventId: event.id)),
-        onArchiveAll: alertEvents.isNotEmpty ? () => _confirmArchiveAll(context) : null,
+        onArchiveEvent:
+            (event) => context.read<AlertBloc>().add(
+              AlertDeleteEvent(eventId: event.id),
+            ),
+        onArchiveAll:
+            alertEvents.isNotEmpty ? () => _confirmArchiveAll(context) : null,
       ),
     );
   }
@@ -64,7 +68,10 @@ class _ArchiveAllContent extends StatelessWidget {
               onPressed: () => Navigator.of(context).pop(true),
               icon: const Icon(Icons.archive_rounded, size: 16),
               label: const Text('Archiver tout'),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
             ),
           ],
         ),

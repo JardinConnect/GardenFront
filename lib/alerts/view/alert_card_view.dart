@@ -23,9 +23,10 @@ class AlertCardView extends StatelessWidget {
         spacing: 16,
         runSpacing: 16,
         // Clé stable par alerte pour préserver le state de pagination
-        children: alerts
-            .map((a) => _AlertCard(key: ValueKey(a.id), alert: a))
-            .toList(),
+        children:
+            alerts
+                .map((a) => _AlertCard(key: ValueKey(a.id), alert: a))
+                .toList(),
       ),
     );
   }
@@ -63,21 +64,24 @@ class _AlertCardState extends State<_AlertCard> {
         title: widget.alert.title,
         sensorType: sensor.sensorType,
         threshold: SensorThreshold(
-            thresholds: sensor.threshold.thresholds.take(6).toList()),
+          thresholds: sensor.threshold.thresholds.take(6).toList(),
+        ),
         isEnabled: _isEnabled,
         onToggle: (value) {
           setState(() => _isEnabled = value);
           context.read<AlertBloc>().add(
-              AlertToggleStatus(alertId: widget.alert.id, isActive: value));
+            AlertToggleStatus(alertId: widget.alert.id, isActive: value),
+          );
         },
         totalPages: sensors.length,
         currentPage: _currentPage,
         onPageChanged: (page) => setState(() => _currentPage = page),
         iconColor: getSensorColor(sensor.sensorType),
         // Tap sur la carte → ouvre l'édition
-        onTap: () => context
-            .read<AlertBloc>()
-            .add(AlertShowEditView(alertId: widget.alert.id)),
+        onTap:
+            () => context.read<AlertBloc>().add(
+              AlertShowEditView(alertId: widget.alert.id),
+            ),
       ),
     );
   }

@@ -114,10 +114,16 @@ final class AlertLoaded extends AlertState {
       criticalRanges: criticalRanges ?? this.criticalRanges,
       warningRanges: warningRanges ?? this.warningRanges,
       isWarningEnabled: isWarningEnabled ?? this.isWarningEnabled,
-      pendingConflicts: clearPendingConflicts ? null : (pendingConflicts ?? this.pendingConflicts),
-      pendingRequest: clearPendingRequest ? null : (pendingRequest ?? this.pendingRequest),
-      successMessage: clearSuccessMessage ? null : (successMessage ?? this.successMessage),
-      errorMessage: clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
+      pendingConflicts:
+          clearPendingConflicts
+              ? null
+              : (pendingConflicts ?? this.pendingConflicts),
+      pendingRequest:
+          clearPendingRequest ? null : (pendingRequest ?? this.pendingRequest),
+      successMessage:
+          clearSuccessMessage ? null : (successMessage ?? this.successMessage),
+      errorMessage:
+          clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
     );
   }
 }

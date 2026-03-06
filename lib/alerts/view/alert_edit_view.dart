@@ -46,11 +46,16 @@ class _AlertEditViewState extends State<AlertEditView> {
   void _loadAlertData() {
     try {
       _nameController.text = (widget.alertDetails['title'] as String?) ?? '';
-      _selectedCellIds = (widget.alertDetails['cellIds'] as List<dynamic>?)?.cast<String>() ?? [];
+      _selectedCellIds =
+          (widget.alertDetails['cellIds'] as List<dynamic>?)?.cast<String>() ??
+          [];
       setState(() => _isLoading = false);
     } catch (e) {
       setState(() => _isLoading = false);
-      if (mounted) context.read<AlertBloc>().add(AlertPushError(message: 'Erreur de chargement : $e'));
+      if (mounted)
+        context.read<AlertBloc>().add(
+          AlertPushError(message: 'Erreur de chargement : $e'),
+        );
     }
   }
 
@@ -60,7 +65,8 @@ class _AlertEditViewState extends State<AlertEditView> {
 
     return BlocBuilder<AlertBloc, AlertState>(
       builder: (context, state) {
-        if (state is! AlertLoaded) return const Center(child: CircularProgressIndicator());
+        if (state is! AlertLoaded)
+          return const Center(child: CircularProgressIndicator());
 
         return Padding(
           padding: const EdgeInsets.all(16),
@@ -80,13 +86,25 @@ class _AlertEditViewState extends State<AlertEditView> {
                           nameController: _nameController,
                           nameValidator: _validateName,
                           selectedSensors: state.selectedSensors,
-                          onSensorsChanged: (s) => context.read<AlertBloc>().add(AlertUpdateSensors(sensors: s)),
+                          onSensorsChanged:
+                              (s) => context.read<AlertBloc>().add(
+                                AlertUpdateSensors(sensors: s),
+                              ),
                           criticalRanges: state.criticalRanges,
                           warningRanges: state.warningRanges,
                           isWarningEnabled: state.isWarningEnabled,
-                          onCriticalRangeChanged: (s, r) => context.read<AlertBloc>().add(AlertUpdateCriticalRange(sensor: s, range: r)),
-                          onWarningRangeChanged: (s, r) => context.read<AlertBloc>().add(AlertUpdateWarningRange(sensor: s, range: r)),
-                          onWarningEnabledChanged: (e) => context.read<AlertBloc>().add(AlertUpdateWarningEnabled(enabled: e)),
+                          onCriticalRangeChanged:
+                              (s, r) => context.read<AlertBloc>().add(
+                                AlertUpdateCriticalRange(sensor: s, range: r),
+                              ),
+                          onWarningRangeChanged:
+                              (s, r) => context.read<AlertBloc>().add(
+                                AlertUpdateWarningRange(sensor: s, range: r),
+                              ),
+                          onWarningEnabledChanged:
+                              (e) => context.read<AlertBloc>().add(
+                                AlertUpdateWarningEnabled(enabled: e),
+                              ),
                           availableSensors: widget.availableSensors,
                         ),
                       ),
@@ -100,13 +118,19 @@ class _AlertEditViewState extends State<AlertEditView> {
                           Expanded(
                             flex: 3,
                             child: GardenCard(
-                              child: state.cells.isEmpty
-                                  ? const Center(child: CircularProgressIndicator())
-                                  : AlertTableSection(
-                                      cells: state.cells,
-                                      selectedCellIds: _selectedCellIds,
-                                      onSelectionChanged: (ids) => setState(() => _selectedCellIds = ids),
-                                    ),
+                              child:
+                                  state.cells.isEmpty
+                                      ? const Center(
+                                        child: CircularProgressIndicator(),
+                                      )
+                                      : AlertTableSection(
+                                        cells: state.cells,
+                                        selectedCellIds: _selectedCellIds,
+                                        onSelectionChanged:
+                                            (ids) => setState(
+                                              () => _selectedCellIds = ids,
+                                            ),
+                                      ),
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -148,19 +172,26 @@ class _AlertEditViewState extends State<AlertEditView> {
             children: [
               Icon(Icons.arrow_back_ios, size: 16),
               SizedBox(width: 4),
-              Text('Retour', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+              Text(
+                'Retour',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
             ],
           ),
         ),
         const SizedBox(height: 24),
-        Text('Modifier l\'alerte', style: Theme.of(context).textTheme.headlineLarge),
+        Text(
+          'Modifier l\'alerte',
+          style: Theme.of(context).textTheme.headlineLarge,
+        ),
       ],
     );
   }
 
   String? _validateName(String? value) {
     if (value == null || value.trim().isEmpty) return 'Le nom est obligatoire';
-    if (value.trim().length < 3) return 'Le nom doit contenir au moins 3 caractères';
+    if (value.trim().length < 3)
+      return 'Le nom doit contenir au moins 3 caractères';
     return null;
   }
 
@@ -172,35 +203,44 @@ class _AlertEditViewState extends State<AlertEditView> {
       return;
     }
     if (state.selectedSensors.isEmpty) {
-      context.read<AlertBloc>().add(const AlertPushError(message: 'Sélectionnez au moins un capteur'));
+      context.read<AlertBloc>().add(
+        const AlertPushError(message: 'Sélectionnez au moins un capteur'),
+      );
       return;
     }
     if (_selectedCellIds.isEmpty) {
-      context.read<AlertBloc>().add(const AlertPushError(message: 'Sélectionnez au moins une cellule'));
+      context.read<AlertBloc>().add(
+        const AlertPushError(message: 'Sélectionnez au moins une cellule'),
+      );
       return;
     }
 
-    final sensors = state.selectedSensors.map((sensor) {
-      final key = '${sensor.type.index}_${sensor.index}';
-      final critical = state.criticalRanges[key] ?? sensor.type.defaultCriticalRange;
-      final warning = state.warningRanges[key] ?? sensor.type.defaultWarningRange;
-      return SensorRequest(
-        type: sensorTypeToApiString(sensor.type),
-        index: sensor.index,
-        criticalRange: SensorRange(min: critical.start, max: critical.end),
-        warningRange: SensorRange(min: warning.start, max: warning.end),
-      );
-    }).toList();
+    final sensors =
+        state.selectedSensors.map((sensor) {
+          final key = '${sensor.type.index}_${sensor.index}';
+          final critical =
+              state.criticalRanges[key] ?? sensor.type.defaultCriticalRange;
+          final warning =
+              state.warningRanges[key] ?? sensor.type.defaultWarningRange;
+          return SensorRequest(
+            type: sensorTypeToApiString(sensor.type),
+            index: sensor.index,
+            criticalRange: SensorRange(min: critical.start, max: critical.end),
+            warningRange: SensorRange(min: warning.start, max: warning.end),
+          );
+        }).toList();
 
-    context.read<AlertBloc>().add(AlertUpdateAlert(
-      alertId: widget.alert.id,
-      request: AlertCreationRequest(
-        title: name,
-        isActive: widget.alert.isActive,
-        cellIds: _selectedCellIds,
-        sensors: sensors,
-        warningEnabled: state.isWarningEnabled,
+    context.read<AlertBloc>().add(
+      AlertUpdateAlert(
+        alertId: widget.alert.id,
+        request: AlertCreationRequest(
+          title: name,
+          isActive: widget.alert.isActive,
+          cellIds: _selectedCellIds,
+          sensors: sensors,
+          warningEnabled: state.isWarningEnabled,
+        ),
       ),
-    ));
+    );
   }
 }

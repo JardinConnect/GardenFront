@@ -87,45 +87,46 @@ class _AlertConflictContent extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: summary.entries.map((entry) {
-                return Padding(
-                  padding: EdgeInsets.only(bottom: GardenSpace.gapSm),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+              children:
+                  summary.entries.map((entry) {
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: GardenSpace.gapSm),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            Icons.notifications_rounded,
-                            size: 14,
-                            color: Colors.orange.shade700,
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.notifications_rounded,
+                                size: 14,
+                                color: Colors.orange.shade700,
+                              ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  entry.key,
+                                  style: GardenTypography.bodyMd.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              entry.key,
-                              style: GardenTypography.bodyMd.copyWith(
-                                fontWeight: FontWeight.w600,
+                          ...entry.value.map(
+                            (detail) => Padding(
+                              padding: const EdgeInsets.only(left: 18, top: 2),
+                              child: Text(
+                                '• $detail',
+                                style: GardenTypography.bodyMd.copyWith(
+                                  color: GardenColors.typography.shade300,
+                                ),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      ...entry.value.map(
-                        (detail) => Padding(
-                          padding: const EdgeInsets.only(left: 18, top: 2),
-                          child: Text(
-                            '• $detail',
-                            style: GardenTypography.bodyMd.copyWith(
-                              color: GardenColors.typography.shade300,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
+                    );
+                  }).toList(),
             ),
           ),
         ),
@@ -187,4 +188,3 @@ class _AlertConflictContent extends StatelessWidget {
     );
   }
 }
-

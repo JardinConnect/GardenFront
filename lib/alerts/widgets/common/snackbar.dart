@@ -22,13 +22,14 @@ class _ToastManager {
     late OverlayEntry entry;
 
     entry = OverlayEntry(
-      builder: (_) => _PositionedToast(
-        index: _entries.indexOf(entry),
-        toastHeight: _toastHeight,
-        gap: _gap,
-        bottomBase: _bottomBase,
-        child: toast,
-      ),
+      builder:
+          (_) => _PositionedToast(
+            index: _entries.indexOf(entry),
+            toastHeight: _toastHeight,
+            gap: _gap,
+            bottomBase: _bottomBase,
+            child: toast,
+          ),
     );
 
     _entries.add(entry);
@@ -89,10 +90,7 @@ class _PositionedToast extends StatelessWidget {
       bottom: bottom,
       right: rightMargin,
       width: targetWidth,
-      child: Material(
-        color: Colors.transparent,
-        child: child,
-      ),
+      child: Material(color: Colors.transparent, child: child),
     );
   }
 }
@@ -124,4 +122,3 @@ void showSnackBarError(BuildContext context, String message) {
     const Duration(seconds: 5),
   );
 }
-

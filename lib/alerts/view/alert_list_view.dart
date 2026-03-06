@@ -14,28 +14,42 @@ class AlertListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (alerts.isEmpty) return const Center(child: Text('Aucune alerte disponible'));
+    if (alerts.isEmpty)
+      return const Center(child: Text('Aucune alerte disponible'));
 
     return GenericListWidget(
-      items: alerts.map((alert) => GenericListItem(
-        label: alert.title,
-        hoverable: true,
-        // Icônes des capteurs associés à l'alerte
-        extraWidget: SensorIconsRow(
-          activeSensorTypes: alert.sensors.map((s) => s.sensorType).toList(),
-          iconSize: GardenIconSize.sm,
-        ),
-        // Toggle actif/inactif
-        trailingWidget: GardenToggle(
-          enabledIcon: Icons.check,
-          isEnabled: alert.isActive,
-          onToggle: (_) => context.read<AlertBloc>().add(
-            AlertToggleStatus(alertId: alert.id, isActive: !alert.isActive),
-          ),
-        ),
-        // Tap sur la ligne → ouvre l'édition
-        onTap: () => context.read<AlertBloc>().add(AlertShowEditView(alertId: alert.id)),
-      )).toList(),
+      items:
+          alerts
+              .map(
+                (alert) => GenericListItem(
+                  label: alert.title,
+                  hoverable: true,
+                  // Icônes des capteurs associés à l'alerte
+                  extraWidget: SensorIconsRow(
+                    activeSensorTypes:
+                        alert.sensors.map((s) => s.sensorType).toList(),
+                    iconSize: GardenIconSize.sm,
+                  ),
+                  // Toggle actif/inactif
+                  trailingWidget: GardenToggle(
+                    enabledIcon: Icons.check,
+                    isEnabled: alert.isActive,
+                    onToggle:
+                        (_) => context.read<AlertBloc>().add(
+                          AlertToggleStatus(
+                            alertId: alert.id,
+                            isActive: !alert.isActive,
+                          ),
+                        ),
+                  ),
+                  // Tap sur la ligne → ouvre l'édition
+                  onTap:
+                      () => context.read<AlertBloc>().add(
+                        AlertShowEditView(alertId: alert.id),
+                      ),
+                ),
+              )
+              .toList(),
     );
   }
 }

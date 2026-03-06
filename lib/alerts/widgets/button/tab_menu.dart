@@ -29,16 +29,17 @@ class AlertTabMenu extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
-        children: AlertTabType.values.map((tab) {
-          return Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: TabItem(
-              label: tab.label,
-              isSelected: selectedTab == tab,
-              onTap: () => onTabSelected(tab),
-            ),
-          );
-        }).toList(),
+        children:
+            AlertTabType.values.map((tab) {
+              return Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: TabItem(
+                  label: tab.label,
+                  isSelected: selectedTab == tab,
+                  onTap: () => onTabSelected(tab),
+                ),
+              );
+            }).toList(),
       ),
     );
   }
