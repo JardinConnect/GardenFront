@@ -27,6 +27,7 @@ class AlertListView extends StatelessWidget {
         ),
         // Toggle actif/inactif
         trailingWidget: GardenToggle(
+          enabledIcon: Icons.check,
           isEnabled: alert.isActive,
           onToggle: (_) => context.read<AlertBloc>().add(
             AlertToggleStatus(alertId: alert.id, isActive: !alert.isActive),
