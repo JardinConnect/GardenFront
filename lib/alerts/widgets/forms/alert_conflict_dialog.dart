@@ -10,20 +10,26 @@ import '../../../common/widgets/generic_dialog.dart';
 /// Retourne `true` si l'utilisateur confirme l'écrasement, `null` si annulé.
 class AlertConflictDialog extends StatelessWidget {
   final List<AlertConflict> conflicts;
+  final bool isEditing;
 
-  const AlertConflictDialog({super.key, required this.conflicts});
+  const AlertConflictDialog({
+    super.key,
+    required this.conflicts,
+    this.isEditing = false,
+  });
 
   /// Affiche le dialogue et retourne `true` (écraser) ou `null` (annuler).
   static Future<bool?> show(
     BuildContext context,
-    List<AlertConflict> conflicts,
-  ) {
+    List<AlertConflict> conflicts, {
+    bool isEditing = false,
+  }) {
     return StyledDialog.show<bool>(
       context,
       title: 'Conflits détectés',
       dismissible: false,
       widthFactor: 0.35,
-      content: _AlertConflictContent(conflicts: conflicts),
+      content: _AlertConflictContent(conflicts: conflicts, isEditing: isEditing),
     );
   }
 
@@ -33,15 +39,16 @@ class AlertConflictDialog extends StatelessWidget {
       title: 'Conflits détectés',
       dismissible: false,
       widthFactor: 0.35,
-      content: _AlertConflictContent(conflicts: conflicts),
+      content: _AlertConflictContent(conflicts: conflicts, isEditing: isEditing),
     );
   }
 }
 
 class _AlertConflictContent extends StatelessWidget {
   final List<AlertConflict> conflicts;
+  final bool isEditing;
 
-  const _AlertConflictContent({required this.conflicts});
+  const _AlertConflictContent({required this.conflicts, this.isEditing = false});
 
   Map<String, List<String>> _buildSummary() {
     final summary = <String, List<String>>{};
@@ -66,7 +73,7 @@ class _AlertConflictContent extends StatelessWidget {
           children: [
             Icon(
               Icons.warning_amber_rounded,
-              color: Colors.orange.shade700,
+              color: GardenColors.redAlert.shade700,
               size: 18,
             ),
             const SizedBox(width: 8),
@@ -99,7 +106,7 @@ class _AlertConflictContent extends StatelessWidget {
                               Icon(
                                 Icons.notifications_rounded,
                                 size: 14,
-                                color: Colors.orange.shade700,
+                                color: GardenColors.redAlert.shade700,
                               ),
                               const SizedBox(width: 4),
                               Expanded(
@@ -152,7 +159,9 @@ class _AlertConflictContent extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'Voulez-vous écraser les alertes existantes ou annuler la création ?',
+                  isEditing
+                      ? 'Voulez-vous écraser les alertes existantes ou annuler la modification ?'
+                      : 'Voulez-vous écraser les alertes existantes ou annuler la création ?',
                   style: GardenTypography.bodyMd.copyWith(
                     color: Colors.red.shade800,
                   ),

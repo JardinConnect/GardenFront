@@ -60,30 +60,32 @@ class _AlertAddViewState extends State<AlertAddView> {
                   children: [
                     // Formulaire de configuration (nom + capteurs + seuils)
                     Expanded(
-                      child: AlertConfigurationForm(
-                        nameController: _nameController,
-                        nameValidator: _validateName,
-                        selectedSensors: state.selectedSensors,
-                        onSensorsChanged:
-                            (s) => context.read<AlertBloc>().add(
-                              AlertUpdateSensors(sensors: s),
-                            ),
-                        criticalRanges: state.criticalRanges,
-                        warningRanges: state.warningRanges,
-                        isWarningEnabled: state.isWarningEnabled,
-                        onCriticalRangeChanged:
-                            (s, r) => context.read<AlertBloc>().add(
-                              AlertUpdateCriticalRange(sensor: s, range: r),
-                            ),
-                        onWarningRangeChanged:
-                            (s, r) => context.read<AlertBloc>().add(
-                              AlertUpdateWarningRange(sensor: s, range: r),
-                            ),
-                        onWarningEnabledChanged:
-                            (e) => context.read<AlertBloc>().add(
-                              AlertUpdateWarningEnabled(enabled: e),
-                            ),
-                        availableSensors: widget.availableSensors,
+                      child: SingleChildScrollView(
+                        child: AlertConfigurationForm(
+                          nameController: _nameController,
+                          nameValidator: _validateName,
+                          selectedSensors: state.selectedSensors,
+                          onSensorsChanged:
+                              (s) => context.read<AlertBloc>().add(
+                                AlertUpdateSensors(sensors: s),
+                              ),
+                          criticalRanges: state.criticalRanges,
+                          warningRanges: state.warningRanges,
+                          isWarningEnabled: state.isWarningEnabled,
+                          onCriticalRangeChanged:
+                              (s, r) => context.read<AlertBloc>().add(
+                                AlertUpdateCriticalRange(sensor: s, range: r),
+                              ),
+                          onWarningRangeChanged:
+                              (s, r) => context.read<AlertBloc>().add(
+                                AlertUpdateWarningRange(sensor: s, range: r),
+                              ),
+                          onWarningEnabledChanged:
+                              (e) => context.read<AlertBloc>().add(
+                                AlertUpdateWarningEnabled(enabled: e),
+                              ),
+                          availableSensors: widget.availableSensors,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -150,24 +152,19 @@ class _AlertAddViewState extends State<AlertAddView> {
       return;
     }
 
-    // Construit la liste de capteurs avec l'index par type
-    final indexByType = <SensorType, int>{};
+    // Construit la liste de capteurs
     final sensors =
         state.selectedSensors.map((sensor) {
           final key = '${sensor.type.index}_${sensor.index}';
-          final typeIndex = indexByType[sensor.type] ?? 0;
-          indexByType[sensor.type] = typeIndex + 1;
+          final critical =
+              state.criticalRanges[key] ?? sensor.type.defaultCriticalRange;
+          final warning =
+              state.warningRanges[key] ?? sensor.type.defaultWarningRange;
           return SensorRequest(
             type: sensorTypeToApiString(sensor.type),
-            index: typeIndex,
-            criticalRange: SensorRange(
-              min: state.criticalRanges[key]?.start ?? 0,
-              max: state.criticalRanges[key]?.end ?? 100,
-            ),
-            warningRange: SensorRange(
-              min: state.warningRanges[key]?.start ?? 0,
-              max: state.warningRanges[key]?.end ?? 100,
-            ),
+            index: sensor.index,
+            criticalRange: SensorRange(min: critical.start, max: critical.end),
+            warningRange: SensorRange(min: warning.start, max: warning.end),
           );
         }).toList();
 

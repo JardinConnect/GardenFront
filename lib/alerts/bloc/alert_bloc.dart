@@ -28,6 +28,9 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
     on<AlertConfirmCreate>(_confirmCreate);
     on<AlertCancelCreate>(_cancelCreate);
     on<AlertCreateAlert>(_createAlert);
+    on<AlertValidateUpdate>(_validateUpdate);
+    on<AlertConfirmUpdate>(_confirmUpdate);
+    on<AlertCancelUpdate>(_cancelUpdate);
     on<AlertUpdateAlert>(_updateAlert);
     on<AlertDeleteAlert>(_deleteAlert);
     on<AlertToggleStatus>(_toggleStatus);
@@ -274,6 +277,67 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
         ),
       );
     }
+  }
+
+  Future<void> _validateUpdate(
+    AlertValidateUpdate event,
+    Emitter<AlertState> emit,
+  ) async {
+    final s = _loaded();
+    if (s == null) return;
+    try {
+      final sensorTypes =
+          event.request.sensors.map((s) => s.type).toSet().toList();
+      final validation = await _alertRepository.validateAlert(
+        AlertValidationRequest(
+          cellIds: event.request.cellIds,
+          sensorTypes: sensorTypes,
+        ),
+      );
+
+      // Filtre les conflits qui ne concernent pas l'alerte en cours d'édition
+      final filteredConflicts =
+          validation.conflicts
+              .where((c) => c.existingAlertId != event.alertId)
+              .toList();
+
+      if (filteredConflicts.isNotEmpty) {
+        // Conflits détectés → stocke la requête et attend la décision
+        emit(
+          s.copyWith(
+            pendingConflicts: filteredConflicts,
+            pendingRequest: event.request,
+            editingAlertId: event.alertId,
+          ),
+        );
+      } else {
+        add(AlertUpdateAlert(alertId: event.alertId, request: event.request));
+      }
+    } catch (e) {
+      emit(s.copyWith(errorMessage: 'Erreur de validation : $e'));
+    }
+  }
+
+  void _confirmUpdate(AlertConfirmUpdate event, Emitter<AlertState> emit) {
+    final s = _loaded();
+    if (s == null) return;
+    final pending = s.pendingRequest;
+    final alertId = s.editingAlertId;
+    if (pending == null || alertId == null) return;
+
+    emit(s.copyWith(clearPendingConflicts: true, clearPendingRequest: true));
+    add(
+      AlertUpdateAlert(
+        alertId: alertId,
+        request: pending.copyWith(overwriteExisting: event.overwrite),
+      ),
+    );
+  }
+
+  void _cancelUpdate(AlertCancelUpdate event, Emitter<AlertState> emit) {
+    final s = _loaded();
+    if (s == null) return;
+    emit(s.copyWith(clearPendingConflicts: true, clearPendingRequest: true));
   }
 
   Future<void> _updateAlert(

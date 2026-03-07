@@ -5,6 +5,7 @@ import 'package:garden_ui/ui/components.dart';
 import '../bloc/alert_bloc.dart';
 import '../models/alert_models.dart';
 import '../widgets/forms/alert_configuration_form.dart';
+import '../widgets/forms/alert_conflict_dialog.dart';
 import '../widgets/forms/alert_danger_zone.dart';
 import '../widgets/forms/alert_table_section.dart';
 
@@ -63,7 +64,19 @@ class _AlertEditViewState extends State<AlertEditView> {
   Widget build(BuildContext context) {
     if (_isLoading) return const Center(child: CircularProgressIndicator());
 
-    return BlocBuilder<AlertBloc, AlertState>(
+    return BlocConsumer<AlertBloc, AlertState>(
+      // Ouvre la popup de conflits dès qu'ils arrivent dans le state
+      listenWhen:
+          (prev, curr) =>
+              curr is AlertLoaded &&
+              curr.pendingConflicts != null &&
+              curr.pendingConflicts!.isNotEmpty &&
+              (prev is! AlertLoaded ||
+                  prev.pendingConflicts != curr.pendingConflicts),
+      listener: (context, state) {
+        if (state is AlertLoaded)
+          _showConflictDialog(context, state.pendingConflicts!);
+      },
       builder: (context, state) {
         if (state is! AlertLoaded)
           return const Center(child: CircularProgressIndicator());
@@ -231,7 +244,7 @@ class _AlertEditViewState extends State<AlertEditView> {
         }).toList();
 
     context.read<AlertBloc>().add(
-      AlertUpdateAlert(
+      AlertValidateUpdate(
         alertId: widget.alert.id,
         request: AlertCreationRequest(
           title: name,
@@ -241,6 +254,20 @@ class _AlertEditViewState extends State<AlertEditView> {
           warningEnabled: state.isWarningEnabled,
         ),
       ),
+    );
+  }
+
+  // Affiche la popup de résolution des conflits
+  Future<void> _showConflictDialog(
+    BuildContext context,
+    List<AlertConflict> conflicts,
+  ) async {
+    final result = await AlertConflictDialog.show(context, conflicts, isEditing: true);
+    if (!context.mounted) return;
+    context.read<AlertBloc>().add(
+      result != null
+          ? AlertConfirmUpdate(overwrite: result)
+          : const AlertCancelUpdate(),
     );
   }
 }
