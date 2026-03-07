@@ -28,6 +28,9 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
     on<AlertConfirmCreate>(_confirmCreate);
     on<AlertCancelCreate>(_cancelCreate);
     on<AlertCreateAlert>(_createAlert);
+    on<AlertValidateUpdate>(_validateUpdate);
+    on<AlertConfirmUpdate>(_confirmUpdate);
+    on<AlertCancelUpdate>(_cancelUpdate);
     on<AlertUpdateAlert>(_updateAlert);
     on<AlertDeleteAlert>(_deleteAlert);
     on<AlertToggleStatus>(_toggleStatus);
@@ -68,11 +71,21 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
   Future<void> _loadData(AlertLoadData event, Emitter<AlertState> emit) async {
     emit(AlertLoading());
     try {
-      final alerts = await _alertRepository.fetchAlerts();
+      // Tous les fetch en parallèle pour minimiser le temps de chargement initial
+      final results = await Future.wait([
+        _alertRepository.fetchAlerts(),
+        _alertRepository.fetchAlertHistory(),
+        _alertRepository.fetchSpaces(),
+        _alertRepository.fetchAvailableSensors(),
+        _alertRepository.fetchCells(), // préchargé ici pour éviter le délai en édition/ajout
+      ]);
+
+      final alerts = results[0] as List<Alert>;
       final sensorAlerts = alerts.expand((a) => a.sensors).toList();
-      final alertEvents = await _alertRepository.fetchAlertHistory();
-      final spaces = await _alertRepository.fetchSpaces();
-      final availableSensors = await _alertRepository.fetchAvailableSensors();
+      final alertEvents = results[1] as List<AlertEvent>;
+      final spaces = results[2] as List<Map<String, dynamic>>;
+      final availableSensors = results[3] as List<Map<String, dynamic>>;
+      final cells = results[4] as List<CellItem>;
 
       emit(
         AlertLoaded(
@@ -83,6 +96,7 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
           selectedTab: AlertTabType.alerts,
           spaces: spaces,
           availableSensors: availableSensors,
+          cells: cells,
         ),
       );
     } catch (e) {
@@ -107,8 +121,16 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
   void _showAddView(AlertShowAddView event, Emitter<AlertState> emit) {
     final s = _loaded();
     if (s == null) return;
-    emit(s.copyWith(isShowingAddView: true, isShowingEditView: false));
-    add(const AlertLoadCells());
+    // Les cellules sont préchargées dans _loadData, pas besoin de les recharger
+    emit(
+      s.copyWith(
+        isShowingAddView: true,
+        isShowingEditView: false,
+        selectedSensors: const [],
+        criticalRanges: const {},
+        warningRanges: const {},
+      ),
+    );
   }
 
   void _hideAddView(AlertHideAddView event, Emitter<AlertState> emit) {
@@ -137,14 +159,30 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
           ),
     );
 
-    // Charge détails + cellules en parallèle
+    // Emit intermédiaire : bascule vers la vue d'édition en vidant les données
+    // de l'édition précédente pour éviter un flash avec les mauvaises infos
+    emit(
+      s.copyWith(
+        isShowingEditView: true,
+        isShowingAddView: false,
+        editingAlertId: event.alertId,
+        clearEditingAlert: true,
+        clearAlertDetails: true,
+        selectedSensors: const [],
+        criticalRanges: const {},
+        warningRanges: const {},
+      ),
+    );
+
+    // Charge les détails de l'alerte, et les cellules seulement si pas encore chargées
+    final hasCells = s.cells.isNotEmpty;
     final results = await Future.wait([
       _alertRepository.fetchAlertDetails(event.alertId),
-      _alertRepository.fetchCells(),
+      if (!hasCells) _alertRepository.fetchCells(),
     ]);
 
     final details = results[0] as Map<String, dynamic>;
-    final cells = results[1] as List<CellItem>;
+    final cells = hasCells ? s.cells : results[1] as List<CellItem>;
 
     // Reconstruit les capteurs sélectionnés et leurs plages depuis l'API
     final sensorsData = details['sensors'] as List<dynamic>? ?? [];
@@ -274,6 +312,67 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
         ),
       );
     }
+  }
+
+  Future<void> _validateUpdate(
+    AlertValidateUpdate event,
+    Emitter<AlertState> emit,
+  ) async {
+    final s = _loaded();
+    if (s == null) return;
+    try {
+      final sensorTypes =
+          event.request.sensors.map((s) => s.type).toSet().toList();
+      final validation = await _alertRepository.validateAlert(
+        AlertValidationRequest(
+          cellIds: event.request.cellIds,
+          sensorTypes: sensorTypes,
+        ),
+      );
+
+      // Filtre les conflits qui ne concernent pas l'alerte en cours d'édition
+      final filteredConflicts =
+          validation.conflicts
+              .where((c) => c.existingAlertId != event.alertId)
+              .toList();
+
+      if (filteredConflicts.isNotEmpty) {
+        // Conflits détectés → stocke la requête et attend la décision
+        emit(
+          s.copyWith(
+            pendingConflicts: filteredConflicts,
+            pendingRequest: event.request,
+            editingAlertId: event.alertId,
+          ),
+        );
+      } else {
+        add(AlertUpdateAlert(alertId: event.alertId, request: event.request));
+      }
+    } catch (e) {
+      emit(s.copyWith(errorMessage: 'Erreur de validation : $e'));
+    }
+  }
+
+  void _confirmUpdate(AlertConfirmUpdate event, Emitter<AlertState> emit) {
+    final s = _loaded();
+    if (s == null) return;
+    final pending = s.pendingRequest;
+    final alertId = s.editingAlertId;
+    if (pending == null || alertId == null) return;
+
+    emit(s.copyWith(clearPendingConflicts: true, clearPendingRequest: true));
+    add(
+      AlertUpdateAlert(
+        alertId: alertId,
+        request: pending.copyWith(overwriteExisting: event.overwrite),
+      ),
+    );
+  }
+
+  void _cancelUpdate(AlertCancelUpdate event, Emitter<AlertState> emit) {
+    final s = _loaded();
+    if (s == null) return;
+    emit(s.copyWith(clearPendingConflicts: true, clearPendingRequest: true));
   }
 
   Future<void> _updateAlert(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/auth/utils/auth_extension.dart';
 import 'package:garden_connect/common/widgets/global_stat_card_widget.dart';
+import 'package:garden_connect/common/widgets/page_header.dart';
 import 'package:garden_connect/settings/dashboard/widgets/user_profile_widget.dart';
 
 import '../../users/repository/users_repository.dart';
@@ -42,16 +43,14 @@ class SettingsPage extends StatelessWidget {
                 final users = state.users;
                 final logs = state.logs;
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Padding(padding:EdgeInsetsGeometry.directional(top: 16, start: 8),child:  Text("Bonjour ${user.firstName} ${user.lastName}", style: Theme.of(context).textTheme.headlineLarge,),),
-                        Padding(
-                          padding: const EdgeInsetsGeometry.directional(top: 20),
-                          child: Row(
+                        PageHeader(title: "Bonjour ${user.firstName} ${user.lastName}"),
+                        Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
@@ -86,7 +85,6 @@ class SettingsPage extends StatelessWidget {
                               ),
                             ],
                           ),
-                        ),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [

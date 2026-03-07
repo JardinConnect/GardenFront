@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/auth/utils/auth_extension.dart';
 import '../../areas/bloc/area_bloc.dart';
 import '../../analytics/bloc/analytics_bloc.dart';
+import '../../common/widgets/page_header.dart';
 import '../widgets/tab_zones_widget.dart';
 
 class AreasPage extends StatelessWidget {
@@ -36,32 +37,27 @@ class AreasPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Gestion des espaces',
-                        style: Theme.of(context).textTheme.headlineLarge,
-                      ),
-                      areaState.selectedCell == null
-                          ? IconButton.filled(
-                            onPressed: () {
-                              context.read<AreaBloc>().add(
-                                ToggleAnalyticsWidget(),
-                              );
-                            },
-                            icon: Icon(
-                              areaState.toggleAnalyticsWidget
-                                  ? Icons.grid_view
-                                  : Icons.show_chart,
-                            ),
-                            style: IconButton.styleFrom(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary,
-                              foregroundColor: Colors.white,
-                            ),
-                          )
-                          : SizedBox.shrink(),
+                  PageHeader(
+                    title: 'Gestion des espaces',
+                    actions: [
+                      if (areaState.selectedCell == null)
+                        IconButton.filled(
+                          onPressed: () {
+                            context.read<AreaBloc>().add(
+                              ToggleAnalyticsWidget(),
+                            );
+                          },
+                          icon: Icon(
+                            areaState.toggleAnalyticsWidget
+                                ? Icons.grid_view
+                                : Icons.show_chart,
+                          ),
+                          style: IconButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            foregroundColor: Colors.white,
+                          ),
+                        ),
                     ],
                   ),
                   Expanded(

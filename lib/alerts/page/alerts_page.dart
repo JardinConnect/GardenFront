@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../common/widgets/page_header.dart';
 import '../bloc/alert_bloc.dart';
-import '../view/alert_add_view.dart';
 import '../view/alert_card_view.dart';
-import '../view/alert_edit_view.dart';
+import '../view/alert_form_view.dart';
 import '../view/alert_history_view.dart';
 import '../view/alert_list_view.dart';
 import '../widgets/button/add_alert_button.dart';
@@ -55,21 +55,27 @@ class AlertsPage extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        // Afficher la vue d'ajout d'alerte
+        // Vue de création
         if (state is AlertLoaded && state.isShowingAddView) {
-          return AlertAddView(availableSensors: state.availableSensors);
+          return AlertFormView(availableSensors: state.availableSensors);
         }
 
-        // Afficher la vue d'édition d'alerte
+        // Loader pendant le chargement des données d'édition
+        if (state is AlertLoaded &&
+            state.isShowingEditView &&
+            (state.editingAlert == null || state.alertDetails == null)) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        // Vue d'édition
         if (state is AlertLoaded &&
             state.isShowingEditView &&
             state.editingAlert != null &&
             state.alertDetails != null) {
-          return AlertEditView(
-            alert: state.editingAlert!,
-            spaces: state.spaces,
-            alertDetails: state.alertDetails!,
+          return AlertFormView(
             availableSensors: state.availableSensors,
+            alert: state.editingAlert,
+            alertDetails: state.alertDetails,
           );
         }
 
@@ -79,44 +85,33 @@ class AlertsPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Header avec titre et boutons d'action
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Gestion des alertes',
-                    style: Theme.of(context).textTheme.headlineLarge,
-                  ),
-                  Row(
-                    children: [
-                      // Bouton de mode d'affichage (liste/cartes), visible uniquement sur l'onglet alertes
-                      if (state is AlertLoaded &&
-                          state.selectedTab == AlertTabType.alerts) ...[
-                        DisplayModeButton(
-                          isListMode: state.displayMode == DisplayMode.list,
-                          onToggle:
-                              () => context.read<AlertBloc>().add(
-                                AlertChangeDisplayMode(
-                                  displayMode:
-                                      state.displayMode == DisplayMode.list
-                                          ? DisplayMode.card
-                                          : DisplayMode.list,
-                                ),
-                              ),
-                        ),
-                        const SizedBox(width: 8),
-                      ],
-                      // Bouton pour ajouter une alerte
-                      AddAlertButton(
-                        onPressed:
-                            () => context.read<AlertBloc>().add(
-                              AlertShowAddView(),
+              PageHeader(
+                title: 'Gestion des alertes',
+                actions: [
+                  // Bouton de mode d'affichage (liste/cartes), visible uniquement sur l'onglet alertes
+                  if (state is AlertLoaded &&
+                      state.selectedTab == AlertTabType.alerts)
+                    DisplayModeButton(
+                      isListMode: state.displayMode == DisplayMode.list,
+                      onToggle:
+                          () => context.read<AlertBloc>().add(
+                            AlertChangeDisplayMode(
+                              displayMode:
+                                  state.displayMode == DisplayMode.list
+                                      ? DisplayMode.card
+                                      : DisplayMode.list,
                             ),
-                      ),
-                    ],
+                          ),
+                    ),
+                  // Bouton pour ajouter une alerte
+                  AddAlertButton(
+                    onPressed:
+                        () => context.read<AlertBloc>().add(
+                          AlertShowAddView(),
+                        ),
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
               // Menu des onglets
               if (state is AlertLoaded)
                 AlertTabMenu(

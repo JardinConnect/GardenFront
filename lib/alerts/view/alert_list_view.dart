@@ -22,7 +22,6 @@ class AlertListView extends StatelessWidget {
               .map(
                 (alert) => GenericListItem(
                   label: alert.title,
-                  hoverable: true,
                   // Icônes des capteurs associés à l'alerte
                   extraWidget: SensorIconsRow(
                     activeSensorTypes:

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garden_connect/areas/models/area.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
+import 'package:intl/intl.dart';
 
 class AreaInfoCard extends StatelessWidget {
   final Area area;
@@ -56,8 +57,10 @@ class AreaInfoCard extends StatelessWidget {
               context: context,
               icon: Icons.person_add_outlined,
               label: 'Création',
-              name: 'Alexandre LEFAY',
-              date: '15 janvier 2025',
+              name: area.createdBy?.fullName ?? '-',
+              date: area.createdAt != null
+                  ? DateFormat.yMMMMd('fr_FR').format(area.createdAt!)
+                  : '-',
             ),
             Divider(color: Colors.grey[300]),
             // Informations de dernière modification
@@ -65,8 +68,10 @@ class AreaInfoCard extends StatelessWidget {
               context: context,
               icon: Icons.edit_outlined,
               label: 'Dernière modification',
-              name: 'Benjamin COUET',
-              date: '20 janvier 2025',
+              name: area.updatedBy?.fullName ?? '-',
+              date: area.updatedAt != null
+                  ? DateFormat.yMMMMd('fr_FR').format(area.updatedAt!)
+                  : '-',
             ),
           ],
         ),

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/auth/utils/auth_extension.dart';
 import 'package:garden_connect/cells/bloc/cell_bloc.dart';
 import 'package:garden_connect/common/widgets/generic_list_item.dart';
+import 'package:garden_connect/common/widgets/page_header.dart';
 import 'package:garden_connect/settings/cells/bloc/cells_update_frequency_form_bloc.dart';
 import 'package:garden_connect/settings/cells/widgets/cells_update_frequency_form/cells_update_frequency_form_widget.dart';
 import 'package:garden_ui/ui/design_system.dart';
@@ -37,20 +38,13 @@ class CellsSettingsPage extends StatelessWidget {
             return Center(child: Text('Erreur: ${cellsState.message}'));
           } else if (cellsState is CellsLoaded) {
             return Padding(
-              padding: EdgeInsetsGeometry.symmetric(
-                horizontal: GardenSpace.paddingLg,
-                vertical: GardenSpace.paddingLg,
-              ),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 spacing: GardenSpace.gapLg,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Bonjour ${user.firstName}",
-                        style: GardenTypography.headingXl,
-                      ),
+                  PageHeader(
+                    title: "Bonjour ${user.firstName}",
+                    actions: [
                       IconButton.filled(
                         onPressed: () => context.go('/settings/cells/add'),
                         icon: Icon(Icons.add),
@@ -91,7 +85,7 @@ class CellsSettingsPage extends StatelessWidget {
                                               icon: Icons.edit,
                                               onTap:
                                                   () => context.go(
-                                                    '/settings/cells/${cell.id}?pages=true',
+                                                    '/settings/cells/${cell.id}?view=true',
                                                   ),
                                               onEdit:
                                                   () => context.go(

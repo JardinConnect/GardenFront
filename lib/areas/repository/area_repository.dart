@@ -2,28 +2,16 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
 
+import '../../auth/utils/http_client.dart';
 import '../models/area.dart';
 
 class AreaRepository {
-  // Liste en mémoire pour simuler la persistance
-  List<Map<String, dynamic>>? _cachedAreas;
+  final HttpClient _client = HttpClient();
 
   Future<List<Area>> fetchAreas() async {
     try {
-      final storage = FlutterSecureStorage();
-
-      String? token = await storage.read(key: 'auth_token');
-      final response = await http.get(
-        Uri.parse('http://127.0.0.1:8000/area'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
+      final response = await _client.get('/area');
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         final areas =
@@ -43,49 +31,35 @@ class AreaRepository {
   Future<Area> createArea({
     required String name,
     required String color,
-    Area? parentArea,
+    String? parentId,
+    bool isTracked = false,
   }) async {
-    // TODO: Remplacer par un vrai appel API
     try {
-      // Simuler un délai réseau
-      await Future.delayed(const Duration(milliseconds: 500));
-
-      // Créer la nouvelle area
-      final newAreaJson = {
-        "id": "1",
-        "name": name,
-        "color": color,
-        "level": parentArea != null ? parentArea.level + 1 : 1,
-        "areas": <Map<String, dynamic>>[],
-        "is_tracked": false,
+      final Map<String, dynamic> body = {
+        'name': name,
+        'color': color,
+        'is_tracked': isTracked,
       };
+      if (parentId != null) body['parent_id'] = parentId;
 
-      if (parentArea == null) {
-        _cachedAreas ??= [];
-        _cachedAreas!.add(newAreaJson);
+      final response = await _client.post('/area/', body: body);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Area.fromJson(jsonDecode(response.body));
+      } else if (response.statusCode == 404) {
+        throw Exception('Zone parente introuvable');
       } else {
-        _addAreaToParent(_cachedAreas!, parentArea.name, newAreaJson);
+        throw Exception(
+          'Erreur lors de la création: ${response.statusCode} ${response.body}',
+        );
       }
-
-      return Area.fromJson(newAreaJson);
     } catch (e) {
       throw Exception('Failed to create area: $e');
     }
   }
 
-// Ajoutez cette méthode après fetchAreas()
   Future<Area?> fetchAreaById(String id) async {
     try {
-      // Utiliser le cache si disponible
-      if (_cachedAreas != null) {
-        final allAreas =
-            _cachedAreas!.map((area) => Area.fromJson(area)).toList();
-        final flattenedAreas = Area.getAllAreasFlattened(allAreas);
-        return flattenedAreas.cast<Area?>().firstWhere(
-          (area) => area?.id == id,
-          orElse: () => null,
-        );
-      }
 
       // Si pas de cache, charger d'abord les areas
       await fetchAreas();
@@ -95,6 +69,7 @@ class AreaRepository {
     }
   }
 
+
   Future<Area> updateArea({
     required String id,
     String? name,
@@ -103,28 +78,16 @@ class AreaRepository {
     bool? isTracked,
   }) async {
     try {
-      final storage = FlutterSecureStorage();
-      String? token = await storage.read(key: 'auth_token');
-
       final Map<String, dynamic> body = {};
       if (name != null) body['name'] = name;
       if (color != null) body['color'] = color.toARGB32().toRadixString(16);
       if (parentId != null) body['parent_id'] = parentId;
       if (isTracked != null) body['is_tracked'] = isTracked;
 
-      final response = await http.put(
-        Uri.parse('http://127.0.0.1:8000/area/$id'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode(body),
-      );
+      final response = await _client.put('/area/$id', body: body);
 
       if (response.statusCode == 200) {
-        final area = jsonDecode(response.body);
-        return Area.fromJson(area);
+        return Area.fromJson(jsonDecode(response.body));
       } else {
         throw Exception(
           'status Code not 200: ${response.statusCode} ${response.body}',
@@ -136,32 +99,21 @@ class AreaRepository {
   }
 
 
-  bool _addAreaToParent(
-    List<Map<String, dynamic>> areas,
-    String parentName,
-    Map<String, dynamic> newArea,
-  ) {
-    for (var area in areas) {
-      if (area['name'] == parentName) {
-        // Parent trouvé, ajouter la nouvelle area
-        if (area['areas'] == null) {
-          area['areas'] = <Map<String, dynamic>>[];
-        }
-        (area['areas'] as List<Map<String, dynamic>>).add(newArea);
-        return true;
-      }
+  Future<void> deleteArea(String areaId) async {
+    try {
+      final response = await _client.delete('/area/$areaId');
 
-      // Chercher récursivement dans les sous-areas
-      if (area['areas'] != null && area['areas'] is List) {
-        if (_addAreaToParent(
-          (area['areas'] as List).cast<Map<String, dynamic>>(),
-          parentName,
-          newArea,
-        )) {
-          return true;
-        }
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        return;
+      } else if (response.statusCode == 404) {
+        throw Exception('Zone introuvable');
+      } else {
+        throw Exception(
+          'Erreur lors de la suppression: ${response.statusCode} ${response.body}',
+        );
       }
+    } catch (e) {
+      throw Exception('Impossible de supprimer la zone: $e');
     }
-    return false;
   }
 }

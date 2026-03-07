@@ -1,33 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 /// Dialogue générique avec une bannière header colorée
 class StyledDialog extends StatelessWidget {
-  /// Titre affiché dans la bannière
   final String title;
-
-  /// Contenu affiché sous la bannière
   final Widget content;
-
-  /// Largeur maximale de la dialog (en fraction de l'écran, ex: 0.5)
   final double widthFactor;
-
-  /// Hauteur maximale de la dialog (en fraction de l'écran). Null = automatique.
-  final double? heightFactor;
-
-  /// Affiche ou non le bouton de fermeture dans la bannière
   final bool dismissible;
-
-  /// Padding interne de la zone contenu
-  final EdgeInsets contentPadding;
+  final String? imagePath;
+  final List<Widget>? actions;
+  final Color? headerColor;
+  final Color? headerForegroundColor;
 
   const StyledDialog({
     super.key,
     required this.title,
     required this.content,
-    this.widthFactor = 0.5,
-    this.heightFactor,
+    this.widthFactor = 1,
     this.dismissible = true,
-    this.contentPadding = const EdgeInsets.all(16),
+    this.imagePath,
+    this.actions,
+    this.headerColor,
+    this.headerForegroundColor,
   });
 
   /// Affiche la dialog de manière statique.
@@ -35,10 +29,12 @@ class StyledDialog extends StatelessWidget {
     BuildContext context, {
     required String title,
     required Widget content,
-    double widthFactor = 0.5,
-    double? heightFactor,
+    double widthFactor = 0.65,
     bool dismissible = true,
-    EdgeInsets contentPadding = const EdgeInsets.all(16),
+    String? imagePath,
+    List<Widget>? actions,
+    Color? headerColor,
+    Color? headerForegroundColor,
   }) {
     return showDialog<T>(
       context: context,
@@ -47,69 +43,132 @@ class StyledDialog extends StatelessWidget {
         title: title,
         content: content,
         widthFactor: widthFactor,
-        heightFactor: heightFactor,
         dismissible: dismissible,
-        contentPadding: contentPadding,
+        imagePath: imagePath,
+        actions: actions,
+        headerColor: headerColor,
+        headerForegroundColor: headerForegroundColor,
       ),
+    );
+  }
+
+  Widget _buildImage(double maxWidth) {
+    final isSvg = imagePath!.toLowerCase().endsWith('.svg');
+    final double height = maxWidth * 0.55;
+    if (isSvg) {
+      return SizedBox(
+        width: maxWidth,
+        height: height,
+        child: SvgPicture.asset(imagePath!, fit: BoxFit.contain, alignment: Alignment.topCenter),
+      );
+    }
+    return SizedBox(
+      width: maxWidth,
+      height: height,
+      child: Image.asset(imagePath!, fit: BoxFit.contain, alignment: Alignment.topCenter),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final dialogMaxWidth = MediaQuery.of(context).size.width * widthFactor;
+    final dialogMaxHeight = MediaQuery.of(context).size.height * 0.65;
 
-    Widget body = Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [content],
-    );
-
-    if (heightFactor != null) {
-      body = SizedBox(
-        height: MediaQuery.of(context).size.height * heightFactor!,
-        child: body,
-      );
-    }
-
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      clipBehavior: Clip.antiAlias,
-      titlePadding: EdgeInsets.zero,
-      contentPadding: EdgeInsets.zero,
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
       insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
-      title: Container(
-        color: colorScheme.primary,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Text(
-                title,
-                style: TextStyle(
-                  color: colorScheme.onPrimary,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+        clipBehavior: Clip.antiAlias,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: dialogMaxWidth, maxHeight: dialogMaxHeight),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Header
+              Container(
+                color: headerColor ?? colorScheme.primary,
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                          color: headerForegroundColor ?? colorScheme.onPrimary,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    if (dismissible)
+                      IconButton(
+                        icon: const Icon(Icons.close_rounded),
+                        color: headerForegroundColor ?? colorScheme.onPrimary,
+                        onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+                      ),
+                  ],
                 ),
               ),
-            ),
-            if (dismissible)
-              IconButton(
-                icon: const Icon(Icons.close_rounded),
-                color: colorScheme.onPrimary,
-                onPressed: () => Navigator.of(context).pop(),
+              // Body
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Container(
+                    color: colorScheme.surface,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 14,
+                            top: 14,
+                            right: 14,
+                          ),
+                          child: content,
+                        ),
+                        if (imagePath != null)
+                          LayoutBuilder(
+                            builder: (context, constraints) {
+                              final w = constraints.maxWidth.isFinite
+                                  ? constraints.maxWidth
+                                  : dialogMaxWidth;
+                              return Padding(
+                                padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+                                child: _buildImage(w - 28),
+                              );
+                            },
+                          ),
+                        if (imagePath == null)
+                          const SizedBox(height: 14),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-          ],
-        ),
-      ),
-      content: Padding(
-        padding: contentPadding,
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width * widthFactor,
-          child: body,
+              if (actions != null)
+                Container(
+                  color: colorScheme.surface,
+                  padding: const EdgeInsets.all(14),
+                  child: Center(
+                    child: Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 12,
+                      runSpacing: 8,
+                      children: actions!,
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-

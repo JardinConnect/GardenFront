@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/design_system.dart';
+import 'package:garden_ui/ui/widgets/atoms/Card/card.dart';
 
-/// Composant générique pour afficher une liste d'éléments avec une icône et une action au clic.
 class GenericListItem {
   final String label;
   final IconData? icon;
@@ -9,8 +9,6 @@ class GenericListItem {
   final VoidCallback? onEdit;
   final Widget? extraWidget;
   final Widget? trailingWidget;
-  // Active le highlight au survol
-  final bool hoverable;
 
   GenericListItem({
     required this.label,
@@ -19,7 +17,6 @@ class GenericListItem {
     this.onEdit,
     this.extraWidget,
     this.trailingWidget,
-    this.hoverable = false,
   });
 }
 
@@ -43,61 +40,70 @@ class GenericListWidget extends StatelessWidget {
   }
 }
 
-class _GenericListItemRow extends StatelessWidget {
+class _GenericListItemRow extends StatefulWidget {
   final GenericListItem item;
 
   const _GenericListItemRow({required this.item});
 
   @override
+  State<_GenericListItemRow> createState() => _GenericListItemRowState();
+}
+
+class _GenericListItemRowState extends State<_GenericListItemRow> {
+  bool _isIconHovered = false;
+
+  @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: GardenColors.base.shade50,
-        borderRadius: GardenRadius.radiusMd,
-        border: Border.all(color: GardenColors.base.shade300, width: 1),
-        boxShadow: GardenShadow.shadowMd,
-      ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: GardenRadius.radiusMd,
-        child: InkWell(
-          onTap: item.onTap,
-          borderRadius: GardenRadius.radiusMd,
-          hoverColor: item.hoverable ? primaryColor.withValues(alpha: 0.05) : Colors.transparent,
-          mouseCursor: item.onTap != null ? SystemMouseCursors.click : MouseCursor.defer,
-          child: Padding(
-            padding: EdgeInsets.all(GardenSpace.paddingMd),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      width: 300,
-                      child: Text(item.label, style: GardenTypography.bodyLg),
+    return GardenCard(
+        hasShadow: true,
+        hasBorder: true,
+        onTap: widget.item.onTap,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: 300,
+                    child: Text(
+                      widget.item.label,
+                      style: GardenTypography.bodyLg,
                     ),
-                    if (item.extraWidget != null) ...[
-                      SizedBox(width: GardenSpace.gapSm),
-                      item.extraWidget!,
-                    ],
+                  ),
+                  if (widget.item.extraWidget != null) ...[
+                    SizedBox(width: GardenSpace.gapSm),
+                    widget.item.extraWidget!,
                   ],
-                ),
-                item.trailingWidget ??
-                    GestureDetector(
-                      onTap: item.onEdit,
-                      child: Padding(
-                        padding: EdgeInsets.all(GardenSpace.paddingXs),
-                        child: Icon(item.icon, color: primaryColor),
-                      ),
-                    ),
-              ],
+                ],
+              ),
             ),
-          ),
+            widget.item.trailingWidget ??
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  onEnter: (_) => setState(() => _isIconHovered = true),
+                  onExit: (_) => setState(() => _isIconHovered = false),
+                  child: GestureDetector(
+                    onTap: widget.item.onEdit,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.easeInOut,
+                      padding: EdgeInsets.all(GardenSpace.paddingSm),
+                      decoration: BoxDecoration(
+                        color: _isIconHovered
+                            ? primaryColor.withValues(alpha: 0.1)
+                            : Colors.transparent,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(widget.item.icon, color: primaryColor),
+                    ),
+                  ),
+                ),
+          ],
         ),
-      ),
     );
   }
 }

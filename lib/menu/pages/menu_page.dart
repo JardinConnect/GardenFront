@@ -32,6 +32,7 @@ class MenuPage extends StatelessWidget {
 
   Widget _buildMainMenu(BuildContext context, String path) {
     return Menu(
+      onLogoTap: () => context.go('/dashboard'),
       items: [
         MenuItem(
           icon: Icons.home,
@@ -69,8 +70,7 @@ class MenuPage extends StatelessWidget {
           icon: Icons.logout,
           label: 'Déconnexion',
           isActive: false,
-          onTap: () =>
-              context.read<AuthBloc>().add(AuthLogoutRequested()),
+          onTap: () => context.read<AuthBloc>().add(AuthLogoutRequested()),
           severity: MenuItemSeverity.danger,
         ),
       ],
@@ -80,6 +80,7 @@ class MenuPage extends StatelessWidget {
 
   Widget _buildSettingsMenu(BuildContext context, String path) {
     return Menu(
+      onLogoTap: () => context.go('/dashboard'),
       items: [
         MenuItem(
           icon: Icons.settings,
@@ -123,8 +124,7 @@ class MenuPage extends StatelessWidget {
           icon: Icons.logout,
           label: 'Déconnexion',
           isActive: false,
-          onTap: () =>
-              context.read<AuthBloc>().add(AuthLogoutRequested()),
+          onTap: () => context.read<AuthBloc>().add(AuthLogoutRequested()),
           severity: MenuItemSeverity.danger,
         ),
       ],
