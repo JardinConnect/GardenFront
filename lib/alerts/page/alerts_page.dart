@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/alert_bloc.dart';
-import '../view/alert_add_view.dart';
 import '../view/alert_card_view.dart';
-import '../view/alert_edit_view.dart';
+import '../view/alert_form_view.dart';
 import '../view/alert_history_view.dart';
 import '../view/alert_list_view.dart';
 import '../widgets/button/add_alert_button.dart';
@@ -39,23 +38,25 @@ class AlertsPage extends StatelessWidget {
           if (state.errorMessage != null) {
             snackbar.showSnackBarError(context, state.errorMessage!);
             Future.microtask(() {
-              if (context.mounted)
+              if (context.mounted) {
                 context.read<AlertBloc>().add(const AlertClearErrorMessage());
+              }
             });
           }
           if (state.successMessage != null) {
             snackbar.showSnackBarSucces(context, state.successMessage!);
             Future.microtask(() {
-              if (context.mounted)
+              if (context.mounted) {
                 context.read<AlertBloc>().add(const AlertClearSuccessMessage());
+              }
             });
           }
         }
       },
       builder: (context, state) {
-        // Afficher la vue d'ajout d'alerte
+        // Vue de création
         if (state is AlertLoaded && state.isShowingAddView) {
-          return AlertAddView(availableSensors: state.availableSensors);
+          return AlertFormView(availableSensors: state.availableSensors);
         }
 
         // Loader pendant le chargement des données d'édition
@@ -65,16 +66,15 @@ class AlertsPage extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        // Afficher la vue d'édition d'alerte
+        // Vue d'édition
         if (state is AlertLoaded &&
             state.isShowingEditView &&
             state.editingAlert != null &&
             state.alertDetails != null) {
-          return AlertEditView(
-            alert: state.editingAlert!,
-            spaces: state.spaces,
-            alertDetails: state.alertDetails!,
+          return AlertFormView(
             availableSensors: state.availableSensors,
+            alert: state.editingAlert,
+            alertDetails: state.alertDetails,
           );
         }
 
