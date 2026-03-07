@@ -30,12 +30,14 @@ class AlertEditView extends StatefulWidget {
 class _AlertEditViewState extends State<AlertEditView> {
   final _nameController = TextEditingController();
   List<String> _selectedCellIds = [];
-  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadAlertData();
+    // Initialisation synchrone - les données sont déjà disponibles via widget.alertDetails
+    _nameController.text = (widget.alertDetails['title'] as String?) ?? '';
+    _selectedCellIds =
+        (widget.alertDetails['cellIds'] as List<dynamic>?)?.cast<String>() ?? [];
   }
 
   @override
@@ -44,25 +46,9 @@ class _AlertEditViewState extends State<AlertEditView> {
     super.dispose();
   }
 
-  void _loadAlertData() {
-    try {
-      _nameController.text = (widget.alertDetails['title'] as String?) ?? '';
-      _selectedCellIds =
-          (widget.alertDetails['cellIds'] as List<dynamic>?)?.cast<String>() ??
-          [];
-      setState(() => _isLoading = false);
-    } catch (e) {
-      setState(() => _isLoading = false);
-      if (mounted)
-        context.read<AlertBloc>().add(
-          AlertPushError(message: 'Erreur de chargement : $e'),
-        );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) return const Center(child: CircularProgressIndicator());
 
     return BlocConsumer<AlertBloc, AlertState>(
       // Ouvre la popup de conflits dès qu'ils arrivent dans le state

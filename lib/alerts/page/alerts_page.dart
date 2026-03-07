@@ -58,6 +58,13 @@ class AlertsPage extends StatelessWidget {
           return AlertAddView(availableSensors: state.availableSensors);
         }
 
+        // Loader pendant le chargement des données d'édition
+        if (state is AlertLoaded &&
+            state.isShowingEditView &&
+            (state.editingAlert == null || state.alertDetails == null)) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
         // Afficher la vue d'édition d'alerte
         if (state is AlertLoaded &&
             state.isShowingEditView &&
