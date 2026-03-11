@@ -348,11 +348,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v0.3.8"
-      resolved-ref: "512982b710145ae45113a6cbc1e0342d9d676bf2"
+      ref: "v0.3.9"
+      resolved-ref: aa5eda4fa2cb4ef79b69aad2f990b80d3eea6f38
       url: "https://github.com/JardinConnect/GardenUI.git"
     source: git
-    version: "0.3.8"
+    version: "0.3.9"
   glob:
     dependency: transitive
     description:
