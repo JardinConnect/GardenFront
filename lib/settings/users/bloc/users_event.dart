@@ -21,8 +21,9 @@ final class UserUpdateEvent extends UsersEvent {
 }
 final class UserAddEvent extends UsersEvent {
   final UserAddDto user;
+  final bool isFarmSetup;
 
-  UserAddEvent({required this.user});
+  UserAddEvent({required this.user, this.isFarmSetup=false});
 }
 final class UserDeleteEvent extends UsersEvent {
   final User user;

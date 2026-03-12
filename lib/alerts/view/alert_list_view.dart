@@ -4,8 +4,6 @@ import 'package:garden_connect/alerts/alerts.dart';
 import 'package:garden_ui/ui/components.dart';
 
 import '../../common/widgets/generic_list_item.dart';
-import '../bloc/alert_bloc.dart';
-import '../models/alert_models.dart';
 
 class AlertListView extends StatelessWidget {
   final List<Alert> alerts;
@@ -14,8 +12,9 @@ class AlertListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (alerts.isEmpty)
+    if (alerts.isEmpty) {
       return const Center(child: Text('Aucune alerte disponible'));
+    }
 
     return GenericListWidget(
       items:

@@ -4,7 +4,6 @@ import 'package:garden_connect/settings/users/repository/users_repository.dart';
 import 'package:meta/meta.dart';
 
 import '../../../auth/models/user.dart';
-import '../../../auth/models/user.dart';
 import '../models/settings.dart';
 
 part 'settings_state.dart';

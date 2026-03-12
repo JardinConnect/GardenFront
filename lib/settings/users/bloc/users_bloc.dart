@@ -1,6 +1,5 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:garden_connect/auth/utils/auth_utils.dart';
 import 'package:meta/meta.dart';
 
 import '../../../auth/models/user.dart';
@@ -70,6 +69,8 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
   }
   _addUser(UserAddEvent event, Emitter<UsersState> emit) async {
     final _ = await _usersRepository.addUser(event.user);
-    add(UsersLoad());
+    if(!event.isFarmSetup) {
+      add(UsersLoad());
+    }
   }
 }
