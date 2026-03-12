@@ -1,8 +1,9 @@
-import 'dart:ui';
+import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
 
+import '../../analytics/models/analytics.dart';
 import '../models/area.dart';
 import '../../cells/models/cell.dart';
 import '../repository/area_repository.dart';
@@ -16,6 +17,7 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
 
   AreaBloc() : _areaRepository = AreaRepository(), super(const AreaInitial()) {
     on<LoadAreas>(_loadAreas);
+    on<LoadAreaSetup>(_loadAreaSetup);
     on<SelectArea>(_selectArea);
     on<SelectCell>(_selectCell);
     on<ClearSelection>(_clearSelection);
@@ -230,5 +232,23 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
     } catch (e) {
       emit(AreaError(message: e.toString()));
     }
+  }
+
+   _loadAreaSetup(LoadAreaSetup event, Emitter<AreaState> emit) {
+
+       final areas = [
+         Area(id: "1", name: "Serre 1 example", level: 1, color: Colors.blue, analytics: Analytics()),
+         Area(id: "2", name: "Parcelle 1 example", level: 2, color: Colors.blue, analytics: Analytics()),
+         Area(id: "3", name: "Jardin 1 example", level: 3, color: Colors.blue, analytics: Analytics()),
+       ];
+       emit(
+         AreasLoaded(
+           areas: areas,
+           showAreasListWidget: false,
+           showCellsListWidget: false,
+           selectedArea: areas.first,
+           isAreaSelected: true,
+         ),
+       );
   }
 }

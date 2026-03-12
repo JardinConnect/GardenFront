@@ -107,6 +107,7 @@ class _SensorsSectionState extends State<SensorsSection> {
   }
 
   /// Parse une chaîne de caractères en SensorType
+  @override
   Widget build(BuildContext context) {
     // Afficher un indicateur de chargement
     if (_isLoading) {

@@ -9,6 +9,7 @@ import 'package:garden_connect/cells/bloc/cell_bloc.dart';
 import 'package:garden_connect/cells/pages/cell_detail_page.dart';
 import 'package:garden_connect/cells/pages/cells_page.dart';
 import 'package:garden_connect/dashboard/view/dashboard_page.dart';
+import 'package:garden_connect/farm-setup/bloc/farm_setup_bloc.dart';
 import 'package:garden_connect/farm-setup/pages/farm_setup_page.dart';
 import 'package:garden_connect/menu/pages/menu_page.dart';
 import 'package:garden_connect/settings/area/page/area_add_edit_page.dart';
@@ -52,6 +53,20 @@ class AppRouter {
     },
     routes: [
       GoRoute(path: '/login', builder: (context, state) => LoginPage()),
+      GoRoute(path: '/farm', pageBuilder: (context, state) {
+          return NoTransitionPage(
+              child:MultiBlocProvider(
+                providers:[
+                  BlocProvider<AreaBloc>(
+                    create: (context) => AreaBloc()..add(LoadAreaSetup()),
+                  ),
+                  BlocProvider<UsersBloc>(create: (context) => UsersBloc()),
+                  BlocProvider<FarmSetupBloc>(create: (context) => FarmSetupBloc()),
+                ],
+                child: const FarmSetupPage()
+              )
+          );
+      }),
       ShellRoute(
         pageBuilder: (context, state, child) {
           return NoTransitionPage(
@@ -69,12 +84,6 @@ class AppRouter {
           );
         },
         routes: [
-          GoRoute(
-            path: '/farm',
-            pageBuilder:
-                (context, state) =>
-                NoTransitionPage(child: const FarmSetupPage()),
-          ),
           GoRoute(
             path: '/dashboard',
             pageBuilder:

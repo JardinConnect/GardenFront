@@ -1,11 +1,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:garden_connect/farm-setup/models/network_info.dart';
+import 'package:garden_connect/farm-setup/views/area_setup_view.dart';
 import 'package:garden_connect/farm-setup/widgets/wifi_setup_widget.dart';
 
 import '../../analytics/models/analytics.dart';
 import '../../areas/models/area.dart';
-import '../../areas/widgets/tab_zones_widget.dart';
 import '../../auth/models/user.dart';
 import '../../settings/users/widgets/user_add_form_widget.dart';
 import '../models/farm.dart';
@@ -39,7 +39,7 @@ class FarmStepper extends StatefulWidget {
 
 
 class FarmStepperState extends State<FarmStepper> {
-  int _currentStep = 0;
+  int _currentStep = 3;
   final GlobalKey<FormState> _userFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _wifiFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _farmFormKey = GlobalKey<FormState>();
@@ -160,7 +160,7 @@ class FarmStepperState extends State<FarmStepper> {
         ),
         Step(
           title: const Text('Vos espaces'),
-          content: TabZonesWidget(title: "test", areas: _areas, displayDetailsPanel: false),
+          content: AreaSetupView(areas: _areas),
           isActive: _currentStep >= 3,
           state: StepState.indexed,
         ),
@@ -174,10 +174,11 @@ class FarmStepperState extends State<FarmStepper> {
               child: _currentStep == 3 ? const Text('Terminer') : const Text('Suivant'),
             ),
             const SizedBox(width: 16),
-            TextButton(
-              onPressed: details.onStepCancel,
-              child: const Text('Retour'),
-            ),
+            if(_currentStep > 0)
+              TextButton(
+                onPressed: details.onStepCancel,
+                child:  const Text('Retour'),
+              ),
           ],
         );
       },

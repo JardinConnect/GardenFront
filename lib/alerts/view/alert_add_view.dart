@@ -40,12 +40,14 @@ class _AlertAddViewState extends State<AlertAddView> {
               (prev is! AlertLoaded ||
                   prev.pendingConflicts != curr.pendingConflicts),
       listener: (context, state) {
-        if (state is AlertLoaded)
+        if (state is AlertLoaded) {
           _showConflictDialog(context, state.pendingConflicts!);
+        }
       },
       builder: (context, state) {
-        if (state is! AlertLoaded)
+        if (state is! AlertLoaded) {
           return const Center(child: CircularProgressIndicator());
+        }
 
         return Padding(
           padding: const EdgeInsets.all(16),
@@ -125,8 +127,9 @@ class _AlertAddViewState extends State<AlertAddView> {
 
   String? _validateName(String? value) {
     if (value == null || value.trim().isEmpty) return 'Le nom est obligatoire';
-    if (value.trim().length < 3)
+    if (value.trim().length < 3) {
       return 'Le nom doit contenir au moins 3 caractères';
+    }
     return null;
   }
 

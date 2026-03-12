@@ -52,10 +52,11 @@ class _AlertEditViewState extends State<AlertEditView> {
       setState(() => _isLoading = false);
     } catch (e) {
       setState(() => _isLoading = false);
-      if (mounted)
+      if (mounted) {
         context.read<AlertBloc>().add(
           AlertPushError(message: 'Erreur de chargement : $e'),
         );
+      }
     }
   }
 
@@ -65,8 +66,9 @@ class _AlertEditViewState extends State<AlertEditView> {
 
     return BlocBuilder<AlertBloc, AlertState>(
       builder: (context, state) {
-        if (state is! AlertLoaded)
+        if (state is! AlertLoaded) {
           return const Center(child: CircularProgressIndicator());
+        }
 
         return Padding(
           padding: const EdgeInsets.all(16),
@@ -190,8 +192,9 @@ class _AlertEditViewState extends State<AlertEditView> {
 
   String? _validateName(String? value) {
     if (value == null || value.trim().isEmpty) return 'Le nom est obligatoire';
-    if (value.trim().length < 3)
+    if (value.trim().length < 3) {
       return 'Le nom doit contenir au moins 3 caractères';
+    }
     return null;
   }
 

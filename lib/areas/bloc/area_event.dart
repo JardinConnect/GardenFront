@@ -5,6 +5,7 @@ part of 'area_bloc.dart';
 sealed class AreaEvent {}
 
 final class LoadAreas extends AreaEvent {}
+final class LoadAreaSetup extends AreaEvent {}
 
 final class SelectArea extends AreaEvent {
   final Area area;

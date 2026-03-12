@@ -4,7 +4,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:garden_connect/settings/dashboard/models/settings.dart';
 import 'package:garden_connect/settings/users/widgets/log_card_widget.dart';
 import 'package:garden_connect/settings/users/bloc/users_bloc.dart';
 import 'package:garden_connect/settings/users/view/user_add_view.dart';

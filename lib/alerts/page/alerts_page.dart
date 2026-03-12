@@ -39,15 +39,17 @@ class AlertsPage extends StatelessWidget {
           if (state.errorMessage != null) {
             snackbar.showSnackBarError(context, state.errorMessage!);
             Future.microtask(() {
-              if (context.mounted)
+              if (context.mounted) {
                 context.read<AlertBloc>().add(const AlertClearErrorMessage());
+              }
             });
           }
           if (state.successMessage != null) {
             snackbar.showSnackBarSucces(context, state.successMessage!);
             Future.microtask(() {
-              if (context.mounted)
+              if (context.mounted) {
                 context.read<AlertBloc>().add(const AlertClearSuccessMessage());
+              }
             });
           }
         }
@@ -136,8 +138,9 @@ class AlertsPage extends StatelessWidget {
 
   /// Construit le contenu selon l'onglet sélectionné
   Widget _buildContent(BuildContext context, AlertState state) {
-    if (state is! AlertLoaded)
+    if (state is! AlertLoaded) {
       return const Center(child: CircularProgressIndicator());
+    }
 
     return switch (state.selectedTab) {
       AlertTabType.alerts => switch (state.displayMode) {
