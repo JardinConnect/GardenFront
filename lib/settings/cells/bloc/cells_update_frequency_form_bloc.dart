@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/cells/models/cell.dart';
@@ -80,7 +81,7 @@ class CellsUpdateFrequencyFormBloc
         return "$hours:$minutes";
       }).toList();
 
-      _cellRepository.updateCellsSettings(
+      await _cellRepository.updateCellsSettings(
         selectedCells,
         state.dailyUpdateCount,
         measurementFrequencyInSeconds,
@@ -88,7 +89,9 @@ class CellsUpdateFrequencyFormBloc
       );
       emit(state.copyWith(isSubmitting: false));
     } catch (e) {
-      emit(state.copyWith(isSubmitting: false));
+      emit(CellsUpdateFrequencyFormError(
+        message: e.toString().replaceAll('Exception: ', ''),
+      ));
     }
   }
 }

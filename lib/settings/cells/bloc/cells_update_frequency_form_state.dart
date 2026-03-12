@@ -32,3 +32,9 @@ class CellsUpdateFrequencyFormState {
     );
   }
 }
+
+final class CellsUpdateFrequencyFormError extends CellsUpdateFrequencyFormState {
+  final String message;
+
+  const CellsUpdateFrequencyFormError({required this.message});
+}
