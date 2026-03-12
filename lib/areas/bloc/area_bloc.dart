@@ -1,5 +1,4 @@
-import 'dart:async';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,6 +27,7 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
     on<ShowCellsListWidget>(_showCellsListWidget);
     on<ShowAreasListWidget>(_showAreasListWidget);
     on<UpdateArea>(_onUpdateArea);
+    on<DeleteArea>(_deleteArea);
     on<SearchAreas>(_searchAreas);
     on<ToggleAreaTracking>(_toggleAreaTracking);
 
@@ -43,12 +43,18 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
           areas: areas,
           showAreasListWidget: false,
           showCellsListWidget: false,
-          selectedArea: areas.first,
-          isAreaSelected: true,
+          selectedArea: areas.isNotEmpty ? areas.first : null,
+          isAreaSelected: areas.isNotEmpty,
         ),
       );
     } catch (e) {
-      emit(AreaError(message: e.toString()));
+      emit(
+        const AreasLoaded(
+          areas: [],
+          showAreasListWidget: false,
+          showCellsListWidget: false,
+        ),
+      );
     }
   }
 
@@ -108,20 +114,34 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
     final currentState = state;
     if (currentState is AreasLoaded) {
       try {
-        final colorHex = event.color.toARGB32()
-            .toRadixString(16)
-            .toUpperCase()
-            .padLeft(8, '0');
+        emit(const AreasShimmer());
 
-        final _ = await _areaRepository.createArea(
+        final colorHex = '#${event.color.toARGB32().toRadixString(16).substring(2).toUpperCase()}';
+
+        await _areaRepository.createArea(
           name: event.name,
           color: colorHex,
-          parentArea: event.parentArea,
+          parentId: event.parentArea?.id,
         );
 
-        add(LoadAreas());
+        final areas = await _areaRepository.fetchAreas();
+        emit(
+          AreasLoaded(
+            areas: areas,
+            showAreasListWidget: false,
+            showCellsListWidget: false,
+          ),
+        );
       } catch (e) {
-        emit(AreaError(message: e.toString()));
+        // En cas d'erreur, revenir à l'état précédent
+        final areas = await _areaRepository.fetchAreas();
+        emit(
+          AreasLoaded(
+            areas: areas.isNotEmpty ? areas : currentState.areas,
+            showAreasListWidget: false,
+            showCellsListWidget: false,
+          ),
+        );
       }
     }
   }
@@ -171,7 +191,10 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
           ),
         );
       } catch (e) {
-        emit(AreaError(message: e.toString()));
+        // En cas d'erreur, on reste sur l'état actuel
+        if (kDebugMode) {
+          print('Erreur toggle tracking: $e');
+        }
       }
     }
   }
@@ -210,14 +233,13 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
   }
 
   Future<void> _onUpdateArea(UpdateArea event, Emitter<AreaState> emit) async {
-    try {
-      final currentState = state;
-      if (currentState is! AreasLoaded) return;
+    final currentState = state;
+    if (currentState is! AreasLoaded) return;
 
-      if (event.id == null) {
-        emit(AreaError(message: 'Cannot update area without an ID'));
-        return;
-      }
+    if (event.id == null) return;
+
+    try {
+      emit(const AreasShimmer());
 
       await _areaRepository.updateArea(
         id: event.id!,
@@ -228,9 +250,52 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
       );
 
       final areas = await _areaRepository.fetchAreas();
-      emit(currentState.copyWith(areas: areas));
+      emit(
+        AreasLoaded(
+          areas: areas,
+          showAreasListWidget: false,
+          showCellsListWidget: false,
+        ),
+      );
     } catch (e) {
-      emit(AreaError(message: e.toString()));
+      final areas = await _areaRepository.fetchAreas();
+      emit(
+        AreasLoaded(
+          areas: areas.isNotEmpty ? areas : currentState.areas,
+          showAreasListWidget: false,
+          showCellsListWidget: false,
+        ),
+      );
+    }
+  }
+
+  Future<void> _deleteArea(DeleteArea event, Emitter<AreaState> emit) async {
+    final currentState = state;
+    if (currentState is! AreasLoaded) return;
+
+    try {
+      emit(const AreasShimmer());
+      await _areaRepository.deleteArea(event.id);
+      final areas = await _areaRepository.fetchAreas();
+      emit(
+        AreasLoaded(
+          areas: areas,
+          showAreasListWidget: false,
+          showCellsListWidget: false,
+        ),
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        print('Erreur suppression area: $e');
+      }
+      final areas = await _areaRepository.fetchAreas();
+      emit(
+        AreasLoaded(
+          areas: areas.isNotEmpty ? areas : currentState.areas,
+          showAreasListWidget: false,
+          showCellsListWidget: false,
+        ),
+      );
     }
   }
 

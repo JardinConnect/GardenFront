@@ -11,6 +11,7 @@ import 'package:garden_connect/settings/users/view/user_profile_view.dart';
 import '../../../auth/models/user.dart';
 import '../../../auth/utils/auth_extension.dart';
 import '../../../common/widgets/global_stat_card_widget.dart';
+import '../../../common/widgets/page_header.dart';
 import '../widgets/users_list_card_widget.dart';
 
 class UsersPage extends StatelessWidget {
@@ -36,29 +37,23 @@ class UsersPage extends StatelessWidget {
               final users = state.users;
               final logs = state.logs;
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                padding: const EdgeInsets.all(16.0),
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Padding(padding:EdgeInsetsGeometry.directional(top: 16, start: 8),child:
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("Bonjour ${user.firstName} ${user.lastName}", style: Theme.of(context).textTheme.headlineLarge,),
+                      PageHeader(
+                            title: "Bonjour ${user.firstName} ${user.lastName}",
+                            actions: [
                               if (user.role == Role.admin)
-                                FloatingActionButton(
+                                IconButton.filled(
                                   onPressed: ()=> context.read<UsersBloc>().add(UsersCreationEvent()),
-                                  backgroundColor: Theme.of(context).primaryColor,
-                                  child: Icon(Icons.add),
+                                  icon: Icon(Icons.add),
                                 ),
                             ],
-                          )
-                      ),
-                      Padding(
-                        padding: const EdgeInsetsGeometry.directional(top: 20),
-                        child: Row(
+                          ),
+                      Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
@@ -100,7 +95,6 @@ class UsersPage extends StatelessWidget {
                             ),
                           ],
                         ),
-                      ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

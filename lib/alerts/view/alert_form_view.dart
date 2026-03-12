@@ -5,36 +5,47 @@ import 'package:garden_ui/ui/components.dart';
 import '../bloc/alert_bloc.dart';
 import '../models/alert_models.dart';
 import '../widgets/forms/alert_configuration_form.dart';
+import '../widgets/forms/alert_conflict_dialog.dart';
 import '../widgets/forms/alert_danger_zone.dart';
 import '../widgets/forms/alert_table_section.dart';
 
-class AlertEditView extends StatefulWidget {
-  final Alert alert;
-  final List<Map<String, dynamic>> spaces;
-  final Map<String, dynamic> alertDetails;
+/// Vue unifiée pour la création et l'édition d'une alerte.
+/// En mode création : [alert] et [alertDetails] sont null.
+/// En mode édition : [alert] et [alertDetails] sont fournis.
+class AlertFormView extends StatefulWidget {
+  // Null en mode création
+  final Alert? alert;
+  final Map<String, dynamic>? alertDetails;
   final List<Map<String, dynamic>> availableSensors;
 
-  const AlertEditView({
+  const AlertFormView({
     super.key,
-    required this.alert,
-    required this.spaces,
-    required this.alertDetails,
     required this.availableSensors,
+    this.alert,
+    this.alertDetails,
   });
 
+  bool get isEditing => alert != null && alertDetails != null;
+
   @override
-  State<AlertEditView> createState() => _AlertEditViewState();
+  State<AlertFormView> createState() => _AlertFormViewState();
 }
 
-class _AlertEditViewState extends State<AlertEditView> {
+class _AlertFormViewState extends State<AlertFormView> {
   final _nameController = TextEditingController();
   List<String> _selectedCellIds = [];
-  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadAlertData();
+    if (widget.isEditing) {
+      // Pré-remplissage depuis les détails existants
+      _nameController.text = (widget.alertDetails!['title'] as String?) ?? '';
+      _selectedCellIds =
+          (widget.alertDetails!['cellIds'] as List<dynamic>?)
+              ?.cast<String>() ??
+          [];
+    }
   }
 
   @override
@@ -43,28 +54,22 @@ class _AlertEditViewState extends State<AlertEditView> {
     super.dispose();
   }
 
-  void _loadAlertData() {
-    try {
-      _nameController.text = (widget.alertDetails['title'] as String?) ?? '';
-      _selectedCellIds =
-          (widget.alertDetails['cellIds'] as List<dynamic>?)?.cast<String>() ??
-          [];
-      setState(() => _isLoading = false);
-    } catch (e) {
-      setState(() => _isLoading = false);
-      if (mounted) {
-        context.read<AlertBloc>().add(
-          AlertPushError(message: 'Erreur de chargement : $e'),
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) return const Center(child: CircularProgressIndicator());
-
-    return BlocBuilder<AlertBloc, AlertState>(
+    return BlocConsumer<AlertBloc, AlertState>(
+      // Ouvre la popup de conflits dès qu'ils arrivent dans le state
+      listenWhen:
+          (prev, curr) =>
+              curr is AlertLoaded &&
+              curr.pendingConflicts != null &&
+              curr.pendingConflicts!.isNotEmpty &&
+              (prev is! AlertLoaded ||
+                  prev.pendingConflicts != curr.pendingConflicts),
+      listener: (context, state) {
+        if (state is AlertLoaded) {
+          _showConflictDialog(context, state.pendingConflicts!);
+        }
+      },
       builder: (context, state) {
         if (state is! AlertLoaded) {
           return const Center(child: CircularProgressIndicator());
@@ -112,7 +117,7 @@ class _AlertEditViewState extends State<AlertEditView> {
                       ),
                     ),
                     const SizedBox(width: 16),
-                    // Sélection des cellules + zone de danger
+                    // Colonne droite : table de cellules + zone de danger (édition seulement)
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -135,8 +140,11 @@ class _AlertEditViewState extends State<AlertEditView> {
                                       ),
                             ),
                           ),
-                          const SizedBox(height: 16),
-                          AlertDangerZone(alert: widget.alert),
+                          // Zone de danger uniquement en édition
+                          if (widget.isEditing) ...[
+                            const SizedBox(height: 16),
+                            AlertDangerZone(alert: widget.alert!),
+                          ],
                         ],
                       ),
                     ),
@@ -146,8 +154,11 @@ class _AlertEditViewState extends State<AlertEditView> {
               const SizedBox(height: 24),
               Center(
                 child: Button(
-                  label: 'Enregistrer les modifications',
-                  icon: Icons.save,
+                  label:
+                      widget.isEditing
+                          ? 'Enregistrer les modifications'
+                          : 'Créer l\'alerte',
+                  icon: widget.isEditing ? Icons.save : Icons.add_alert,
                   onPressed: () => _submit(state),
                 ),
               ),
@@ -158,6 +169,7 @@ class _AlertEditViewState extends State<AlertEditView> {
     );
   }
 
+  // Header avec bouton retour et titre adapté au mode
   Widget _buildHeader(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,9 +193,9 @@ class _AlertEditViewState extends State<AlertEditView> {
             ],
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 16),
         Text(
-          'Modifier l\'alerte',
+          widget.isEditing ? 'Modifier l\'alerte' : 'Ajouter une alerte',
           style: Theme.of(context).textTheme.headlineLarge,
         ),
       ],
@@ -218,6 +230,7 @@ class _AlertEditViewState extends State<AlertEditView> {
       return;
     }
 
+    // Construction des capteurs avec leurs plages
     final sensors =
         state.selectedSensors.map((sensor) {
           final key = '${sensor.type.index}_${sensor.index}';
@@ -233,17 +246,48 @@ class _AlertEditViewState extends State<AlertEditView> {
           );
         }).toList();
 
-    context.read<AlertBloc>().add(
-      AlertUpdateAlert(
-        alertId: widget.alert.id,
-        request: AlertCreationRequest(
-          title: name,
-          isActive: widget.alert.isActive,
-          cellIds: _selectedCellIds,
-          sensors: sensors,
-          warningEnabled: state.isWarningEnabled,
-        ),
-      ),
+    final request = AlertCreationRequest(
+      title: name,
+      isActive: widget.isEditing ? widget.alert!.isActive : true,
+      cellIds: _selectedCellIds,
+      sensors: sensors,
+      warningEnabled: state.isWarningEnabled,
     );
+
+    if (widget.isEditing) {
+      context.read<AlertBloc>().add(
+        AlertValidateUpdate(alertId: widget.alert!.id, request: request),
+      );
+    } else {
+      context.read<AlertBloc>().add(AlertValidateAlert(request: request));
+    }
+  }
+
+  // Affiche la popup de conflits et dispatche la confirmation ou l'annulation
+  Future<void> _showConflictDialog(
+    BuildContext context,
+    List<AlertConflict> conflicts,
+  ) async {
+    final result = await AlertConflictDialog.show(
+      context,
+      conflicts,
+      isEditing: widget.isEditing,
+    );
+    if (!context.mounted) return;
+
+    if (widget.isEditing) {
+      context.read<AlertBloc>().add(
+        result != null
+            ? AlertConfirmUpdate(overwrite: result)
+            : const AlertCancelUpdate(),
+      );
+    } else {
+      context.read<AlertBloc>().add(
+        result != null
+            ? AlertConfirmCreate(overwrite: result)
+            : const AlertCancelCreate(),
+      );
+    }
   }
 }
+

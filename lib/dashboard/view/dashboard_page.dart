@@ -8,6 +8,7 @@ import '../../analytics/bloc/analytics_bloc.dart';
 import '../../areas/bloc/area_bloc.dart';
 import '../../areas/models/area.dart';
 import '../../cells/bloc/cell_bloc.dart';
+import '../../common/widgets/page_header.dart';
 import '../../core/app_assets.dart';
 import '../widgets/activity_sensors.dart';
 import '../widgets/expandable_card.dart';
@@ -62,11 +63,7 @@ class DashboardPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Bonjour ${user.firstName}',
-                      style: Theme.of(context).textTheme.headlineLarge,
-                    ),
-                    const SizedBox(height: 50),
+                    PageHeader(title: 'Bonjour ${user.firstName}'),
                     HexagonesWidget(areas: areas),
                     ExpandableCard(
                       icon: AppAssets.activity,

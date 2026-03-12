@@ -7,72 +7,76 @@ class _ToastManager {
   static final _ToastManager instance = _ToastManager._();
   _ToastManager._();
 
-  final List<OverlayEntry> _entries = [];
+  // Chaque entrée stocke l'OverlayEntry et un ValueNotifier pour son index
+  final List<({OverlayEntry entry, ValueNotifier<int> indexNotifier})> _toasts = [];
   static const int _maxToasts = 3;
   static const double _toastHeight = 80.0;
   static const double _gap = 8.0;
   static const double _bottomBase = 20.0;
 
   void show(BuildContext context, Widget toast, Duration duration) {
-    // Si on a déjà 3 toasts, on supprime le plus ancien
-    if (_entries.length >= _maxToasts) {
+    // Supprime le plus ancien si on dépasse le max
+    if (_toasts.length >= _maxToasts) {
       _removeAt(0);
     }
 
-    late OverlayEntry entry;
+    final indexNotifier = ValueNotifier<int>(_toasts.length);
 
-    entry = OverlayEntry(
-      builder:
-          (_) => _PositionedToast(
-            index: _entries.indexOf(entry),
-            toastHeight: _toastHeight,
-            gap: _gap,
-            bottomBase: _bottomBase,
-            child: toast,
-          ),
+    final entry = OverlayEntry(
+      builder: (_) => _PositionedToast(
+        indexNotifier: indexNotifier,
+        toastHeight: _toastHeight,
+        gap: _gap,
+        bottomBase: _bottomBase,
+        child: toast,
+      ),
     );
 
-    _entries.add(entry);
+    _toasts.add((entry: entry, indexNotifier: indexNotifier));
     Overlay.of(context).insert(entry);
 
-    // Recalculer les positions
-    _rebuildAll();
+    // Met à jour les index sans markNeedsBuild
+    _updateIndexes();
 
     Future.delayed(duration, () => _remove(entry));
   }
 
   void _remove(OverlayEntry entry) {
-    if (_entries.contains(entry)) {
-      _entries.remove(entry);
+    final idx = _toasts.indexWhere((t) => t.entry == entry);
+    if (idx != -1) {
+      _toasts[idx].indexNotifier.dispose();
+      _toasts.removeAt(idx);
       entry.remove();
-      _rebuildAll();
+      _updateIndexes();
     }
   }
 
   void _removeAt(int index) {
-    if (index < _entries.length) {
-      final entry = _entries[index];
-      _entries.removeAt(index);
-      entry.remove();
+    if (index < _toasts.length) {
+      final t = _toasts[index];
+      _toasts.removeAt(index);
+      t.indexNotifier.dispose();
+      t.entry.remove();
     }
   }
 
-  void _rebuildAll() {
-    for (final e in _entries) {
-      e.markNeedsBuild();
+  // Met à jour les ValueNotifiers sans forcer un rebuild de l'OverlayEntry
+  void _updateIndexes() {
+    for (var i = 0; i < _toasts.length; i++) {
+      _toasts[i].indexNotifier.value = i;
     }
   }
 }
 
 class _PositionedToast extends StatelessWidget {
-  final int index;
+  final ValueNotifier<int> indexNotifier;
   final double toastHeight;
   final double gap;
   final double bottomBase;
   final Widget child;
 
   const _PositionedToast({
-    required this.index,
+    required this.indexNotifier,
     required this.toastHeight,
     required this.gap,
     required this.bottomBase,
@@ -83,14 +87,20 @@ class _PositionedToast extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final targetWidth = math.min(360.0, screenWidth * 0.4);
-    final rightMargin = 20.0;
-    final bottom = bottomBase + index * (toastHeight + gap);
+    const rightMargin = 20.0;
 
-    return Positioned(
-      bottom: bottom,
-      right: rightMargin,
-      width: targetWidth,
-      child: Material(color: Colors.transparent, child: child),
+    // ValueListenableBuilder réagit aux changements d'index sans rebuild de l'OverlayEntry
+    return ValueListenableBuilder<int>(
+      valueListenable: indexNotifier,
+      builder: (_, index, __) {
+        final bottom = bottomBase + index * (toastHeight + gap);
+        return Positioned(
+          bottom: bottom,
+          right: rightMargin,
+          width: targetWidth,
+          child: Material(color: Colors.transparent, child: child),
+        );
+      },
     );
   }
 }

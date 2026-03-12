@@ -9,6 +9,7 @@ import '../../../areas/models/area.dart';
 import '../../../auth/utils/auth_extension.dart';
 import '../../../common/widgets/global_stat_card_widget.dart';
 import '../../../common/widgets/generic_list_item.dart';
+ import '../../../common/widgets/page_header.dart';
 
 class AreaSettingsPage extends StatefulWidget {
   const AreaSettingsPage({super.key});
@@ -38,9 +39,9 @@ class _AreaSettingsPageState extends State<AreaSettingsPage> {
       return const Text('Utilisateur non connecté');
     }
 
-    return BlocProvider(
-      create: (context) => AreaBloc()..add(LoadAreas()),
-      child: Builder(
+    // Recharger les areas à chaque affichage de la page
+
+    return Builder(
         builder: (context) {
           final areaState = context.watch<AreaBloc>().state;
 
@@ -52,27 +53,17 @@ class _AreaSettingsPageState extends State<AreaSettingsPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Bonjour ${user.firstName}',
-                          style: Theme.of(context).textTheme.headlineLarge,
-                        ),
+                    PageHeader(
+                      title: 'Bonjour ${user.firstName}',
+                      actions: [
                         IconButton.filled(
                           icon: const Icon(Icons.add),
-                          style: IconButton.styleFrom(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            foregroundColor: Colors.white,
-                          ),
                           onPressed: () {
                             context.go('/settings/areas/add');
                           },
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
                     Row(
                       children: [
                         ...areasByLevel.entries.map(
@@ -137,12 +128,6 @@ class _AreaSettingsPageState extends State<AreaSettingsPage> {
                                 return const SizedBox.shrink();
                               }
 
-                              for (var area in areasForLevel) {
-                                debugPrint(
-                                  'Area: ${area.name}, niveau: ${area.level}',
-                                );
-                              }
-
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -178,7 +163,7 @@ class _AreaSettingsPageState extends State<AreaSettingsPage> {
                                             onTap: () {
                                               // Clic sur la ligne -> mode vue
                                               context.go(
-                                                '/settings/areas/${area.id}?pages=true',
+                                                '/settings/areas/${area.id}?view=true',
                                               );
                                             },
                                             onEdit: () {
@@ -206,7 +191,6 @@ class _AreaSettingsPageState extends State<AreaSettingsPage> {
             body: Center(child: CircularProgressIndicator()),
           );
         },
-      ),
     );
   }
 }

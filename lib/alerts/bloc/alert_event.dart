@@ -54,6 +54,24 @@ final class AlertUpdateAlert extends AlertBlocEvent {
   const AlertUpdateAlert({required this.alertId, required this.request});
 }
 
+// Valide les conflits avant la mise à jour d'une alerte
+final class AlertValidateUpdate extends AlertBlocEvent {
+  final String alertId;
+  final AlertCreationRequest request;
+  const AlertValidateUpdate({required this.alertId, required this.request});
+}
+
+// Confirme la mise à jour après résolution des conflits
+final class AlertConfirmUpdate extends AlertBlocEvent {
+  final bool overwrite;
+  const AlertConfirmUpdate({required this.overwrite});
+}
+
+// Annule la mise à jour en cours de validation
+final class AlertCancelUpdate extends AlertBlocEvent {
+  const AlertCancelUpdate();
+}
+
 final class AlertDeleteAlert extends AlertBlocEvent {
   final String alertId;
   const AlertDeleteAlert({required this.alertId});

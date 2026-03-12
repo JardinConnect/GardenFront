@@ -10,20 +10,42 @@ import '../../../common/widgets/generic_dialog.dart';
 /// Retourne `true` si l'utilisateur confirme l'écrasement, `null` si annulé.
 class AlertConflictDialog extends StatelessWidget {
   final List<AlertConflict> conflicts;
+  final bool isEditing;
 
-  const AlertConflictDialog({super.key, required this.conflicts});
+  const AlertConflictDialog({
+    super.key,
+    required this.conflicts,
+    this.isEditing = false,
+  });
 
   /// Affiche le dialogue et retourne `true` (écraser) ou `null` (annuler).
   static Future<bool?> show(
     BuildContext context,
-    List<AlertConflict> conflicts,
-  ) {
+    List<AlertConflict> conflicts, {
+    bool isEditing = false,
+  }) {
     return StyledDialog.show<bool>(
       context,
       title: 'Conflits détectés',
+      headerColor: GardenColors.redAlert.shade500,
       dismissible: false,
       widthFactor: 0.35,
-      content: _AlertConflictContent(conflicts: conflicts),
+      content: _AlertConflictContent(conflicts: conflicts, isEditing: isEditing),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context, rootNavigator: true).pop(null),
+          child: Text('Annuler', style: GardenTypography.bodyMd),
+        ),
+        ElevatedButton.icon(
+          onPressed: () => Navigator.of(context, rootNavigator: true).pop(true),
+          icon: const Icon(Icons.delete_sweep_rounded, size: 16),
+          label: const Text('Écraser les conflits'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+          ),
+        ),
+      ],
     );
   }
 
@@ -32,16 +54,31 @@ class AlertConflictDialog extends StatelessWidget {
     return StyledDialog(
       title: 'Conflits détectés',
       dismissible: false,
-      widthFactor: 0.35,
-      content: _AlertConflictContent(conflicts: conflicts),
+      content: _AlertConflictContent(conflicts: conflicts, isEditing: isEditing),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context, rootNavigator: true).pop(null),
+          child: Text('Annuler', style: GardenTypography.bodyMd),
+        ),
+        ElevatedButton.icon(
+          onPressed: () => Navigator.of(context, rootNavigator: true).pop(true),
+          icon: const Icon(Icons.delete_sweep_rounded, size: 16),
+          label: const Text('Écraser les conflits'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+          ),
+        ),
+      ],
     );
   }
 }
 
 class _AlertConflictContent extends StatelessWidget {
   final List<AlertConflict> conflicts;
+  final bool isEditing;
 
-  const _AlertConflictContent({required this.conflicts});
+  const _AlertConflictContent({required this.conflicts, this.isEditing = false});
 
   Map<String, List<String>> _buildSummary() {
     final summary = <String, List<String>>{};
@@ -66,7 +103,7 @@ class _AlertConflictContent extends StatelessWidget {
           children: [
             Icon(
               Icons.warning_amber_rounded,
-              color: Colors.orange.shade700,
+              color: GardenColors.redAlert.shade500,
               size: 18,
             ),
             const SizedBox(width: 8),
@@ -99,7 +136,7 @@ class _AlertConflictContent extends StatelessWidget {
                               Icon(
                                 Icons.notifications_rounded,
                                 size: 14,
-                                color: Colors.orange.shade700,
+                                color: GardenColors.redAlert.shade500,
                               ),
                               const SizedBox(width: 4),
                               Expanded(
@@ -152,7 +189,9 @@ class _AlertConflictContent extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'Voulez-vous écraser les alertes existantes ou annuler la création ?',
+                  isEditing
+                      ? 'Voulez-vous écraser les alertes existantes ou annuler la modification ?'
+                      : 'Voulez-vous écraser les alertes existantes ou annuler la création ?',
                   style: GardenTypography.bodyMd.copyWith(
                     color: Colors.red.shade800,
                   ),
@@ -160,29 +199,6 @@ class _AlertConflictContent extends StatelessWidget {
               ),
             ],
           ),
-        ),
-
-        SizedBox(height: GardenSpace.gapMd),
-
-        // Actions
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(null),
-              child: Text('Annuler', style: GardenTypography.bodyMd),
-            ),
-            const SizedBox(width: 8),
-            ElevatedButton.icon(
-              onPressed: () => Navigator.of(context).pop(true),
-              icon: const Icon(Icons.delete_sweep_rounded, size: 16),
-              label: const Text('Écraser les conflits'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-              ),
-            ),
-          ],
         ),
       ],
     );
