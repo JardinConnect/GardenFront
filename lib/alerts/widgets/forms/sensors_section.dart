@@ -160,8 +160,8 @@ class _SensorsSectionState extends State<SensorsSection> {
       physics: NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        crossAxisSpacing: GardenSpace.paddingMd,
-        mainAxisSpacing: GardenSpace.paddingMd,
+        crossAxisSpacing: GardenSpace.gapMd,
+        mainAxisSpacing: GardenSpace.gapMd,
         childAspectRatio: 1.7,
       ),
       itemCount: _allSensors.length,

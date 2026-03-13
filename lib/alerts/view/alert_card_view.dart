@@ -21,8 +21,8 @@ class AlertCardView extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: GardenSpace.paddingMd),
       child: Wrap(
-        spacing: GardenSpace.paddingMd,
-        runSpacing: GardenSpace.paddingMd,
+        spacing: GardenSpace.gapMd,
+        runSpacing: GardenSpace.gapMd,
         // Clé stable par alerte pour préserver le state de pagination
         children:
             alerts
