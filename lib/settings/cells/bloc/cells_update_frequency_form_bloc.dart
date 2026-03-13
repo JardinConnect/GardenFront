@@ -80,7 +80,7 @@ class CellsUpdateFrequencyFormBloc
         return "$hours:$minutes";
       }).toList();
 
-      _cellRepository.updateCellsSettings(
+      await _cellRepository.updateCellsSettings(
         selectedCells,
         state.dailyUpdateCount,
         measurementFrequencyInSeconds,
@@ -88,7 +88,9 @@ class CellsUpdateFrequencyFormBloc
       );
       emit(state.copyWith(isSubmitting: false));
     } catch (e) {
-      emit(state.copyWith(isSubmitting: false));
+      emit(CellsUpdateFrequencyFormError(
+        message: e.toString().replaceAll('Exception: ', ''),
+      ));
     }
   }
 }
