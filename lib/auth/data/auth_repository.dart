@@ -12,7 +12,7 @@ class AuthRepository {
   Future<User?> login(String email, String password) async {
     try {
       final response = await _httpClient.post(
-        "/login",
+        "/auth/login",
         body: {'email': email, 'password': password},
       );
 
@@ -67,7 +67,7 @@ class AuthRepository {
       if (refreshToken == null) return false;
 
       final response = await _httpClient.post(
-        "/refresh-token",
+        "/auth/refresh-token",
         body: {'refresh_token': refreshToken},
       );
 
