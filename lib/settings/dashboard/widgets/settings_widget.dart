@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garden_ui/ui/design_system.dart';
 import 'package:garden_ui/ui/widgets/atoms/Card/card.dart';
 
 import '../models/settings.dart';
@@ -42,7 +43,7 @@ class _GlobalSettingsWidgetState extends State<GlobalSettingsWidget> {
             Row(
               children: [
                 Icon(Icons.settings_outlined, color: Theme.of(context).primaryColor,),
-                const SizedBox(width: 8),
+                SizedBox(width: GardenSpace.gapSm),
                 const Text('Paramètres', style: TextStyle(fontSize: 18)),
                 const Spacer(),
               ],

@@ -106,7 +106,7 @@ class _AlertConflictContent extends StatelessWidget {
               color: GardenColors.redAlert.shade500,
               size: 18,
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: GardenSpace.gapSm),
             Expanded(
               child: Text(
                 'Des alertes existantes sont en conflit avec votre sélection :',
@@ -138,7 +138,7 @@ class _AlertConflictContent extends StatelessWidget {
                                 size: 14,
                                 color: GardenColors.redAlert.shade500,
                               ),
-                              const SizedBox(width: 4),
+                              SizedBox(width: GardenSpace.gapXs),
                               Expanded(
                                 child: Text(
                                   entry.key,
@@ -175,7 +175,7 @@ class _AlertConflictContent extends StatelessWidget {
           padding: EdgeInsets.all(GardenSpace.paddingSm),
           decoration: BoxDecoration(
             color: Colors.red.shade50,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: GardenRadius.radiusSm,
             border: Border.all(color: Colors.red, width: 2),
           ),
           child: Row(
@@ -186,7 +186,7 @@ class _AlertConflictContent extends StatelessWidget {
                 color: Colors.red,
                 size: 18,
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: GardenSpace.gapSm),
               Expanded(
                 child: Text(
                   isEditing

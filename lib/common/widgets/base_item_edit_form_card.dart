@@ -190,7 +190,7 @@ class _BaseItemEditFormCardState extends State<BaseItemEditFormCard> {
                   padding: EdgeInsets.all(GardenSpace.paddingMd),
                   decoration: BoxDecoration(
                     color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: GardenRadius.radiusSm,
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,

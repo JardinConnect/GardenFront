@@ -111,9 +111,9 @@ class _SensorsSectionState extends State<SensorsSection> {
   Widget build(BuildContext context) {
     // Afficher un indicateur de chargement
     if (_isLoading) {
-      return const Center(
+      return Center(
         child: Padding(
-          padding: EdgeInsets.all(32.0),
+          padding: EdgeInsets.all(GardenSpace.paddingXl),
           child: CircularProgressIndicator(),
         ),
       );
@@ -123,18 +123,17 @@ class _SensorsSectionState extends State<SensorsSection> {
     if (_errorMessage != null) {
       return Center(
         child: Padding(
-          padding: const EdgeInsets.all(32.0),
+          padding: EdgeInsets.all(GardenSpace.paddingXl),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            spacing: GardenSpace.gapMd,
             children: [
               Icon(Icons.error_outline, size: 48, color: Colors.red[300]),
-              const SizedBox(height: 16),
               Text(
                 _errorMessage!,
                 style: TextStyle(color: Colors.red[700]),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _loadAvailableSensors,
                 child: const Text('Réessayer'),
@@ -158,11 +157,11 @@ class _SensorsSectionState extends State<SensorsSection> {
   Widget _buildSensorsGrid() {
     return GridView.builder(
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      physics: NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
+        crossAxisSpacing: GardenSpace.gapMd,
+        mainAxisSpacing: GardenSpace.gapMd,
         childAspectRatio: 1.7,
       ),
       itemCount: _allSensors.length,
@@ -182,7 +181,7 @@ class _SensorsSectionState extends State<SensorsSection> {
               isSelected
                   ? Border.all(color: GardenColors.primary.shade500, width: 1)
                   : null,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: GardenRadius.radiusSm,
         ),
         child: GardenCard(
           hasShadow: true,

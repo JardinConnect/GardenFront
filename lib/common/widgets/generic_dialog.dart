@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:garden_ui/ui/design_system.dart';
 
 /// Dialogue générique avec une bannière header colorée
 class StyledDialog extends StatelessWidget {
@@ -82,7 +83,7 @@ class StyledDialog extends StatelessWidget {
       insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: GardenRadius.radiusLg,
         clipBehavior: Clip.antiAlias,
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: dialogMaxWidth, maxHeight: dialogMaxHeight),
@@ -160,7 +161,7 @@ class StyledDialog extends StatelessWidget {
                     child: Wrap(
                       alignment: WrapAlignment.center,
                       spacing: 12,
-                      runSpacing: 8,
+                      runSpacing: GardenSpace.gapSm,
                       children: actions!,
                     ),
                   ),

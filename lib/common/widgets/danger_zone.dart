@@ -31,14 +31,14 @@ class DangerZone extends StatelessWidget {
         padding: EdgeInsets.all(GardenSpace.paddingSm),
         decoration: BoxDecoration(
           color: Colors.red.shade50,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: GardenRadius.radiusSm,
           border: Border.all(color: Colors.red, width: 2),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Icon(Icons.warning_amber_rounded, color: Colors.red, size: 18),
-            const SizedBox(width: 8),
+            SizedBox(width: GardenSpace.gapSm),
             Expanded(
               child: Text(
               'Êtes-vous sûr de vouloir supprimer cet élément ?\nLes espaces enfants seront supprimés\nCette action est irréversible.',

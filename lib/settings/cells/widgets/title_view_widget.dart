@@ -17,7 +17,7 @@ class TitleViewWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, style: GardenTypography.headingXl),
-        const SizedBox(height: 8),
+        SizedBox(height: GardenSpace.gapSm),
         Text(content, style: Theme.of(context).textTheme.bodyLarge),
       ],
     );

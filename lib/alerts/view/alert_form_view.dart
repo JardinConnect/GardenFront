@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_ui/ui/components.dart';
+import 'package:garden_ui/ui/design_system.dart';
 
 import '../bloc/alert_bloc.dart';
 import '../models/alert_models.dart';
@@ -76,12 +77,12 @@ class _AlertFormViewState extends State<AlertFormView> {
         }
 
         return Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(GardenSpace.paddingMd),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildHeader(context),
-              const SizedBox(height: 24),
+              SizedBox(height: GardenSpace.gapLg),
               Expanded(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -116,7 +117,7 @@ class _AlertFormViewState extends State<AlertFormView> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: GardenSpace.gapMd),
                     // Colonne droite : table de cellules + zone de danger (édition seulement)
                     Expanded(
                       child: Column(
@@ -142,7 +143,7 @@ class _AlertFormViewState extends State<AlertFormView> {
                           ),
                           // Zone de danger uniquement en édition
                           if (widget.isEditing) ...[
-                            const SizedBox(height: 16),
+                            SizedBox(height: GardenSpace.gapMd),
                             AlertDangerZone(alert: widget.alert!),
                           ],
                         ],
@@ -151,7 +152,7 @@ class _AlertFormViewState extends State<AlertFormView> {
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: GardenSpace.gapLg),
               Center(
                 child: Button(
                   label:
@@ -181,11 +182,11 @@ class _AlertFormViewState extends State<AlertFormView> {
             minimumSize: Size.zero,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
-          child: const Row(
+          child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.arrow_back_ios, size: 16),
-              SizedBox(width: 4),
+              SizedBox(width: GardenSpace.gapXs),
               Text(
                 'Retour',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
@@ -193,7 +194,7 @@ class _AlertFormViewState extends State<AlertFormView> {
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: GardenSpace.gapMd),
         Text(
           widget.isEditing ? 'Modifier l\'alerte' : 'Ajouter une alerte',
           style: Theme.of(context).textTheme.headlineLarge,

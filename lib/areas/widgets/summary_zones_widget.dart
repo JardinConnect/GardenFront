@@ -166,12 +166,12 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
               ),
           ],
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: GardenSpace.gapMd),
         Text(
           widget.level == 0 ? 'Vue d\'ensemble' : 'Niveau ${widget.level}',
           style: GardenTypography.caption.copyWith(fontSize: 16.0),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: GardenSpace.gapMd),
         IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -185,7 +185,7 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
                       );
                     },
                     child: Padding(
-                      padding: const EdgeInsets.only(right: 16),
+                      padding: EdgeInsets.only(right: GardenSpace.paddingMd),
                       child: GardenCard(
                         backgroundColor:
                             showingAreasList && selectedLevel == lvl
@@ -194,7 +194,7 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
                         child: Row(
                           children: [
                             LevelIndicator(level: lvl),
-                            const SizedBox(width: 16),
+                            SizedBox(width: GardenSpace.gapMd),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,7 +229,7 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
                       backgroundColor:
                           showingCellsList ? GardenColors.base.shade200 : null,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        padding: EdgeInsets.symmetric(horizontal: GardenSpace.paddingMd),
                         child: Row(
                           children: [
                             Text(
@@ -253,7 +253,7 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
             'Moyenne des données des noeuds',
             style: GardenTypography.caption.copyWith(fontSize: 16.0),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: GardenSpace.gapMd),
           if (showingCellsList)
             AnalyticsListWidget(items: cells, onPressed: _onBaseItemPressed)
           else if (showingAreasList)

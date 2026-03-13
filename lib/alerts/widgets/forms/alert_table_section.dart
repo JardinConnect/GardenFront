@@ -96,10 +96,10 @@ class _AlertTableSectionState extends State<AlertTableSection> {
 
   Widget _buildTableHeader() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: GardenSpace.paddingSm, vertical: GardenSpace.paddingSm),
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: GardenRadius.radiusSm,
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: Row(
@@ -149,10 +149,10 @@ class _AlertTableSectionState extends State<AlertTableSection> {
       child: GestureDetector(
         onTap: () => _toggleCellSelection(cell),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: GardenSpace.paddingSm),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: GardenRadius.radiusSm,
             border: Border.all(color: Colors.grey.shade200, width: 1),
           ),
           child: Row(

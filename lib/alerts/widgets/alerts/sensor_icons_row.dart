@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:garden_ui/ui/components.dart';
+import 'package:garden_ui/ui/design_system.dart';
 import '../../models/alert_models.dart';
 
 /// Composant d'affichage d'une ligne d'icônes de capteurs
@@ -97,7 +98,7 @@ class SensorIconsRow extends StatelessWidget {
       width: iconContainerSize,
       height: iconContainerSize,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: GardenRadius.radiusXs,
         color: isActive ? color.withValues(alpha: 0.2) : Colors.grey.shade200,
       ),
       child: Center(

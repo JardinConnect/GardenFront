@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_ui/ui/design_system.dart';
 import 'package:garden_ui/ui/models/sensor_threshold.dart';
 import 'package:garden_ui/ui/widgets/organisms/SensorAlertCard/sensor_alert_card.dart';
 
@@ -18,10 +19,10 @@ class AlertCardView extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: GardenSpace.paddingMd),
       child: Wrap(
-        spacing: 16,
-        runSpacing: 16,
+        spacing: GardenSpace.gapMd,
+        runSpacing: GardenSpace.gapMd,
         // Clé stable par alerte pour préserver le state de pagination
         children:
             alerts

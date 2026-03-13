@@ -41,7 +41,7 @@ class CellPairPendingView extends StatelessWidget {
                                 size: 30,
                                 color: Theme.of(context).colorScheme.primary,
                               ),
-                              const SizedBox(width: 8),
+                              SizedBox(width: GardenSpace.gapSm),
                               Text(
                                 'Recherche en cours...',
                                 style: Theme.of(
@@ -65,7 +65,7 @@ class CellPairPendingView extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    SizedBox(height: GardenSpace.gapXl),
                     Center(
                       child: Column(
                         children: [
@@ -93,7 +93,7 @@ class CellPairPendingView extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 4),
+                                SizedBox(height: GardenSpace.gapXs),
                                 Padding(
                                   padding: const EdgeInsets.all(8),
                                   child: LinearProgressIndicator(
@@ -118,7 +118,7 @@ class CellPairPendingView extends StatelessWidget {
                               borderRadius: BorderRadius.circular(120),
                             ),
                             child: Container(
-                              margin: const EdgeInsets.all(16),
+                              margin: EdgeInsets.all(GardenSpace.paddingMd),
                               decoration: BoxDecoration(
                                 color: GardenColors.primary.shade300,
                                 borderRadius: BorderRadius.circular(104),
@@ -146,7 +146,7 @@ class CellPairPendingView extends StatelessWidget {
                                 'Placez vous à moins de 5 mètres de la cellule mère si possible\nEvitez les interférences Bluetooth ou wifi\nEvitez de vous des placez dans l’espace et le temps',
                             isCentered: true,
                           ),
-                          const SizedBox(height: 32),
+                          SizedBox(height: GardenSpace.gapXl),
                           Button(
                             label: 'Annuler',
                             icon: Icons.backspace,

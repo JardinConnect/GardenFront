@@ -148,7 +148,7 @@ class _NodeComparisonState extends State<NodeComparison> {
               child: Row(
                 children: [
                   LevelIndicator(level: area.level),
-                  const SizedBox(width: 8),
+                  SizedBox(width: GardenSpace.gapSm),
                   Text(area.name, style: GardenTypography.bodyMd),
                 ],
               ),
@@ -215,7 +215,7 @@ class _NodeComparisonState extends State<NodeComparison> {
                       : '${_selectedCells.length} cellule(s)',
                   style: GardenTypography.bodyMd,
                 ),
-                const SizedBox(width: 4),
+                SizedBox(width: GardenSpace.gapXs),
                 const Icon(
                   Icons.keyboard_arrow_down,
                   color: Colors.black,
@@ -255,7 +255,7 @@ class _NodeComparisonState extends State<NodeComparison> {
           Row(
             children: [
               Text(cell.name, style: GardenTypography.headingSm),
-              SizedBox(width: GardenSpace.paddingXs),
+              SizedBox(width: GardenSpace.gapXs),
               GestureDetector(
                 onTap: () => _toggleCell(cell),
                 child: Icon(
@@ -295,7 +295,7 @@ class _NodeComparisonState extends State<NodeComparison> {
                   ],
                 ),
               ),
-              SizedBox(width: GardenSpace.paddingSm),
+              SizedBox(width: GardenSpace.gapSm),
               Text(
                 displayValue,
                 style: TextStyle(color: color, fontWeight: FontWeight.w600),
@@ -316,15 +316,15 @@ class _NodeComparisonState extends State<NodeComparison> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: GardenSpace.gapSm,
+            runSpacing: GardenSpace.gapSm,
             children: [
               _buildMesureDropdown(),
               _buildAreaDropdown(),
               _buildMultiCellSelect(),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: GardenSpace.gapMd),
           if (_selectedCells.isEmpty && _isCellFilterEnabled)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),

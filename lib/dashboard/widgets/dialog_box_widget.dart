@@ -25,7 +25,7 @@ class DialogBoxWidget extends StatelessWidget {
     return DefaultTabController(
       length: tabs.length,
       child: AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: GardenRadius.radiusLg),
         clipBehavior: Clip.antiAlias,
         titlePadding: EdgeInsets.zero,
         contentPadding: EdgeInsets.zero,

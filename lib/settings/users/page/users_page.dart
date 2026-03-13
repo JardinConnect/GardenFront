@@ -8,6 +8,7 @@ import 'package:garden_connect/settings/users/widgets/log_card_widget.dart';
 import 'package:garden_connect/settings/users/bloc/users_bloc.dart';
 import 'package:garden_connect/settings/users/view/user_add_view.dart';
 import 'package:garden_connect/settings/users/view/user_profile_view.dart';
+import 'package:garden_ui/ui/design_system.dart';
 import '../../../auth/models/user.dart';
 import '../../../auth/utils/auth_extension.dart';
 import '../../../common/widgets/global_stat_card_widget.dart';
@@ -37,7 +38,7 @@ class UsersPage extends StatelessWidget {
               final users = state.users;
               final logs = state.logs;
               return Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(GardenSpace.paddingMd),
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

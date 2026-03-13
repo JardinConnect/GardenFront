@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garden_ui/ui/design_system.dart';
 import 'package:garden_ui/ui/widgets/atoms/Card/card.dart';
 
 import '../../../auth/models/user.dart';
@@ -23,7 +24,7 @@ class UserInfoWidget extends StatelessWidget {
                 size: 32,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: EdgeInsets.symmetric(horizontal: GardenSpace.paddingMd),
                 child: Text(
                   "Informations du compte",
                   style: Theme.of(context).textTheme.headlineSmall,

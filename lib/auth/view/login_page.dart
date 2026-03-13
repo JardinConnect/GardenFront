@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:garden_connect/auth/auth.dart';
 import 'package:garden_connect/core/app_assets.dart';
 import 'package:garden_ui/ui/components.dart';
+import 'package:garden_ui/ui/design_system.dart';
 
 import '../../alerts/widgets/common/snackbar.dart' as snackbar;
 
@@ -72,12 +73,12 @@ class _LoginPageState extends State<LoginPage> {
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 600),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      padding: EdgeInsets.symmetric(horizontal: GardenSpace.paddingMd),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(30.0),
+                            padding: EdgeInsets.all(GardenSpace.paddingXl),
                             child: Text(
                               "Connexion",
                               style: Theme.of(context).textTheme.displayMedium,
@@ -87,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                             hasBorder: true,
                             hasShadow: true,
                             child: Padding(
-                              padding: const EdgeInsets.all(16.0),
+                              padding: EdgeInsets.all(GardenSpace.paddingMd),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [

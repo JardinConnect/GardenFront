@@ -7,6 +7,7 @@ import 'package:garden_connect/settings/users/bloc/users_bloc.dart';
 import 'package:garden_connect/settings/users/widgets/log_card_widget.dart';
 import 'package:garden_connect/settings/users/widgets/user_form_widget.dart';
 import 'package:garden_connect/settings/users/widgets/user_info_widget.dart';
+import 'package:garden_ui/ui/design_system.dart';
 
 import '../../../auth/models/user.dart';
 import '../../../auth/utils/auth_extension.dart';
@@ -30,7 +31,7 @@ class UserProfileView extends StatelessWidget {
       Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsetsGeometry.directional(top: 16, start: 8),
+          padding: EdgeInsetsGeometry.directional(top: GardenSpace.paddingMd, start: GardenSpace.paddingSm),
           child: Column(
             children: [
               Row(
@@ -54,12 +55,12 @@ class UserProfileView extends StatelessWidget {
                         child: Column(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(16.0),
+                              padding: EdgeInsets.all(GardenSpace.paddingMd),
                               child: UserFormWidget(user: user),
                             ),
                             if (logs != null)
                               Padding(
-                                padding: const EdgeInsets.all(16.0),
+                                padding: EdgeInsets.all(GardenSpace.paddingMd),
                                 child: LogCardWidget(logs: logs,),
                               ),
                           ],
@@ -70,12 +71,12 @@ class UserProfileView extends StatelessWidget {
                       child: Column(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(16.0),
+                            padding: EdgeInsets.all(GardenSpace.paddingMd),
                             child: UserInfoWidget(user: user),
                           ),
                           if (currentUser.role == Role.admin || context.currentUser == user)
                             Padding(
-                              padding: const EdgeInsets.all(16.0),
+                              padding: EdgeInsets.all(GardenSpace.paddingMd),
                               child:DangerZone(title: "Zone de danger", description: "La suppression d'un utilisateur est irréverssible", deleteButtonLabel: "Supprimer",
                                   onDelete: (){
                                 context.read<UsersBloc>().add(UserDeleteEvent(user: user));

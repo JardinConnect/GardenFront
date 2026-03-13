@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garden_connect/common/widgets/back_text_button.dart';
 import 'package:garden_ui/ui/components.dart';
+import 'package:garden_ui/ui/design_system.dart';
 import 'package:go_router/go_router.dart';
 
 import '../widgets/title_view_widget.dart';
@@ -27,7 +28,7 @@ class CellAddView extends StatelessWidget {
                     content:
                         'Suivez ces étapes pour connecter un nouveau capteur à votre système',
                   ),
-                  const SizedBox(height: 32),
+                  SizedBox(height: GardenSpace.gapXl),
                   Center(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,26 +38,26 @@ class CellAddView extends StatelessWidget {
                           width: 600,
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.onSurface,
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: GardenRadius.radiusSm,
                           ),
                           child: const Center(
                             child: Text('Image de la cellule mère ici'),
                           ),
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: GardenSpace.gapLg),
                         TooltipWidget(
                           title:
                               'Appuyer 3 secondes sur le bouton de la cellule',
                           content:
                               'Maintenez le bouton enfoncé jusqu\'à ce que la LED clignote lentement',
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: GardenSpace.gapMd),
                         TooltipWidget(
                           title: 'Vérifiez le clignotement de la LED',
                           content:
                               'La LED doit clignoter lentement pour indiquer le mode appairage',
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: GardenSpace.gapMd),
                         TooltipWidget(
                           title: 'Restez à proximité',
                           content:
@@ -65,7 +66,7 @@ class CellAddView extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  SizedBox(height: GardenSpace.gapXl),
                   Center(
                     child: Button(
                       label: 'Démarrer l\'apparaige',

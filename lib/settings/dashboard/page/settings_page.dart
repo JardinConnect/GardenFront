@@ -4,6 +4,7 @@ import 'package:garden_connect/auth/utils/auth_extension.dart';
 import 'package:garden_connect/common/widgets/global_stat_card_widget.dart';
 import 'package:garden_connect/common/widgets/page_header.dart';
 import 'package:garden_connect/settings/dashboard/widgets/user_profile_widget.dart';
+import 'package:garden_ui/ui/design_system.dart';
 
 import '../../users/repository/users_repository.dart';
 import '../bloc/settings_bloc.dart';
@@ -43,7 +44,7 @@ class SettingsPage extends StatelessWidget {
                 final users = state.users;
                 final logs = state.logs;
                 return Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(GardenSpace.paddingMd),
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

@@ -188,7 +188,7 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
               opacity: (!isCritical && !_isWarningEnabled) ? 0.5 : 1.0,
               child: _buildSensorSlider(sensor, color, isCritical),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: GardenSpace.gapSm),
           ],
         ],
       ),
@@ -208,7 +208,7 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
             : (widget.warningRanges?[key] ?? config.defaultWarning);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+      padding: EdgeInsets.symmetric(vertical: GardenSpace.paddingXs, horizontal: 6),
       child: Row(
         children: [
           // Icône du capteur

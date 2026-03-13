@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garden_ui/ui/design_system.dart';
 
 /// En-tête de page réutilisable avec un titre optionnel et des boutons d'action optionnels.
 ///
@@ -21,7 +22,7 @@ class PageHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 8, bottom: 16),
+      padding: EdgeInsets.only(top: GardenSpace.gapSm, bottom: GardenSpace.paddingMd),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -32,7 +33,7 @@ class PageHeader extends StatelessWidget {
             ),
           if (actions.isNotEmpty)
             Row(
-              spacing: 8,
+              spacing: GardenSpace.gapSm,
               children: actions,
             ),
         ],

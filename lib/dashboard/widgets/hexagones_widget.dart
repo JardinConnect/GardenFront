@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garden_ui/ui/design_system.dart';
 import 'package:hexagon/hexagon.dart';
 
 import '../../areas/models/area.dart';
@@ -92,7 +93,7 @@ class _HexagonesWidgetState extends State<HexagonesWidget> {
         child: HexagonWidget.flat(
           width: 125,
           color: Theme.of(context).colorScheme.primary,
-          padding: 16.0,
+          padding: GardenSpace.paddingMd,
           child: Center(
             child: SizedBox(
               width: 80,
@@ -161,12 +162,12 @@ class _HexagonesWidgetState extends State<HexagonesWidget> {
             const Spacer(),
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: GardenRadius.radiusLg,
                 color: Theme.of(context).colorScheme.primary,
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
+                padding: EdgeInsets.symmetric(
+                  horizontal: GardenSpace.gapMd,
                   vertical: 2,
                 ),
                 child: Text(
@@ -177,10 +178,10 @@ class _HexagonesWidgetState extends State<HexagonesWidget> {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: GardenSpace.gapMd),
         filteredAreas.isEmpty
-            ? const Padding(
-              padding: EdgeInsets.all(32.0),
+            ? Padding(
+              padding: EdgeInsets.all(GardenSpace.paddingXl),
               child: Text(
                 'Aucune zone disponible pour ce niveau',
                 style: TextStyle(fontSize: 16, color: Colors.grey),

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:garden_ui/ui/components.dart';
+import 'package:garden_ui/ui/design_system.dart';
 
 import '../models/farm.dart';
 
@@ -78,7 +79,7 @@ class _FarmInfoWidgetState extends State<FarmInfoWidget>{
         child:Form(
           key: widget.formKey ?? _internalFormKey,
           child: Column(
-            spacing: 16.0,
+            spacing: GardenSpace.gapMd,
             children: [
               TextFormField(
                   validator: (value) {
@@ -101,7 +102,7 @@ class _FarmInfoWidgetState extends State<FarmInfoWidget>{
                   decoration: const InputDecoration(labelText: 'Adresse')
               ),
               Row(
-                spacing: 16,
+                spacing: GardenSpace.gapMd,
                 children: [
                   Expanded(
                     flex: 2,

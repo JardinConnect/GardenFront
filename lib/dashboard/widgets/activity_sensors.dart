@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garden_connect/dashboard/widgets/dialog_box_widget.dart';
-import 'package:garden_ui/ui/foundation/color/color_design_system.dart';
+import 'package:garden_ui/ui/design_system.dart';
 import 'package:intl/intl.dart';
 
 import '../../analytics/models/analytics.dart';
@@ -64,7 +64,7 @@ class ActivitySensors extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(GardenSpace.paddingMd),
         child: Row(
           children: List.generate(52, (weekIndex) {
             return Column(

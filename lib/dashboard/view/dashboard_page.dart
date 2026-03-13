@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/auth/utils/auth_extension.dart';
 import 'package:garden_ui/ui/components.dart';
+import 'package:garden_ui/ui/design_system.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../analytics/bloc/analytics_bloc.dart';
@@ -58,7 +59,7 @@ class DashboardPage extends StatelessWidget {
                 cellState.cells.where((cell) => cell.isTracked).toList();
 
             return Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(GardenSpace.paddingMd),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,8 +84,8 @@ class DashboardPage extends StatelessWidget {
                       child: LayoutBuilder(
                         builder: (context, constraints) {
                           return Wrap(
-                            spacing: 16,
-                            runSpacing: 16,
+                            spacing: GardenSpace.gapMd,
+                            runSpacing: GardenSpace.gapMd,
                             children:
                                 trackedCells.map((cell) {
                                   return SizedBox(
@@ -157,8 +158,8 @@ class DashboardPage extends StatelessWidget {
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: crossAxisCount,
-                                  mainAxisSpacing: 16,
-                                  crossAxisSpacing: 16,
+                                  mainAxisSpacing: GardenSpace.gapMd,
+                                  crossAxisSpacing: GardenSpace.gapMd,
                                   mainAxisExtent: 220,
                                 ),
                             itemCount: trackedAreas.length,
