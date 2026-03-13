@@ -14,6 +14,8 @@ class CellsFilterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final analyticTypes = AnalyticType.values.where((type) => type != AnalyticType.battery).toList();
+    analyticTypes.sort((a, b) => a.name.compareTo(b.name));
     return DropdownButtonFormField<AnalyticType>(
       decoration: const InputDecoration(
         hintText: "Filtre",
@@ -35,7 +37,7 @@ class CellsFilterWidget extends StatelessWidget {
             ),
           ),
         ),
-        ...AnalyticType.values.map(
+        ...analyticTypes.map(
               (type) =>
               DropdownMenuItem(
                 value: type,
