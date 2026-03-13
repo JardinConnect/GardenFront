@@ -43,64 +43,54 @@ class CellsPage extends StatelessWidget {
             return Center(child: Text('Erreur: ${cellsState.message}'));
           } else if (cellsState is CellsLoaded) {
             return Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: GardenSpace.paddingLg,
-                vertical: GardenSpace.paddingLg,
-              ),
+              padding: EdgeInsets.symmetric(vertical: GardenSpace.paddingMd, horizontal: GardenSpace.paddingLg),
               child: SingleChildScrollView(
                 child: Column(
                   spacing: GardenSpace.gapLg,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      spacing: GardenSpace.gapLg,
-                      children: [
-                        Expanded(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            spacing: GardenSpace.gapSm,
-                            children: [
-                              if (!cellsState.isList)
-                                Expanded(
-                                  flex: 1,
-                                  child: CellsFilterWidget(
-                                    filter: cellsState.filter,
-                                    onChanged: (newFilter) =>
-                                        _onFilterChanged(context, newFilter),
-                                  ),
-                                ),
-                              Expanded(
-                                flex: 3,
-                                child: TextField(
-                                  onChanged: (text) => _onSearch(context, text),
-                                  decoration: InputDecoration(
-                                    hintText: 'Rechercher',
-                                    prefixIcon: Icon(Icons.search),
-                                    hintStyle: GardenTypography.bodyLg.copyWith(
-                                      color: GardenColors.typography.shade200,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                    PageHeader(
+                      title: "Gestion des cellules",
+                      actions: [
+                        IconButton.filled(
+                          onPressed: () => _onToggleListFormat(context),
+                          icon: Icon(
+                            cellsState.isList ? Icons.grid_view : Icons.list,
                           ),
                         ),
-                        PageHeader(
-                          actions: [
-                            IconButton.filled(
-                              onPressed: () => _onToggleListFormat(context),
-                              icon: Icon(
-                                cellsState.isList
-                                    ? Icons.grid_view
-                                    : Icons.list,
+                        IconButton.filled(
+                          onPressed: () => _onRefresh(context),
+                          icon: Icon(Icons.refresh),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: GardenSpace.gapSm,
+                      children: [
+                        if (!cellsState.isList)
+                          Expanded(
+                            flex: 1,
+                            child: CellsFilterWidget(
+                              filter: cellsState.filter,
+                              onChanged:
+                                  (newFilter) => _onFilterChanged(
+                                context,
+                                newFilter,
                               ),
                             ),
-                            IconButton.filled(
-                              onPressed: () => _onRefresh(context),
-                              icon: Icon(Icons.refresh),
+                          ),
+                        Expanded(
+                          flex: 3,
+                          child: TextField(
+                            onChanged: (text) => _onSearch(context, text),
+                            decoration: InputDecoration(
+                              hintText: 'Rechercher',
+                              prefixIcon: Icon(Icons.search),
+                              hintStyle: GardenTypography.bodyLg.copyWith(
+                                color: GardenColors.typography.shade200,
+                              ),
                             ),
-                          ],
+                          ),
                         ),
                       ],
                     ),
