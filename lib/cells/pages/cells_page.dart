@@ -49,7 +49,7 @@ class CellsPage extends StatelessWidget {
                   spacing: GardenSpace.gapLg,
                   children: [
                     PageHeader(
-                      title: "Gestion des cellules",
+                      title: "Vos cellules",
                       actions: [
                         IconButton.filled(
                           onPressed: () => _onToggleListFormat(context),
