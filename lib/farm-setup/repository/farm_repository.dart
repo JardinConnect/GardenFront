@@ -4,11 +4,11 @@ import 'dart:convert';
 
 import 'package:garden_connect/farm-setup/models/network_info.dart';
 
+import '../../auth/utils/http_client.dart';
 import '../models/farm.dart';
-import 'package:http/http.dart' as http;
 
 class FarmRepository {
-  static const String baseUrl = 'http://127.0.0.1:8000';
+  final HttpClient _httpClient = HttpClient();
 
 
     Future<void> addFarm(Farm farm) async {
@@ -17,16 +17,11 @@ class FarmRepository {
 
     Future<bool> sendWifiConfiguration(String ssid, String password) async {
       try {
-        final response = await http.post(
-          Uri.parse('$baseUrl/network/connect'),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: jsonEncode({
-            'ssid': ssid,
+        final response = await _httpClient.post(
+          '/network/connect',
+          body: {'ssid': ssid,
             'password': password,
-          }),
+          },
         );
         if (response.statusCode == 200) {
           final responseData = jsonDecode(response.body);
@@ -39,14 +34,12 @@ class FarmRepository {
       }
     }
 
+
+
     Future<List<NetworkInfo>> getWifiList() async {
       try {
-        final response = await http.get(
-          Uri.parse('$baseUrl/network/list'),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
+        final response = await _httpClient.get(
+            '/network/list'
         );
         if (response.statusCode == 200) {
           final responseData = jsonDecode(response.body);
