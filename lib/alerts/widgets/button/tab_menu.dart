@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/components.dart';
+import 'package:garden_ui/ui/design_system.dart';
 
 /// Les différents onglets disponibles dans la page d'alertes
 enum AlertTabType {
@@ -27,12 +28,12 @@ class AlertTabMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: EdgeInsets.symmetric(horizontal: GardenSpace.paddingMd),
       child: Row(
         children:
             AlertTabType.values.map((tab) {
               return Padding(
-                padding: const EdgeInsets.only(right: 8.0),
+                padding: EdgeInsets.only(right: GardenSpace.paddingSm),
                 child: TabItem(
                   label: tab.label,
                   isSelected: selectedTab == tab,

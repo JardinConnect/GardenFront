@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/auth/utils/auth_extension.dart';
+import 'package:garden_ui/ui/design_system.dart';
 import '../../areas/bloc/area_bloc.dart';
 import '../../analytics/bloc/analytics_bloc.dart';
 import '../../common/widgets/page_header.dart';
@@ -33,7 +34,7 @@ class AreasPage extends StatelessWidget {
             return Center(child: Text('Erreur: ${analyticsState.message}'));
           } else if (areaState is AreasLoaded) {
             return Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(GardenSpace.paddingMd),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -62,7 +63,7 @@ class AreasPage extends StatelessWidget {
                   ),
                   Expanded(
                     child: SingleChildScrollView(
-                      padding: EdgeInsets.all(14),
+                      padding: EdgeInsets.all(GardenSpace.paddingMd),
                       child: TabZonesWidget(
                         title: areaState.selectedArea?.name ?? "",
                         areas: areaState.areas,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:garden_ui/ui/components.dart';
+import 'package:garden_ui/ui/design_system.dart';
 import '../../models/alert_models.dart';
 
 /// Icône isolée pour un capteur
@@ -37,7 +38,7 @@ class SingleSensorIcon extends StatelessWidget {
       width: containerSize,
       height: containerSize,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: GardenRadius.radiusXs,
         color: isActive ? color.withValues(alpha: 0.2) : Colors.grey.shade200,
       ),
       child: Center(

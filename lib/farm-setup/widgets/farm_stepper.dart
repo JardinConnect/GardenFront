@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:garden_connect/farm-setup/models/network_info.dart';
 import 'package:garden_connect/farm-setup/views/area_setup_view.dart';
 import 'package:garden_connect/farm-setup/widgets/wifi_setup_widget.dart';
+import 'package:garden_ui/ui/design_system.dart';
 
 import '../../analytics/models/analytics.dart';
 import '../../areas/models/area.dart';
@@ -173,7 +174,7 @@ class FarmStepperState extends State<FarmStepper> {
               onPressed: onNextPressed(details),
               child: _currentStep == 3 ? const Text('Terminer') : const Text('Suivant'),
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: GardenSpace.gapMd),
             if(_currentStep > 0)
               TextButton(
                 onPressed: details.onStepCancel,

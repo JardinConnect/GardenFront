@@ -35,7 +35,7 @@ class _CellConfigureViewState extends State<CellConfigureView> {
           ),
         ),
       ),
-      const SizedBox(height: 16),
+      SizedBox(height: GardenSpace.gapMd),
       Text(
         'Cette cellule était active jusqu\'au 23/06/2025',
         style: GardenTypography.bodyMd.copyWith(
@@ -43,7 +43,7 @@ class _CellConfigureViewState extends State<CellConfigureView> {
           fontSize: 14,
         ),
       ),
-      const SizedBox(height: 24),
+      SizedBox(height: GardenSpace.gapLg),
       Text(
         '• Nom précédent : ${cell.name}',
         style: GardenTypography.bodyMd.copyWith(
@@ -77,7 +77,7 @@ class _CellConfigureViewState extends State<CellConfigureView> {
           ),
         ),
       ),
-      const SizedBox(height: 24),
+      SizedBox(height: GardenSpace.gapLg),
       IntrinsicHeight(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -122,7 +122,7 @@ class _CellConfigureViewState extends State<CellConfigureView> {
                               ? Theme.of(context).colorScheme.primary
                               : Theme.of(context).colorScheme.onSurface,
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: GardenSpace.gapMd),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,7 +146,7 @@ class _CellConfigureViewState extends State<CellConfigureView> {
                 ),
               ),
             ),
-            const SizedBox(width: 32),
+            SizedBox(width: GardenSpace.gapXl),
             Expanded(
               child: OutlinedButton(
                 onPressed: () {
@@ -187,7 +187,7 @@ class _CellConfigureViewState extends State<CellConfigureView> {
                               ? Theme.of(context).colorScheme.error
                               : Theme.of(context).colorScheme.onSurface,
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: GardenSpace.gapMd),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,7 +291,7 @@ class _CellConfigureViewState extends State<CellConfigureView> {
                                 size: 30,
                                 color: Theme.of(context).colorScheme.primary,
                               ),
-                              const SizedBox(width: 8),
+                              SizedBox(width: GardenSpace.gapSm),
                               SizedBox(
                                 width: 500,
                                 child: TextFormField(
@@ -318,7 +318,7 @@ class _CellConfigureViewState extends State<CellConfigureView> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    SizedBox(height: GardenSpace.gapXl),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 68),
                       child: Row(
@@ -350,7 +350,7 @@ class _CellConfigureViewState extends State<CellConfigureView> {
                               onSelected: (Area? newValue) {},
                             ),
                           ),
-                          const SizedBox(width: 32),
+                          SizedBox(width: GardenSpace.gapXl),
                           Expanded(
                             child: DropdownMenu<Alert>(
                               label: const Text('Alertes'),
@@ -373,7 +373,7 @@ class _CellConfigureViewState extends State<CellConfigureView> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    SizedBox(height: GardenSpace.gapXl),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 68),
                       child: Row(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_ui/ui/foundation/padding/space_design_system.dart';
 
 import '../../common/widgets/page_header.dart';
 import '../bloc/alert_bloc.dart';
@@ -80,7 +81,7 @@ class AlertsPage extends StatelessWidget {
         }
 
         return Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(GardenSpace.paddingMd),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -121,7 +122,7 @@ class AlertsPage extends StatelessWidget {
                         AlertChangeTab(tabType: tab),
                       ),
                 ),
-              const SizedBox(height: 16),
+              SizedBox(height: GardenSpace.gapMd),
               // Contenu de l'onglet sélectionné
               Expanded(child: _buildContent(context, state)),
             ],

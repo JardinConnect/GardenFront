@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/components.dart';
+import 'package:garden_ui/ui/design_system.dart';
 import 'alert_name_input.dart';
 import 'sensors_section.dart';
 import 'thresholds_section.dart';
@@ -47,7 +48,7 @@ class AlertConfigurationForm extends StatelessWidget {
               validator: nameValidator,
             ),
 
-            const SizedBox(height: 24),
+            SizedBox(height: GardenSpace.gapLg),
 
             // Section de sélection des capteurs
             SensorsSection(
@@ -56,7 +57,7 @@ class AlertConfigurationForm extends StatelessWidget {
               availableSensors: availableSensors,
             ),
 
-            const SizedBox(height: 16),
+            SizedBox(height: GardenSpace.gapMd),
 
             // Section de configuration des seuils
             ThresholdsSection(

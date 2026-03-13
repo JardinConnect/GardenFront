@@ -56,7 +56,7 @@ class AlertTable extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const SizedBox(width: 32),
+          SizedBox(width: GardenSpace.gapXl),
           const SizedBox(width: _colGap),
           Expanded(flex: 2, child: _headerCell('Valeur')),
           const SizedBox(width: _colGap),

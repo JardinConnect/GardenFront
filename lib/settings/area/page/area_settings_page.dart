@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_ui/ui/design_system.dart';
 import 'package:garden_ui/ui/foundation/color/color_design_system.dart';
 import 'package:garden_ui/ui/foundation/typography/typography_design_system.dart';
 import 'package:go_router/go_router.dart';
@@ -50,7 +51,7 @@ class _AreaSettingsPageState extends State<AreaSettingsPage> {
 
             return Scaffold(
               body: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(GardenSpace.paddingMd),
                 child: Column(
                   children: [
                     PageHeader(
@@ -82,7 +83,7 @@ class _AreaSettingsPageState extends State<AreaSettingsPage> {
                                             width: 1,
                                           )
                                         : null,
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: GardenRadius.radiusSm,
                                   ),
                                   child: GlobalStatCardWidget(
                                     title: 'Niveau ${entry.key}',
@@ -97,7 +98,7 @@ class _AreaSettingsPageState extends State<AreaSettingsPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: GardenSpace.gapMd),
                     TextField(
                       onChanged: (text) => _onSearch(context, text),
                       decoration: InputDecoration(
@@ -108,7 +109,7 @@ class _AreaSettingsPageState extends State<AreaSettingsPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: GardenSpace.gapMd),
                     Expanded(
                       child: ListView(
                         children:
@@ -146,7 +147,7 @@ class _AreaSettingsPageState extends State<AreaSettingsPage> {
                                               ).colorScheme.primary,
                                           size: 32,
                                         ),
-                                        const SizedBox(width: 8),
+                                        SizedBox(width: GardenSpace.gapSm),
                                         Text(
                                           'Niveau $level',
                                           style: GardenTypography.headingSm,
@@ -175,7 +176,7 @@ class _AreaSettingsPageState extends State<AreaSettingsPage> {
                                           );
                                         }).toList(),
                                   ),
-                                  const SizedBox(height: 16),
+                                  SizedBox(height: GardenSpace.gapMd),
                                 ],
                               );
                             }).toList(),

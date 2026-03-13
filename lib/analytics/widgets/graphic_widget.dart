@@ -26,7 +26,7 @@ class _GraphicWidgetState extends State<GraphicWidget> {
           'Données',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: GardenSpace.gapSm),
         RadioGroup<AnalyticsFilterEnum>(
           groupValue: _selectedFilter,
           onChanged: (value) {
@@ -69,7 +69,7 @@ class _GraphicWidgetState extends State<GraphicWidget> {
     dynamic currentFilter,
   ) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(GardenSpace.paddingMd),
       child: SizedBox(
         height: 300,
         child: LineChart(
@@ -114,7 +114,7 @@ class _GraphicWidgetState extends State<GraphicWidget> {
 
                     final date = sortedData[index].occurredAt;
                     return Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
+                      padding: EdgeInsets.only(top: GardenSpace.paddingSm),
                       child: Text(
                         DateFormat('dd/MM').format(date),
                         style: const TextStyle(fontSize: 10),

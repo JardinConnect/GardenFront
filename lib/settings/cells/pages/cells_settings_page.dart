@@ -38,7 +38,7 @@ class CellsSettingsPage extends StatelessWidget {
             return Center(child: Text('Erreur: ${cellsState.message}'));
           } else if (cellsState is CellsLoaded) {
             return Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(GardenSpace.paddingMd),
               child: Column(
                 spacing: GardenSpace.gapLg,
                 children: [

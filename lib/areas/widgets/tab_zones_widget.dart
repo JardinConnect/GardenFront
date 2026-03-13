@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/areas/widgets/summary_zones_widget.dart';
 import 'package:garden_ui/ui/components.dart';
+import 'package:garden_ui/ui/design_system.dart';
 import '../../cells/bloc/cell_bloc.dart';
 import '../../cells/models/cell.dart';
 import '../../cells/pages/cell_detail_page.dart';
@@ -93,7 +94,7 @@ class TabZonesWidget extends StatelessWidget {
         Flexible(
           flex: 1,
           child: Padding(
-            padding: const EdgeInsets.only(top: 25.0),
+            padding: EdgeInsets.only(top: GardenSpace.paddingLg),
             child: HierarchicalMenu(
               items: menuItems,
               selectedItemId: selectedId,
@@ -106,7 +107,7 @@ class TabZonesWidget extends StatelessWidget {
           Flexible(
             flex: 3,
             child: Padding(
-              padding: const EdgeInsets.only(top: 25.0),
+              padding: EdgeInsets.only(top: GardenSpace.paddingLg),
               child: _buildDetailsPanel(context),
             ),
           ),

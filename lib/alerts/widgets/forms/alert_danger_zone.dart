@@ -18,17 +18,17 @@ class AlertDangerZone extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.red, width: 2),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: GardenRadius.radiusSm,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(GardenSpace.paddingMd),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 Icon(Icons.warning_amber_rounded, color: Colors.red, size: 24),
-                const SizedBox(width: 8),
+                SizedBox(width: GardenSpace.gapSm),
                 Text(
                   'Zone de danger',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -43,7 +43,7 @@ class AlertDangerZone extends StatelessWidget {
               'La suppression d\'une alerte est irréversible. Toutes les données associées seront perdues.',
               style: TextStyle(fontSize: 14, color: Colors.grey[700]),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: GardenSpace.gapMd),
             Button(
               label: 'Supprimer l\'alerte',
               icon: Icons.delete_forever,
@@ -104,7 +104,7 @@ class _DeleteConfirmContent extends StatelessWidget {
       padding: EdgeInsets.all(GardenSpace.paddingSm),
       decoration: BoxDecoration(
         color: Colors.red.shade50,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: GardenRadius.radiusSm,
         border: Border.all(color: Colors.red, width: 2),
       ),
       child: Row(
@@ -115,7 +115,7 @@ class _DeleteConfirmContent extends StatelessWidget {
             color: Colors.red,
             size: 18,
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: GardenSpace.gapSm),
           Expanded(
             child: Text(
               'Êtes-vous sûr de vouloir supprimer l\'alerte "$alertTitle" ?\n'
