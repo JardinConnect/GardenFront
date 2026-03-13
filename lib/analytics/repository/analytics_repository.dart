@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'dart:math';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
+import 'package:garden_connect/auth/utils/http_client.dart';
 
 import '../../analytics/models/analytics.dart';
 
 class AnalyticsRepository {
+  final HttpClient _httpClient = HttpClient();
+
   Future<Analytics> fetchMockedAnalytics() async {
     // TODO call API route to fetch analytics data
     try {
@@ -60,23 +61,15 @@ class AnalyticsRepository {
 
   Future<Analytics> fetchAnalytics() async {
     try {
-      final storage = FlutterSecureStorage();
-
-      String? token = await storage.read(key: 'auth_token');
       final DateTime now = DateTime.now();
       final DateTime oneYearAgo = now.subtract(const Duration(days: 365));
 
       String queryParams =
           '?start_date=${oneYearAgo.toIso8601String()}&end_date=${now.toIso8601String()}&skip=0&limit=100';
-
-      final response = await http.get(
-        Uri.parse('http://127.0.0.1:8000/data/analytics/$queryParams'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
+      final response = await _httpClient.get(
+        "/data/analytics/$queryParams",
       );
+
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         return Analytics.fromJson(responseData['data']);
