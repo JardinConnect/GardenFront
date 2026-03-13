@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_ui/ui/design_system.dart';
-import 'package:garden_ui/ui/foundation/color/color_design_system.dart';
-import 'package:garden_ui/ui/foundation/typography/typography_design_system.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../areas/bloc/area_bloc.dart';
