@@ -27,7 +27,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     try {
       final settings = await settingsRepository.fetchSettings();
       final users = await usersRepository.fetchUsers();
-      final List<Log> logs;
+      final List<Log?> logs;
       if(event.currentUser.role != Role.admin || event.currentUser.role != Role.superadmin){
         logs = await usersRepository.fetchLogsByUser(event.currentUser.id);
       }else {

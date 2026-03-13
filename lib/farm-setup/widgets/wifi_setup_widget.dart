@@ -8,6 +8,7 @@ class WifiSetupWidget extends StatefulWidget {
   final Function()? onRefreshWifiList;
   final GlobalKey<FormState>? formKey;
   final List<NetworkInfo> wifiList;
+  final String? errorMessage;
 
   const WifiSetupWidget({
     super.key,
@@ -15,6 +16,7 @@ class WifiSetupWidget extends StatefulWidget {
     this.onDataChanged,
     this.onRefreshWifiList,
     this.formKey,
+    this.errorMessage
   });
 
   @override
@@ -27,13 +29,20 @@ class _WifiSetupWidgetState extends State<WifiSetupWidget> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _ssidController = TextEditingController();
   final GlobalKey<FormState> _internalFormKey = GlobalKey<FormState>();
+  final FocusNode _passwordFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     _passwordVisible = false;
-    _ssidController.addListener(_onDataChanged);
-    _passwordController.addListener(_onDataChanged);
+    _ssidController.text = widget.wifiList.first.ssid;
+    _ssidController.addListener(_onDataChanged,);
+    _passwordFocusNode.addListener((){
+      if(!_passwordFocusNode.hasFocus){
+        _onDataChanged();
+      }
+    });
+
   }
 
   void _onDataChanged() {
@@ -62,21 +71,6 @@ class _WifiSetupWidgetState extends State<WifiSetupWidget> {
             key: widget.formKey ?? _internalFormKey,
             child: Column(
               children: [
-                // Padding(
-                //   padding: const EdgeInsets.all(8.0),
-                //   child: TextFormField(
-                //     controller: _ssidController,
-                //     validator: (value) {
-                //       if (value == null || value.isEmpty) {
-                //         return 'Veuillez entrer un SSID';
-                //       }
-                //       return null;
-                //     },
-                //     decoration: const InputDecoration(
-                //       labelText: 'SSID',
-                //     ),
-                //   ),
-                // ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -110,6 +104,7 @@ class _WifiSetupWidgetState extends State<WifiSetupWidget> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
                     controller: _passwordController,
+                    focusNode: _passwordFocusNode,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Veuillez entrer un mot de passe';
@@ -118,6 +113,7 @@ class _WifiSetupWidgetState extends State<WifiSetupWidget> {
                     },
                     decoration: InputDecoration(
                       labelText: "Mot de passe",
+                      errorText: widget.errorMessage,
                       suffixIcon: IconButton(
                         onPressed: ()=>
                             setState(() {

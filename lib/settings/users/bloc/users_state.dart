@@ -15,7 +15,7 @@ final class UsersError extends UsersState {
 
 final class UsersLoaded extends UsersState {
   final List<User> users;
-  final List<Log> logs;
+  final List<Log?> logs;
 
   UsersLoaded({required this.users, required this.logs});
 }
@@ -24,7 +24,7 @@ final class UserCreation extends UsersState {}
 
 final class UserSelected extends UsersState {
   final User user;
-  final List<Log> logs;
+  final List<Log?> logs;
 
   UserSelected({required this.user, required this.logs});
 }

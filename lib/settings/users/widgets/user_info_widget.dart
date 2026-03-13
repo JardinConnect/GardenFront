@@ -46,7 +46,7 @@ class UserInfoWidget extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(4.0),
-            child: Text("<07/10/2023>", style: Theme.of(context).textTheme.bodyLarge),
+            child: Text(user.id, style: Theme.of(context).textTheme.bodyLarge),
           ),
         ]
       )

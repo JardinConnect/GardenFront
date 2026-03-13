@@ -33,7 +33,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     emit(UsersLoading());
     try {
       final users = await _usersRepository.fetchUsers();
-      late final List<Log> logs;
+      late final List<Log?> logs;
       if(event.currentUser?.role != Role.admin || event.currentUser?.role != Role.superadmin){
         logs = await _usersRepository.fetchLogs();
       }else{
@@ -52,12 +52,12 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     }
     return null;
   }
-  List<Log>? get userLogs {
+  List<Log?> get userLogs {
     final state = this.state;
     if (state is UserSelected) {
       return state.logs;
     }
-    return null;
+    return [];
   }
 
   _updateUser(UserUpdateEvent event, Emitter<UsersState> emit) async {

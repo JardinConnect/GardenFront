@@ -60,7 +60,6 @@ class AppRouter {
                   BlocProvider<AreaBloc>(
                     create: (context) => AreaBloc()..add(LoadAreaSetup()),
                   ),
-                  BlocProvider<UsersBloc>(create: (context) => UsersBloc()),
                   BlocProvider<FarmSetupBloc>(create: (context) => FarmSetupBloc()),
                 ],
                 child: const FarmSetupPage()
@@ -75,7 +74,7 @@ class AppRouter {
                 BlocProvider<AnalyticsBloc>(
                   create: (context) => AnalyticsBloc(),
                 ),
-                BlocProvider<AreaBloc>(create: (context) => AreaBloc()),
+                BlocProvider<AreaBloc>(create: (context) => AreaBloc()..add(LoadAreas())),
                 BlocProvider<CellBloc>(create: (context) => CellBloc()..add(LoadCells())),
                 BlocProvider<AlertBloc>(create: (context) => AlertBloc()..add(const AlertLoadData())),
               ],
