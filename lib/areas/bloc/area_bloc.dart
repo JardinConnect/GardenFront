@@ -30,8 +30,6 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
     on<DeleteArea>(_deleteArea);
     on<SearchAreas>(_searchAreas);
     on<ToggleAreaTracking>(_toggleAreaTracking);
-
-    add(LoadAreas());
   }
 
   _loadAreas(LoadAreas event, Emitter<AreaState> emit) async {
