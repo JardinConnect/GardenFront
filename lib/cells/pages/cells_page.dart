@@ -53,27 +53,33 @@ class CellsPage extends StatelessWidget {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: GardenSpace.gapLg,
                       children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        Expanded(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             spacing: GardenSpace.gapSm,
                             children: [
                               if (!cellsState.isList)
-                                CellsFilterWidget(
-                                  filter: cellsState.filter,
-                                  onChanged: (newFilter) =>
-                                      _onFilterChanged(context, newFilter),
+                                Expanded(
+                                  flex: 1,
+                                  child: CellsFilterWidget(
+                                    filter: cellsState.filter,
+                                    onChanged: (newFilter) =>
+                                        _onFilterChanged(context, newFilter),
+                                  ),
                                 ),
-                              TextField(
-                                onChanged: (text) => _onSearch(context, text),
-                                decoration: InputDecoration(
-                                  hintText: 'Rechercher',
-                                  prefixIcon: Icon(Icons.search),
-                                  hintStyle: GardenTypography.bodyLg.copyWith(
-                                    color: GardenColors.typography.shade200,
+                              Expanded(
+                                flex: 3,
+                                child: TextField(
+                                  onChanged: (text) => _onSearch(context, text),
+                                  decoration: InputDecoration(
+                                    hintText: 'Rechercher',
+                                    prefixIcon: Icon(Icons.search),
+                                    hintStyle: GardenTypography.bodyLg.copyWith(
+                                      color: GardenColors.typography.shade200,
+                                    ),
                                   ),
                                 ),
                               ),
