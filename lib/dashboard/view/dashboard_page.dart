@@ -5,6 +5,7 @@ import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../alerts/bloc/alert_bloc.dart';
 import '../../analytics/bloc/analytics_bloc.dart';
 import '../../areas/bloc/area_bloc.dart';
 import '../../areas/models/area.dart';
@@ -30,16 +31,26 @@ class DashboardPage extends StatelessWidget {
     return Scaffold(
       body: Builder(
         builder: (context) {
-          final analyticsState = context.watch<AnalyticsBloc>().state;
-          final areaState = context.watch<AreaBloc>().state;
-          final cellState = context.watch<CellBloc>().state;
+          final analyticsState = context
+              .watch<AnalyticsBloc>()
+              .state;
+          final areaState = context
+              .watch<AreaBloc>()
+              .state;
+          final cellState = context
+              .watch<CellBloc>()
+              .state;
+          final alertState = context
+              .watch<AlertBloc>()
+              .state;
 
           if (analyticsState is AnalyticsShimmer ||
               analyticsState is AnalyticsInitial ||
               areaState is AreasShimmer ||
               areaState is AreaInitial ||
               cellState is CellsShimmer ||
-              cellState is CellInitial) {
+              cellState is CellInitial || alertState is AlertInitial ||
+              alertState is AlertLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (areaState is AreaError) {
             return Center(child: Text('Erreur: ${areaState.message}'));
@@ -47,16 +58,19 @@ class DashboardPage extends StatelessWidget {
             return Center(child: Text('Erreur: ${analyticsState.message}'));
           } else if (cellState is CellError) {
             return Center(child: Text('Erreur: ${cellState.message}'));
+          } else if (alertState is AlertError) {
+            return Center(child: Text('Erreur: ${alertState.message}'));
           } else if (areaState is AreasLoaded &&
               cellState is CellsLoaded &&
-              analyticsState is AnalyticsLoaded) {
+              analyticsState is AnalyticsLoaded && alertState is AlertLoaded) {
             final areas = areaState.areas;
+            final alerts = alertState.alertEvents;
             final trackedAreas =
-                Area.getAllAreasFlattened(
-                  areas,
-                ).where((area) => area.isTracked).toList();
+            Area.getAllAreasFlattened(
+              areas,
+            ).where((area) => area.isTracked).toList();
             final trackedCells =
-                cellState.cells.where((cell) => cell.isTracked).toList();
+            cellState.cells.where((cell) => cell.isTracked).toList();
 
             return Padding(
               padding: EdgeInsets.all(GardenSpace.paddingMd),
@@ -70,7 +84,7 @@ class DashboardPage extends StatelessWidget {
                       icon: AppAssets.activity,
                       title: 'Activité des capteurs (365 derniers jours)',
                       child: ActivitySensors(
-                        analytics: analyticsState.analytics,
+                        alerts: alerts,
                       ),
                     ),
                     ExpandableCard(
@@ -87,59 +101,59 @@ class DashboardPage extends StatelessWidget {
                             spacing: GardenSpace.gapMd,
                             runSpacing: GardenSpace.gapMd,
                             children:
-                                trackedCells.map((cell) {
-                                  return SizedBox(
-                                    width: (constraints.maxWidth - 32) / 3,
-                                    child: AnalyticsSummaryCard(
-                                      name: cell.name,
-                                      batteryPercentage: 89,
-                                      onPressed:
-                                          () => context.go('/cells/${cell.id}'),
-                                      light:
-                                          cell.analytics.light?.first.value
-                                              .toInt() ??
-                                          0,
-                                      rain:
-                                          cell
-                                              .analytics
-                                              .airHumidity
-                                              ?.first
-                                              .value
-                                              .toInt() ??
-                                          0,
-                                      humiditySurface:
-                                          cell
-                                              .analytics
-                                              .soilHumidity
-                                              ?.first
-                                              .value
-                                              .toInt() ??
-                                          0,
-                                      humidityDepth:
-                                          cell
-                                              .analytics
-                                              .deepSoilHumidity
-                                              ?.first
-                                              .value
-                                              .toInt() ??
-                                          0,
-                                      temperatureSurface:
-                                          cell
-                                              .analytics
-                                              .airTemperature
-                                              ?.first
-                                              .value ??
-                                          0,
-                                      temperatureDepth:
-                                          cell
-                                              .analytics
-                                              .soilTemperature
-                                              ?.first
-                                              .value ??
-                                          0,
-                                    ),
-                                  );
-                                }).toList(),
+                            trackedCells.map((cell) {
+                              return SizedBox(
+                                width: (constraints.maxWidth - 32) / 3,
+                                child: AnalyticsSummaryCard(
+                                  name: cell.name,
+                                  batteryPercentage: 89,
+                                  onPressed:
+                                      () => context.go('/cells/${cell.id}'),
+                                  light:
+                                  cell.analytics.light?.first.value
+                                      .toInt() ??
+                                      0,
+                                  rain:
+                                  cell
+                                      .analytics
+                                      .airHumidity
+                                      ?.first
+                                      .value
+                                      .toInt() ??
+                                      0,
+                                  humiditySurface:
+                                  cell
+                                      .analytics
+                                      .soilHumidity
+                                      ?.first
+                                      .value
+                                      .toInt() ??
+                                      0,
+                                  humidityDepth:
+                                  cell
+                                      .analytics
+                                      .deepSoilHumidity
+                                      ?.first
+                                      .value
+                                      .toInt() ??
+                                      0,
+                                  temperatureSurface:
+                                  cell
+                                      .analytics
+                                      .airTemperature
+                                      ?.first
+                                      .value ??
+                                      0,
+                                  temperatureDepth:
+                                  cell
+                                      .analytics
+                                      .soilTemperature
+                                      ?.first
+                                      .value ??
+                                      0,
+                                ),
+                              );
+                            }).toList(),
                           );
                         },
                       ),
@@ -156,12 +170,12 @@ class DashboardPage extends StatelessWidget {
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: crossAxisCount,
-                                  mainAxisSpacing: GardenSpace.gapMd,
-                                  crossAxisSpacing: GardenSpace.gapMd,
-                                  mainAxisExtent: 220,
-                                ),
+                            SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: crossAxisCount,
+                              mainAxisSpacing: GardenSpace.gapMd,
+                              crossAxisSpacing: GardenSpace.gapMd,
+                              mainAxisExtent: 220,
+                            ),
                             itemCount: trackedAreas.length,
                             itemBuilder: (context, index) {
                               final area = trackedAreas[index];
@@ -169,20 +183,20 @@ class DashboardPage extends StatelessWidget {
                                 name: area.name,
                                 onPressed: () {},
                                 light:
-                                    area.analytics.light!.first.value.toInt(),
+                                area.analytics.light!.first.value.toInt(),
                                 rain:
-                                    area.analytics.airHumidity!.first.value
-                                        .toInt(),
+                                area.analytics.airHumidity!.first.value
+                                    .toInt(),
                                 humiditySurface:
-                                    area.analytics.soilHumidity!.first.value
-                                        .toInt(),
+                                area.analytics.soilHumidity!.first.value
+                                    .toInt(),
                                 humidityDepth:
-                                    area.analytics.deepSoilHumidity!.first.value
-                                        .toInt(),
+                                area.analytics.deepSoilHumidity!.first.value
+                                    .toInt(),
                                 temperatureSurface:
-                                    area.analytics.airTemperature!.first.value,
+                                area.analytics.airTemperature!.first.value,
                                 temperatureDepth:
-                                    area.analytics.soilTemperature!.first.value,
+                                area.analytics.soilTemperature!.first.value,
                               );
                             },
                           );

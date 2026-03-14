@@ -65,10 +65,8 @@ class AnalyticsRepository {
       final DateTime oneYearAgo = now.subtract(const Duration(days: 365));
 
       String queryParams =
-          '?start_date=${oneYearAgo.toIso8601String()}&end_date=${now.toIso8601String()}&skip=0&limit=100';
-      final response = await _httpClient.get(
-        "/data/analytics/$queryParams",
-      );
+          '?start_date=${oneYearAgo.toIso8601String()}&end_date=${now.toIso8601String()}&skip=0';
+      final response = await _httpClient.get("/data/analytics/$queryParams");
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -80,6 +78,31 @@ class AnalyticsRepository {
       }
     } catch (e) {
       throw Exception('Failed to load analytics: $e');
+    }
+  }
+
+  Future<Analytics> fetchAnalyticsForCell({
+    required String cellId,
+    required DateTime startDate,
+    required DateTime endDate,
+  }) async {
+    try {
+      final String queryParams =
+          '?start_date=${startDate.toIso8601String()}'
+          '&end_date=${endDate.toIso8601String()}'
+          '&skip=0';
+      final response = await _httpClient.get('/data/analytics/$cellId$queryParams');
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        return Analytics.fromJson(responseData['data']);
+      } else {
+        throw Exception(
+          'Failed to load analytics: ${response.statusCode} ${response.reasonPhrase}',
+        );
+      }
+    } catch (e) {
+      throw Exception('Failed to load analytics for cell $cellId: $e');
     }
   }
 }
