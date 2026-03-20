@@ -102,6 +102,7 @@ class ActivityAlertsDialog extends StatelessWidget {
                 width: 260,
                 child: AnalyticCardWidget(
                   analytic: analytic,
+                  type: type,
                 ),
               );
             })
