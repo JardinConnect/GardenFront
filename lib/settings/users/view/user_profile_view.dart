@@ -58,11 +58,10 @@ class UserProfileView extends StatelessWidget {
                               padding: EdgeInsets.all(GardenSpace.paddingMd),
                               child: UserFormWidget(user: user),
                             ),
-                            if (logs != null)
-                              Padding(
-                                padding: EdgeInsets.all(GardenSpace.paddingMd),
-                                child: LogCardWidget(logs: logs,),
-                              ),
+                            Padding(
+                              padding: EdgeInsets.all(GardenSpace.paddingMd),
+                              child: LogCardWidget(logs: logs,),
+                            ),
                           ],
                         )
                     ),

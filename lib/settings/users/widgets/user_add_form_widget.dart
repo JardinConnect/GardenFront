@@ -25,7 +25,7 @@ class UserAddFormWidget extends StatefulWidget {
 }
 class _UserFormWidget extends State<UserAddFormWidget> {
 
-  late UserAddDto? user ;
+  late UserAddDto user ;
   final userForm = GlobalKey<FormState>();
   late TextEditingController passwordController;
   late TextEditingController firstnameController;
@@ -46,10 +46,10 @@ class _UserFormWidget extends State<UserAddFormWidget> {
         password: '',
       );
     passwordController = TextEditingController();
-    emailController = TextEditingController(text: user?.email);
-    phoneController = TextEditingController(text: user?.phoneNumber);
-    firstnameController = TextEditingController(text: user?.firstName);
-    lastnameController = TextEditingController(text: user?.lastName);
+    emailController = TextEditingController();
+    phoneController = TextEditingController();
+    firstnameController = TextEditingController();
+    lastnameController = TextEditingController();
     _passwordVisible = false;
 
     if (widget.isSuperAdminCreation) {
@@ -63,7 +63,12 @@ class _UserFormWidget extends State<UserAddFormWidget> {
   }
 
   void _onDataChanged() {
-    widget.onDataChanged?.call(user!);
+    user.firstName = firstnameController.text;
+    user.lastName = lastnameController.text;
+    user.email = emailController.text;
+    user.phoneNumber = phoneController.text;
+    user.password = passwordController.text;
+    widget.onDataChanged?.call(user);
   }
 
   @override
@@ -216,7 +221,7 @@ class _UserFormWidget extends State<UserAddFormWidget> {
                       padding: const EdgeInsets.all(8.0),
                       child:
                       DropdownButtonFormField<Role>(
-                        initialValue: user?.role ?? Role.trainee,
+                        initialValue: user.role,
                         decoration: const InputDecoration(labelText: 'Rôle'),
                         items: <Role>[Role.admin, Role.employees,Role.trainee].map((Role value) {
                           return DropdownMenuItem<Role>(
@@ -227,12 +232,12 @@ class _UserFormWidget extends State<UserAddFormWidget> {
                         onChanged: (Role? value) {
                           setState(() {
                             user = UserAddDto(
-                              firstName: user?.firstName ?? '',
-                              lastName: user?.lastName ?? '',
-                              email: user?.email ?? '',
-                              phoneNumber: user?.phoneNumber ?? '',
+                              firstName: user.firstName,
+                              lastName: user.lastName,
+                              email: user.email,
+                              phoneNumber: user.phoneNumber,
                               role: value ?? Role.trainee,
-                              password: user?.password ?? '',
+                              password: user.password,
                             );
                           });
                         },
@@ -250,7 +255,7 @@ class _UserFormWidget extends State<UserAddFormWidget> {
                               email: emailController.text,
                               phoneNumber: phoneController.text,
                               password: passwordController.text,
-                              role: user?.role ?? Role.trainee,
+                              role: user.role,
                             ))),
                         showSnackBarSucces(context, "Utilisateur créé avec succès"),
                         context.read<UsersBloc>().add(UsersLoad(currentUser: context.currentUser!)),

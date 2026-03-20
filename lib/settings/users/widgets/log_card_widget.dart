@@ -50,7 +50,7 @@ class LogCardWidget extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(30),
                                 ),
                                 child: Text(
-                                  "${log!.first_name} ${log.action} ${log.details}",
+                                  "${log!.firstName} ${log.action} ${log.details}",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontStyle: Theme.of(context).textTheme.bodyMedium?.fontStyle
