@@ -30,7 +30,7 @@ class _FarmSetupPageState extends State<FarmSetupPage> {
   List<Area>? _areas;
   String? _wrongPassword;
   String _title = "Bienvenue sur Garden Connect !";
-  int _currentStep = 3;
+  int _currentStep = 0;
   final GlobalKey<FormState> _userFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _wifiFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _farmFormKey = GlobalKey<FormState>();
