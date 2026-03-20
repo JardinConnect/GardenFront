@@ -66,10 +66,19 @@ class AuthRepository {
       final refreshToken = await getRefreshToken();
       if (refreshToken == null) return false;
 
-      final response = await _httpClient.post(
+      var response = await _httpClient.post(
         "/auth/refresh-token",
         body: {'refresh_token': refreshToken},
+        includeAuth: false,
       );
+
+      if (response.statusCode == 404 || response.statusCode == 405) {
+        response = await _httpClient.post(
+          "/auth/refresh-token/",
+          body: {'refresh_token': refreshToken},
+          includeAuth: false,
+        );
+      }
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -81,6 +90,12 @@ class AuthRepository {
           key: 'refresh_token',
           value: responseData['refresh_token'],
         );
+        if (responseData['user'] != null) {
+          await _secureStorage.write(
+            key: 'user',
+            value: jsonEncode(responseData['user']),
+          );
+        }
         return true;
       }
       return false;
