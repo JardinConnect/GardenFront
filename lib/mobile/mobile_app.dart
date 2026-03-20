@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/auth/auth.dart';
-import 'package:garden_connect/auth/view/login_page.dart';
 import 'package:garden_connect/mobile/mobile_home.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
