@@ -94,23 +94,23 @@ enum SettingType {
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class Log{
   final String id;
-  final String first_name;
-  final String last_name;
+  final String firstName;
+  final String lastName;
   final String action;
-  final String resource_type;
-  final String entity_id;
+  final String resourceType;
+  final String entityId;
   final Object details;
-  final String created_at;
+  final String createdAt;
 
   Log({
     required this.id,
-    required this.first_name,
-    required this.last_name,
+    required this.firstName,
+    required this.lastName,
     required this.action,
-    required this.resource_type,
-    required this.entity_id,
+    required this.resourceType,
+    required this.entityId,
     required this.details,
-    required this.created_at,
+    required this.createdAt,
   });
 
   factory Log.fromJson(Map<String, dynamic> json) =>

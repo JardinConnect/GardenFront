@@ -25,7 +25,10 @@ class FarmSetupBloc extends Bloc<FarmSetupEvent, FarmState> {
   }
 
   _createFarm(FarmCreateEvent event, Emitter<FarmState> emit) async {
-    final _ = await _farmRepository.addFarm(event.farm);
+    final isFarmCreated = await _farmRepository.addFarm(InitFarmDto(farm: event.farm,areas: event.areas,user: event.user));
+    if(isFarmCreated) {
+      emit(FarmCreated());
+    }
   }
 
   _loadWifiList(LoadWifiListEvent event, Emitter<FarmState> emit) async{

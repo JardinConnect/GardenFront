@@ -27,7 +27,7 @@ class _FarmInfoWidgetState extends State<FarmInfoWidget>{
 
   late final TextEditingController _nameController;
   late final TextEditingController _addressController ;
-  late final TextEditingController _postalCodeController ;
+  late final TextEditingController _zipCodeController ;
   late final TextEditingController _cityController ;
   late final TextEditingController _phoneNumberController;
   final GlobalKey<FormState> _internalFormKey = GlobalKey<FormState>();
@@ -35,7 +35,7 @@ class _FarmInfoWidgetState extends State<FarmInfoWidget>{
   Farm farm = Farm(
     name: '',
     address: '',
-    postalCode: '',
+    zipCode: '',
     city: '',
     phoneNumber: '',
   );
@@ -43,20 +43,25 @@ class _FarmInfoWidgetState extends State<FarmInfoWidget>{
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text:farm.name);
-    _addressController = TextEditingController(text:farm.address);
-    _postalCodeController = TextEditingController(text:farm.postalCode);
-    _cityController = TextEditingController(text:farm.city);
-    _phoneNumberController = TextEditingController(text:farm.phoneNumber);
+    _nameController = TextEditingController();
+    _addressController = TextEditingController();
+    _zipCodeController = TextEditingController();
+    _cityController = TextEditingController();
+    _phoneNumberController = TextEditingController();
 
     _nameController.addListener(_onDataChanged);
     _addressController.addListener(_onDataChanged);
-    _postalCodeController.addListener(_onDataChanged);
+    _zipCodeController.addListener(_onDataChanged);
     _cityController.addListener(_onDataChanged);
     _phoneNumberController.addListener(_onDataChanged);
   }
 
   void _onDataChanged() {
+    farm.name = _nameController.text;
+    farm.city = _cityController.text;
+    farm.zipCode = _zipCodeController.text;
+    farm.phoneNumber = _phoneNumberController.text;
+    farm.address = _addressController.text;
     widget.onDataChanged?.call(farm);
   }
 
@@ -64,7 +69,7 @@ class _FarmInfoWidgetState extends State<FarmInfoWidget>{
   void dispose() {
     _nameController.dispose();
     _addressController.dispose();
-    _postalCodeController.dispose();
+    _zipCodeController.dispose();
     _cityController.dispose();
     _phoneNumberController.dispose();
     super.dispose();
@@ -120,7 +125,7 @@ class _FarmInfoWidgetState extends State<FarmInfoWidget>{
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
                         ],
-                        controller: _postalCodeController,
+                        controller: _zipCodeController,
                         decoration: const InputDecoration(labelText: 'Code Postal', hintText: 'Ex: 75001')
                     ),
                   ),
