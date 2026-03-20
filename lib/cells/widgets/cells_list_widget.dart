@@ -63,6 +63,7 @@ class CellsListWidget extends StatelessWidget {
 
             itemBuilder: (context, index) {
               var cell = cells[index];
+              var defaultValue = "N/A";
               var light = cell.analytics.getLastAnalyticByType(
                   AnalyticType.light);
               var airTemperature = cell.analytics.getLastAnalyticByType(
@@ -78,68 +79,70 @@ class CellsListWidget extends StatelessWidget {
 
               var values = [
                 CellAnalyticListItem(
-                    value: "${light?.value} ${AnalyticsFilterEnum.light.unit}",
-                    alertStatus:  AnalyticAlertStatus.ok),
-                CellAnalyticListItem(value: "${airTemperature?.value
-                    .toStringAsFixed(1)} ${AnalyticsFilterEnum.temperature
-                    .unit}", alertStatus: AnalyticAlertStatus.ok),
+                  value:
+                      "${light != null ? light.value : defaultValue} ${AnalyticsFilterEnum.light.unit}",
+                  alertStatus: AnalyticAlertStatus.ok,
+                ),
                 CellAnalyticListItem(
-                    value: "${soilTemperature?.value
-                        .toStringAsFixed(1)} ${AnalyticsFilterEnum.temperature
-                        .unit}",
-                    alertStatus:  AnalyticAlertStatus.ok),
+                  value:
+                      "${airTemperature != null ? airTemperature.value.toStringAsFixed(1) : defaultValue} ${AnalyticsFilterEnum.temperature.unit}",
+                  alertStatus: AnalyticAlertStatus.ok,
+                ),
                 CellAnalyticListItem(
-                    value: "${airHumidity?.value
-                        .toString()} ${AnalyticsFilterEnum.humidity.unit}",
-                    alertStatus:  AnalyticAlertStatus.ok),
+                  value:
+                      "${soilTemperature != null ? soilTemperature.value.toStringAsFixed(1) : defaultValue} ${AnalyticsFilterEnum.temperature.unit}",
+                  alertStatus: AnalyticAlertStatus.ok,
+                ),
                 CellAnalyticListItem(
-                    value: "${soilHumidity?.value
-                        .toString()} ${AnalyticsFilterEnum.humidity.unit}",
-                    alertStatus:  AnalyticAlertStatus.ok),
+                  value:
+                      "${airHumidity != null ? airHumidity.value.toString() : defaultValue} ${AnalyticsFilterEnum.humidity.unit}",
+                  alertStatus: AnalyticAlertStatus.ok,
+                ),
                 CellAnalyticListItem(
-                    value: "${deepSoilHumidity?.value
-                        .toString()} ${AnalyticsFilterEnum.humidity.unit}",
-                    alertStatus:  AnalyticAlertStatus.ok)
+                  value:
+                      "${soilHumidity != null ? soilHumidity.value.toString() : defaultValue} ${AnalyticsFilterEnum.humidity.unit}",
+                  alertStatus: AnalyticAlertStatus.ok,
+                ),
+                CellAnalyticListItem(
+                  value:
+                      "${deepSoilHumidity != null ? deepSoilHumidity.value.toString() : defaultValue} ${AnalyticsFilterEnum.humidity.unit}",
+                  alertStatus: AnalyticAlertStatus.ok,
+                ),
               ];
 
-              return MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: () => onPressed(context, cell.id),
-                  child: GardenCard(
-                    hasBorder: true,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Text(cell.name, style: GardenTypography.bodyLg),
-                        ),
-                        ...values.map((CellAnalyticListItem item) {
-                          return Expanded(
-                            flex: 1,
-                            child: Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                spacing: GardenSpace.gapSm,
-                                children: [
-                                  Container(
-                                    width: 10,
-                                    height: 10,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(100),
-                                        color: item.alertStatus.color
-                                    ),
-                                  ),
-                                  Text(item.value, style: GardenTypography.bodyLg),
-                                ],
-                              ),
-                            ),
-                          );
-                        }),
-                      ],
+              return GardenCard(
+                hasBorder: true,
+                onTap: () => onPressed(context, cell.id),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Text(cell.name, style: GardenTypography.bodyLg),
                     ),
-                  ),
+                    ...values.map((CellAnalyticListItem item) {
+                      return Expanded(
+                        flex: 1,
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            spacing: GardenSpace.gapSm,
+                            children: [
+                              Container(
+                                width: 10,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: item.alertStatus.color,
+                                ),
+                              ),
+                              Text(item.value, style: GardenTypography.bodyLg),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
                 ),
               );
             },
