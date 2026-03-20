@@ -10,10 +10,12 @@ class AnalyticCardWidget extends StatelessWidget {
   static const int _soilTemperatureMaxValue = 45;
 
   final Analytic analytic;
+  final AnalyticAlertStatus? alertStatusOverride;
 
   const AnalyticCardWidget({
     super.key,
     required this.analytic,
+    this.alertStatusOverride,
   });
 
   double get _fillPercentage {
@@ -34,11 +36,14 @@ class AnalyticCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final status = alertStatusOverride ?? analytic.alertStatus;
+
     return GardenCard(
       hasBorder: true,
       hasShadow: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -54,17 +59,19 @@ class AnalyticCardWidget extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              if (analytic.alertStatus != AnalyticAlertStatus.ok)
+              if (status == AnalyticAlertStatus.warning ||
+                  status == AnalyticAlertStatus.alert)
                 AlertIndicator(
                   alertType:
-                      analytic.alertStatus == AnalyticAlertStatus.warning
+                      status == AnalyticAlertStatus.warning
                           ? MenuAlertType.warning
                           : MenuAlertType.error,
                 ),
             ],
           ),
           SizedBox(height: GardenSpace.gapMd),
-          Expanded(
+          Flexible(
+            fit: FlexFit.loose,
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final isCompact = constraints.maxWidth < 130;

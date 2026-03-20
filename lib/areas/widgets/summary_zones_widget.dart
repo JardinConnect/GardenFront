@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../analytics/models/analytics.dart';
 import '../../analytics/widgets/graphic_widget.dart';
+import '../../cells/bloc/cell_bloc.dart';
 import '../../cells/models/cell.dart';
 import '../bloc/area_bloc.dart';
 import '../models/area.dart';
@@ -137,7 +138,18 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
     final levelCounts = _countAreasByLevel();
     final sortedLevels = _getSortedLevels();
     final totalCells = _countTotalCells();
-    final cells = _extractCells();
+    final cellState = context.watch<CellBloc>().state;
+    final cellsWithAnalytics = _extractCells();
+    if (cellState is CellsLoaded) {
+      final cellsById = {for (final cell in cellState.cells) cell.id: cell};
+      for (var i = 0; i < cellsWithAnalytics.length; i++) {
+        final enriched = cellsById[cellsWithAnalytics[i].id];
+        if (enriched != null) {
+          cellsWithAnalytics[i] = enriched;
+        }
+      }
+    }
+    final cells = cellsWithAnalytics;
 
     final state = context.watch<AreaBloc>().state;
     final showingCellsList = state is AreasLoaded && state.showCellsListWidget;
