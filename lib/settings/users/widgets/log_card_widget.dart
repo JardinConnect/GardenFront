@@ -5,7 +5,7 @@ import 'package:garden_ui/ui/widgets/atoms/Card/card.dart' show GardenCard;
 
 class LogCardWidget extends StatelessWidget {
   const LogCardWidget({super.key, required this.logs});
-  final List<Log> logs;
+  final List<Log?> logs;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class LogCardWidget extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(30),
                                 ),
                                 child: Text(
-                                  log.value,
+                                  "${log!.firstName} ${log.action} ${log.entityLabel}",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontStyle: Theme.of(context).textTheme.bodyMedium?.fontStyle

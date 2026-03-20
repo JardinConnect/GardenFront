@@ -15,14 +15,18 @@ final class FarmError extends FarmState {
   FarmError({required this.message});
 }
 
-final class FarmLoaded extends FarmState {
+final class NetworkLoaded extends FarmState {
   final List<NetworkInfo> wifiList;
+  final NetworkState networkState;
 
-  FarmLoaded({required this.wifiList});
+  NetworkLoaded({required this.wifiList, required this.networkState});
 }
 
-final class FarmCreation extends FarmState {
-  final Farm farm;
-
-  FarmCreation({required this.farm});
+enum NetworkState {
+  connecting,
+  connected,
+  connexionFailed,
+  none,
 }
+
+final class FarmCreated extends FarmState {}

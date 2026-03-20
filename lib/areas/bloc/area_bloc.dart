@@ -6,6 +6,7 @@ import '../../analytics/models/analytics.dart';
 import '../models/area.dart';
 import '../../cells/models/cell.dart';
 import '../repository/area_repository.dart';
+import 'package:uuid/uuid.dart';
 
 part 'area_event.dart';
 
@@ -30,8 +31,6 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
     on<DeleteArea>(_deleteArea);
     on<SearchAreas>(_searchAreas);
     on<ToggleAreaTracking>(_toggleAreaTracking);
-
-    add(LoadAreas());
   }
 
   _loadAreas(LoadAreas event, Emitter<AreaState> emit) async {
@@ -300,11 +299,13 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
   }
 
    _loadAreaSetup(LoadAreaSetup event, Emitter<AreaState> emit) {
-
+     final String firstId = Uuid().v4();
+     final String secondId = Uuid().v4();
+     final String thirdId = Uuid().v4();
        final areas = [
-         Area(id: "1", name: "Serre 1 example", level: 1, color: Colors.blue, analytics: Analytics()),
-         Area(id: "2", name: "Parcelle 1 example", level: 2, color: Colors.blue, analytics: Analytics()),
-         Area(id: "3", name: "Jardin 1 example", level: 3, color: Colors.blue, analytics: Analytics()),
+         Area(id: firstId, name: "Serre 1 example", level: 1, color: Colors.blue, analytics: Analytics()),
+         Area(id: secondId, parentId: firstId, name: "Parcelle 1 example", level: 2, color: Colors.blue, analytics: Analytics()),
+         Area(id: thirdId, parentId: secondId, name: "Jardin 1 example", level: 3, color: Colors.blue, analytics: Analytics()),
        ];
        emit(
          AreasLoaded(

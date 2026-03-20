@@ -28,12 +28,12 @@ class User {
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class UserAddDto{
-  final String email;
-  final String firstName;
-  final String lastName;
-  final String phoneNumber;
-  final Role role;
-  final String password;
+  String email;
+  String firstName;
+  String lastName;
+  String phoneNumber;
+  Role role;
+  String password;
 
   UserAddDto({
     required this.email,

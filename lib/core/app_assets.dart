@@ -6,6 +6,7 @@ class AppAssets {
   static const String logo = 'assets/logo.png';
   static const String loginBackground = 'assets/login_background.svg';
   static const String loginCharacters = 'assets/login_characters.svg';
+  static const String welcomeBackground = 'assets/welcome_background.svg';
   static const String deleteAlert = 'assets/delete_alert.svg';
   static const String deleteAlertV2 = 'assets/delete_alert_V2.svg';
 }
