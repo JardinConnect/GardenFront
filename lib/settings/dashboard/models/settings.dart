@@ -98,8 +98,7 @@ class Log{
   final String lastName;
   final String action;
   final String resourceType;
-  final String entityId;
-  final Object details;
+  final String entityLabel;
   final String createdAt;
 
   Log({
@@ -108,8 +107,7 @@ class Log{
     required this.lastName,
     required this.action,
     required this.resourceType,
-    required this.entityId,
-    required this.details,
+    required this.entityLabel,
     required this.createdAt,
   });
 

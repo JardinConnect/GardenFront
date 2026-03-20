@@ -47,7 +47,7 @@ class UsersPage extends StatelessWidget {
                       PageHeader(
                             title: "Bonjour ${user.firstName} ${user.lastName}",
                             actions: [
-                              if (user.role == Role.admin)
+                              if (user.role == Role.admin || user.role==Role.superadmin)
                                 IconButton.filled(
                                   onPressed: ()=> context.read<UsersBloc>().add(UsersCreationEvent()),
                                   icon: Icon(Icons.add),
