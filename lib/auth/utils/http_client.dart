@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 class HttpClient {
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://127.0.0.1:8000',
+    defaultValue: 'http://127.0.0.1:8000/api',
   );
   // TODO : Cracker le sujet de compatibilité entre les plateformes (mobile/desktop) pour la configuration de l'URL de base
   /// Permet de configurer l'URL de base via la variable set dans l'os de la raspy
