@@ -46,6 +46,29 @@ class AlertRepository {
     }
   }
 
+  /// Récupère l'historique des événements d'alerte dans une plage de dates
+  Future<List<AlertEvent>> fetchAlertEventsByDateRange(
+    DateTime startDate,
+    DateTime endDate,
+  ) async {
+    try {
+      final query = Uri(queryParameters: {
+        'start_date': _formatApiDateTime(startDate),
+        'end_date': _formatApiDateTime(endDate),
+      }).query;
+
+      final response = await _httpClient.get("/alert/events/?$query");
+      final jsonData = jsonDecode(response.body);
+      return (jsonData as List)
+          .map((json) => AlertEvent.fromJson(json))
+          .toList();
+    } catch (e) {
+      throw Exception(
+        'Erreur lors de la récupération de l\'historique: $e',
+      );
+    }
+  }
+
   /// Archive un événement d'alerte spécifique
   Future<bool> archiveAlertEvent(String eventId) async {
     try {
@@ -194,4 +217,9 @@ class AlertRepository {
       throw Exception('Erreur lors de la suppression de l\'alerte: $e');
     }
   }
+}
+
+String _formatApiDateTime(DateTime dateTime) {
+  // L'API attend un ISO local avec microsecondes
+  return dateTime.toIso8601String();
 }

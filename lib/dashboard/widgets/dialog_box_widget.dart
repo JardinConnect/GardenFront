@@ -10,12 +10,14 @@ class DialogBoxWidget extends StatelessWidget {
   final String title;
   final int? level;
   final Analytics analytics;
+  final Map<AnalyticType, AnalyticAlertStatus>? alertStatusOverrides;
 
   const DialogBoxWidget({
     super.key,
     required this.title,
     this.level,
     required this.analytics,
+    this.alertStatusOverrides,
   });
 
   @override
@@ -84,7 +86,10 @@ class DialogBoxWidget extends StatelessWidget {
                     children: [
                       SingleChildScrollView(
                         padding: EdgeInsets.all(14),
-                        child: AnalyticsCardsGridWidget(analytics: analytics),
+                        child: AnalyticsCardsGridWidget(
+                          analytics: analytics,
+                          alertStatusOverrides: alertStatusOverrides,
+                        ),
                       ),
                       if (level != null)
                         SingleChildScrollView(

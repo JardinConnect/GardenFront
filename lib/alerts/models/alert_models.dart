@@ -130,6 +130,7 @@ class AlertEvent {
   final String cellId;
   final String cellName;
   final String cellLocation;
+  final String sensorTypeRaw;
   final SensorType sensorType;
   final String severity;
   final double value;
@@ -145,6 +146,7 @@ class AlertEvent {
     required this.cellId,
     required this.cellName,
     required this.cellLocation,
+    required this.sensorTypeRaw,
     required this.sensorType,
     required this.severity,
     required this.value,
@@ -162,6 +164,7 @@ class AlertEvent {
       cellId: json['cellId'] as String,
       cellName: json['cellName'] as String,
       cellLocation: json['cellLocation'] as String,
+      sensorTypeRaw: json['sensorType'] as String,
       sensorType: sensorTypeFromString(json['sensorType'] as String),
       severity: json['severity'] as String,
       value: (json['value'] as num).toDouble(),

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../data/auth_repository.dart';
 import '../models/user.dart';
@@ -13,9 +14,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository _authRepository;
   Timer? _refreshTimer;
 
+  static const Duration _refreshInterval = Duration(minutes: 8);
+  static const Duration _refreshBuffer = Duration(minutes: 2);
+
   void _startRefreshTimer() {
     _refreshTimer?.cancel();
-    _refreshTimer = Timer.periodic(const Duration(minutes: 9), (_) {
+    _refreshTimer = Timer.periodic(_refreshInterval, (_) {
       add(AuthTokenRefreshRequested());
     });
   }
@@ -23,6 +27,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _stopRefreshTimer() {
     _refreshTimer?.cancel();
     _refreshTimer = null;
+  }
+
+  bool _shouldRefreshToken(String token) {
+    try {
+      if (JwtDecoder.isExpired(token)) {
+        return true;
+      }
+      final expirationDate = JwtDecoder.getExpirationDate(token);
+      final refreshThreshold = DateTime.now().add(_refreshBuffer);
+      return expirationDate.isBefore(refreshThreshold);
+    } catch (_) {
+      // Si le token n'est pas un JWT standard (ou sans exp),
+      // on refresh proactivement pour éviter les 401 au démarrage.
+      return true;
+    }
   }
 
   AuthBloc() : _authRepository = AuthRepository(), super(AuthInitial()) {
@@ -45,6 +64,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final user = await _authRepository.getUser();
 
       if (token != null && user != null) {
+        if (_shouldRefreshToken(token)) {
+          final success = await _authRepository.refreshAccessToken();
+          if (!success) {
+            _stopRefreshTimer();
+            await _authRepository.logout();
+            emit(
+              AuthUnauthenticated(
+                error: "Session expirée, veuillez vous reconnecter",
+              ),
+            );
+            return;
+          }
+        }
         _startRefreshTimer();
         emit(AuthAuthenticated(user: user, isAutoLogin: true));
       } else {
@@ -82,7 +114,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthLogoutRequested event,
     Emitter<AuthState> emit,
   ) async {
-    _startRefreshTimer();
+    _stopRefreshTimer();
     emit(AuthLoading());
 
     try {

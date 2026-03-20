@@ -26,6 +26,16 @@ class AnalyticsListWidget extends StatelessWidget {
     required this.onPressed,
   });
 
+  String _formatValue(double? value, String unit, {int? decimals}) {
+    if (value == null) {
+      return '—';
+    }
+    if (decimals != null) {
+      return '${value.toStringAsFixed(decimals)} $unit';
+    }
+    return '${value.toString()} $unit';
+  }
+
   @override
   Widget build(BuildContext context) {
     var columns = [
@@ -79,27 +89,42 @@ class AnalyticsListWidget extends StatelessWidget {
 
               var values = [
                 AnalyticListItem(
-                    value: "${light?.value} ${AnalyticsFilterEnum.light.unit}",
+                    value: _formatValue(
+                      light?.value,
+                      AnalyticsFilterEnum.light.unit,
+                    ),
                     alertStatus:  AnalyticAlertStatus.ok),
-                AnalyticListItem(value: "${airTemperature?.value
-                    .toStringAsFixed(1)} ${AnalyticsFilterEnum.temperature
-                    .unit}", alertStatus:  AnalyticAlertStatus.ok),
                 AnalyticListItem(
-                    value: "${soilTemperature?.value
-                        .toStringAsFixed(1)} ${AnalyticsFilterEnum.temperature
-                        .unit}",
+                    value: _formatValue(
+                      airTemperature?.value,
+                      AnalyticsFilterEnum.temperature.unit,
+                      decimals: 1,
+                    ),
+                    alertStatus:  AnalyticAlertStatus.ok),
+                AnalyticListItem(
+                    value: _formatValue(
+                      soilTemperature?.value,
+                      AnalyticsFilterEnum.temperature.unit,
+                      decimals: 1,
+                    ),
                     alertStatus: AnalyticAlertStatus.ok),
                 AnalyticListItem(
-                    value: "${airHumidity?.value
-                        .toString()} ${AnalyticsFilterEnum.humidity.unit}",
+                    value: _formatValue(
+                      airHumidity?.value,
+                      AnalyticsFilterEnum.humidity.unit,
+                    ),
                     alertStatus: AnalyticAlertStatus.ok),
                 AnalyticListItem(
-                    value: "${soilHumidity?.value
-                        .toString()} ${AnalyticsFilterEnum.humidity.unit}",
+                    value: _formatValue(
+                      soilHumidity?.value,
+                      AnalyticsFilterEnum.humidity.unit,
+                    ),
                     alertStatus: AnalyticAlertStatus.ok),
                 AnalyticListItem(
-                    value: "${deepSoilHumidity?.value
-                        .toString()} ${AnalyticsFilterEnum.humidity.unit}",
+                    value: _formatValue(
+                      deepSoilHumidity?.value,
+                      AnalyticsFilterEnum.humidity.unit,
+                    ),
                     alertStatus: AnalyticAlertStatus.ok)
               ];
 

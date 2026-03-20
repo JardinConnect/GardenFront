@@ -5,8 +5,13 @@ import 'package:garden_ui/ui/design_system.dart';
 
 class AnalyticsCardsGridWidget extends StatelessWidget {
   final Analytics analytics;
+  final Map<AnalyticType, AnalyticAlertStatus>? alertStatusOverrides;
 
-  const AnalyticsCardsGridWidget({super.key, required this.analytics});
+  const AnalyticsCardsGridWidget({
+    super.key,
+    required this.analytics,
+    this.alertStatusOverrides,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +27,7 @@ class AnalyticsCardsGridWidget extends StatelessWidget {
     final availableAnalytics = types
         .map((type) => analytics.getLastAnalyticByType(type))
         .toList();
-    
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final crossAxisCount = (constraints.maxWidth / 300).floor().clamp(1, 3);
@@ -39,9 +44,11 @@ class AnalyticsCardsGridWidget extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           itemCount: types.length,
           itemBuilder: (context, index) {
+            final analytic = availableAnalytics[index];
             return AnalyticCardWidget(
+              analytic: analytic,
               type: types[index],
-              analytic: availableAnalytics[index],
+              alertStatusOverride: alertStatusOverrides?[analytic?.getType()],
             );
           },
         );
