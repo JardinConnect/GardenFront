@@ -5,6 +5,7 @@ import 'package:garden_connect/auth/models/user.dart';
 import 'package:garden_connect/core/app_assets.dart';
 import 'package:garden_connect/farm-setup/bloc/farm_setup_bloc.dart';
 import 'package:garden_ui/ui/components.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../areas/models/area.dart';
 import '../../settings/users/widgets/user_add_form_widget.dart';
@@ -49,37 +50,40 @@ class _FarmSetupPageState extends State<FarmSetupPage> {
               fit: BoxFit.cover,
             ),
           ),
-      BlocConsumer<FarmSetupBloc,FarmState>(
+          BlocConsumer<FarmSetupBloc,FarmState>(
             listener: (context, state) {
-        if (state is NetworkLoaded && state.networkState == NetworkState.connected) {
-          setState(() => _currentStep++);
-          _wrongPassword = null;
-        }
-        if (state is NetworkLoaded && state.networkState == NetworkState.connexionFailed) {
-          _wrongPassword = "Mot de passe incorrect";
-        }
-      },
-        builder: (context, state) {
-          if (state is FarmLoading || state is FarmInitial) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is NetworkLoaded ) {
-            return
-                Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Text(_title, style: Theme
-                            .of(context).textTheme
-                            .displayMedium),
-                      ),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: MediaQuery.of(context).size.height * 0.6,
-                          maxWidth: MediaQuery.of(context).size.width * 0.6
+              if (state is NetworkLoaded && state.networkState == NetworkState.connected) {
+                setState(() => _currentStep++);
+                _wrongPassword = null;
+              }
+              if (state is NetworkLoaded && state.networkState == NetworkState.connexionFailed) {
+                _wrongPassword = "Mot de passe incorrect";
+              }
+              if(state is FarmCreated) {
+                context.go("/login");
+              }
+            },
+            builder: (context, state) {
+              if (state is FarmLoading || state is FarmInitial) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is NetworkLoaded ) {
+                return
+                  Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Text(_title, style: Theme
+                              .of(context).textTheme
+                              .displayMedium),
                         ),
-                        child: GardenCard(
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: MediaQuery.of(context).size.height * 0.6,
+                            maxWidth: MediaQuery.of(context).size.width * 0.6
+                          ),
+                          child: GardenCard(
                             hasBorder: true,
                             hasShadow: true,
                             child:Stepper(
@@ -134,7 +138,7 @@ class _FarmSetupPageState extends State<FarmSetupPage> {
                                 ),
                                 Step(
                                   title: const Text('Vos espaces'),
-                                  content: AreaSetupView(),
+                                  content: AreaSetupView(isActive: _currentStep==3,onDataChanged: (areas)=>setState(()=> _areas = areas)),
                                   isActive: _currentStep >= 3,
                                   state: StepState.indexed,
                                 ),
@@ -157,19 +161,21 @@ class _FarmSetupPageState extends State<FarmSetupPage> {
                                 );
                               },
                             )
-                                                  ),
-                      ),
-                    ],
-                  ),
-                );
-          }else if(state is FarmError){
-            return Center(child: Text('Erreur: ${state.message}'));
-          } else {
-            return const Center(child: Text('État inconnu'));
-          }
-        }
-      )]
-    ));
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+              }else if(state is FarmError){
+                return Center(child: Text('Erreur: ${state.message}'));
+              } else {
+                return const Center(child: Text('État inconnu'));
+              }
+            }
+          )
+        ]
+      )
+    );
   }
 
   void _stepChanged(int step) {
@@ -215,7 +221,8 @@ class _FarmSetupPageState extends State<FarmSetupPage> {
       }
     }else {
       context.read<FarmSetupBloc>().add(
-          FarmCreateEvent(farm: _farm!,
+          FarmCreateEvent(
+              farm: _farm!,
               user: _user!,
               areas: _areas!
           ));

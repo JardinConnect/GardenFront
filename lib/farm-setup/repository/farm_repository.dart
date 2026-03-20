@@ -11,8 +11,16 @@ class FarmRepository {
   final HttpClient _httpClient = HttpClient();
 
 
-    Future<void> addFarm(Farm farm) async {
-      await Future.delayed(const Duration(seconds: 1));
+    Future<bool> addFarm(InitFarmDto farm) async {
+      try {
+        final response = await _httpClient.post(
+          '/farm/setup',
+          body: farm.toJson()
+        );
+        return response.statusCode == 201;
+      } catch (e) {
+        throw Exception('Failed to init Farm: $e');
+      }
     }
 
     Future<bool> sendWifiConfiguration(String ssid, String password) async {

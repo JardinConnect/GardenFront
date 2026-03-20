@@ -29,8 +29,4 @@ enum NetworkState {
   none,
 }
 
-final class FarmCreation extends FarmState {
-  final Farm farm;
-
-  FarmCreation({required this.farm});
-}
+final class FarmCreated extends FarmState {}

@@ -4,17 +4,51 @@ import 'package:garden_connect/areas/bloc/area_bloc.dart';
 import 'package:garden_ui/ui/foundation/padding/space_design_system.dart';
 import 'package:garden_ui/ui/foundation/typography/typography_design_system.dart';
 
+import '../../areas/models/area.dart';
 import '../../areas/widgets/tab_zones_widget.dart';
 
-class AreaSetupView extends StatelessWidget {
+class AreaSetupView extends StatefulWidget {
+
+  final Function(List<Area>)? onDataChanged;
+  final bool isActive;
 
   const AreaSetupView({
     super.key,
+    this.onDataChanged,
+    this.isActive = false,
   });
 
   @override
+  State<AreaSetupView> createState() => _AreaSetupView();
+}
+
+class _AreaSetupView extends State<AreaSetupView>{
+
+  @override
+  void didUpdateWidget(AreaSetupView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isActive && !oldWidget.isActive) {
+      final state = context.read<AreaBloc>().state;
+      if (state is AreasLoaded) {
+        widget.onDataChanged?.call(state.areas);
+      }
+    }
+  }
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AreaBloc,AreaState>(
+    return BlocConsumer<AreaBloc, AreaState>(
+        listenWhen: (previous, current) {
+          if (!widget.isActive) return false;
+          if (previous is AreasLoaded && current is AreasLoaded) {
+            return previous.areas != current.areas;
+          }
+          return current is AreasLoaded;
+        },
+        listener: (context, state) {
+          if (state is AreasLoaded) {
+            widget.onDataChanged?.call(state.areas);
+          }
+        },
       builder: (context, state) {
         if (state is AreasLoaded) {
           return  Row(
@@ -23,7 +57,7 @@ class AreaSetupView extends StatelessWidget {
               children: [
                 Expanded(
                     flex: 2,
-                    child: TabZonesWidget(title: "test", areas: state.areas, displayDetailsPanel: false, selectedArea: state.selectedArea, )),
+                    child: TabZonesWidget(title: "test", areas: state.areas, displayDetailsPanel: false, selectedArea: state.selectedArea)),
                 Expanded(
                   flex: 3,
                   child: Padding(
