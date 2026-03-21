@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/auth/auth.dart';
+import 'package:garden_connect/cells/bloc/cell_bloc.dart';
 import 'package:garden_connect/mobile/mobile_home.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
@@ -9,8 +10,11 @@ class MobileApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => AuthBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => AuthBloc()),
+        BlocProvider(create: (_) => CellBloc()..add(LoadCells())),
+      ],
       child: MaterialApp(
         theme: ThemeData(
           splashColor: Colors.transparent,
