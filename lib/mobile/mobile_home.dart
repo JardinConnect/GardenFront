@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garden_connect/mobile/pages/mobile_alerts_page.dart';
-import 'package:garden_connect/mobile/pages/mobile_cells_page.dart';
+import 'package:garden_connect/mobile/cells/pages/mobile_cells_page.dart';
 import 'package:garden_connect/mobile/pages/mobile_home_page.dart';
 import 'package:garden_connect/mobile/pages/mobile_spaces_page.dart';
 import 'package:garden_connect/mobile/pages/mobile_profile_page.dart';
