@@ -123,7 +123,7 @@ class AlertRepository {
   /// Créer une alerte
   Future<String> createAlert(AlertCreationRequest request) async {
     try {
-      final response = await _httpClient.post("/alert", body: request.toJson());
+      final response = await _httpClient.post("/alert/", body: request.toJson());
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonData = jsonDecode(response.body);
         return jsonData['id'] ??
