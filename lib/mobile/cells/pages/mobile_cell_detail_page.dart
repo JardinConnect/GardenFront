@@ -35,9 +35,17 @@ class MobileCellDetailPage extends StatelessWidget {
     return BlocBuilder<CellBloc, CellState>(
       builder: (context, cellState) {
         if (cellState is CellInitial || cellState is CellDetailShimmer) {
-          return const Center(child: CircularProgressIndicator());
+          return Scaffold(
+            body: SafeArea(
+              child: const Center(child: CircularProgressIndicator()),
+            ),
+          );
         } else if (cellState is CellError) {
-          return Center(child: Text('Erreur: ${cellState.message}'));
+          return Scaffold(
+            body: SafeArea(
+              child: Center(child: Text('Erreur: ${cellState.message}')),
+            ),
+          );
         } else if (cellState is CellDetailLoaded) {
           return Scaffold(
             appBar: MobileHeader(),
