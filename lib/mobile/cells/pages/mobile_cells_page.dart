@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/cells/bloc/cell_bloc.dart';
 import 'package:garden_connect/cells/widgets/cells_cards_widget.dart';
+import 'package:garden_connect/mobile/cells/pages/mobile_cell_detail_page.dart';
 import 'package:garden_connect/mobile/cells/widgets/mobile_cells_list_widget.dart';
 import 'package:garden_connect/mobile/common/widgets/mobile_header.dart';
 import 'package:garden_ui/ui/design_system.dart';
@@ -21,7 +22,17 @@ class MobileCellsPage extends StatelessWidget {
     context.read<CellBloc>().add(SearchCells(search: text));
   }
 
-  _onCellPressed(BuildContext context, String id) {}
+  _onCellPressed(BuildContext context, String id) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder:
+            (context) => BlocProvider(
+              create: (context) => CellBloc()..add(LoadCellDetail(id: id)),
+              child: MobileCellDetailPage(id: id),
+            ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +44,18 @@ class MobileCellsPage extends StatelessWidget {
           return Center(child: Text('Erreur: ${cellsState.message}'));
         } else if (cellsState is CellsLoaded) {
           return Scaffold(
+            appBar: MobileHeader(
+              actionsButtons: [
+                IconButton(
+                  onPressed: () => _onToggleListFormat(context),
+                  icon: Icon(
+                    cellsState.isList ? Icons.grid_view : Icons.list,
+                    color: GardenColors.primary.shade500,
+                    size: 32,
+                  ),
+                ),
+              ],
+            ),
             body: SafeArea(
               child: Padding(
                 padding: EdgeInsets.symmetric(
@@ -42,18 +65,6 @@ class MobileCellsPage extends StatelessWidget {
                 child: Column(
                   spacing: GardenSpace.gapMd,
                   children: [
-                    MobileHeader(
-                      actionsButtons: [
-                        IconButton(
-                          onPressed: () => _onToggleListFormat(context),
-                          icon: Icon(
-                            cellsState.isList ? Icons.grid_view : Icons.list,
-                            color: GardenColors.primary.shade500,
-                            size: 32,
-                          ),
-                        ),
-                      ],
-                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,

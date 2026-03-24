@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garden_connect/auth/utils/auth_extension.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
-class MobileHeader extends StatelessWidget {
+class MobileHeader extends StatelessWidget implements PreferredSizeWidget {
   final List<IconButton>? actionsButtons;
 
   const MobileHeader({super.key, this.actionsButtons});
@@ -10,43 +10,49 @@ class MobileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.currentUser;
+    final canPop = ModalRoute.of(context)?.canPop ?? false;
 
     if (user == null) {
-      return const Text("Utilisateur non connecté");
+      return AppBar(title: const Text("Utilisateur non connecté"));
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Bonjour", style: GardenTypography.bodyLg),
-            Text(
-              "${user.firstName} ${user.lastName}",
-              style: GardenTypography.headingSm.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      shadowColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
+      foregroundColor: GardenTypography.bodyLg.color,
+      elevation: 0,
+      centerTitle: false,
+      toolbarHeight: 80,
+      titleSpacing: canPop ? 0 : GardenSpace.gapLg,
+      title: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Bonjour", style: GardenTypography.bodyLg),
+          Text(
+            "${user.firstName} ${user.lastName}",
+            style: GardenTypography.headingSm.copyWith(
+              fontWeight: FontWeight.bold,
             ),
-          ],
+          ),
+        ],
+      ),
+      actions: [
+        ...?actionsButtons,
+        IconButton(
+          onPressed: () => {},
+          icon: Icon(
+            Icons.notifications_rounded,
+            color: GardenColors.typography.shade500,
+            size: 32,
+          ),
         ),
-        Row(
-          spacing: GardenSpace.gapXs,
-          children: [
-            ...?actionsButtons,
-            IconButton(
-              onPressed: () => {},
-              icon: Icon(
-                Icons.notifications_rounded,
-                color: GardenColors.typography.shade500,
-                size: 32,
-              ),
-            ),
-          ],
-        ),
+        SizedBox(width: GardenSpace.gapLg),
       ],
     );
   }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(80);
 }
