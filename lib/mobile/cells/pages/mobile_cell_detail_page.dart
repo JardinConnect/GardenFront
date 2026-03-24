@@ -59,35 +59,27 @@ class MobileCellDetailPage extends StatelessWidget {
                   child: Column(
                     spacing: GardenSpace.gapMd,
                     children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 0,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          // BackTextButton(backFunction: () => Navigator.of(context).pop()),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                cellState.cell.name,
-                                style: GardenTypography.headingSm.copyWith(
-                                  overflow: TextOverflow.ellipsis,
+                          Text(
+                            cellState.cell.name,
+                            style: GardenTypography.headingSm.copyWith(
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          GardenToggle(
+                            isEnabled: cellState.cell.isTracked,
+                            onToggle:
+                                (bool value) => _handleChangeCellTracking(
+                                  context,
+                                  cellState.cell.name,
+                                  value,
+                                  cellState.cell.parentId,
                                 ),
-                              ),
-                              GardenToggle(
-                                isEnabled: cellState.cell.isTracked,
-                                onToggle:
-                                    (bool value) => _handleChangeCellTracking(
-                                      context,
-                                      cellState.cell.name,
-                                      value,
-                                      cellState.cell.parentId,
-                                    ),
-                                enabledIcon: Icons.visibility_outlined,
-                                disabledIcon: Icons.visibility_off_outlined,
-                              ),
-                            ],
+                            enabledIcon: Icons.visibility_outlined,
+                            disabledIcon: Icons.visibility_off_outlined,
                           ),
                         ],
                       ),

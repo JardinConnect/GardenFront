@@ -41,7 +41,7 @@ class AnalyticsCardsGridWidget extends StatelessWidget {
             mainAxisSpacing: GardenSpace.gapMd,
             crossAxisSpacing: isMobile ? GardenSpace.gapMd : GardenSpace.gapXl,
             childAspectRatio: 2.5,
-            mainAxisExtent: 110,
+            mainAxisExtent: isMobile ? 110 : 130,
           ),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),

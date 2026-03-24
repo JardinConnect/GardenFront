@@ -11,15 +11,18 @@ class BackTextButton extends StatelessWidget {
     return TextButton(
       onPressed: backFunction,
       style: TextButton.styleFrom(
-        padding: EdgeInsets.zero,
+        padding: EdgeInsets.symmetric(
+          horizontal: GardenSpace.paddingSm,
+          vertical: GardenSpace.paddingXs,
+        ),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         spacing: GardenSpace.gapXs,
         children: [
-          Icon(Icons.arrow_back_ios_new_outlined, size: 12, color: GardenColors.typography.shade400),
-          Text('Retour', style: GardenTypography.bodyMd,),
+          Icon(Icons.arrow_back_ios_new_outlined, size: 16),
+          Text('Retour'),
         ],
       ),
     );
