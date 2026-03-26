@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garden_connect/auth/utils/auth_extension.dart';
 import 'package:garden_ui/ui/design_system.dart';
+import 'package:go_router/go_router.dart';
 
 class MobileHeader extends StatelessWidget implements PreferredSizeWidget {
   final List<IconButton>? actionsButtons;
@@ -10,7 +11,6 @@ class MobileHeader extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.currentUser;
-    final canPop = ModalRoute.of(context)?.canPop ?? false;
 
     if (user == null) {
       return AppBar(title: const Text("Utilisateur non connecté"));
@@ -24,7 +24,7 @@ class MobileHeader extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       centerTitle: false,
       toolbarHeight: 80,
-      titleSpacing: canPop ? 0 : GardenSpace.gapLg,
+      titleSpacing: context.canPop() ? 0 : GardenSpace.gapLg,
       title: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,

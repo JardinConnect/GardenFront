@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/cells/bloc/cell_bloc.dart';
 import 'package:garden_connect/cells/widgets/cells_cards_widget.dart';
-import 'package:garden_connect/mobile/cells/pages/mobile_cell_detail_page.dart';
 import 'package:garden_connect/mobile/cells/widgets/mobile_cells_list_widget.dart';
 import 'package:garden_connect/mobile/common/widgets/mobile_header.dart';
 import 'package:garden_ui/ui/design_system.dart';
+import 'package:go_router/go_router.dart';
 
 class MobileCellsPage extends StatelessWidget {
   const MobileCellsPage({super.key});
@@ -23,15 +23,7 @@ class MobileCellsPage extends StatelessWidget {
   }
 
   _onCellPressed(BuildContext context, String id) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder:
-            (context) => BlocProvider(
-              create: (context) => CellBloc()..add(LoadCellDetail(id: id)),
-              child: MobileCellDetailPage(id: id),
-            ),
-      ),
-    );
+    context.go('/m/cells/$id');
   }
 
   @override
