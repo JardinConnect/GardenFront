@@ -113,6 +113,18 @@ class Log{
 
   factory Log.fromJson(Map<String, dynamic> json) =>
       _$LogFromJson(json);
+
+  String get actionName{
+    switch(action) {
+      case "update":
+        return "a mis à jour";
+      case "create":
+        return "a créé";
+      case "delete":
+        return "a supprimé";
+      default: return "";
+    }
+  }
 }
 
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
