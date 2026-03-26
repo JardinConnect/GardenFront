@@ -49,33 +49,11 @@ class FarmRepository {
         final response = await _httpClient.get(
             '/network/list'
         );
+        late var responseData;
         if (response.statusCode == 200) {
-          final responseData = jsonDecode(response.body);
-          return responseData ?? [];
-        } else {
-          return [
-            NetworkInfo(
-              ssid: 'FreeBox-1234',
-              signal: 0,
-              security: 'N/A',
-            ),
-            NetworkInfo(
-              ssid: 'Orange-5678',
-              signal: 2,
-              security: 'N/A',
-            ),
-            NetworkInfo(
-              ssid: 'BBox-9012',
-              signal: 3,
-              security: 'N/A',
-            ),
-            NetworkInfo(
-              ssid: 'SFR-3456',
-              signal: 4,
-              security: 'N/A',
-            ),
-          ];
+          responseData = jsonDecode(response.body);
         }
+        return responseData ?? [];
       } catch (e) {
         throw Exception('Failed to fetch Wi-Fi networks: $e');
       }
