@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garden_connect/settings/dashboard/widgets/user_profile_widget.dart';
 
 class MobileProfilePage extends StatelessWidget {
   const MobileProfilePage({super.key});
@@ -8,9 +9,7 @@ class MobileProfilePage extends StatelessWidget {
     return const Scaffold(
       body: SafeArea(
         child: Center(
-          child: Text(
-            'Profil',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+          child: UserProfileWidget(user: user)
           ),
         ),
       ),
