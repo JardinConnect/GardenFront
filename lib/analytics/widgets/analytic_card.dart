@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:garden_connect/analytics/models/analytics.dart';
 import 'package:garden_ui/ui/components.dart';
@@ -6,6 +8,7 @@ import 'package:garden_ui/ui/design_system.dart';
 class AnalyticCardWidget extends StatelessWidget {
   /// The max value of air temperature. If it's reached, icon will be full filled (same value as in GardenUI)
   static const int _airTemperatureMaxValue = 55;
+
   /// The max value of soil temperature. If it's reached, icon will be full filled (same value as in GardenUI)
   static const int _soilTemperatureMaxValue = 45;
 
@@ -24,9 +27,15 @@ class AnalyticCardWidget extends StatelessWidget {
     if (analytic == null) return 0.0;
     switch (type) {
       case AnalyticType.airTemperature:
-        return (100 * analytic!.value / _airTemperatureMaxValue).clamp(0.0, 100.0);
+        return (100 * analytic!.value / _airTemperatureMaxValue).clamp(
+          0.0,
+          100.0,
+        );
       case AnalyticType.soilTemperature:
-        return (100 * analytic!.value / _soilTemperatureMaxValue).clamp(0.0, 100.0);
+        return (100 * analytic!.value / _soilTemperatureMaxValue).clamp(
+          0.0,
+          100.0,
+        );
       case AnalyticType.airHumidity:
       case AnalyticType.soilHumidity:
       case AnalyticType.deepSoilHumidity:
@@ -40,6 +49,7 @@ class AnalyticCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final status = alertStatusOverride ?? analytic?.alertStatus;
+    final isMobile = Platform.isIOS || Platform.isAndroid;
 
     return GardenCard(
       hasBorder: true,
@@ -55,15 +65,21 @@ class AnalyticCardWidget extends StatelessWidget {
               Flexible(
                 child: Text(
                   type.name,
-                  style: GardenTypography.bodyMd.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style:
+                      isMobile
+                          ? GardenTypography.caption.copyWith(
+                            fontWeight: FontWeight.w700,
+                          )
+                          : GardenTypography.bodyMd.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              if (analytic != null && (status == AnalyticAlertStatus.warning ||
-                  status == AnalyticAlertStatus.alert))
+              if (analytic != null &&
+                  (status == AnalyticAlertStatus.warning ||
+                      status == AnalyticAlertStatus.alert))
                 AlertIndicator(
                   alertType:
                       status == AnalyticAlertStatus.warning
@@ -78,29 +94,31 @@ class AnalyticCardWidget extends StatelessWidget {
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final isCompact = constraints.maxWidth < 130;
-                
-                final valueStyle = (isCompact 
-                  ? GardenTypography.headingLg 
-                  : GardenTypography.headingXl).copyWith(
-                    fontWeight: FontWeight.bold,
-                  );
-                
-                final unitStyle = (isCompact 
-                  ? GardenTypography.bodyMd 
-                  : GardenTypography.headingMd).copyWith(
-                    fontStyle: FontStyle.italic,
-                  );
 
-                final iconSize = isCompact ? GardenIconSize.md : GardenIconSize.lg;
+                final valueStyle = (isCompact
+                        ? GardenTypography.headingLg
+                        : GardenTypography.headingXl)
+                    .copyWith(fontWeight: FontWeight.bold);
+
+                final unitStyle = (isCompact
+                        ? GardenTypography.bodyMd
+                        : GardenTypography.headingMd)
+                    .copyWith(fontStyle: FontStyle.italic);
+
+                final iconSize =
+                    isCompact ? GardenIconSize.md : GardenIconSize.lg;
 
                 return Center(
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: GardenSpace.gapSm),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: GardenSpace.paddingSm,
+                      ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
-                        spacing: isCompact ? GardenSpace.gapSm : GardenSpace.gapLg,
+                        spacing:
+                            isCompact ? GardenSpace.gapSm : GardenSpace.gapLg,
                         children: [
                           GardenIcon(
                             iconName: type.iconName,
@@ -112,13 +130,12 @@ class AnalyticCardWidget extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                analytic != null ? analytic!.value.toStringAsFixed(1) : 'N/A',
+                                analytic != null
+                                    ? analytic!.value.toStringAsFixed(1)
+                                    : 'N/A',
                                 style: valueStyle,
                               ),
-                              Text(
-                                type.unit,
-                                style: unitStyle,
-                              ),
+                              Text(type.unit, style: unitStyle),
                             ],
                           ),
                         ],

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/design_system.dart';
@@ -40,11 +42,22 @@ class _GraphicWidgetState extends State<GraphicWidget> {
     }
 
     return Analytics(
-      airTemperature: analytics.airTemperature?.where((a) => inRange(a.occurredAt)).toList(),
-      soilTemperature: analytics.soilTemperature?.where((a) => inRange(a.occurredAt)).toList(),
-      airHumidity: analytics.airHumidity?.where((a) => inRange(a.occurredAt)).toList(),
-      soilHumidity: analytics.soilHumidity?.where((a) => inRange(a.occurredAt)).toList(),
-      deepSoilHumidity: analytics.deepSoilHumidity?.where((a) => inRange(a.occurredAt)).toList(),
+      airTemperature:
+          analytics.airTemperature
+              ?.where((a) => inRange(a.occurredAt))
+              .toList(),
+      soilTemperature:
+          analytics.soilTemperature
+              ?.where((a) => inRange(a.occurredAt))
+              .toList(),
+      airHumidity:
+          analytics.airHumidity?.where((a) => inRange(a.occurredAt)).toList(),
+      soilHumidity:
+          analytics.soilHumidity?.where((a) => inRange(a.occurredAt)).toList(),
+      deepSoilHumidity:
+          analytics.deepSoilHumidity
+              ?.where((a) => inRange(a.occurredAt))
+              .toList(),
       light: analytics.light?.where((a) => inRange(a.occurredAt)).toList(),
       battery: analytics.battery?.where((a) => inRange(a.occurredAt)).toList(),
     );
@@ -180,7 +193,9 @@ class _GraphicWidgetState extends State<GraphicWidget> {
         Expanded(
           child: Text(
             label,
-            style: GardenTypography.caption.copyWith(fontWeight: FontWeight.w600),
+            style: GardenTypography.caption.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
         OutlinedButton(
@@ -195,10 +210,7 @@ class _GraphicWidgetState extends State<GraphicWidget> {
               onPicked(picked);
             }
           },
-          child: Text(
-            format.format(date),
-            style: GardenTypography.caption,
-          ),
+          child: Text(format.format(date), style: GardenTypography.caption),
         ),
       ],
     );
@@ -292,6 +304,8 @@ class _GraphicWidgetState extends State<GraphicWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = Platform.isIOS || Platform.isAndroid;
+
     final availableFilters = _availableFilters(widget.analytics);
     if (availableFilters.isEmpty) {
       return const Center(child: Text('Aucune donnée disponible'));
@@ -330,11 +344,7 @@ class _GraphicWidgetState extends State<GraphicWidget> {
       minDate,
       maxDate,
     );
-    final selectedEnd = _clampDate(
-      _rangeEnd ?? defaultEnd,
-      minDate,
-      maxDate,
-    );
+    final selectedEnd = _clampDate(_rangeEnd ?? defaultEnd, minDate, maxDate);
 
     final rangeStart = DateTime(
       selectedStart.year,
@@ -401,29 +411,27 @@ class _GraphicWidgetState extends State<GraphicWidget> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                children: [
-                  currentFilter.buildCaptions,
-                  _buildRadioSection(availableFilters, effectiveSelected),
-                  SizedBox(height: GardenSpace.gapMd),
-                  _buildDateRangeSection(
-                    minDate,
-                    maxDate,
-                    rangeStart,
-                    rangeEnd,
-                  ),
-                ],
+          if (!isMobile)
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    currentFilter.buildCaptions,
+                    _buildRadioSection(availableFilters, effectiveSelected),
+                    SizedBox(height: GardenSpace.gapMd),
+                    _buildDateRangeSection(
+                      minDate,
+                      maxDate,
+                      rangeStart,
+                      rangeEnd,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          Expanded(
-            flex: 3,
-            child: chartContent,
-          ),
+          Expanded(flex: 3, child: chartContent),
         ],
       ),
     );
