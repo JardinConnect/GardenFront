@@ -113,7 +113,7 @@ class _UserFormWidget extends State<UserFormWidget> {
                   children: [
                     Expanded(child:
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: inEditionMode || inUserCreation ? const EdgeInsets.all(8.0) : EdgeInsetsGeometry.zero,
                         child: TextFormField(
                           controller: firstnameController,
                           readOnly: !inEditionMode && !inUserCreation,
@@ -131,7 +131,7 @@ class _UserFormWidget extends State<UserFormWidget> {
                     ),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: inEditionMode || inUserCreation ? const EdgeInsets.all(8.0) : EdgeInsetsGeometry.zero,
                         child: TextFormField(
                           controller: lastnameController,
                           readOnly: !inEditionMode && !inUserCreation,
@@ -150,7 +150,7 @@ class _UserFormWidget extends State<UserFormWidget> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: inEditionMode || inUserCreation ? const EdgeInsets.all(8.0) : EdgeInsetsGeometry.zero,
                   child: TextFormField(
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -176,7 +176,7 @@ class _UserFormWidget extends State<UserFormWidget> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: inEditionMode || inUserCreation ? const EdgeInsets.all(8.0) : EdgeInsetsGeometry.zero,
                   child: TextFormField(
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -206,7 +206,7 @@ class _UserFormWidget extends State<UserFormWidget> {
                 ),
                 if(inEditionMode || inUserCreation)
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: inEditionMode || inUserCreation ? const EdgeInsets.all(8.0) : EdgeInsetsGeometry.zero,
                     child:
                     DropdownButtonFormField<Role>(
                       initialValue: selectedRole,
@@ -232,19 +232,7 @@ class _UserFormWidget extends State<UserFormWidget> {
                       },
                     ),
                   ),
-                if(!inEditionMode && !inUserCreation)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      initialValue: selectedRole.displayName,
-                      readOnly: true,
-                      decoration:const InputDecoration(labelText: 'Role',
-                        border: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,)
-                    ),
-                  ),
+
                 if(inEditionMode || inUserCreation)
                   Button(label: "Valider", icon: Icons.check_circle, onPressed: ()=>
                   {

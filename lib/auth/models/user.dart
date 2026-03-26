@@ -9,6 +9,8 @@ class User {
   final String lastName;
   final String phoneNumber;
   final Role role;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   final String? token;
 
   User({
@@ -17,6 +19,8 @@ class User {
     required this.firstName,
     required this.lastName,
     required this.role,
+    this.createdAt,
+    this.updatedAt,
     required this.phoneNumber,
     this.token,
   });

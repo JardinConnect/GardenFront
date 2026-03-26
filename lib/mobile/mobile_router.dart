@@ -10,7 +10,7 @@ import 'package:garden_connect/mobile/dashboard/pages/mobile_activity_calendar_p
 import 'package:garden_connect/mobile/dashboard/pages/mobile_home_page.dart';
 import 'package:garden_connect/mobile/mobile_home.dart';
 import 'package:garden_connect/mobile/pages/mobile_alerts_page.dart';
-import 'package:garden_connect/mobile/pages/mobile_profile_page.dart';
+import 'package:garden_connect/mobile/users/pages/mobile_profile_page.dart';
 import 'package:garden_connect/mobile/pages/mobile_spaces_page.dart';
 import 'package:garden_connect/mobile/cells/pages/mobile_cells_page.dart';
 
