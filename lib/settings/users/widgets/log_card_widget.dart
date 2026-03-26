@@ -12,7 +12,7 @@ class LogCardWidget extends StatelessWidget {
 
     return GardenCard(
       child: SizedBox(
-        height: 400,
+        height: 200,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10.0),
           child: Column(
@@ -30,6 +30,14 @@ class LogCardWidget extends StatelessWidget {
                   ),
                 ],
               ),
+
+              if(logs.isEmpty)
+                Expanded(
+                  child: Center(
+                    child: Text("Il n'y a pas encore de log", style: Theme.of(context).textTheme.bodyLarge),
+                  ),
+                )
+              else
               Expanded(
                 child: Scrollbar(
                   thumbVisibility: true,

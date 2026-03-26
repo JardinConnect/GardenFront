@@ -46,7 +46,15 @@ class UserInfoWidget extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(4.0),
-            child: Text(user.id, style: Theme.of(context).textTheme.bodyLarge),
+            child: Text("${user.createdAt?.day}/${user.createdAt?.month}/${user.createdAt?.year}", style: Theme.of(context).textTheme.bodyLarge),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text("Edité le", style: Theme.of(context).textTheme.bodySmall),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text("${user.updatedAt?.day}/${user.updatedAt?.month}/${user.updatedAt?.year} à ${user.updatedAt?.hour}:${user.updatedAt?.minute}", style: Theme.of(context).textTheme.bodyLarge),
           ),
         ]
       )
