@@ -1,30 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:garden_connect/mobile/pages/mobile_alerts_page.dart';
-import 'package:garden_connect/mobile/cells/pages/mobile_cells_page.dart';
-import 'package:garden_connect/mobile/pages/mobile_home_page.dart';
-import 'package:garden_connect/mobile/pages/mobile_spaces_page.dart';
-import 'package:garden_connect/mobile/pages/mobile_profile_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_connect/analytics/bloc/analytics_bloc.dart';
+import 'package:garden_connect/areas/bloc/area_bloc.dart';
+import 'package:garden_connect/cells/bloc/cell_bloc.dart';
 import 'package:garden_ui/ui/design_system.dart';
+import 'package:go_router/go_router.dart';
 
-class MobileHome extends StatefulWidget {
-  const MobileHome({super.key});
+class MobileHome extends StatelessWidget {
+  final StatefulNavigationShell navigationShell;
 
-  @override
-  State<MobileHome> createState() => _MobileHomeState();
-}
+  const MobileHome({super.key, required this.navigationShell});
 
-class _MobileHomeState extends State<MobileHome> {
-  int _currentIndex = 0;
-
-  final List<Widget> _pages = const [
-    MobileHomePage(),
-    MobileSpacesPage(),
-    MobileCellsPage(),
-    MobileAlertsPage(),
-    MobileProfilePage(),
-  ];
-
-  final List<_NavItem> _items = const [
+  static const List<_NavItem> _items = [
     _NavItem(
       label: 'Accueil',
       icon: Icons.home_outlined,
@@ -56,9 +43,10 @@ class _MobileHomeState extends State<MobileHome> {
   Widget build(BuildContext context) {
     final selectedColor = GardenColors.primary.shade500;
     final unselectedColor = GardenColors.primary.shade200;
+    final currentIndex = navigationShell.currentIndex;
 
     return Scaffold(
-      body: _pages[_currentIndex],
+      body: navigationShell,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: GardenColors.primary.shade50,
@@ -76,14 +64,22 @@ class _MobileHomeState extends State<MobileHome> {
             child: Row(
               children: List.generate(_items.length, (index) {
                 final item = _items[index];
-                final isSelected = index == _currentIndex;
+                final isSelected = index == currentIndex;
                 final color = isSelected ? selectedColor : unselectedColor;
                 final icon =
                     isSelected ? item.activeIcon ?? item.icon : item.icon;
 
                 return Expanded(
                   child: InkWell(
-                    onTap: () => setState(() => _currentIndex = index),
+                    onTap: () {
+                      context.read<CellBloc>().add(LoadCells());
+                      context.read<AreaBloc>().add(LoadAreas());
+                      context.read<AnalyticsBloc>().add(LoadAnalytics());
+                      navigationShell.goBranch(
+                        index,
+                        initialLocation: true,
+                      );
+                    },
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border(

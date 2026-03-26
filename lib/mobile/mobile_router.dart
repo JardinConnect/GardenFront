@@ -1,0 +1,133 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:garden_connect/auth/auth.dart';
+import 'package:garden_connect/cells/bloc/cell_bloc.dart';
+import 'package:garden_connect/mobile/cells/pages/mobile_cell_detail_page.dart';
+import 'package:garden_connect/mobile/dashboard/pages/mobile_activity_calendar_page.dart';
+import 'package:garden_connect/mobile/dashboard/pages/mobile_home_page.dart';
+import 'package:garden_connect/mobile/mobile_home.dart';
+import 'package:garden_connect/mobile/pages/mobile_alerts_page.dart';
+import 'package:garden_connect/mobile/pages/mobile_profile_page.dart';
+import 'package:garden_connect/mobile/pages/mobile_spaces_page.dart';
+import 'package:garden_connect/mobile/cells/pages/mobile_cells_page.dart';
+
+class MobileAppRouter {
+  final AuthBloc authBloc;
+
+  MobileAppRouter(this.authBloc);
+
+  late final GoRouter router = GoRouter(
+    initialLocation: '/m/home',
+    refreshListenable: GoRouterRefreshStream(authBloc.stream),
+    redirect: (context, state) {
+      final authState = authBloc.state;
+      final isLoggedIn = authState is AuthAuthenticated;
+      final isLoggingIn = state.matchedLocation == '/login';
+
+      if (!isLoggedIn && !isLoggingIn) {
+        return '/login';
+      }
+
+      if (isLoggedIn && isLoggingIn) {
+        return '/m/home';
+      }
+
+      return null;
+    },
+    routes: [
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => LoginPage(),
+      ),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return MobileHome(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/m/home',
+                builder: (context, state) => const MobileHomePage(),
+                routes: [
+                  GoRoute(
+                    path: 'calendar',
+                    builder:
+                        (context, state) =>
+                            const MobileActivityCalendarPage(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/m/spaces',
+                builder: (context, state) => const MobileSpacesPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/m/cells',
+                builder: (context, state) => const MobileCellsPage(),
+                routes: [
+                  GoRoute(
+                    path: ':id',
+                    pageBuilder: (context, state) {
+                      final id = state.pathParameters['id']!;
+                      return NoTransitionPage(
+                        child: BlocProvider(
+                          create:
+                              (context) =>
+                                  CellBloc()..add(LoadCellDetail(id: id)),
+                          child: MobileCellDetailPage(id: id),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/m/alerts',
+                builder: (context, state) => const MobileAlertsPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/m/profile',
+                builder: (context, state) => const MobileProfilePage(),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    notifyListeners();
+    _subscription = stream.asBroadcastStream().listen((_) => notifyListeners());
+  }
+
+  late final StreamSubscription<dynamic> _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+}

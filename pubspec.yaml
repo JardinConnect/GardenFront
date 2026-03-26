@@ -41,9 +41,7 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   json_annotation: ^4.9.0
   garden_ui:
-    git:
-      url: https://github.com/JardinConnect/GardenUI.git
-      ref: v0.4.0
+    path: /Users/baptistesalaud/Documents/code/epitech/GardenUI
   fl_chart: ^1.1.1
   intl: ^0.20.2
   hexagon: ^0.2.0
