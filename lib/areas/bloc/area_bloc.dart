@@ -27,6 +27,7 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
     on<ToggleAnalyticsWidget>(_toggleAnalyticsWidget);
     on<ShowCellsListWidget>(_showCellsListWidget);
     on<ShowAreasListWidget>(_showAreasListWidget);
+    on<ResetAreasListView>(_resetAreasListView);
     on<UpdateArea>(_onUpdateArea);
     on<DeleteArea>(_deleteArea);
     on<SearchAreas>(_searchAreas);
@@ -219,6 +220,19 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
           showCellsListWidget: false,
           showAreasListWidget: true,
           selectedLevel: event.level,
+        ),
+      );
+    }
+  }
+
+  _resetAreasListView(ResetAreasListView event, Emitter<AreaState> emit) {
+    final currentState = state;
+    if (currentState is AreasLoaded) {
+      emit(
+        currentState.copyWith(
+          showAreasListWidget: false,
+          showCellsListWidget: false,
+          clearLevel: true,
         ),
       );
     }

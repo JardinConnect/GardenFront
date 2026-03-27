@@ -68,9 +68,10 @@ class ShowAreasListWidget extends AreaEvent {
   ShowAreasListWidget({this.level});
 }
 
+final class ResetAreasListView extends AreaEvent {}
+
 final class DeleteArea extends AreaEvent {
   final String id;
 
   DeleteArea({required this.id});
 }
-

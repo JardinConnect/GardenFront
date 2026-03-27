@@ -135,6 +135,11 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile =
+        !kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.iOS ||
+            defaultTargetPlatform == TargetPlatform.android);
+
     final levelCounts = _countAreasByLevel();
     final sortedLevels = _getSortedLevels();
     final totalCells = _countTotalCells();
@@ -192,40 +197,23 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
                 return Expanded(
                   child: GestureDetector(
                     onTap: () {
+                      if (showingAreasList && selectedLevel == lvl) {
+                        context.read<AreaBloc>().add(ResetAreasListView());
+                        return;
+                      }
                       context.read<AreaBloc>().add(
                         ShowAreasListWidget(level: lvl),
                       );
                     },
                     child: Padding(
                       padding: EdgeInsets.only(right: GardenSpace.paddingMd),
-                      child: GardenCard(
-                        backgroundColor:
-                            showingAreasList && selectedLevel == lvl
-                                ? GardenColors.base.shade200
-                                : null,
-                        child: Row(
-                          children: [
-                            LevelIndicator(level: lvl),
-                            SizedBox(width: GardenSpace.gapMd),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Niveau $lvl',
-                                    style: GardenTypography.bodyLg,
-                                  ),
-                                  Text(
-                                    '${levelCounts[lvl]}',
-                                    style: GardenTypography.headingMd,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                      child: _buildLevelCard(
+                        context,
+                        level: lvl,
+                        count: levelCounts[lvl] ?? 0,
+                        isSelected:
+                            showingAreasList && selectedLevel == lvl,
+                        isMobile: isMobile,
                       ),
                     ),
                   ),
@@ -235,24 +223,17 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
+                      if (showingCellsList) {
+                        context.read<AreaBloc>().add(ResetAreasListView());
+                        return;
+                      }
                       context.read<AreaBloc>().add(ShowCellsListWidget());
                     },
-                    child: GardenCard(
-                      backgroundColor:
-                          showingCellsList ? GardenColors.base.shade200 : null,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: GardenSpace.paddingMd),
-                        child: Row(
-                          children: [
-                            Text(
-                              '$totalCells',
-                              style: GardenTypography.displayLg,
-                            ),
-                            const SizedBox(width: 10),
-                            Text('Cellules', style: GardenTypography.bodyLg),
-                          ],
-                        ),
-                      ),
+                    child: _buildCellsCard(
+                      context,
+                      count: totalCells,
+                      isSelected: showingCellsList,
+                      isMobile: isMobile,
                     ),
                   ),
                 ),
@@ -279,6 +260,109 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
           ],
         ],
       ],
+    );
+  }
+
+  Widget _buildLevelCard(
+    BuildContext context, {
+    required int level,
+    required int count,
+    required bool isSelected,
+    required bool isMobile,
+  }) {
+    return GardenCard(
+      backgroundColor: isSelected ? GardenColors.base.shade200 : null,
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: isMobile ? GardenSpace.paddingSm : GardenSpace.paddingMd,
+          vertical: isMobile ? GardenSpace.paddingSm : GardenSpace.paddingMd,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            LevelIndicator(level: level),
+            SizedBox(width: isMobile ? GardenSpace.gapSm : GardenSpace.gapMd),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    isMobile ? 'Niv. $level' : 'Niveau $level',
+                    style:
+                        isMobile
+                            ? GardenTypography.caption.copyWith(
+                              fontWeight: FontWeight.w600,
+                            )
+                            : GardenTypography.bodyLg,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(
+                    height: isMobile ? GardenSpace.gapXs : GardenSpace.gapSm,
+                  ),
+                  Text(
+                    '$count',
+                    style:
+                        isMobile
+                            ? GardenTypography.headingLg
+                            : GardenTypography.headingMd,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCellsCard(
+    BuildContext context, {
+    required int count,
+    required bool isSelected,
+    required bool isMobile,
+  }) {
+    return GardenCard(
+      backgroundColor: isSelected ? GardenColors.base.shade200 : null,
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: isMobile ? GardenSpace.paddingSm : GardenSpace.paddingMd,
+          vertical: isMobile ? GardenSpace.paddingSm : GardenSpace.paddingMd,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Cellules',
+                    style:
+                        isMobile
+                            ? GardenTypography.caption.copyWith(
+                              fontWeight: FontWeight.w600,
+                            )
+                            : GardenTypography.bodyLg,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(
+                    height: isMobile ? GardenSpace.gapXs : GardenSpace.gapSm,
+                  ),
+                  Text(
+                    '$count',
+                    style:
+                        isMobile
+                            ? GardenTypography.headingLg
+                            : GardenTypography.headingMd,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
