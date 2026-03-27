@@ -2,17 +2,20 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_connect/mobile/users/pages/mobile_profile_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:garden_connect/auth/auth.dart';
+import 'package:garden_connect/areas/models/area.dart';
 import 'package:garden_connect/cells/bloc/cell_bloc.dart';
 import 'package:garden_connect/mobile/cells/pages/mobile_cell_detail_page.dart';
 import 'package:garden_connect/mobile/dashboard/pages/mobile_activity_calendar_page.dart';
 import 'package:garden_connect/mobile/dashboard/pages/mobile_home_page.dart';
+import 'package:garden_connect/mobile/areas/pages/mobile_area_detail_page.dart';
 import 'package:garden_connect/mobile/mobile_home.dart';
 import 'package:garden_connect/mobile/pages/mobile_alerts_page.dart';
-import 'package:garden_connect/mobile/users/pages/mobile_profile_page.dart';
-import 'package:garden_connect/mobile/pages/mobile_spaces_page.dart';
 import 'package:garden_connect/mobile/cells/pages/mobile_cells_page.dart';
+
+import 'areas/pages/mobile_areas_page.dart';
 
 class MobileAppRouter {
   final AuthBloc authBloc;
@@ -66,8 +69,21 @@ class MobileAppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/m/spaces',
-                builder: (context, state) => const MobileSpacesPage(),
+                path: '/m/areas',
+                builder: (context, state) => const MobileAreasPage(),
+                routes: [
+                  GoRoute(
+                    path: ':id',
+                    builder: (context, state) {
+                      final id = state.pathParameters['id']!;
+                      final extra = state.extra;
+                      return MobileAreaDetailPage(
+                        areaId: id,
+                        initialArea: extra is Area ? extra : null,
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),
