@@ -119,6 +119,7 @@ class _WifiSetupWidgetState extends State<WifiSetupWidget> {
                   child: TextFormField(
                     controller: _passwordController,
                     focusNode: _passwordFocusNode,
+                    enabled: _ssidController.text.isNotEmpty,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Veuillez entrer un mot de passe';
@@ -126,7 +127,7 @@ class _WifiSetupWidgetState extends State<WifiSetupWidget> {
                       return null;
                     },
                     decoration: InputDecoration(
-                      labelText: "Mot de passe",
+                      labelText: _ssidController.text.isNotEmpty ? "Mot de passe":"Veuillez selectionner un réseau wifi",
                       errorText: widget.errorMessage,
                       suffixIcon: IconButton(
                         onPressed: ()=>
