@@ -92,7 +92,9 @@ class AppRouter {
                       BlocProvider<AnalyticsBloc>(
                         create: (context) => AnalyticsBloc(),
                       ),
-                      BlocProvider<AreaBloc>(create: (context) => AreaBloc()),
+                      BlocProvider<AreaBloc>(
+                        create: (context) => AreaBloc()..add(LoadAreas()),
+                      ),
                       BlocProvider<CellBloc>(
                         create: (context) => CellBloc()..add(LoadCells()),
                       ),

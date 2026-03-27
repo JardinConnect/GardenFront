@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:garden_connect/analytics/models/analytics.dart';
 import 'package:garden_ui/ui/components.dart';
@@ -49,7 +48,10 @@ class AnalyticCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final status = alertStatusOverride ?? analytic?.alertStatus;
-    final isMobile = Platform.isIOS || Platform.isAndroid;
+    final isMobile =
+        !kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.iOS ||
+            defaultTargetPlatform == TargetPlatform.android);
 
     return GardenCard(
       hasBorder: true,

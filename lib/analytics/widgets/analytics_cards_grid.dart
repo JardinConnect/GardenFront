@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:garden_connect/analytics/models/analytics.dart';
 import 'package:garden_connect/analytics/widgets/analytic_card.dart';
@@ -32,7 +31,10 @@ class AnalyticsCardsGridWidget extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isMobile = Platform.isIOS || Platform.isAndroid;
+        final isMobile =
+            !kIsWeb &&
+            (defaultTargetPlatform == TargetPlatform.iOS ||
+                defaultTargetPlatform == TargetPlatform.android);
         final crossAxisCount = (constraints.maxWidth / (isMobile ? 150 : 300)).floor().clamp(1, 3);
 
         return GridView.builder(

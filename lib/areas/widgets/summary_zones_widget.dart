@@ -171,7 +171,11 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
       children: [
         Row(
           children: [
-            Expanded(child: Text(widget.title, style: GardenTypography.headingLg)),
+            kIsWeb
+                ? Text(widget.title, style: GardenTypography.headingLg)
+                : Expanded(
+                  child: Text(widget.title, style: GardenTypography.headingLg),
+                ),
             if (widget.level > 0)
               GardenToggle(
                 isEnabled: isTracked,
@@ -211,8 +215,7 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
                         context,
                         level: lvl,
                         count: levelCounts[lvl] ?? 0,
-                        isSelected:
-                            showingAreasList && selectedLevel == lvl,
+                        isSelected: showingAreasList && selectedLevel == lvl,
                         isMobile: isMobile,
                       ),
                     ),

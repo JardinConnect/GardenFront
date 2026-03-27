@@ -35,7 +35,8 @@ class _WifiSetupWidgetState extends State<WifiSetupWidget> {
   void initState() {
     super.initState();
     _passwordVisible = false;
-    _ssidController.text = widget.wifiList.first.ssid;
+    _ssidController.text =
+        widget.wifiList.isNotEmpty ? widget.wifiList.first.ssid : '';
     _ssidController.addListener(_onDataChanged,);
     _passwordFocusNode.addListener((){
       if(!_passwordFocusNode.hasFocus){
@@ -53,6 +54,14 @@ class _WifiSetupWidgetState extends State<WifiSetupWidget> {
   }
   void _refreshWifiList() {
     widget.onRefreshWifiList?.call();
+  }
+
+  @override
+  void didUpdateWidget(covariant WifiSetupWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.wifiList.isNotEmpty && _ssidController.text.isEmpty) {
+      _ssidController.text = widget.wifiList.first.ssid;
+    }
   }
 
   @override
@@ -75,24 +84,29 @@ class _WifiSetupWidgetState extends State<WifiSetupWidget> {
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.only(right:8.0),
                           child:
-                          DropdownButtonFormField<String>(
-                            initialValue: widget.wifiList.first.ssid,
-                            decoration: const InputDecoration(labelText: 'SSID'),
-                            items: widget.wifiList.map((network)=>network.ssid).map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value, style: Theme.of(context).textTheme.bodyLarge),
-                              );
-                            }).toList(),
-                            onChanged: (String? value) {
-                              _ssidController.text = value ?? "";
-                            },
-                          ),
+                          widget.wifiList.isEmpty
+                              ? Text(
+                                'Aucun réseau Wi‑Fi trouvé',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              )
+                              : DropdownButtonFormField<String>(
+                                initialValue: widget.wifiList.first.ssid,
+                                decoration:
+                                    const InputDecoration(labelText: 'SSID'),
+                                items: widget.wifiList.map((network)=>network.ssid).map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value, style: Theme.of(context).textTheme.bodyLarge),
+                                  );
+                                }).toList(),
+                                onChanged: (String? value) {
+                                  _ssidController.text = value ?? "";
+                                },
+                              ),
                         ),
                       ),
                       Button(label: "Rafraichir", onPressed: _refreshWifiList)

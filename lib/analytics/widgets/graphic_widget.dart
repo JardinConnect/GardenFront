@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:intl/intl.dart';
@@ -304,7 +303,10 @@ class _GraphicWidgetState extends State<GraphicWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = Platform.isIOS || Platform.isAndroid;
+    final isMobile =
+        !kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.iOS ||
+            defaultTargetPlatform == TargetPlatform.android);
 
     final availableFilters = _availableFilters(widget.analytics);
     if (availableFilters.isEmpty) {
