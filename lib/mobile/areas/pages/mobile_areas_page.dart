@@ -10,8 +10,8 @@ import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:go_router/go_router.dart';
 
-class MobileSpacesPage extends StatelessWidget {
-  const MobileSpacesPage({super.key});
+class MobileAreasPage extends StatelessWidget {
+  const MobileAreasPage({super.key});
 
   HierarchicalMenuItem _areaToMenuItem(Area area, BuildContext context) {
     final List<HierarchicalMenuItem> children = [];
@@ -58,7 +58,7 @@ class MobileSpacesPage extends StatelessWidget {
         context.read<AreaBloc>().add(SelectArea(area));
         final router = GoRouter.maybeOf(context);
         if (router != null) {
-          context.push('/m/spaces/${area.id}', extra: area);
+          context.push('/m/areas/${area.id}', extra: area);
           return;
         }
         Navigator.of(context).push(

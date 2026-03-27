@@ -69,8 +69,8 @@ class MobileAppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/m/spaces',
-                builder: (context, state) => const MobileSpacesPage(),
+                path: '/m/areas',
+                builder: (context, state) => const MobileAreasPage(),
                 routes: [
                   GoRoute(
                     path: ':id',
