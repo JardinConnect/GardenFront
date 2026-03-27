@@ -35,11 +35,15 @@ class SensorsSection extends StatefulWidget {
   /// Liste des capteurs disponibles (chargée depuis le Bloc)
   final List<Map<String, dynamic>> availableSensors;
 
+  /// Mode compact pour mobile : icône plus petite, ratio plus carré
+  final bool compact;
+
   const SensorsSection({
     super.key,
     this.selectedSensors = const [],
     this.onSelectionChanged,
     required this.availableSensors,
+    this.compact = false,
   });
 
   @override
@@ -162,7 +166,7 @@ class _SensorsSectionState extends State<SensorsSection> {
         crossAxisCount: 3,
         crossAxisSpacing: GardenSpace.gapMd,
         mainAxisSpacing: GardenSpace.gapMd,
-        childAspectRatio: 1.7,
+        childAspectRatio: widget.compact ? 1.1 : 1.7,
       ),
       itemCount: _allSensors.length,
       itemBuilder: (context, index) => _buildSensorCard(_allSensors[index]),
@@ -172,15 +176,15 @@ class _SensorsSectionState extends State<SensorsSection> {
   /// Construit une carte de capteur individuelle
   Widget _buildSensorCard(_SensorData sensor) {
     final isSelected = _isSensorSelected(sensor);
+    final compact = widget.compact;
 
     return GestureDetector(
       onTap: () => _toggleSensor(sensor),
       child: Container(
         decoration: BoxDecoration(
-          border:
-              isSelected
-                  ? Border.all(color: GardenColors.primary.shade500, width: 1)
-                  : null,
+          border: isSelected
+              ? Border.all(color: GardenColors.primary.shade500, width: 1)
+              : null,
           borderRadius: GardenRadius.radiusSm,
         ),
         child: GardenCard(
@@ -191,13 +195,13 @@ class _SensorsSectionState extends State<SensorsSection> {
               Center(
                 child: GardenIcon(
                   iconName: sensor.type.iconName,
-                  size: GardenIconSize.lg,
+                  size: compact ? GardenIconSize.md : GardenIconSize.lg,
                   color: getSensorColor(sensor.type, index: sensor.index),
                 ),
               ),
 
               // Indicateur de sélection en haut à droite
-              _buildSelectionIndicator(isSelected),
+              _buildSelectionIndicator(isSelected, compact: compact),
             ],
           ),
         ),
@@ -206,29 +210,30 @@ class _SensorsSectionState extends State<SensorsSection> {
   }
 
   /// Construit l'indicateur de sélection (cercle avec check)
-  Widget _buildSelectionIndicator(bool isSelected) {
+  Widget _buildSelectionIndicator(bool isSelected, {bool compact = false}) {
+    final size = compact ? 14.0 : 20.0;
+    final iconSize = compact ? 9.0 : 12.0;
+    final pos = compact ? 0.0 : 8.0;
+
     return Positioned(
-      top: 8,
-      right: 8,
+      top: pos,
+      right: pos,
       child: Container(
-        width: 20,
-        height: 20,
+        width: size,
+        height: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color:
-              isSelected ? GardenColors.primary.shade500 : Colors.transparent,
+          color: isSelected ? GardenColors.primary.shade500 : Colors.transparent,
           border: Border.all(
-            color:
-                isSelected
-                    ? GardenColors.primary.shade500
-                    : Colors.grey.shade400,
-            width: 2,
+            color: isSelected
+                ? GardenColors.primary.shade500
+                : Colors.grey.shade400,
+            width: compact ? 1.5 : 2,
           ),
         ),
-        child:
-            isSelected
-                ? const Icon(Icons.check, size: 12, color: Colors.white)
-                : null,
+        child: isSelected
+            ? Icon(Icons.check, size: iconSize, color: Colors.white)
+            : null,
       ),
     );
   }

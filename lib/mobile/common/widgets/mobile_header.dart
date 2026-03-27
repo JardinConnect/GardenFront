@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garden_connect/auth/utils/auth_extension.dart';
 import 'package:garden_ui/ui/design_system.dart';
-import 'package:go_router/go_router.dart';
 
 class MobileHeader extends StatelessWidget implements PreferredSizeWidget {
   final List<IconButton>? actionsButtons;
@@ -24,7 +23,7 @@ class MobileHeader extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       centerTitle: false,
       toolbarHeight: 80,
-      titleSpacing: context.canPop() ? 0 : GardenSpace.gapLg,
+      titleSpacing: (ModalRoute.of(context)?.canPop ?? false) ? 0 : GardenSpace.gapLg,
       title: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
