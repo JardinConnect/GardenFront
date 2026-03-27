@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/areas/bloc/area_bloc.dart';
 import 'package:garden_connect/areas/models/area.dart';
+import 'package:garden_connect/cells/bloc/cell_bloc.dart';
 import 'package:garden_connect/mobile/areas/pages/mobile_area_detail_page.dart';
+import 'package:garden_connect/mobile/cells/pages/mobile_cell_detail_page.dart';
 import 'package:garden_connect/mobile/common/widgets/mobile_header.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
@@ -25,6 +27,23 @@ class MobileSpacesPage extends StatelessWidget {
             id: 'cell_${cell.name}',
             title: cell.name,
             level: area.level + 1,
+            onTap: () {
+              final router = GoRouter.maybeOf(context);
+              if (router != null) {
+                context.push('/m/cells/${cell.id}');
+                return;
+              }
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder:
+                      (_) => BlocProvider(
+                        create:
+                            (_) => CellBloc()..add(LoadCellDetail(id: cell.id)),
+                        child: MobileCellDetailPage(id: cell.id),
+                      ),
+                ),
+              );
+            },
           ),
         ),
       );

@@ -171,7 +171,7 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
       children: [
         Row(
           children: [
-            Text(widget.title, style: GardenTypography.headingLg),
+            Expanded(child: Text(widget.title, style: GardenTypography.headingLg)),
             if (widget.level > 0)
               GardenToggle(
                 isEnabled: isTracked,
