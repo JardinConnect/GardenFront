@@ -4,7 +4,6 @@ import 'package:garden_connect/alerts/repository/alert_repository.dart';
 import 'package:garden_connect/alerts/widgets/alerts/sensor_icons_row.dart';
 import 'package:garden_connect/mobile/common/widgets/mobile_header.dart';
 import 'package:garden_ui/ui/design_system.dart';
-import 'package:garden_ui/ui/enums/sensor_type.dart';
 import 'package:intl/intl.dart';
 
 class MobileActivityCalendarPage extends StatefulWidget {
@@ -385,7 +384,6 @@ class _MobileActivityCalendarPageState
       case _DaySeverity.critical:
         return GardenColors.redAlert.shade600;
       case _DaySeverity.ok:
-      default:
         return GardenColors.primary.shade400;
     }
   }
@@ -447,7 +445,6 @@ class _MobileActivityCalendarPageState
       case _DaySeverity.critical:
         return GardenColors.redAlert.shade600;
       case _DaySeverity.ok:
-      default:
         return GardenColors.tertiary.shade500;
     }
   }
