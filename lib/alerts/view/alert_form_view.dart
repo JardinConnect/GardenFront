@@ -205,9 +205,6 @@ class _AlertFormViewState extends State<AlertFormView> {
 
   String? _validateName(String? value) {
     if (value == null || value.trim().isEmpty) return 'Le nom est obligatoire';
-    if (value.trim().length < 3) {
-      return 'Le nom doit contenir au moins 3 caractères';
-    }
     return null;
   }
 
