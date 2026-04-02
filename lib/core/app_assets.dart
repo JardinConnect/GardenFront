@@ -9,4 +9,5 @@ class AppAssets {
   static const String welcomeBackground = 'assets/welcome_background.svg';
   static const String deleteAlert = 'assets/delete_alert.svg';
   static const String deleteAlertV2 = 'assets/delete_alert_V2.svg';
+  static const String addCell = 'assets/add_cell.svg';
 }

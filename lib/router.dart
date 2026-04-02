@@ -6,6 +6,7 @@ import 'package:garden_connect/alerts/page/alerts_page.dart';
 import 'package:garden_connect/areas/pages/areas_page.dart';
 import 'package:garden_connect/auth/auth.dart';
 import 'package:garden_connect/cells/bloc/cell_bloc.dart';
+import 'package:garden_connect/cells/models/cell_pairing_payload.dart';
 import 'package:garden_connect/cells/pages/cell_detail_page.dart';
 import 'package:garden_connect/cells/pages/cells_page.dart';
 import 'package:garden_connect/dashboard/view/dashboard_page.dart';
@@ -214,7 +215,10 @@ class AppRouter {
                             path: 'configure',
                             pageBuilder:
                                 (context, state) => NoTransitionPage(
-                                  child: const CellConfigureView(),
+                                  child: CellConfigureView(
+                                    pairingPayload:
+                                        state.extra as CellPairingPayload?,
+                                  ),
                                 ),
                           ),
                         ],

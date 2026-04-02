@@ -58,6 +58,7 @@ dependencies:
   uuid: ^4.5.1
   flutter_native_splash: ^2.4.0
   flutter_launcher_icons: ^0.14.0
+  flutter_client_sse: ^2.0.0
 
 dev_dependencies:
   flutter_test:
