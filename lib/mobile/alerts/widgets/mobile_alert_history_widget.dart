@@ -116,11 +116,17 @@ class _MobileAlertEventRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Icône du type de capteur
-          GardenIcon(
-            iconName: event.sensorType.iconName,
-            size: GardenIconSize.md,
-            color: getSensorColor(event.sensorType),
-          ),
+          event.isBattery
+              ? GardenIcon(
+                  iconName: 'Batterie',
+                  size: GardenIconSize.md,
+                  color: Colors.green.shade600,
+                )
+              : GardenIcon(
+                  iconName: event.sensorType.iconName,
+                  size: GardenIconSize.md,
+                  color: getSensorColor(event.sensorType),
+                ),
           SizedBox(width: GardenSpace.gapSm),
           // Valeur et cellule
           Expanded(
