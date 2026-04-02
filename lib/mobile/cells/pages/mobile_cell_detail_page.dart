@@ -117,7 +117,6 @@ class MobileCellDetailPage extends StatelessWidget {
                       AnalyticsCardsGridWidget(
                         analytics: cellState.cell.analytics,
                       ),
-                      GraphicWidget(analytics: cellState.cell.analytics),
                     ],
                   ),
                 ),
