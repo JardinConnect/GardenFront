@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/alerts/alerts.dart';
+import 'package:garden_connect/common/widgets/empty_state_widget.dart';
 import 'package:garden_connect/mobile/alerts/widgets/mobile_alert_history_widget.dart';
 import 'package:garden_connect/mobile/alerts/widgets/mobile_alert_tab_bar.dart';
 import 'package:garden_connect/mobile/alerts/widgets/mobile_alerts_card_widget.dart';
@@ -56,7 +57,15 @@ class _MobileAlertsPageContentState extends State<MobileAlertsPageContent> {
         }
 
         if (state is AlertError) {
-          return Center(child: Text('Erreur : ${state.message}'));
+          return Scaffold(
+            appBar: MobileHeader(actionsButtons: const []),
+            body: EmptyStateWidget(
+              icon: Icons.error_outline_rounded,
+              message: 'Une erreur est survenue',
+              subtitle: state.message,
+              color: Colors.red.shade300,
+            ),
+          );
         }
 
         if (state is AlertLoaded) {
@@ -164,7 +173,13 @@ class _MobileAlertsPageContentState extends State<MobileAlertsPageContent> {
           );
         }
 
-        return const Center(child: Text('Erreur'));
+        return const Scaffold(
+          body: EmptyStateWidget(
+            icon: Icons.thunderstorm_outlined,
+            message: 'Impossible de charger les alertes',
+            subtitle: 'Veuillez réessayer.',
+          ),
+        );
       },
     );
   }

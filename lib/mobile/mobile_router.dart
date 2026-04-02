@@ -49,7 +49,10 @@ class MobileAppRouter {
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
-          return MobileHome(navigationShell: navigationShell);
+          return BlocProvider(
+            create: (_) => AlertBloc()..add(const AlertLoadData()),
+            child: MobileHome(navigationShell: navigationShell),
+          );
         },
         branches: [
           StatefulShellBranch(
@@ -115,28 +118,20 @@ class MobileAppRouter {
           ),
           StatefulShellBranch(
             routes: [
-              ShellRoute(
-                builder: (context, state, child) => BlocProvider(
-                  create: (_) => AlertBloc()..add(const AlertLoadData()),
-                  child: child,
-                ),
+              GoRoute(
+                path: '/m/alerts',
+                pageBuilder: (context, state) => const NoTransitionPage(child: MobileAlertsPage()),
                 routes: [
                   GoRoute(
-                    path: '/m/alerts',
-                    pageBuilder: (context, state) => const NoTransitionPage(child: MobileAlertsPage()),
-                    routes: [
-                      GoRoute(
-                        path: 'add',
-                        pageBuilder: (context, state) => const NoTransitionPage(child: MobileAlertFormPage()),
-                      ),
-                      GoRoute(
-                        path: ':id/edit',
-                        pageBuilder: (context, GoRouterState state) {
-                          final id = state.pathParameters['id']!;
-                          return NoTransitionPage(child: MobileAlertFormPage(alertId: id));
-                        },
-                      ),
-                    ],
+                    path: 'add',
+                    pageBuilder: (context, state) => const NoTransitionPage(child: MobileAlertFormPage()),
+                  ),
+                  GoRoute(
+                    path: ':id/edit',
+                    pageBuilder: (context, GoRouterState state) {
+                      final id = state.pathParameters['id']!;
+                      return NoTransitionPage(child: MobileAlertFormPage(alertId: id));
+                    },
                   ),
                 ],
               ),

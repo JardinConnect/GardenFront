@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/alerts/alerts.dart';
 import 'package:garden_ui/ui/components.dart';
 
+import '../../common/widgets/empty_state_widget.dart';
 import '../../common/widgets/generic_list_item.dart';
 
 class AlertListView extends StatelessWidget {
@@ -13,7 +14,11 @@ class AlertListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (alerts.isEmpty) {
-      return const Center(child: Text('Aucune alerte disponible'));
+      return const EmptyStateWidget(
+        icon: Icons.thunderstorm_outlined,
+        message: 'Aucune alerte configurée',
+        subtitle: 'Créez votre première alerte en cliquant sur le bouton +',
+      );
     }
 
     return GenericListWidget(

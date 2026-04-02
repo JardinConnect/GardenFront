@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:garden_connect/alerts/alerts.dart';
+import 'package:garden_connect/common/widgets/empty_state_widget.dart';
 import 'package:garden_connect/common/widgets/small_toggle.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
@@ -24,7 +25,11 @@ class MobileAlertsListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (alerts.isEmpty) {
-      return const Center(child: Text('Aucune alerte disponible'));
+      return const EmptyStateWidget(
+        icon: Icons.thunderstorm_outlined,
+        message: 'Aucune alerte configurée',
+        subtitle: 'Créez votre première alerte en cliquant sur le bouton +',
+      );
     }
 
     return Column(
