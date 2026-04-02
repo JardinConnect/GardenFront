@@ -30,7 +30,7 @@ class MobileAlertTabBar extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: GardenSpace.paddingLg),
       child: Row(
         children: [
-          _TabItem(
+          AlertTabItem(
             label: 'Critiques',
             icon: Icons.warning_rounded,
             isSelected: currentTab == MobileAlertFormTab.critical,
@@ -38,7 +38,7 @@ class MobileAlertTabBar extends StatelessWidget {
             onTap: () => onTabChanged(MobileAlertFormTab.critical),
           ),
           SizedBox(width: GardenSpace.gapSm),
-          _TabItem(
+          AlertTabItem(
             label: 'Avertissements',
             icon: Icons.notifications_rounded,
             isSelected: currentTab == MobileAlertFormTab.warning,
@@ -46,7 +46,7 @@ class MobileAlertTabBar extends StatelessWidget {
             onTap: () => onTabChanged(MobileAlertFormTab.warning),
           ),
           SizedBox(width: GardenSpace.gapSm),
-          _TabItem(
+          AlertTabItem(
             label: 'Cellules',
             icon: Icons.grid_view_rounded,
             isSelected: currentTab == MobileAlertFormTab.cells,
@@ -55,7 +55,7 @@ class MobileAlertTabBar extends StatelessWidget {
           ),
           if (isEditing) ...[
             SizedBox(width: GardenSpace.gapSm),
-            _TabItem(
+            AlertTabItem(
               label: 'Supprimer',
               icon: Icons.delete_rounded,
               isSelected: currentTab == MobileAlertFormTab.danger,
@@ -72,7 +72,7 @@ class MobileAlertTabBar extends StatelessWidget {
 }
 
 /// Élément individuel de la barre d'onglets.
-class _TabItem extends StatelessWidget {
+class AlertTabItem extends StatelessWidget {
   final String label;
   final IconData icon;
   final bool isSelected;
@@ -81,7 +81,8 @@ class _TabItem extends StatelessWidget {
   final Color? unselectedColor;
   final Color? selectedBgColor;
 
-  const _TabItem({
+  const AlertTabItem({
+    super.key,
     required this.label,
     required this.icon,
     required this.isSelected,
@@ -102,8 +103,7 @@ class _TabItem extends StatelessWidget {
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+        child: Container(
           decoration: BoxDecoration(
             borderRadius: GardenRadius.radiusSm,
             color: bgColor,

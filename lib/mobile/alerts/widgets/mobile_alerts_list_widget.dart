@@ -29,14 +29,6 @@ class MobileAlertsListWidget extends StatelessWidget {
 
     return Column(
       children: [
-        GardenCard(
-          child: _AlertRow(
-            title: Text("Nom de l'alerte", style: GardenTypography.caption),
-            sensors: Center(child: Text("Capteurs", style: GardenTypography.caption)),
-            toggle: Center(child: Text("Actif", style: GardenTypography.caption)),
-          ),
-        ),
-        SizedBox(height: GardenSpace.gapMd),
         Expanded(
           child: ListView.separated(
             itemCount: alerts.length,

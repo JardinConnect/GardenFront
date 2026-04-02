@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/alerts/alerts.dart';
+import 'package:garden_connect/mobile/alerts/widgets/mobile_alert_history_widget.dart';
+import 'package:garden_connect/mobile/alerts/widgets/mobile_alert_tab_bar.dart';
 import 'package:garden_connect/mobile/alerts/widgets/mobile_alerts_card_widget.dart';
 import 'package:garden_connect/mobile/alerts/widgets/mobile_alerts_list_widget.dart';
 import 'package:garden_connect/mobile/common/widgets/mobile_header.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../alerts/widgets/button/tab_menu.dart';
 
 /// Page principale de la liste des alertes en version mobile.
 ///
@@ -69,15 +73,16 @@ class _MobileAlertsPageContentState extends State<MobileAlertsPageContent> {
           return Scaffold(
             appBar: MobileHeader(
               actionsButtons: [
-                IconButton(
-                  onPressed: () =>
-                      _onToggleDisplayMode(context, state.displayMode),
-                  icon: Icon(
-                    isList ? Icons.grid_view : Icons.list,
-                    color: GardenColors.primary.shade500,
-                    size: 32,
+                if (state.selectedTab == AlertTabType.alerts)
+                  IconButton(
+                    onPressed: () =>
+                        _onToggleDisplayMode(context, state.displayMode),
+                    icon: Icon(
+                      isList ? Icons.grid_view : Icons.list,
+                      color: GardenColors.primary.shade500,
+                      size: 32,
+                    ),
                   ),
-                ),
               ],
             ),
             body: SafeArea(
@@ -127,22 +132,30 @@ class _MobileAlertsPageContentState extends State<MobileAlertsPageContent> {
                         ),
                       ],
                     ),
+                    // Onglets Alertes / Historique
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Vos Alertes",
-                          style: GardenTypography.bodyLg.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: GardenTypography.caption.color,
+                      children: AlertTabType.values.map((tab) {
+                        final isSelected = state.selectedTab == tab;
+                        return AlertTabItem(
+                          label: tab.label,
+                          icon: tab == AlertTabType.alerts
+                              ? Icons.thunderstorm_outlined
+                              : Icons.history_rounded,
+                          isSelected: isSelected,
+                          onTap: () => context.read<AlertBloc>().add(
+                            AlertChangeTab(tabType: tab),
                           ),
-                        ),
-                      ],
+                        );
+                      }).toList(),
                     ),
                     Expanded(
-                      child: isList
-                          ? MobileAlertsListWidget(alerts: filteredAlerts)
-                          : MobileAlertsCardWidget(alerts: filteredAlerts),
+                      child: state.selectedTab == AlertTabType.alerts
+                          ? (isList
+                              ? MobileAlertsListWidget(alerts: filteredAlerts)
+                              : MobileAlertsCardWidget(alerts: filteredAlerts))
+                          : MobileAlertHistoryWidget(
+                              alertEvents: state.alertEvents,
+                            ),
                     ),
                   ],
                 ),
