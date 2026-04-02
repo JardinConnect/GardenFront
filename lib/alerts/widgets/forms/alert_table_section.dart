@@ -3,17 +3,30 @@ import 'package:garden_ui/ui/design_system.dart';
 
 import '../../models/alert_models.dart';
 
-/// Composant pour la section du tableau de sélection des cellules
+/// Tableau de sélection des cellules à associer à une alerte.
+///
+/// Affiche une liste de [CellItem] avec une case à cocher par ligne.
+/// Supporte la sélection individuelle et la sélection globale via l'en-tête.
+/// Notifie les changements via [onSelectionChanged].
 class AlertTableSection extends StatefulWidget {
+  /// Liste des cellules disponibles.
   final List<CellItem> cells;
+
+  /// Identifiants des cellules présélectionnées.
   final List<String>? selectedCellIds;
+
+  /// Callback déclenché à chaque changement de sélection.
   final ValueChanged<List<String>>? onSelectionChanged;
+
+  /// Active le mode mobile : scroll libre sans Expanded (hauteur non contrainte).
+  final bool isMobile;
 
   const AlertTableSection({
     super.key,
     required this.cells,
     this.selectedCellIds,
     this.onSelectionChanged,
+    this.isMobile = false,
   });
 
   @override
@@ -24,12 +37,15 @@ class _AlertTableSectionState extends State<AlertTableSection> {
   bool _selectAll = false;
   final Set<String> _selectedIds = {};
 
+  static const double _colGap = 16;
+
   @override
   void initState() {
     super.initState();
     _applyInitialSelections();
   }
 
+  /// Initialise les cellules sélectionnées depuis [widget.selectedCellIds].
   void _applyInitialSelections() {
     if (widget.selectedCellIds != null) {
       _selectedIds.addAll(widget.selectedCellIds!);
@@ -37,16 +53,19 @@ class _AlertTableSectionState extends State<AlertTableSection> {
     _updateSelectAllState();
   }
 
+  /// Met à jour l'état de la case "tout sélectionner" selon la sélection courante.
   void _updateSelectAllState() {
     _selectAll =
         widget.cells.isNotEmpty &&
         widget.cells.every((cell) => _selectedIds.contains(cell.id));
   }
 
+  /// Notifie le parent des identifiants sélectionnés.
   void _notifySelectionChanged() {
     widget.onSelectionChanged?.call(_selectedIds.toList());
   }
 
+  /// Sélectionne ou désélectionne toutes les cellules.
   void _toggleSelectAll(bool? value) {
     setState(() {
       _selectAll = value ?? false;
@@ -59,6 +78,7 @@ class _AlertTableSectionState extends State<AlertTableSection> {
     _notifySelectionChanged();
   }
 
+  /// Bascule la sélection d'une cellule individuelle.
   void _toggleCellSelection(CellItem cell) {
     setState(() {
       if (_selectedIds.contains(cell.id)) {
@@ -71,8 +91,6 @@ class _AlertTableSectionState extends State<AlertTableSection> {
     _notifySelectionChanged();
   }
 
-  static const double _colGap = 16;
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -82,13 +100,27 @@ class _AlertTableSectionState extends State<AlertTableSection> {
         children: [
           _buildTableHeader(),
           SizedBox(height: GardenSpace.gapXs),
-          Expanded(
-            child: ListView.separated(
+          if (widget.isMobile)
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: widget.cells.length,
               separatorBuilder: (_, __) => SizedBox(height: GardenSpace.gapXs),
               itemBuilder: (_, index) => _buildCellRow(widget.cells[index]),
+            )
+          else
+            Expanded(
+              child: SingleChildScrollView(
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: widget.cells.length,
+                  separatorBuilder: (_, __) =>
+                      SizedBox(height: GardenSpace.gapXs),
+                  itemBuilder: (_, index) => _buildCellRow(widget.cells[index]),
+                ),
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -96,7 +128,10 @@ class _AlertTableSectionState extends State<AlertTableSection> {
 
   Widget _buildTableHeader() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: GardenSpace.paddingSm, vertical: GardenSpace.paddingSm),
+      padding: EdgeInsets.symmetric(
+        horizontal: GardenSpace.paddingSm,
+        vertical: GardenSpace.paddingSm,
+      ),
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
         borderRadius: GardenRadius.radiusSm,
@@ -115,10 +150,15 @@ class _AlertTableSectionState extends State<AlertTableSection> {
             ),
           ),
           const SizedBox(width: _colGap),
-          Expanded(flex: 2, child: _headerCell('Cellule')),
-          const SizedBox(width: _colGap),
-          Expanded(flex: 3, child: _headerCell('Localisation')),
-          const SizedBox(width: _colGap),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _headerCell('Cellule'),
+                _headerCell('Localisation'),
+              ],
+            ),
+          ),
           Text(
             '${_selectedIds.length}/${widget.cells.length}',
             style: GardenTypography.bodyMd.copyWith(
@@ -149,7 +189,10 @@ class _AlertTableSectionState extends State<AlertTableSection> {
       child: GestureDetector(
         onTap: () => _toggleCellSelection(cell),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: GardenSpace.paddingSm),
+          padding: EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: GardenSpace.paddingSm,
+          ),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: GardenRadius.radiusSm,
@@ -169,24 +212,25 @@ class _AlertTableSectionState extends State<AlertTableSection> {
               ),
               const SizedBox(width: _colGap),
               Expanded(
-                flex: 2,
-                child: Text(
-                  cell.name,
-                  style: GardenTypography.bodyMd.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(width: _colGap),
-              Expanded(
-                flex: 3,
-                child: Text(
-                  cell.location.isNotEmpty ? cell.location : '—',
-                  style: GardenTypography.bodyMd.copyWith(
-                    color: Colors.grey.shade600,
-                  ),
-                  overflow: TextOverflow.ellipsis,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      cell.name,
+                      style: GardenTypography.bodyMd.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      cell.location.isNotEmpty ? cell.location : '—',
+                      style: GardenTypography.bodyMd.copyWith(
+                        color: Colors.grey.shade600,
+                        fontSize: 12,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: _colGap),

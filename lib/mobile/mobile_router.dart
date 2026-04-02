@@ -14,6 +14,8 @@ import 'package:garden_connect/mobile/areas/pages/mobile_area_detail_page.dart';
 import 'package:garden_connect/mobile/mobile_home.dart';
 import 'package:garden_connect/mobile/pages/mobile_alerts_page.dart';
 import 'package:garden_connect/mobile/cells/pages/mobile_cells_page.dart';
+import 'package:garden_connect/alerts/bloc/alert_bloc.dart';
+import 'package:garden_connect/mobile/alerts/pages/mobile_alert_form_page.dart';
 
 import 'areas/pages/mobile_areas_page.dart';
 
@@ -113,9 +115,30 @@ class MobileAppRouter {
           ),
           StatefulShellBranch(
             routes: [
-              GoRoute(
-                path: '/m/alerts',
-                builder: (context, state) => const MobileAlertsPage(),
+              ShellRoute(
+                builder: (context, state, child) => BlocProvider(
+                  create: (_) => AlertBloc()..add(const AlertLoadData()),
+                  child: child,
+                ),
+                routes: [
+                  GoRoute(
+                    path: '/m/alerts',
+                    pageBuilder: (context, state) => const NoTransitionPage(child: MobileAlertsPage()),
+                    routes: [
+                      GoRoute(
+                        path: 'add',
+                        pageBuilder: (context, state) => const NoTransitionPage(child: MobileAlertFormPage()),
+                      ),
+                      GoRoute(
+                        path: ':id/edit',
+                        pageBuilder: (context, GoRouterState state) {
+                          final id = state.pathParameters['id']!;
+                          return NoTransitionPage(child: MobileAlertFormPage(alertId: id));
+                        },
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),

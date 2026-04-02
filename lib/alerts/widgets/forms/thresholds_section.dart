@@ -7,6 +7,7 @@ import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import 'sensors_section.dart';
 import 'single_sensor_icon.dart';
+import '../../../common/widgets/small_toggle.dart';
 
 /// Configuration pour un type de capteur
 class _SensorConfig {
@@ -89,6 +90,18 @@ class ThresholdsSection extends StatefulWidget {
   final void Function(SelectedSensor, RangeValues)? onCriticalRangeChanged;
   final void Function(SelectedSensor, RangeValues)? onWarningRangeChanged;
 
+  /// Si true, n'affiche que la section critique (usage mobile tabs)
+  final bool showOnlyCritical;
+
+  /// Si true, n'affiche que la section avertissement (usage mobile tabs)
+  final bool showOnlyWarning;
+
+  /// Si true, masque le titre de section (usage mobile — l'info est dans le tab)
+  final bool hideSectionTitle;
+
+  /// Si true, utilise un toggle pill compact à la place de GardenToggle
+  final bool smallToggle;
+
   const ThresholdsSection({
     super.key,
     this.isWarningEnabled = true,
@@ -98,6 +111,10 @@ class ThresholdsSection extends StatefulWidget {
     this.warningRanges,
     this.onCriticalRangeChanged,
     this.onWarningRangeChanged,
+    this.showOnlyCritical = false,
+    this.showOnlyWarning = false,
+    this.hideSectionTitle = false,
+    this.smallToggle = false,
   });
 
   @override
@@ -140,13 +157,15 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSection('Alerte critique', GardenColors.redAlert.shade500, true),
-        _buildSection(
-          'Avertissement',
-          GardenColors.yellowWarning.shade600,
-          false,
-          hasToggle: true,
-        ),
+        if (!widget.showOnlyWarning)
+          _buildSection('Alerte critique', GardenColors.redAlert.shade500, true),
+        if (!widget.showOnlyCritical)
+          _buildSection(
+            'Avertissement',
+            GardenColors.yellowWarning.shade600,
+            false,
+            hasToggle: true,
+          ),
       ],
     );
   }
@@ -157,32 +176,56 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
     bool isCritical, {
     bool hasToggle = false,
   }) {
+    final hideTitle = widget.hideSectionTitle;
+
     return Container(
       padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: color,
-                ),
+          // En-tête : masqué si hideSectionTitle + critique
+          // En mode warning + hideSectionTitle : toggle avec label descriptif
+          if (!hideTitle || (!isCritical && hasToggle))
+            Padding(
+              padding: EdgeInsets.only(bottom: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  if (!hideTitle)
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: color,
+                      ),
+                    ),
+                  if (hideTitle && !isCritical)
+                    Text(
+                      'Activer les avertissements',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: GardenColors.typography.shade400,
+                      ),
+                    ),
+                  if (hasToggle)
+                    widget.smallToggle
+                        ? SmallToggle(
+                            isEnabled: _isWarningEnabled,
+                            onToggle: (value) {
+                              setState(() => _isWarningEnabled = value);
+                              widget.onWarningEnabledChanged?.call(value);
+                            },
+                          )
+                        : GardenToggle(
+                            isEnabled: _isWarningEnabled,
+                            onToggle: (value) {
+                              setState(() => _isWarningEnabled = value);
+                              widget.onWarningEnabledChanged?.call(value);
+                            },
+                          ),
+                ],
               ),
-              if (hasToggle)
-                GardenToggle(
-                  isEnabled: _isWarningEnabled,
-                  onToggle: (value) {
-                    setState(() => _isWarningEnabled = value);
-                    widget.onWarningEnabledChanged?.call(value);
-                  },
-                ),
-            ],
-          ),
-          const SizedBox(height: 12),
+            ),
           for (final sensor in widget.selectedSensors) ...[
             Opacity(
               opacity: (!isCritical && !_isWarningEnabled) ? 0.5 : 1.0,
@@ -281,3 +324,4 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
     );
   }
 }
+
