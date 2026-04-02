@@ -21,38 +21,40 @@ class AlertListView extends StatelessWidget {
       );
     }
 
-    return GenericListWidget(
-      items:
-          alerts
-              .map(
-                (alert) => GenericListItem(
-                  label: alert.title,
-                  // Icônes des capteurs associés à l'alerte
-                  extraWidget: SensorIconsRow(
-                    activeSensorTypes:
-                        alert.sensors.map((s) => s.sensorType).toList(),
-                    iconSize: GardenIconSize.sm,
-                  ),
-                  // Toggle actif/inactif
-                  trailingWidget: GardenToggle(
-                    enabledIcon: Icons.check,
-                    isEnabled: alert.isActive,
-                    onToggle:
-                        (_) => context.read<AlertBloc>().add(
-                          AlertToggleStatus(
-                            alertId: alert.id,
-                            isActive: !alert.isActive,
+    return SingleChildScrollView(
+      child: GenericListWidget(
+        items:
+            alerts
+                .map(
+                  (alert) => GenericListItem(
+                    label: alert.title,
+                    // Icônes des capteurs associés à l'alerte
+                    extraWidget: SensorIconsRow(
+                      activeSensorTypes:
+                          alert.sensors.map((s) => s.sensorType).toList(),
+                      iconSize: GardenIconSize.sm,
+                    ),
+                    // Toggle actif/inactif
+                    trailingWidget: GardenToggle(
+                      enabledIcon: Icons.check,
+                      isEnabled: alert.isActive,
+                      onToggle:
+                          (_) => context.read<AlertBloc>().add(
+                            AlertToggleStatus(
+                              alertId: alert.id,
+                              isActive: !alert.isActive,
+                            ),
                           ),
+                    ),
+                    // Tap sur la ligne → ouvre l'édition
+                    onTap:
+                        () => context.read<AlertBloc>().add(
+                          AlertShowEditView(alertId: alert.id),
                         ),
                   ),
-                  // Tap sur la ligne → ouvre l'édition
-                  onTap:
-                      () => context.read<AlertBloc>().add(
-                        AlertShowEditView(alertId: alert.id),
-                      ),
-                ),
-              )
-              .toList(),
+                )
+                .toList(),
+      ),
     );
   }
 }
