@@ -23,8 +23,11 @@ class AlertCardView extends StatelessWidget {
       );
     }
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: GardenSpace.paddingMd),
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(
+        horizontal: GardenSpace.paddingMd,
+        vertical: GardenSpace.paddingMd,
+      ),
       child: Wrap(
         spacing: GardenSpace.gapMd,
         runSpacing: GardenSpace.gapMd,
