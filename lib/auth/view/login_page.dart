@@ -77,13 +77,6 @@ class _LoginPageState extends State<LoginPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Padding(
-                            padding: EdgeInsets.all(GardenSpace.paddingXl),
-                            child: Text(
-                              "Connexion",
-                              style: Theme.of(context).textTheme.displayMedium,
-                            ),
-                          ),
                           GardenCard(
                             hasBorder: true,
                             hasShadow: true,
