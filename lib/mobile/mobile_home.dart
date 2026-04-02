@@ -76,10 +76,7 @@ class MobileHome extends StatelessWidget {
                       context.read<CellBloc>().add(LoadCells());
                       context.read<AreaBloc>().add(LoadAreas());
                       context.read<AnalyticsBloc>().add(LoadAnalytics());
-                      // Recharge les alertes lorsqu'on navigue vers l'onglet Alertes
-                      if (index == 3) {
-                        context.read<AlertBloc>().add(const AlertLoadData());
-                      }
+                      context.read<AlertBloc>().add(const AlertLoadData());
                       navigationShell.goBranch(
                         index,
                         initialLocation: true,
