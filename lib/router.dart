@@ -43,7 +43,7 @@ class AppRouter {
       final isLoggingIn = state.matchedLocation == '/login';
 
       if (!isLoggedIn && !isLoggingIn) {
-        return '/farm';
+        return '/login';
       }
 
       if (isLoggedIn && isLoggingIn) {
