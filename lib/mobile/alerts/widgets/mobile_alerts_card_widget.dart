@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../alerts/bloc/alert_bloc.dart';
 import '../../../alerts/models/alert_models.dart';
+import '../../../common/widgets/empty_state_widget.dart';
 
 /// Liste des alertes en mode carte pour la version mobile.
 ///
@@ -22,7 +23,11 @@ class MobileAlertsCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (alerts.isEmpty) {
-      return const Center(child: Text('Aucune alerte disponible'));
+      return const EmptyStateWidget(
+        icon: Icons.thunderstorm_outlined,
+        message: 'Aucune alerte configurée',
+        subtitle: 'Créez votre première alerte en cliquant sur le bouton +',
+      );
     }
 
     return ListView.separated(
