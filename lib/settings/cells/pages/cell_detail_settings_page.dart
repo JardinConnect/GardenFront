@@ -7,6 +7,7 @@ import 'package:garden_connect/common/widgets/back_text_button.dart';
 import 'package:garden_connect/common/widgets/danger_zone.dart';
 import 'package:garden_connect/common/widgets/info_card.dart';
 import 'package:garden_connect/common/widgets/base_item_edit_form_card.dart';
+import 'package:garden_connect/core/app_assets.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:go_router/go_router.dart';
 
@@ -110,6 +111,9 @@ class CellDetailSettingsPage extends StatelessWidget {
                                   description:
                                       'Actions irréversibles sur l\'ensemble des comptes de la ferme.',
                                   deleteButtonLabel: 'Supprimer la cellule',
+                                  imagePath: AppAssets.deleteCell,
+                                  confirmationMessage:
+                                      'Êtes-vous sûr de vouloir supprimer cette cellule ?\nToutes les données associées seront perdues.\nCette action est irréversible.',
                                   onDelete: () {
                                     context.read<CellBloc>().add(
                                       DeleteCell(id: cell.id),

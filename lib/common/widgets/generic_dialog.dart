@@ -60,13 +60,21 @@ class StyledDialog extends StatelessWidget {
       return SizedBox(
         width: maxWidth,
         height: height,
-        child: SvgPicture.asset(imagePath!, fit: BoxFit.contain, alignment: Alignment.topCenter),
+        child: SvgPicture.asset(
+          imagePath!,
+          fit: BoxFit.contain,
+          alignment: Alignment.topCenter,
+        ),
       );
     }
     return SizedBox(
       width: maxWidth,
       height: height,
-      child: Image.asset(imagePath!, fit: BoxFit.contain, alignment: Alignment.topCenter),
+      child: Image.asset(
+        imagePath!,
+        fit: BoxFit.contain,
+        alignment: Alignment.topCenter,
+      ),
     );
   }
 
@@ -173,3 +181,4 @@ class StyledDialog extends StatelessWidget {
     );
   }
 }
+
