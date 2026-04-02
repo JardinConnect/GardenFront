@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:garden_connect/common/widgets/back_text_button.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_connect/areas/bloc/area_bloc.dart';
+import 'package:garden_connect/alerts/bloc/alert_bloc.dart';
+import 'package:garden_connect/alerts/widgets/common/snackbar.dart'
+    as snackbar;
+import 'package:garden_connect/cells/bloc/cell_bloc.dart';
+import 'package:garden_connect/cells/models/cell_pairing_payload.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:go_router/go_router.dart';
@@ -12,7 +19,9 @@ import '../widgets/title_view_widget.dart';
 import '../widgets/tooltip_widget.dart';
 
 class CellConfigureView extends StatefulWidget {
-  const CellConfigureView({super.key});
+  const CellConfigureView({super.key, this.pairingPayload});
+
+  final CellPairingPayload? pairingPayload;
 
   @override
   State<CellConfigureView> createState() => _CellConfigureViewState();
@@ -22,6 +31,11 @@ class _CellConfigureViewState extends State<CellConfigureView> {
   final TextEditingController _cellNameController = TextEditingController();
 
   String? _selectedAction;
+  String? _deviceId;
+  String? _firmwareVersion;
+  String? _cellId;
+  Area? _selectedArea;
+  Alert? _selectedAlert;
 
   Widget _buildCellPreviouslyDisabled(Cell cell) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,39 +232,33 @@ class _CellConfigureViewState extends State<CellConfigureView> {
   );
 
   @override
+  void initState() {
+    super.initState();
+    final pairing = widget.pairingPayload;
+    final cellName = pairing?.cell?.name ?? pairing?.device?.name;
+    if (cellName != null && cellName.isNotEmpty) {
+      _cellNameController.text = cellName;
+    }
+    _deviceId = pairing?.device?.deviceId;
+    _firmwareVersion = pairing?.device?.firmwareVersion;
+    _cellId = pairing?.cell?.id;
+  }
+
+  @override
+  void dispose() {
+    _cellNameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    //TODO Get areas from AreaBloc
-    // final List<Area> areas = Area.getAllAreasFlattened(areas);
+    final areaState = context.watch<AreaBloc>().state;
+    final List<Area> areas =
+        areaState is AreasLoaded ? areaState.filteredAreas : const [];
 
-    final List<Area> areas = [
-      Area(
-        id: '1',
-        name: 'Parcelle',
-        level: 1,
-        color: Colors.red,
-        analytics: Analytics(),
-      ),
-      Area(
-        id: '2',
-        name: 'Planche',
-        level: 2,
-        color: Colors.red,
-        analytics: Analytics(),
-      ),
-    ];
-
-    final List<Alert> alerts = [
-      Alert(
-        id: "1",
-        title: 'Alerte #1',
-        isActive: true, sensors: [], warningEnabled: true,
-      ),
-      Alert(
-        id: "2",
-        title: 'Alerte #2',
-        isActive: false, sensors: [], warningEnabled: true,
-      ),
-    ];
+    final alertState = context.watch<AlertBloc>().state;
+    final List<Alert> alerts =
+        alertState is AlertLoaded ? alertState.alerts : const [];
 
     final Cell lastCell = Cell(
       id: '1',
@@ -268,7 +276,9 @@ class _CellConfigureViewState extends State<CellConfigureView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              BackTextButton(backFunction: () => context.pop()),
+              BackTextButton(
+                backFunction: () => context.go('/settings/cells/add'),
+              ),
               Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
@@ -297,7 +307,7 @@ class _CellConfigureViewState extends State<CellConfigureView> {
                                 child: TextFormField(
                                   controller: _cellNameController,
                                   decoration: InputDecoration(
-                                    labelText: 'Cellule #4-1',
+                                    labelText: 'Nom de la cellule',
                                     labelStyle: GardenTypography.bodyLg,
                                     border: const OutlineInputBorder(),
                                   ),
@@ -327,27 +337,53 @@ class _CellConfigureViewState extends State<CellConfigureView> {
                             child: DropdownMenu<Area>(
                               label: const Text('Espaces'),
                               hintText: 'Sélectionner un espace',
+                              initialSelection: _selectedArea,
+                              textStyle: GardenTypography.bodyLg.copyWith(
+                                color: GardenColors.typography.shade800,
+                              ),
                               expandedInsets: EdgeInsets.zero,
                               inputDecorationTheme: InputDecorationTheme(
                                 border: const OutlineInputBorder(),
                                 filled: true,
+                                hintStyle: GardenTypography.bodyLg.copyWith(
+                                  color: GardenColors.typography.shade800,
+                                ),
+                                labelStyle: GardenTypography.bodyLg.copyWith(
+                                  color: GardenColors.typography.shade800,
+                                ),
                               ),
                               dropdownMenuEntries:
                                   areas.map((area) {
                                     return DropdownMenuEntry<Area>(
                                       value: area,
                                       label: area.name,
+                                      labelWidget: Text(
+                                        area.name,
+                                        style: GardenTypography.bodyLg.copyWith(
+                                          color: GardenColors
+                                              .typography
+                                              .shade800,
+                                        ),
+                                      ),
                                       leadingIcon: LevelIndicator(
                                         level: area.level,
                                         size: LevelIndicatorSize.sm,
                                       ),
                                       trailingIcon: Text(
                                         'Niveau ${area.level}',
-                                        style: GardenTypography.bodyLg,
+                                        style: GardenTypography.bodyLg.copyWith(
+                                          color: GardenColors
+                                              .typography
+                                              .shade800,
+                                        ),
                                       ),
                                     );
                                   }).toList(),
-                              onSelected: (Area? newValue) {},
+                              onSelected: (Area? newValue) {
+                                setState(() {
+                                  _selectedArea = newValue;
+                                });
+                              },
                             ),
                           ),
                           SizedBox(width: GardenSpace.gapXl),
@@ -355,19 +391,41 @@ class _CellConfigureViewState extends State<CellConfigureView> {
                             child: DropdownMenu<Alert>(
                               label: const Text('Alertes'),
                               hintText: 'Sélectionner une alerte',
+                              initialSelection: _selectedAlert,
+                              textStyle: GardenTypography.bodyLg.copyWith(
+                                color: GardenColors.typography.shade800,
+                              ),
                               expandedInsets: EdgeInsets.zero,
                               inputDecorationTheme: InputDecorationTheme(
                                 border: const OutlineInputBorder(),
                                 filled: true,
+                                hintStyle: GardenTypography.bodyLg.copyWith(
+                                  color: GardenColors.typography.shade800,
+                                ),
+                                labelStyle: GardenTypography.bodyLg.copyWith(
+                                  color: GardenColors.typography.shade800,
+                                ),
                               ),
                               dropdownMenuEntries:
                                   alerts.map((alert) {
                                     return DropdownMenuEntry<Alert>(
                                       value: alert,
                                       label: alert.title,
+                                      labelWidget: Text(
+                                        alert.title,
+                                        style: GardenTypography.bodyLg.copyWith(
+                                          color: GardenColors
+                                              .typography
+                                              .shade800,
+                                        ),
+                                      ),
                                     );
                                   }).toList(),
-                              onSelected: (Alert? newValue) {},
+                              onSelected: (Alert? newValue) {
+                                setState(() {
+                                  _selectedAlert = newValue;
+                                });
+                              },
                             ),
                           ),
                         ],
@@ -380,7 +438,7 @@ class _CellConfigureViewState extends State<CellConfigureView> {
                         children: [
                           Expanded(
                             child: TooltipWidget(
-                              title: 'MP-pico2W-LM',
+                              title: _deviceId ?? '-',
                               content: 'ID matériel',
                               isReversed: true,
                               isCentered: true,
@@ -388,7 +446,7 @@ class _CellConfigureViewState extends State<CellConfigureView> {
                           ),
                           Expanded(
                             child: TooltipWidget(
-                              title: '1.0.0.1',
+                              title: _firmwareVersion ?? '-',
                               content: 'Firmware',
                               isReversed: true,
                               isCentered: true,
@@ -412,9 +470,7 @@ class _CellConfigureViewState extends State<CellConfigureView> {
                       child: Button(
                         label: 'Terminer',
                         icon: Icons.check_circle_outline_outlined,
-                        onPressed: () {
-                          //TODO Handle finish cell configuration
-                        },
+                        onPressed: _handleFinish,
                       ),
                     ),
                   ],
@@ -425,5 +481,25 @@ class _CellConfigureViewState extends State<CellConfigureView> {
         ),
       ),
     );
+  }
+
+  void _handleFinish() {
+    final cellId = _cellId;
+    if (cellId == null) return;
+    final name = _cellNameController.text.trim();
+    if (name.isEmpty) return;
+    context.read<CellBloc>().add(
+          UpdateCell(
+            id: cellId,
+            name: name,
+            isTracked: false,
+            parentId: _selectedArea?.id,
+          ),
+        );
+    snackbar.showSnackBarSucces(
+      context,
+      'Cellule mise à jour avec succès',
+    );
+    context.go('/settings/cells');
   }
 }
