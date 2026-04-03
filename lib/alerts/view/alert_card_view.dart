@@ -6,7 +6,6 @@ import 'package:garden_ui/ui/widgets/organisms/SensorAlertCard/sensor_alert_card
 
 import '../bloc/alert_bloc.dart';
 import '../models/alert_models.dart';
-import '../../common/widgets/empty_state_widget.dart';
 
 class AlertCardView extends StatelessWidget {
   final List<Alert> alerts;
@@ -16,11 +15,7 @@ class AlertCardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (alerts.isEmpty) {
-      return const EmptyStateWidget(
-        icon: Icons.thunderstorm_outlined,
-        message: 'Aucune alerte configurée',
-        subtitle: 'Créez votre première alerte en cliquant sur le bouton +',
-      );
+      return const Center(child: Text('Aucune alerte disponible'));
     }
 
     return Padding(

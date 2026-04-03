@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 
 import '../../../alerts/bloc/alert_bloc.dart';
 import '../../../alerts/models/alert_models.dart';
-import '../../../common/widgets/empty_state_widget.dart';
 import '../../../common/widgets/generic_dialog.dart';
 import '../../../core/app_assets.dart';
 
@@ -23,10 +22,24 @@ class MobileAlertHistoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (alertEvents.isEmpty) {
-      return const EmptyStateWidget(
-        icon: Icons.history_rounded,
-        message: "Aucun événement dans l'historique",
-        subtitle: "Les déclenchements d'alertes apparaîtront ici.",
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.history_rounded,
+              size: 48,
+              color: GardenColors.typography.shade200,
+            ),
+            SizedBox(height: GardenSpace.gapMd),
+            Text(
+              "Aucun événement dans l'historique",
+              style: GardenTypography.bodyLg.copyWith(
+                color: GardenColors.typography.shade300,
+              ),
+            ),
+          ],
+        ),
       );
     }
 

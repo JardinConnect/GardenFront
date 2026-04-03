@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_ui/ui/foundation/padding/space_design_system.dart';
 
-import '../../common/widgets/empty_state_widget.dart';
 import '../../common/widgets/page_header.dart';
 import '../bloc/alert_bloc.dart';
 import '../view/alert_card_view.dart';
@@ -135,19 +134,6 @@ class AlertsPage extends StatelessWidget {
 
   /// Construit le contenu selon l'onglet sélectionné
   Widget _buildContent(BuildContext context, AlertState state) {
-    if (state is AlertLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (state is AlertError) {
-      return EmptyStateWidget(
-        icon: Icons.error_outline_rounded,
-        message: 'Une erreur est survenue',
-        subtitle: state.message,
-        color: Colors.red.shade300,
-      );
-    }
-
     if (state is! AlertLoaded) {
       return const Center(child: CircularProgressIndicator());
     }

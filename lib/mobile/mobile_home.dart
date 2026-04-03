@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:garden_connect/alerts/bloc/alert_bloc.dart';
 import 'package:garden_connect/analytics/bloc/analytics_bloc.dart';
 import 'package:garden_connect/areas/bloc/area_bloc.dart';
 import 'package:garden_connect/cells/bloc/cell_bloc.dart';
@@ -76,10 +75,6 @@ class MobileHome extends StatelessWidget {
                       context.read<CellBloc>().add(LoadCells());
                       context.read<AreaBloc>().add(LoadAreas());
                       context.read<AnalyticsBloc>().add(LoadAnalytics());
-                      // Recharge les alertes lorsqu'on navigue vers l'onglet Alertes
-                      if (index == 3) {
-                        context.read<AlertBloc>().add(const AlertLoadData());
-                      }
                       navigationShell.goBranch(
                         index,
                         initialLocation: true,

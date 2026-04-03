@@ -3,7 +3,6 @@ import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../common/widgets/empty_state_widget.dart';
 import '../../models/alert_models.dart';
 
 class AlertTable extends StatelessWidget {
@@ -20,20 +19,23 @@ class AlertTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (events.isEmpty) {
-      return const EmptyStateWidget(
-        icon: Icons.history_rounded,
-        message: "Aucun événement dans l'historique",
-        subtitle: 'Les déclenchements d\'alertes apparaîtront ici.',
-      );
-    }
-
     return Padding(
       padding: EdgeInsets.all(GardenSpace.paddingXs),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildTableHeader(context),
+          if (events.isEmpty)
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.all(32.0),
+                child: Text(
+                  "Aucun événement dans l'historique",
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+              ),
+            )
+          else
+            _buildTableHeader(context),
           SizedBox(height: GardenSpace.gapSm),
           ListView.separated(
             shrinkWrap: true,
