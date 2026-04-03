@@ -73,7 +73,7 @@ class _MobileAlertFormPageState extends State<MobileAlertFormPage> {
 
   /// Vérifie que le formulaire est valide et prêt à être soumis.
   bool _isFormReady(AlertLoaded state) =>
-      _nameController.text.trim().isNotEmpty &&
+      _nameController.text.trim().length >= 3 &&
       state.selectedSensors.isNotEmpty &&
       _selectedCellIds.isNotEmpty;
 
@@ -190,8 +190,8 @@ class _MobileAlertFormPageState extends State<MobileAlertFormPage> {
   /// en mode création [AlertValidateAlert].
   void _submit(AlertLoaded state) {
     final name = _nameController.text.trim();
-    if (name.isEmpty) {
-      context.read<AlertBloc>().add(AlertPushError(message: 'Le nom est obligatoire'));
+    if (name.length < 3) {
+      context.read<AlertBloc>().add(AlertPushError(message: 'Le nom doit contenir au moins 3 caractères'));
       return;
     }
     if (state.selectedSensors.isEmpty) {
