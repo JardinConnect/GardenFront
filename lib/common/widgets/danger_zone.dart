@@ -10,10 +10,6 @@ class DangerZone extends StatelessWidget {
   final String description;
   final String deleteButtonLabel;
   final VoidCallback onDelete;
-  /// Image affichée dans la popup de confirmation. Par défaut : deleteAlertV2.
-  final String? imagePath;
-  /// Message de confirmation affiché dans la popup. Par défaut : texte générique.
-  final String? confirmationMessage;
 
   const DangerZone({
     super.key,
@@ -21,8 +17,6 @@ class DangerZone extends StatelessWidget {
     required this.description,
     required this.deleteButtonLabel,
     required this.onDelete,
-    this.imagePath,
-    this.confirmationMessage,
   });
 
   void _showDeleteConfirmationDialog(BuildContext context) {
@@ -32,7 +26,7 @@ class DangerZone extends StatelessWidget {
       headerColor: GardenColors.redAlert.shade500,
       dismissible: false,
       widthFactor: 0.4,
-      imagePath: imagePath ?? AppAssets.deleteAlertV2,
+      imagePath: AppAssets.deleteAlertV2,
       content: Container(
         padding: EdgeInsets.all(GardenSpace.paddingSm),
         decoration: BoxDecoration(
@@ -47,9 +41,8 @@ class DangerZone extends StatelessWidget {
             SizedBox(width: GardenSpace.gapSm),
             Expanded(
               child: Text(
-                confirmationMessage ??
-                    'Êtes-vous sûr de vouloir supprimer cet élément ?\nLes espaces enfants seront supprimés\nCette action est irréversible.',
-                style: GardenTypography.bodyMd.copyWith(color: Colors.red.shade800),
+              'Êtes-vous sûr de vouloir supprimer cet élément ?\nLes espaces enfants seront supprimés\nCette action est irréversible.',
+              style: GardenTypography.bodyMd.copyWith(color: Colors.red.shade800),
               ),
             ),
           ],
