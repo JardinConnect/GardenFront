@@ -104,17 +104,11 @@ class AlertTable extends StatelessWidget {
             // Icône du capteur
             SizedBox(
               width: 32,
-              child: event.isBattery
-                  ? GardenIcon(
-                      iconName: 'Batterie',
-                      size: GardenIconSize.md,
-                      color: Colors.green.shade600,
-                    )
-                  : GardenIcon(
-                      iconName: event.sensorType.iconName,
-                      size: GardenIconSize.md,
-                      color: getSensorColor(event.sensorType),
-                    ),
+              child: GardenIcon(
+                iconName: event.sensorType.iconName,
+                size: GardenIconSize.md,
+                color: getSensorColor(event.sensorType),
+              ),
             ),
             const SizedBox(width: _colGap),
             // Valeur

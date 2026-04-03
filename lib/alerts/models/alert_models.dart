@@ -70,8 +70,6 @@ class Alert {
       sensors:
           (json['sensors'] as List<dynamic>?)
               ?.map((sensorJson) => _sensorAlertDataFromApiJson(sensorJson))
-              // La batterie ne doit pas être affichée/configurée dans les alertes
-              .where((s) => s.id != 'battery')
               .toList() ??
           [],
       warningEnabled: json['warningEnabled'] as bool? ?? true,
@@ -157,9 +155,6 @@ class AlertEvent {
     required this.timestamp,
     required this.isArchived,
   });
-
-  /// Vrai si cet événement concerne la batterie (non représentable par SensorType)
-  bool get isBattery => sensorTypeRaw == 'battery';
 
   factory AlertEvent.fromJson(Map<String, dynamic> json) {
     return AlertEvent(

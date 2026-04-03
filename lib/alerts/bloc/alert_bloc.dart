@@ -61,9 +61,7 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
 
   // Recharge la liste des alertes depuis l'API
   Future<(List<Alert>, List<SensorAlertData>)> _fetchAlerts() async {
-    final rawAlerts = await _alertRepository.fetchAlerts();
-    // On exclut les alertes qui n'ont aucun capteur affichable (ex: alertes batterie uniquement)
-    final alerts = rawAlerts.where((a) => a.sensors.isNotEmpty).toList();
+    final alerts = await _alertRepository.fetchAlerts();
     final sensorAlerts = alerts.expand((a) => a.sensors).toList();
     return (alerts, sensorAlerts);
   }
@@ -82,9 +80,7 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
         _alertRepository.fetchCells(), // préchargé ici pour éviter le délai en édition/ajout
       ]);
 
-      final rawAlerts = results[0] as List<Alert>;
-      // On exclut les alertes qui n'ont aucun capteur affichable (ex: alertes batterie uniquement)
-      final alerts = rawAlerts.where((a) => a.sensors.isNotEmpty).toList();
+      final alerts = results[0] as List<Alert>;
       final sensorAlerts = alerts.expand((a) => a.sensors).toList();
       final alertEvents = results[1] as List<AlertEvent>;
       final spaces = results[2] as List<Map<String, dynamic>>;
@@ -189,10 +185,7 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
     final cells = hasCells ? s.cells : results[1] as List<CellItem>;
 
     // Reconstruit les capteurs sélectionnés et leurs plages depuis l'API
-    // La batterie est exclue : elle ne doit pas apparaître dans la configuration des alertes
-    final sensorsData = (details['sensors'] as List<dynamic>? ?? [])
-        .where((json) => (json['type'] as String?) != 'battery')
-        .toList();
+    final sensorsData = details['sensors'] as List<dynamic>? ?? [];
     final selectedSensors = <SelectedSensor>[];
     final criticalRanges = <String, RangeValues>{};
     final warningRanges = <String, RangeValues>{};
