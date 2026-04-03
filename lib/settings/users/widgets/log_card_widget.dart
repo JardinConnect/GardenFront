@@ -4,18 +4,25 @@ import 'package:garden_connect/settings/dashboard/models/settings.dart';
 import 'package:garden_ui/ui/widgets/atoms/Card/card.dart' show GardenCard;
 
 class LogCardWidget extends StatelessWidget {
-  const LogCardWidget({super.key, required this.logs});
+
+  const LogCardWidget({
+    super.key,
+    this.height,
+    required this.logs
+  });
+
   final List<Log?> logs;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
 
     return GardenCard(
-      child: SizedBox(
-        height: 200,
+      child: IntrinsicHeight(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10.0),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Row(
                 children: [

@@ -101,9 +101,11 @@ class UsersPage extends StatelessWidget {
                         children: [
                           Expanded(
                             flex: 7,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Expanded(child: UserListCardWidget(users: users, isEditable: true,)),
+                            child: Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: UserListCardWidget(users: users, isEditable: true,),
+                              ),
                             ),
                           ),
                           Expanded(

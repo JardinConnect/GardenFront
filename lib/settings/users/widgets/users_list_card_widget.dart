@@ -16,39 +16,50 @@ class UserListCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final User? currentUser = context.currentUser;
     return GardenCard(
-      child: SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: DataTable(
-        headingRowHeight: 38,
-        dataRowMinHeight: 52,
-        dataRowMaxHeight: 64,
-        columns: [
-          const DataColumn(label: Text('Prénom / Nom')),
-          const DataColumn(label: Text('Email')),
-          const DataColumn(label: Text('Rôle')),
-          if(isEditable != null && isEditable == true)
-            const DataColumn(label: Text('Actions')),
-        ],
-        rows: users.map((user) {
-          return DataRow(
-            cells: [
-              DataCell(
-                Text('${user.firstName} ${user.lastName}'),
-              ),
-              DataCell(
-                Text(user.email),
-              ),
-              DataCell(
-                Text(user.role.displayName)
-              ),
-              if(isEditable != null && isEditable == true)
+      child: SizedBox(
+        width: double.infinity,
+        child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: DataTable(
+          headingRowHeight: 38,
+          dataRowMinHeight: 52,
+          dataRowMaxHeight: 64,
+          columns: [
+            const DataColumn(label: Text('Prénom / Nom')),
+            const DataColumn(label: Text('Email')),
+            const DataColumn(label: Text('Rôle')),
+            if(isEditable != null && isEditable == true)
+              const DataColumn(label: Text('Actions')),
+          ],
+          rows: users.map((user) {
+            return DataRow(
+              cells: [
                 DataCell(
-                  Row(
-                    children: [
-                      if (currentUser != null && (currentUser == user ||
-                          currentUser.role == Role.admin))
+                  Text('${user.firstName} ${user.lastName}'),
+                ),
+                DataCell(
+                  Text(user.email),
+                ),
+                DataCell(
+                  Text(user.role.displayName)
+                ),
+                if(isEditable != null && isEditable == true)
+                  DataCell(
+                    Row(
+                      children: [
+                        if (currentUser != null && (currentUser == user ||
+                            currentUser.role == Role.admin))
+                          IconButton(
+                            icon: Icon(Icons.edit,
+                                color: Theme.of(context).primaryColor),
+                            onPressed: () {
+                              context
+                                  .read<UsersBloc>()
+                                  .add(UserSelect(user: user));
+                            },
+                          ),
                         IconButton(
-                          icon: Icon(Icons.edit,
+                          icon: Icon(Icons.remove_red_eye_outlined,
                               color: Theme.of(context).primaryColor),
                           onPressed: () {
                             context
@@ -56,23 +67,15 @@ class UserListCardWidget extends StatelessWidget {
                                 .add(UserSelect(user: user));
                           },
                         ),
-                      IconButton(
-                        icon: Icon(Icons.remove_red_eye_outlined,
-                            color: Theme.of(context).primaryColor),
-                        onPressed: () {
-                          context
-                              .read<UsersBloc>()
-                              .add(UserSelect(user: user));
-                        },
-                      ),
-                    ],
-                  ),
-              ),
-            ],
-          );
-        }).toList(),
+                      ],
+                    ),
+                ),
+              ],
+            );
+          }).toList(),
+        ),
+            ),
       ),
-          ),
     );
   }
 }
