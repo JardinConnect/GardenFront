@@ -35,6 +35,8 @@ class AuthRepository {
           firstName: user.firstName,
           lastName: user.lastName,
           phoneNumber: user.phoneNumber,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
           token: user.token,
           role: user.role,
         );
