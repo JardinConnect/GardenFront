@@ -17,6 +17,8 @@ class SystemInfosWidget extends StatelessWidget {
         spacing: GardenSpace.gapMd,
         children: [
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: GardenSpace.gapMd,
             children: [
               Row(
                 spacing: GardenSpace.gapSm,
@@ -46,7 +48,47 @@ class SystemInfosWidget extends StatelessWidget {
                   ),
                 ],
               ),
+              Text("État des services", style: GardenTypography.bodyLg),
+              Column(
+                spacing: GardenSpace.gapSm,
+                children: [
+                  _buildServiceCard("Broker MQTT", () => {}),
+                  _buildServiceCard("WIFI", () => {}),
+                  _buildServiceCard("VPN", () => {}),
+                  _buildServiceCard("Module LoRa", () => {}),
+                ],
+              )
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildServiceCard(String title, Function()? onTap) {
+    return GardenCard(
+      onTap: onTap,
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(title),
+          ),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: GardenSpace.gapSm,
+              children: [
+                Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100),
+                    color: GardenColors.tertiary.shade500,
+                  ),
+                ),
+                Text("En ligne"),
+              ],
+            ),
           ),
         ],
       ),
@@ -85,11 +127,13 @@ class _VersionCardWidget extends StatelessWidget {
             ],
           ),
           Row(
+            spacing: GardenSpace.gapSm,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon),
-              Text(value, style: GardenTypography.headingSm.copyWith(
-                overflow: TextOverflow.ellipsis
+              Icon(icon, color: GardenColors.primary.shade500),
+              Text(value, style: GardenTypography.bodyLg.copyWith(
+                overflow: TextOverflow.ellipsis,
+                fontWeight: FontWeight.w700
               )),
             ],
           ),
