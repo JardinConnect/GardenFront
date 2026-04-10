@@ -33,7 +33,7 @@ class AdministrationPage extends StatelessWidget {
                 Expanded(
                   flex: 2,
                   child: Column(
-                    spacing: GardenSpace.gapMd,
+                    spacing: GardenSpace.gapSm,
                     children: [
                       SystemInfosWidget(),
                       SavesWidget(),
