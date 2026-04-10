@@ -87,7 +87,7 @@ class AdminDangerZoneWidget extends StatelessWidget {
               color: GardenColors.redAlert.shade50,
               borderRadius: GardenRadius.radiusSm,
               border: BoxBorder.all(color: GardenColors.redAlert.shade500),
-              boxShadow: GardenShadow.shadowMd,
+              boxShadow: GardenShadow.shadowSm,
             ),
             child: Padding(
               padding: EdgeInsetsGeometry.symmetric(
