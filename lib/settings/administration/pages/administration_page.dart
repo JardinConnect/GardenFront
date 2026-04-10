@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:garden_connect/auth/utils/auth_extension.dart';
+import 'package:garden_connect/settings/administration/widgets/cgu_widget.dart';
 import 'package:garden_connect/settings/administration/widgets/raspberry_infos_widget.dart';
 import 'package:garden_connect/settings/administration/widgets/system_infos_widget.dart';
+import 'package:garden_connect/settings/administration/widgets/system_tools_widget.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:garden_connect/common/widgets/page_header.dart';
 
@@ -27,16 +29,22 @@ class AdministrationPage extends StatelessWidget {
               spacing: GardenSpace.gapMd,
               children: [
                 Expanded(
+                  flex: 2,
                   child: Column(
+                    spacing: GardenSpace.gapMd,
                     children: [
-                      SystemInfosWidget()
+                      SystemInfosWidget(),
                     ],
                   ),
                 ),
                 Expanded(
+                  flex: 1,
                   child: Column(
+                    spacing: GardenSpace.gapSm,
                     children: [
-                      RaspberryInfosWidget()
+                      RaspberryInfosWidget(),
+                      SystemToolsWidget(),
+                      CGUWidget()
                     ],
                   ),
                 ),
