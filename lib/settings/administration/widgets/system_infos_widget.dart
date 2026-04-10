@@ -11,7 +11,7 @@ class SystemInfosWidget extends StatelessWidget {
     return AdministrationCardWidget(
       title: "Informations système",
       subtitle: "État et métriques de votre cellule mère",
-      icon: Icons.info_outline,
+      icon: Icons.storage_outlined,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: GardenSpace.gapMd,
@@ -27,7 +27,7 @@ class SystemInfosWidget extends StatelessWidget {
                     child: _VersionCardWidget(
                       title: "Version Logiciel",
                       value: "1.0.21",
-                      icon: Icons.info_outline,
+                      icon: Icons.storage_outlined,
                       isUpToDate: true,
                     ),
                   ),
@@ -57,7 +57,7 @@ class SystemInfosWidget extends StatelessWidget {
                   _buildServiceCard("VPN", () => {}),
                   _buildServiceCard("Module LoRa", () => {}),
                 ],
-              )
+              ),
             ],
           ),
         ],
@@ -70,9 +70,7 @@ class SystemInfosWidget extends StatelessWidget {
       onTap: onTap,
       child: Row(
         children: [
-          Expanded(
-            child: Text(title),
-          ),
+          Expanded(child: Text(title)),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -119,22 +117,20 @@ class _VersionCardWidget extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                title,
-                style: GardenTypography.bodyMd,
-              ),
-            ],
+            children: [Text(title, style: GardenTypography.bodyMd)],
           ),
           Row(
             spacing: GardenSpace.gapSm,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: GardenColors.primary.shade500),
-              Text(value, style: GardenTypography.bodyLg.copyWith(
-                overflow: TextOverflow.ellipsis,
-                fontWeight: FontWeight.w700
-              )),
+              Icon(icon, color: GardenColors.primary.shade500, size: 32),
+              Text(
+                value,
+                style: GardenTypography.bodyLg.copyWith(
+                  overflow: TextOverflow.ellipsis,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ],
           ),
         ],
