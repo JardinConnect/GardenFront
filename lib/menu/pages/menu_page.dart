@@ -109,8 +109,8 @@ class MenuPage extends StatelessWidget {
         MenuItem(
           icon: Icons.shield_outlined,
           label: 'Administration',
-          isActive: false,
-          onTap: () => context.go('/settings'),
+          isActive: path.startsWith('/settings/admin'),
+          onTap: () => context.go('/settings/admin'),
         ),
       ],
       bottomItems: [
