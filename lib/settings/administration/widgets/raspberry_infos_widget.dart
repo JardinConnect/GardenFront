@@ -28,11 +28,7 @@ class _RaspberryInfoItem extends StatelessWidget {
   final String title;
   final String value;
 
-  const _RaspberryInfoItem({
-    super.key,
-    required this.title,
-    required this.value,
-  });
+  const _RaspberryInfoItem({required this.title, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -45,5 +41,4 @@ class _RaspberryInfoItem extends StatelessWidget {
       ],
     );
   }
-
 }
