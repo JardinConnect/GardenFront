@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:garden_connect/auth/utils/auth_extension.dart';
 import 'package:garden_connect/common/widgets/page_header.dart';
+import 'package:garden_connect/settings/administration/widgets/admin_danger_zone_widget.dart';
 import 'package:garden_connect/settings/administration/widgets/cgu_widget.dart';
 import 'package:garden_connect/settings/administration/widgets/raspberry_infos_widget.dart';
 import 'package:garden_connect/settings/administration/widgets/saves_widget.dart';
@@ -33,7 +34,11 @@ class AdministrationPage extends StatelessWidget {
                   flex: 2,
                   child: Column(
                     spacing: GardenSpace.gapMd,
-                    children: [SystemInfosWidget(), SavesWidget()],
+                    children: [
+                      SystemInfosWidget(),
+                      SavesWidget(),
+                      AdminDangerZoneWidget()
+                    ],
                   ),
                 ),
                 Expanded(

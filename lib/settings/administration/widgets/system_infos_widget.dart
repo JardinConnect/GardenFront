@@ -43,7 +43,7 @@ class SystemInfosWidget extends StatelessWidget {
                     child: _VersionCardWidget(
                       title: "OS",
                       value: "GardenConnectOS",
-                      icon: Icons.square_outlined,
+                      icon: Icons.view_in_ar_outlined,
                     ),
                   ),
                 ],
