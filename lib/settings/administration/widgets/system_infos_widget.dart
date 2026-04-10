@@ -44,6 +44,7 @@ class SystemInfosWidget extends StatelessWidget {
                       title: "OS",
                       value: "GardenConnectOS",
                       icon: Icons.view_in_ar_outlined,
+                      isUpToDate: false,
                     ),
                   ),
                 ],
@@ -98,13 +99,13 @@ class _VersionCardWidget extends StatelessWidget {
   final String title;
   final String value;
   final IconData icon;
-  final bool? isUpToDate;
+  final bool isUpToDate;
 
   const _VersionCardWidget({
     required this.title,
     required this.value,
     required this.icon,
-    this.isUpToDate = false,
+    required this.isUpToDate,
   });
 
   @override
@@ -116,8 +117,28 @@ class _VersionCardWidget extends StatelessWidget {
         spacing: GardenSpace.gapMd,
         children: [
           Row(
+            spacing: GardenSpace.gapSm,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text(title, style: GardenTypography.bodyMd)],
+            children: [
+              Text(title, style: GardenTypography.bodyMd),
+              if (isUpToDate)
+                Container(
+                  decoration: BoxDecoration(
+                    color: GardenColors.primary.shade500,
+                    borderRadius: GardenRadius.radiusSm
+                  ),
+                  child: Padding(
+                    padding: EdgeInsetsGeometry.symmetric(horizontal: GardenSpace.paddingSm, vertical: 2.0),
+                    child: Row(
+                      spacing: GardenSpace.gapXs,
+                      children: [
+                        Icon(Icons.check, color: GardenColors.base.shade50, size: 20),
+                        Text("À jour", style: GardenTypography.caption.copyWith(color: GardenColors.base.shade50))
+                      ],
+                    ),
+                  ),
+                )
+            ],
           ),
           Row(
             spacing: GardenSpace.gapSm,
