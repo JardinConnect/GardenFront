@@ -13,6 +13,7 @@ import 'package:garden_connect/dashboard/view/dashboard_page.dart';
 import 'package:garden_connect/farm-setup/bloc/farm_setup_bloc.dart';
 import 'package:garden_connect/farm-setup/pages/farm_setup_page.dart';
 import 'package:garden_connect/menu/pages/menu_page.dart';
+import 'package:garden_connect/settings/administration/pages/administration_page.dart';
 import 'package:garden_connect/settings/area/page/area_add_edit_page.dart';
 import 'package:garden_connect/settings/area/page/area_settings_page.dart';
 import 'package:garden_connect/settings/cells/pages/cell_detail_settings_page.dart';
@@ -54,19 +55,24 @@ class AppRouter {
     },
     routes: [
       GoRoute(path: '/login', builder: (context, state) => LoginPage()),
-      GoRoute(path: '/farm', pageBuilder: (context, state) {
+      GoRoute(
+        path: '/farm',
+        pageBuilder: (context, state) {
           return NoTransitionPage(
-              child:MultiBlocProvider(
-                providers:[
-                  BlocProvider<AreaBloc>(
-                    create: (context) => AreaBloc()..add(LoadAreaSetup()),
-                  ),
-                  BlocProvider<FarmSetupBloc>(create: (context) => FarmSetupBloc()),
-                ],
-                child: const FarmSetupPage()
-              )
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider<AreaBloc>(
+                  create: (context) => AreaBloc()..add(LoadAreaSetup()),
+                ),
+                BlocProvider<FarmSetupBloc>(
+                  create: (context) => FarmSetupBloc(),
+                ),
+              ],
+              child: const FarmSetupPage(),
+            ),
           );
-      }),
+        },
+      ),
       ShellRoute(
         pageBuilder: (context, state, child) {
           return NoTransitionPage(
@@ -75,9 +81,15 @@ class AppRouter {
                 BlocProvider<AnalyticsBloc>(
                   create: (context) => AnalyticsBloc(),
                 ),
-                BlocProvider<AreaBloc>(create: (context) => AreaBloc()..add(LoadAreas())),
-                BlocProvider<CellBloc>(create: (context) => CellBloc()..add(LoadCells())),
-                BlocProvider<AlertBloc>(create: (context) => AlertBloc()..add(const AlertLoadData())),
+                BlocProvider<AreaBloc>(
+                  create: (context) => AreaBloc()..add(LoadAreas()),
+                ),
+                BlocProvider<CellBloc>(
+                  create: (context) => CellBloc()..add(LoadCells()),
+                ),
+                BlocProvider<AlertBloc>(
+                  create: (context) => AlertBloc()..add(const AlertLoadData()),
+                ),
               ],
               child: MenuPage(child: child),
             ),
@@ -239,6 +251,12 @@ class AppRouter {
                     },
                   ),
                 ],
+              ),
+              GoRoute(
+                path: '/admin',
+                pageBuilder:
+                    (context, state) =>
+                        NoTransitionPage(child: const AdministrationPage()),
               ),
             ],
           ),
