@@ -204,6 +204,18 @@ class _GraphicWidgetState extends State<GraphicWidget> {
               initialDate: date,
               firstDate: minDate,
               lastDate: maxDate,
+              builder: (context, child) {
+                final theme = Theme.of(context);
+                return Theme(
+                  data: theme.copyWith(
+                    colorScheme: theme.colorScheme.copyWith(
+                      onSurface: Colors.black,
+                      onSurfaceVariant: Colors.grey,
+                    ),
+                  ),
+                  child: child!,
+                );
+              },
             );
             if (picked != null) {
               onPicked(picked);
