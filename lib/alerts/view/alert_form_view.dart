@@ -17,11 +17,8 @@ class AlertFormView extends StatefulWidget {
   // Null en mode création
   final Alert? alert;
   final Map<String, dynamic>? alertDetails;
-  final List<Map<String, dynamic>> availableSensors;
-
   const AlertFormView({
     super.key,
-    required this.availableSensors,
     this.alert,
     this.alertDetails,
   });
@@ -89,32 +86,29 @@ class _AlertFormViewState extends State<AlertFormView> {
                   children: [
                     // Formulaire de configuration (nom + capteurs + seuils)
                     Expanded(
-                      child: SingleChildScrollView(
-                        child: AlertConfigurationForm(
-                          nameController: _nameController,
-                          nameValidator: _validateName,
-                          selectedSensors: state.selectedSensors,
-                          onSensorsChanged:
-                              (s) => context.read<AlertBloc>().add(
-                                AlertUpdateSensors(sensors: s),
-                              ),
-                          criticalRanges: state.criticalRanges,
-                          warningRanges: state.warningRanges,
-                          isWarningEnabled: state.isWarningEnabled,
-                          onCriticalRangeChanged:
-                              (s, r) => context.read<AlertBloc>().add(
-                                AlertUpdateCriticalRange(sensor: s, range: r),
-                              ),
-                          onWarningRangeChanged:
-                              (s, r) => context.read<AlertBloc>().add(
-                                AlertUpdateWarningRange(sensor: s, range: r),
-                              ),
-                          onWarningEnabledChanged:
-                              (e) => context.read<AlertBloc>().add(
-                                AlertUpdateWarningEnabled(enabled: e),
-                              ),
-                          availableSensors: widget.availableSensors,
-                        ),
+                      child: AlertConfigurationForm(
+                        nameController: _nameController,
+                        nameValidator: _validateName,
+                        selectedSensors: state.selectedSensors,
+                        onSensorsChanged:
+                            (s) => context.read<AlertBloc>().add(
+                              AlertUpdateSensors(sensors: s),
+                            ),
+                        criticalRanges: state.criticalRanges,
+                        warningRanges: state.warningRanges,
+                        isWarningEnabled: state.isWarningEnabled,
+                        onCriticalRangeChanged:
+                            (s, r) => context.read<AlertBloc>().add(
+                              AlertUpdateCriticalRange(sensor: s, range: r),
+                            ),
+                        onWarningRangeChanged:
+                            (s, r) => context.read<AlertBloc>().add(
+                              AlertUpdateWarningRange(sensor: s, range: r),
+                            ),
+                        onWarningEnabledChanged:
+                            (e) => context.read<AlertBloc>().add(
+                              AlertUpdateWarningEnabled(enabled: e),
+                            ),
                       ),
                     ),
                     SizedBox(width: GardenSpace.gapMd),

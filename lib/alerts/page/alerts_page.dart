@@ -60,7 +60,7 @@ class AlertsPage extends StatelessWidget {
       builder: (context, state) {
         // Vue de création
         if (state is AlertLoaded && state.isShowingAddView) {
-          return AlertFormView(availableSensors: state.availableSensors);
+          return AlertFormView();
         }
 
         // Loader pendant le chargement des données d'édition
@@ -76,7 +76,6 @@ class AlertsPage extends StatelessWidget {
             state.editingAlert != null &&
             state.alertDetails != null) {
           return AlertFormView(
-            availableSensors: state.availableSensors,
             alert: state.editingAlert,
             alertDetails: state.alertDetails,
           );
@@ -113,6 +112,7 @@ class AlertsPage extends StatelessWidget {
                   ),
                 ],
               ),
+              SizedBox(height: GardenSpace.gapMd),
               // Menu des onglets
               if (state is AlertLoaded)
                 AlertTabMenu(

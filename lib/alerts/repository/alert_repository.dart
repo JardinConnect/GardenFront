@@ -160,26 +160,6 @@ class AlertRepository {
     }
   }
 
-  /// Retourne la liste des types de capteurs disponibles (basée sur l'enum SensorType)
-  Future<List<Map<String, dynamic>>> fetchAvailableSensors() async {
-    return [
-      {"type": "airTemperature", "displayName": "Température air", "index": 0},
-      {"type": "soilTemperature", "displayName": "Température sol", "index": 0},
-      {
-        "type": "humiditySurface",
-        "displayName": "Humidité surface",
-        "index": 0,
-      },
-      {
-        "type": "humidityDepth",
-        "displayName": "Humidité profondeur",
-        "index": 0,
-      },
-      {"type": "light", "displayName": "Luminosité", "index": 0},
-      {"type": "rain", "displayName": "Humidité air", "index": 0},
-    ];
-  }
-
   /// Récupère les détails complets d'une alerte depuis GET /alert/{id}
   Future<Map<String, dynamic>> fetchAlertDetails(String alertId) async {
     try {
@@ -193,7 +173,6 @@ class AlertRepository {
   }
 
   /// Met à jour une alerte existante via PUT /alert/{id}
-  /// TODO : En attente du fix backend afin de valider le dev de cette fonctionnalité
   Future<void> updateAlert(String alertId, AlertCreationRequest request) async {
     try {
       final response = await _httpClient.put(

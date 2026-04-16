@@ -52,7 +52,6 @@ class _MobileAlertCard extends StatefulWidget {
 
 class _MobileAlertCardState extends State<_MobileAlertCard> {
   late bool _isEnabled;
-  int _currentPage = 0;
 
   @override
   void initState() {
@@ -65,14 +64,17 @@ class _MobileAlertCardState extends State<_MobileAlertCard> {
     final sensors = widget.alert.sensors;
     if (sensors.isEmpty) return const SizedBox.shrink();
 
-    final sensor = sensors[_currentPage.clamp(0, sensors.length - 1)];
-
     return SensorAlertCard(
       title: widget.alert.title,
-      sensorType: sensor.sensorType,
-      threshold: SensorThreshold(
-        thresholds: sensor.threshold.thresholds.take(6).toList(),
-      ),
+      sensors: sensors
+          .map((s) => (
+                sensorType: s.sensorType,
+                threshold: SensorThreshold(
+                  thresholds: s.threshold.thresholds.take(6).toList(),
+                ),
+                iconColor: getSensorColor(s.sensorType),
+              ))
+          .toList(),
       isEnabled: _isEnabled,
       onToggle: (value) {
         setState(() => _isEnabled = value);
@@ -80,10 +82,7 @@ class _MobileAlertCardState extends State<_MobileAlertCard> {
           AlertToggleStatus(alertId: widget.alert.id, isActive: value),
         );
       },
-      totalPages: sensors.length,
-      currentPage: _currentPage,
-      onPageChanged: (page) => setState(() => _currentPage = page),
-      iconColor: getSensorColor(sensor.sensorType),
+      showArrows: false,
       onTap: () => context.push('/m/alerts/${widget.alert.id}/edit'),
     );
   }

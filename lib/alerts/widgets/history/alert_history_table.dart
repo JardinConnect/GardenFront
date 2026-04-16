@@ -6,6 +6,50 @@ import 'package:intl/intl.dart';
 import '../../../../common/widgets/empty_state_widget.dart';
 import '../../models/alert_models.dart';
 
+class _ArchiveButton extends StatefulWidget {
+  final VoidCallback? onTap;
+
+  const _ArchiveButton({this.onTap});
+
+  @override
+  State<_ArchiveButton> createState() => _ArchiveButtonState();
+}
+
+class _ArchiveButtonState extends State<_ArchiveButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: widget.onTap != null
+          ? SystemMouseCursors.click
+          : MouseCursor.defer,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          padding: EdgeInsets.all(GardenSpace.paddingXs),
+          decoration: BoxDecoration(
+            color: _hovered
+                ? GardenColors.typography.shade200
+                : Colors.transparent,
+            borderRadius: GardenRadius.radiusXs,
+          ),
+          child: Icon(
+            Icons.inventory_2_outlined,
+            size: 20,
+            color: _hovered
+                ? GardenColors.typography.shade300
+                : GardenColors.typography.shade400,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class AlertTable extends StatelessWidget {
   final List<AlertEvent> events;
   final ValueChanged<AlertEvent>? onArchiveEvent;
@@ -67,17 +111,7 @@ class AlertTable extends StatelessWidget {
           Expanded(flex: 3, child: _headerCell('Localisation')),
           const SizedBox(width: _colGap),
           // Bouton archiver tout
-          GestureDetector(
-            onTap: onArchiveAll,
-            child: Padding(
-              padding: EdgeInsets.all(GardenSpace.paddingXs),
-              child: Icon(
-                Icons.inventory_2_outlined,
-                size: 20,
-                color: GardenColors.typography.shade400,
-              ),
-            ),
-          ),
+          _ArchiveButton(onTap: onArchiveAll),
         ],
       ),
     );
@@ -181,17 +215,8 @@ class AlertTable extends StatelessWidget {
             ),
             const SizedBox(width: _colGap),
             // Bouton archiver
-            GestureDetector(
-              onTap:
-                  onArchiveEvent != null ? () => onArchiveEvent!(event) : null,
-              child: Padding(
-                padding: EdgeInsets.all(GardenSpace.paddingXs),
-                child: Icon(
-                  Icons.inventory_2_outlined,
-                  size: 20,
-                  color: GardenColors.typography.shade400,
-                ),
-              ),
+            _ArchiveButton(
+              onTap: onArchiveEvent != null ? () => onArchiveEvent!(event) : null,
             ),
           ],
         ),

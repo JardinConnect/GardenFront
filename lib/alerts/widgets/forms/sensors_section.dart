@@ -3,6 +3,15 @@ import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import '../../models/alert_models.dart';
 
+const _availableSensors = [
+  (type: SensorType.airTemperature, displayName: 'Température air'),
+  (type: SensorType.rain, displayName: 'Humidité air'),
+  (type: SensorType.light, displayName: 'Luminosité'),
+  (type: SensorType.soilTemperature, displayName: 'Température sol'),
+  (type: SensorType.humiditySurface, displayName: 'Humidité basse sol'),
+  (type: SensorType.humidityDepth, displayName: 'Humidité haute sol'),
+];
+
 /// Classe représentant un capteur sélectionné avec son type et son index
 class SelectedSensor {
   final SensorType type;
@@ -25,15 +34,12 @@ class SelectedSensor {
 
 /// Widget de sélection des capteurs pour une alerte
 /// Affiche une grille de capteurs sélectionnables avec distinction visuelle
-class SensorsSection extends StatefulWidget {
+class SensorsSection extends StatelessWidget {
   /// Liste des capteurs actuellement sélectionnés
   final List<SelectedSensor> selectedSensors;
 
   /// Callback appelé lors du changement de sélection
   final ValueChanged<List<SelectedSensor>>? onSelectionChanged;
-
-  /// Liste des capteurs disponibles (chargée depuis le Bloc)
-  final List<Map<String, dynamic>> availableSensors;
 
   /// Mode compact pour mobile : icône plus petite, ratio plus carré
   final bool compact;
@@ -42,144 +48,42 @@ class SensorsSection extends StatefulWidget {
     super.key,
     this.selectedSensors = const [],
     this.onSelectionChanged,
-    required this.availableSensors,
     this.compact = false,
   });
 
   @override
-  State<SensorsSection> createState() => _SensorsSectionState();
-}
-
-class _SensorsSectionState extends State<SensorsSection> {
-  // Liste de tous les capteurs disponibles chargés depuis l'API
-  List<_SensorData> _allSensors = [];
-
-  // État de chargement
-  bool _isLoading = true;
-  String? _errorMessage;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadAvailableSensors();
-  }
-
-  /// Charge la liste des capteurs disponibles depuis les données reçues en paramètre
-  void _loadAvailableSensors() {
-    try {
-      // Convertit les données JSON en objets _SensorData
-      final loadedSensors =
-          widget.availableSensors.map((json) {
-            return _SensorData(
-              _parseSensorType(json['type'] as String),
-              json['displayName'] as String,
-              json['index'] as int,
-            );
-          }).toList();
-
-      setState(() {
-        _allSensors = loadedSensors;
-
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'Erreur lors du chargement des capteurs: $e';
-        _isLoading = false;
-      });
-    }
-  }
-
-  /// Parse une chaîne de caractères en SensorType
-  SensorType _parseSensorType(String typeString) {
-    switch (typeString) {
-      case 'airTemperature':
-        return SensorType.airTemperature;
-      case 'soilTemperature':
-        return SensorType.soilTemperature;
-      case 'humiditySurface':
-        return SensorType.humiditySurface;
-      case 'humidityDepth':
-        return SensorType.humidityDepth;
-      case 'light':
-        return SensorType.light;
-      case 'rain':
-        return SensorType.rain;
-      default:
-        return SensorType.airTemperature;
-    }
-  }
-
-  /// Parse une chaîne de caractères en SensorType
-  @override
   Widget build(BuildContext context) {
-    // Afficher un indicateur de chargement
-    if (_isLoading) {
-      return Center(
-        child: Padding(
-          padding: EdgeInsets.all(GardenSpace.paddingXl),
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
-
-    // Afficher un message d'erreur
-    if (_errorMessage != null) {
-      return Center(
-        child: Padding(
-          padding: EdgeInsets.all(GardenSpace.paddingXl),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            spacing: GardenSpace.gapMd,
-            children: [
-              Icon(Icons.error_outline, size: 48, color: Colors.red[300]),
-              Text(
-                _errorMessage!,
-                style: TextStyle(color: Colors.red[700]),
-                textAlign: TextAlign.center,
-              ),
-              ElevatedButton(
-                onPressed: _loadAvailableSensors,
-                child: const Text('Réessayer'),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Grille de sélection des capteurs
-        _buildSensorsGrid(),
-      ],
-    );
+    return _buildSensorsGrid();
   }
 
-  /// Construit la grille de capteurs sélectionnables
   Widget _buildSensorsGrid() {
     return GridView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         crossAxisSpacing: GardenSpace.gapMd,
         mainAxisSpacing: GardenSpace.gapMd,
-        childAspectRatio: widget.compact ? 1.1 : 1.7,
+        childAspectRatio: compact ? 1.1 : 1.7,
       ),
-      itemCount: _allSensors.length,
-      itemBuilder: (context, index) => _buildSensorCard(_allSensors[index]),
+      itemCount: _availableSensors.length,
+      itemBuilder: (context, i) => _buildSensorCard(_availableSensors[i]),
     );
   }
 
-  /// Construit une carte de capteur individuelle
-  Widget _buildSensorCard(_SensorData sensor) {
-    final isSelected = _isSensorSelected(sensor);
-    final compact = widget.compact;
+  Widget _buildSensorCard(({SensorType type, String displayName}) sensor) {
+    final isSelected = selectedSensors.any((s) => s.type == sensor.type);
 
     return GestureDetector(
-      onTap: () => _toggleSensor(sensor),
+      onTap: () {
+        final current = List<SelectedSensor>.from(selectedSensors);
+        if (isSelected) {
+          current.removeWhere((s) => s.type == sensor.type);
+        } else {
+          current.add(SelectedSensor(sensor.type, 0));
+        }
+        onSelectionChanged?.call(current);
+      },
       child: Container(
         decoration: BoxDecoration(
           border: isSelected
@@ -191,17 +95,14 @@ class _SensorsSectionState extends State<SensorsSection> {
           hasShadow: true,
           child: Stack(
             children: [
-              // Icône du capteur au centre
               Center(
                 child: GardenIcon(
                   iconName: sensor.type.iconName,
                   size: compact ? GardenIconSize.md : GardenIconSize.lg,
-                  color: getSensorColor(sensor.type, index: sensor.index),
+                  color: getSensorColor(sensor.type),
                 ),
               ),
-
-              // Indicateur de sélection en haut à droite
-              _buildSelectionIndicator(isSelected, compact: compact),
+              _buildSelectionIndicator(isSelected),
             ],
           ),
         ),
@@ -209,8 +110,7 @@ class _SensorsSectionState extends State<SensorsSection> {
     );
   }
 
-  /// Construit l'indicateur de sélection (cercle avec check)
-  Widget _buildSelectionIndicator(bool isSelected, {bool compact = false}) {
+  Widget _buildSelectionIndicator(bool isSelected) {
     final size = compact ? 14.0 : 20.0;
     final iconSize = compact ? 9.0 : 12.0;
     final pos = compact ? 0.0 : 8.0;
@@ -237,32 +137,4 @@ class _SensorsSectionState extends State<SensorsSection> {
       ),
     );
   }
-
-  /// Vérifie si un capteur est sélectionné — compare uniquement sur le type
-  bool _isSensorSelected(_SensorData sensor) {
-    return widget.selectedSensors.any((s) => s.type == sensor.type);
-  }
-
-  /// Bascule la sélection d'un capteur
-  void _toggleSensor(_SensorData sensor) {
-    final current = List<SelectedSensor>.from(widget.selectedSensors);
-    final alreadySelected = current.any((s) => s.type == sensor.type);
-
-    if (alreadySelected) {
-      current.removeWhere((s) => s.type == sensor.type);
-    } else {
-      current.add(SelectedSensor(sensor.type, 0));
-    }
-
-    widget.onSelectionChanged?.call(current);
-  }
-}
-
-/// Classe de données privée pour un capteur avec ses métadonnées
-class _SensorData {
-  final SensorType type;
-  final String displayName;
-  final int index;
-
-  const _SensorData(this.type, this.displayName, this.index);
 }

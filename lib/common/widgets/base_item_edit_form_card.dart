@@ -14,6 +14,8 @@ class BaseItemEditFormCard extends StatefulWidget {
   final bool isViewMode;
   final IconData icon;
   final String? infoText;
+  final String? subtitle;
+  final String rootLabel;
 
   const BaseItemEditFormCard({
     super.key,
@@ -25,6 +27,8 @@ class BaseItemEditFormCard extends StatefulWidget {
     this.isViewMode = false,
     this.initialParent,
     this.infoText,
+    this.subtitle,
+    this.rootLabel = 'Aucun (espace racine)',
   });
 
   @override
@@ -92,6 +96,13 @@ class _BaseItemEditFormCardState extends State<BaseItemEditFormCard> {
                               widget.item!.name,
                               style: GardenTypography.headingLg,
                             ),
+                            if (widget.subtitle != null)
+                              Text(
+                                widget.subtitle!,
+                                style: GardenTypography.bodyLg.copyWith(
+                                  color: GardenColors.typography.shade300,
+                                ),
+                              ),
                           ],
                         ),
                       ),
@@ -145,7 +156,7 @@ class _BaseItemEditFormCardState extends State<BaseItemEditFormCard> {
                   DropdownMenuItem<Area?>(
                     value: null,
                     child: Text(
-                      'Aucun (espace racine)',
+                      widget.rootLabel,
                       style: GardenTypography.bodyLg,
                     ),
                   ),

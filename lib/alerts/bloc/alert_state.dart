@@ -19,7 +19,6 @@ final class AlertLoaded extends AlertState {
   final List<SensorAlertData> sensorAlerts;
   final List<AlertEvent> alertEvents;
   final List<Map<String, dynamic>> spaces;
-  final List<Map<String, dynamic>> availableSensors;
   final List<CellItem> cells;
 
   // Navigation
@@ -52,7 +51,6 @@ final class AlertLoaded extends AlertState {
     required this.displayMode,
     required this.selectedTab,
     this.spaces = const [],
-    this.availableSensors = const [],
     this.cells = const [],
     this.isShowingAddView = false,
     this.isShowingEditView = false,
@@ -74,7 +72,6 @@ final class AlertLoaded extends AlertState {
     List<SensorAlertData>? sensorAlerts,
     List<AlertEvent>? alertEvents,
     List<Map<String, dynamic>>? spaces,
-    List<Map<String, dynamic>>? availableSensors,
     List<CellItem>? cells,
     DisplayMode? displayMode,
     AlertTabType? selectedTab,
@@ -103,7 +100,6 @@ final class AlertLoaded extends AlertState {
       sensorAlerts: sensorAlerts ?? this.sensorAlerts,
       alertEvents: alertEvents ?? this.alertEvents,
       spaces: spaces ?? this.spaces,
-      availableSensors: availableSensors ?? this.availableSensors,
       cells: cells ?? this.cells,
       displayMode: displayMode ?? this.displayMode,
       selectedTab: selectedTab ?? this.selectedTab,

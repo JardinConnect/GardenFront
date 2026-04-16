@@ -188,4 +188,16 @@ class Area extends BaseItem {
     }
     return null;
   }
+
+  /// Trouve le parent direct d'un area en parcourant l'arbre
+  static Area? findParentOf(List<Area> areas, String childId) {
+    for (final area in areas) {
+      if (area.areas != null && area.areas!.any((a) => a.id == childId)) {
+        return area;
+      }
+      final found = findParentOf(area.areas ?? [], childId);
+      if (found != null) return found;
+    }
+    return null;
+  }
 }
