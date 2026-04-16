@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/cells/widgets/cells_cards_widget.dart';
+import 'package:garden_connect/mobile/areas/pages/mobile_area_detail_page.dart';
 import 'package:garden_connect/mobile/cells/pages/mobile_cell_detail_page.dart';
 import 'package:garden_connect/mobile/dashboard/pages/mobile_activity_calendar_page.dart';
 import 'package:garden_connect/mobile/common/widgets/mobile_header.dart';
@@ -138,7 +139,26 @@ class MobileHomePage extends StatelessWidget {
                             final area = trackedAreas[index];
                             return AnalyticsSummaryCard(
                               name: area.name,
-                              onPressed: () {},
+                              onPressed: () {
+                                context.read<AreaBloc>().add(SelectArea(area));
+                                final router = GoRouter.maybeOf(context);
+                                if (router != null) {
+                                  context.go(
+                                    '/m/areas/${area.id}',
+                                    extra: area,
+                                  );
+                                  return;
+                                }
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder:
+                                        (_) => MobileAreaDetailPage(
+                                          areaId: area.id,
+                                          initialArea: area,
+                                        ),
+                                  ),
+                                );
+                              },
                               light: area.analytics.light!.first.value.toInt(),
                               rain:
                                   area.analytics.airHumidity!.first.value

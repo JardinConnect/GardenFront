@@ -2,13 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/auth/utils/auth_extension.dart';
 import 'package:garden_ui/ui/design_system.dart';
+import 'package:go_router/go_router.dart';
 import '../../areas/bloc/area_bloc.dart';
 import '../../analytics/bloc/analytics_bloc.dart';
 import '../../common/widgets/page_header.dart';
+import '../models/area.dart';
 import '../widgets/tab_zones_widget.dart';
 
-class AreasPage extends StatelessWidget {
+class AreasPage extends StatefulWidget {
   const AreasPage({super.key});
+
+  @override
+  State<AreasPage> createState() => _AreasPageState();
+}
+
+class _AreasPageState extends State<AreasPage> {
+  String? _handledAreaIdFromQuery;
+
+  void _selectAreaFromQueryIfNeeded(AreasLoaded areaState) {
+    final areaIdFromQuery =
+        GoRouterState.of(context).uri.queryParameters['areaId'];
+
+    if (areaIdFromQuery == null ||
+        areaIdFromQuery.isEmpty ||
+        areaIdFromQuery == _handledAreaIdFromQuery) {
+      return;
+    }
+
+    _handledAreaIdFromQuery = areaIdFromQuery;
+    final areaToSelect = Area.findAreaById(areaState.areas, areaIdFromQuery);
+    if (areaToSelect == null) {
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      context.read<AreaBloc>().add(SelectArea(areaToSelect));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +66,7 @@ class AreasPage extends StatelessWidget {
           } else if (analyticsState is AnalyticsError) {
             return Center(child: Text('Erreur: ${analyticsState.message}'));
           } else if (areaState is AreasLoaded) {
+            _selectAreaFromQueryIfNeeded(areaState);
             return Padding(
               padding: EdgeInsets.all(GardenSpace.paddingMd),
               child: Column(
@@ -70,10 +104,9 @@ class AreasPage extends StatelessWidget {
                         selectedArea: areaState.selectedArea,
                         selectedCell: areaState.selectedCell,
                         isAreaSelected: areaState.isAreaSelected,
-                        toggleAnalyticsWidget:
-                        areaState.toggleAnalyticsWidget,
+                        toggleAnalyticsWidget: areaState.toggleAnalyticsWidget,
                       ),
-                    )
+                    ),
                   ),
                 ],
               ),
