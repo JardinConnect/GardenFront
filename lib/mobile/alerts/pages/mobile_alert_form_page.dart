@@ -150,7 +150,6 @@ class _MobileAlertFormPageState extends State<MobileAlertFormPage> {
                         onSelectionChanged: (s) => context.read<AlertBloc>().add(
                           AlertUpdateSensors(sensors: s),
                         ),
-                        availableSensors: state.availableSensors,
                         compact: true,
                       ),
                     ),

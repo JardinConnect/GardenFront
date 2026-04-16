@@ -17,11 +17,8 @@ class AlertFormView extends StatefulWidget {
   // Null en mode création
   final Alert? alert;
   final Map<String, dynamic>? alertDetails;
-  final List<Map<String, dynamic>> availableSensors;
-
   const AlertFormView({
     super.key,
-    required this.availableSensors,
     this.alert,
     this.alertDetails,
   });
@@ -113,7 +110,6 @@ class _AlertFormViewState extends State<AlertFormView> {
                               (e) => context.read<AlertBloc>().add(
                                 AlertUpdateWarningEnabled(enabled: e),
                               ),
-                          availableSensors: widget.availableSensors,
                         ),
                       ),
                     ),

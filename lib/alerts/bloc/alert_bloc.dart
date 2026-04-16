@@ -78,7 +78,6 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
         _alertRepository.fetchAlerts(),
         _alertRepository.fetchAlertHistory(),
         _alertRepository.fetchSpaces(),
-        _alertRepository.fetchAvailableSensors(),
         _alertRepository.fetchCells(), // préchargé ici pour éviter le délai en édition/ajout
       ]);
 
@@ -88,8 +87,7 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
       final sensorAlerts = alerts.expand((a) => a.sensors).toList();
       final alertEvents = results[1] as List<AlertEvent>;
       final spaces = results[2] as List<Map<String, dynamic>>;
-      final availableSensors = results[3] as List<Map<String, dynamic>>;
-      final cells = results[4] as List<CellItem>;
+      final cells = results[3] as List<CellItem>;
 
       emit(
         AlertLoaded(
@@ -99,7 +97,6 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
           displayMode: DisplayMode.list,
           selectedTab: AlertTabType.alerts,
           spaces: spaces,
-          availableSensors: availableSensors,
           cells: cells,
         ),
       );
