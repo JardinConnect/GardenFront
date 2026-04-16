@@ -199,45 +199,29 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
             children: [
               ...sortedLevels.map((lvl) {
                 return Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      if (showingAreasList && selectedLevel == lvl) {
-                        context.read<AreaBloc>().add(ResetAreasListView());
-                        return;
-                      }
-                      context.read<AreaBloc>().add(
-                        ShowAreasListWidget(level: lvl),
-                      );
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.only(right: GardenSpace.paddingMd),
-                      child: _buildLevelCard(
-                        context,
-                        level: lvl,
-                        count: levelCounts[lvl] ?? 0,
-                        isSelected: showingAreasList && selectedLevel == lvl,
-                        isMobile: isMobile,
-                      ),
+                  child: Padding(
+                    padding: EdgeInsets.only(right: GardenSpace.paddingMd),
+                    child: _buildLevelCard(
+                      context,
+                      level: lvl,
+                      count: levelCounts[lvl] ?? 0,
+                      isSelected: showingAreasList && selectedLevel == lvl,
+                      isMobile: isMobile,
+                      showingAreasList: showingAreasList,
+                      selectedLevel: selectedLevel,
+                      lvl: lvl,
                     ),
                   ),
                 );
               }),
               if (totalCells > 0)
                 Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      if (showingCellsList) {
-                        context.read<AreaBloc>().add(ResetAreasListView());
-                        return;
-                      }
-                      context.read<AreaBloc>().add(ShowCellsListWidget());
-                    },
-                    child: _buildCellsCard(
-                      context,
-                      count: totalCells,
-                      isSelected: showingCellsList,
-                      isMobile: isMobile,
-                    ),
+                  child: _buildCellsCard(
+                    context,
+                    count: totalCells,
+                    isSelected: showingCellsList,
+                    isMobile: isMobile,
+                    showingCellsList: showingCellsList,
                   ),
                 ),
             ],
@@ -272,9 +256,19 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
     required int count,
     required bool isSelected,
     required bool isMobile,
+    required bool showingAreasList,
+    required selectedLevel,
+    required int lvl,
   }) {
     return GardenCard(
       backgroundColor: isSelected ? GardenColors.base.shade200 : null,
+      onTap: () {
+        if (showingAreasList && selectedLevel == lvl) {
+          context.read<AreaBloc>().add(ResetAreasListView());
+          return;
+        }
+        context.read<AreaBloc>().add(ShowAreasListWidget(level: lvl));
+      },
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: isMobile ? GardenSpace.paddingSm : GardenSpace.paddingMd,
@@ -324,9 +318,17 @@ class _SummaryZonesWidgetState extends State<SummaryZonesWidget> {
     required int count,
     required bool isSelected,
     required bool isMobile,
+    required bool showingCellsList,
   }) {
     return GardenCard(
       backgroundColor: isSelected ? GardenColors.base.shade200 : null,
+      onTap: () {
+        if (showingCellsList) {
+          context.read<AreaBloc>().add(ResetAreasListView());
+          return;
+        }
+        context.read<AreaBloc>().add(ShowCellsListWidget());
+      },
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: isMobile ? GardenSpace.paddingSm : GardenSpace.paddingMd,

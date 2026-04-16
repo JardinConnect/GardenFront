@@ -286,6 +286,35 @@ class _GraphicWidgetState extends State<GraphicWidget> {
     return visibleIndexes;
   }
 
+  List<TouchedSpotIndicatorData?> _safeTouchedSpotIndicators(
+    LineChartBarData barData,
+    List<int> spotIndexes,
+  ) {
+    final indicatorColor =
+        barData.gradient?.colors.first ??
+        barData.color ??
+        Theme.of(context).colorScheme.primary;
+
+    return spotIndexes.map((index) {
+      if (index < 0 || index >= barData.spots.length) {
+        return null;
+      }
+
+      final dotData = FlDotData(
+        getDotPainter:
+            (spot, percent, bar, dotIndex) => FlDotCirclePainter(
+              radius: 4 * 1.8,
+              color: indicatorColor,
+              strokeColor: Colors.white,
+            ),
+      );
+      return TouchedSpotIndicatorData(
+        FlLine(color: indicatorColor, strokeWidth: 4),
+        dotData,
+      );
+    }).toList();
+  }
+
   Widget _buildChart(
     double minValue,
     double maxValue,
@@ -377,6 +406,9 @@ class _GraphicWidgetState extends State<GraphicWidget> {
                 maxX: maxX.toDouble(),
                 minY: minValue - 5,
                 maxY: maxValue + 5,
+                lineTouchData: LineTouchData(
+                  getTouchedSpotIndicator: _safeTouchedSpotIndicators,
+                ),
                 lineBarsData: filteredAnalytics.buildLineBarsDataForTypes(
                   currentFilter.analyticTypes,
                 ),

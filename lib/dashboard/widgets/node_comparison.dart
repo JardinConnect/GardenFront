@@ -5,6 +5,7 @@ import 'package:garden_ui/ui/design_system.dart';
 import '../../analytics/models/analytics.dart';
 import '../../areas/models/area.dart';
 import '../../cells/models/cell.dart';
+import '../../cells/repository/cell_repository.dart';
 
 class NodeComparison extends StatefulWidget {
   const NodeComparison({super.key, required this.areas});
@@ -19,15 +20,14 @@ class _NodeComparisonState extends State<NodeComparison> {
   AnalyticType? _selectedAnalyticType;
   String? _selectedAreaId;
   List<Cell> _selectedCells = [];
+  final Map<String, Cell> _cellsWithAnalytics = {};
+  final CellRepository _cellRepository = CellRepository();
+  bool _isLoadingCell = false;
 
   List<AnalyticType> get _availableTypes {
-    final types = <AnalyticType>{};
-    for (final area in Area.getAllAreasFlattened(widget.areas)) {
-      for (final type in area.analytics.availableTypes) {
-        types.add(type);
-      }
-    }
-    return types.toList();
+    return AnalyticType.values
+        .where((type) => type != AnalyticType.battery)
+        .toList();
   }
 
   List<Area> get _areasWithCells {
@@ -80,14 +80,25 @@ class _NodeComparisonState extends State<NodeComparison> {
     });
   }
 
-  void _toggleCell(Cell cell) {
-    setState(() {
-      if (_selectedCells.any((c) => c.id == cell.id)) {
+  void _toggleCell(Cell cell) async {
+    if (_selectedCells.any((c) => c.id == cell.id)) {
+      setState(() {
         _selectedCells = _selectedCells.where((c) => c.id != cell.id).toList();
-      } else {
-        _selectedCells = [..._selectedCells, cell];
-      }
+      });
+      return;
+    }
+
+    setState(() {
+      _selectedCells = [..._selectedCells, cell];
+      _isLoadingCell = true;
     });
+
+    try {
+      final enriched = await _cellRepository.fetchCellDetail(cell.id);
+      _cellsWithAnalytics[cell.id] = enriched;
+    } catch (_) {}
+
+    setState(() => _isLoadingCell = false);
   }
 
   Widget _buildMesureDropdown() {
@@ -230,18 +241,12 @@ class _NodeComparisonState extends State<NodeComparison> {
   }
 
   Widget _buildNodeRow(BuildContext context, Cell cell) {
-    final analytic = cell.analytics.getLastAnalyticByType(_selectedAnalyticType!);
+    final enrichedCell = _cellsWithAnalytics[cell.id] ?? cell;
+    final analytic = enrichedCell.analytics.getLastAnalyticByType(_selectedAnalyticType!);
     final value = analytic?.value;
 
-    double barFraction = 0;
-    if (value != null && _selectedCells.isNotEmpty) {
-      double maxVal = 0;
-      for (final c in _selectedCells) {
-        final a = c.analytics.getLastAnalyticByType(_selectedAnalyticType!);
-        if (a != null && a.value.abs() > maxVal) maxVal = a.value.abs();
-      }
-      if (maxVal > 0) barFraction = value.abs() / maxVal;
-    }
+    final maxVal = _selectedAnalyticType!.maxValue;
+    final barFraction = value != null ? (value.abs() / maxVal).clamp(0.0, 1.0) : 0.0;
 
     final color = _selectedAnalyticType?.color ?? Theme.of(context).colorScheme.primary;
     final unit = _selectedAnalyticType?.unit ?? '';
@@ -339,6 +344,15 @@ class _NodeComparisonState extends State<NodeComparison> {
               child: Text(
                 'Sélectionnez une mesure et un espace pour activer la comparaison.',
                 style: GardenTypography.bodyMd,
+              ),
+            ),
+          if (_isLoadingCell)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: LinearProgressIndicator(
+                backgroundColor: GardenColors.primary.shade100,
+                color: GardenColors.primary,
+                minHeight: 2,
               ),
             ),
           ..._selectedCells.map((cell) => _buildNodeRow(context, cell)),
