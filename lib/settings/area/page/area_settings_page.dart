@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,6 +10,57 @@ import '../../../auth/utils/auth_extension.dart';
 import '../../../common/widgets/global_stat_card_widget.dart';
 import '../../../common/widgets/generic_list_item.dart';
  import '../../../common/widgets/page_header.dart';
+
+class _LevelCard extends StatefulWidget {
+  final int level;
+  final int count;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _LevelCard({
+    required this.level,
+    required this.count,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  State<_LevelCard> createState() => _LevelCardState();
+}
+
+class _LevelCardState extends State<_LevelCard> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          decoration: BoxDecoration(
+            boxShadow: _hovered ? GardenShadow.shadowMd : null,
+            border: widget.isSelected
+                ? Border.all(color: primary, width: 1)
+                : null,
+            borderRadius: GardenRadius.radiusSm,
+          ),
+          child: GlobalStatCardWidget(
+            title: 'Niveau ${widget.level}',
+            icon: Icons.location_on,
+            data: '${widget.count}',
+            level: widget.level,
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class AreaSettingsPage extends StatefulWidget {
   const AreaSettingsPage({super.key});
@@ -69,27 +121,11 @@ class _AreaSettingsPageState extends State<AreaSettingsPage> {
                           (entry) => Expanded(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: GestureDetector(
+                              child: _LevelCard(
+                                level: entry.key,
+                                count: entry.value,
+                                isSelected: _selectedLevel == entry.key,
                                 onTap: () => _onLevelSelected(entry.key),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: _selectedLevel == entry.key
-                                        ? Border.all(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                            width: 1,
-                                          )
-                                        : null,
-                                    borderRadius: GardenRadius.radiusSm,
-                                  ),
-                                  child: GlobalStatCardWidget(
-                                    title: 'Niveau ${entry.key}',
-                                    icon: Icons.location_on,
-                                    data: '${entry.value}',
-                                    level: entry.key,
-                                  ),
-                                ),
                               ),
                             ),
                           ),
