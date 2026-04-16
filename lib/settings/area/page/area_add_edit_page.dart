@@ -7,6 +7,7 @@ import 'package:garden_ui/ui/design_system.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/app_assets.dart';
 import '../../../common/widgets/info_card.dart';
 import '../../../common/widgets/base_item_edit_form_card.dart';
 import '../../../common/widgets/danger_zone.dart';
@@ -110,6 +111,7 @@ class AreaAddEditPage extends StatelessWidget {
                                     description:
                                         'Actions irréversibles sur l\'ensemble des comptes de la ferme.',
                                     deleteButtonLabel: 'Supprimer l\'espace',
+                                    imagePath: AppAssets.deleteArea,
                                     onDelete: () {
                                       context.read<AreaBloc>().add(
                                         DeleteArea(id: area.id),
