@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/areas/bloc/area_bloc.dart';
 import 'package:garden_connect/areas/models/area.dart';
 import 'package:garden_connect/cells/bloc/cell_bloc.dart';
+import 'package:garden_connect/common/widgets/page_shimmers.dart';
 import 'package:garden_connect/mobile/areas/pages/mobile_area_detail_page.dart';
 import 'package:garden_connect/mobile/cells/pages/mobile_cell_detail_page.dart';
 import 'package:garden_connect/mobile/common/widgets/mobile_header.dart';
@@ -17,7 +18,9 @@ class MobileAreasPage extends StatelessWidget {
     final List<HierarchicalMenuItem> children = [];
 
     if (area.areas != null && area.areas!.isNotEmpty) {
-      children.addAll(area.areas!.map((child) => _areaToMenuItem(child, context)));
+      children.addAll(
+        area.areas!.map((child) => _areaToMenuItem(child, context)),
+      );
     }
 
     if (area.cells != null && area.cells!.isNotEmpty) {
@@ -79,14 +82,16 @@ class MobileAreasPage extends StatelessWidget {
       body: BlocBuilder<AreaBloc, AreaState>(
         builder: (context, state) {
           if (state is AreasShimmer || state is AreaInitial) {
-            return const Center(child: CircularProgressIndicator());
+            return const AreasPageShimmer(mobile: true);
           }
           if (state is AreaError) {
             return Center(child: Text('Erreur: ${state.message}'));
           }
           if (state is AreasLoaded) {
             final menuItems =
-                state.areas.map((area) => _areaToMenuItem(area, context)).toList();
+                state.areas
+                    .map((area) => _areaToMenuItem(area, context))
+                    .toList();
             final selectedId = state.selectedArea?.id;
 
             return Padding(
@@ -96,10 +101,7 @@ class MobileAreasPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     SizedBox(height: GardenSpace.gapMd),
-                    Text(
-                      'Espaces',
-                      style: GardenTypography.headingSm,
-                    ),
+                    Text('Espaces', style: GardenTypography.headingSm),
                     SizedBox(height: GardenSpace.gapMd),
                     HierarchicalMenu(
                       items: menuItems,

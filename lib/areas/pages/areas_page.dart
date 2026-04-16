@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../areas/bloc/area_bloc.dart';
 import '../../analytics/bloc/analytics_bloc.dart';
 import '../../common/widgets/page_header.dart';
+import '../../common/widgets/page_shimmers.dart';
 import '../models/area.dart';
 import '../widgets/tab_zones_widget.dart';
 
@@ -60,7 +61,7 @@ class _AreasPageState extends State<AreasPage> {
               analyticsState is AnalyticsInitial ||
               areaState is AreasShimmer ||
               areaState is AreaInitial) {
-            return const Center(child: CircularProgressIndicator());
+            return const AreasPageShimmer();
           } else if (areaState is AreaError) {
             return Center(child: Text('Erreur: ${areaState.message}'));
           } else if (analyticsState is AnalyticsError) {

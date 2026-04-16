@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/alerts/alerts.dart';
 import 'package:garden_connect/common/widgets/empty_state_widget.dart';
+import 'package:garden_connect/common/widgets/page_shimmers.dart';
 import 'package:garden_connect/mobile/alerts/widgets/mobile_alert_history_widget.dart';
 import 'package:garden_connect/mobile/alerts/widgets/mobile_alert_tab_bar.dart';
 import 'package:garden_connect/mobile/alerts/widgets/mobile_alerts_card_widget.dart';
@@ -47,13 +48,15 @@ class _MobileAlertsPageContentState extends State<MobileAlertsPageContent> {
     context.push('/m/alerts/add');
   }
 
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AlertBloc, AlertState>(
       builder: (context, state) {
         if (state is AlertInitial || state is AlertLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Scaffold(
+            appBar: MobileHeader(actionsButtons: []),
+            body: AlertsPageShimmer(mobile: true),
+          );
         }
 
         if (state is AlertError) {
@@ -69,23 +72,24 @@ class _MobileAlertsPageContentState extends State<MobileAlertsPageContent> {
         }
 
         if (state is AlertLoaded) {
-
           final isList = state.displayMode == DisplayMode.list;
 
-          final filteredAlerts = _searchQuery.isEmpty
-              ? state.alerts
-              : state.alerts
-                  .where((a) =>
-                      a.title.toLowerCase().contains(_searchQuery))
-                  .toList();
+          final filteredAlerts =
+              _searchQuery.isEmpty
+                  ? state.alerts
+                  : state.alerts
+                      .where(
+                        (a) => a.title.toLowerCase().contains(_searchQuery),
+                      )
+                      .toList();
 
           return Scaffold(
             appBar: MobileHeader(
               actionsButtons: [
                 if (state.selectedTab == AlertTabType.alerts)
                   IconButton(
-                    onPressed: () =>
-                        _onToggleDisplayMode(context, state.displayMode),
+                    onPressed:
+                        () => _onToggleDisplayMode(context, state.displayMode),
                     icon: Icon(
                       isList ? Icons.grid_view : Icons.list,
                       color: GardenColors.primary.shade500,
@@ -143,28 +147,36 @@ class _MobileAlertsPageContentState extends State<MobileAlertsPageContent> {
                     ),
                     // Onglets Alertes / Historique
                     Row(
-                      children: AlertTabType.values.map((tab) {
-                        final isSelected = state.selectedTab == tab;
-                        return AlertTabItem(
-                          label: tab.label,
-                          icon: tab == AlertTabType.alerts
-                              ? Icons.thunderstorm_outlined
-                              : Icons.history_rounded,
-                          isSelected: isSelected,
-                          onTap: () => context.read<AlertBloc>().add(
-                            AlertChangeTab(tabType: tab),
-                          ),
-                        );
-                      }).toList(),
+                      children:
+                          AlertTabType.values.map((tab) {
+                            final isSelected = state.selectedTab == tab;
+                            return AlertTabItem(
+                              label: tab.label,
+                              icon:
+                                  tab == AlertTabType.alerts
+                                      ? Icons.thunderstorm_outlined
+                                      : Icons.history_rounded,
+                              isSelected: isSelected,
+                              onTap:
+                                  () => context.read<AlertBloc>().add(
+                                    AlertChangeTab(tabType: tab),
+                                  ),
+                            );
+                          }).toList(),
                     ),
                     Expanded(
-                      child: state.selectedTab == AlertTabType.alerts
-                          ? (isList
-                              ? MobileAlertsListWidget(alerts: filteredAlerts)
-                              : MobileAlertsCardWidget(alerts: filteredAlerts))
-                          : MobileAlertHistoryWidget(
-                              alertEvents: state.alertEvents,
-                            ),
+                      child:
+                          state.selectedTab == AlertTabType.alerts
+                              ? (isList
+                                  ? MobileAlertsListWidget(
+                                    alerts: filteredAlerts,
+                                  )
+                                  : MobileAlertsCardWidget(
+                                    alerts: filteredAlerts,
+                                  ))
+                              : MobileAlertHistoryWidget(
+                                alertEvents: state.alertEvents,
+                              ),
                     ),
                   ],
                 ),
@@ -184,4 +196,3 @@ class _MobileAlertsPageContentState extends State<MobileAlertsPageContent> {
     );
   }
 }
-

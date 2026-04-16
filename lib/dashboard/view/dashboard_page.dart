@@ -10,6 +10,7 @@ import '../../areas/bloc/area_bloc.dart';
 import '../../areas/models/area.dart';
 import '../../cells/bloc/cell_bloc.dart';
 import '../../common/widgets/page_header.dart';
+import '../../common/widgets/page_shimmers.dart';
 import '../../core/app_assets.dart';
 import '../widgets/activity_sensors.dart';
 import '../widgets/expandable_card.dart';
@@ -40,7 +41,7 @@ class DashboardPage extends StatelessWidget {
               areaState is AreaInitial ||
               cellState is CellsShimmer ||
               cellState is CellInitial) {
-            return const Center(child: CircularProgressIndicator());
+            return const HomePageShimmer();
           } else if (areaState is AreaError) {
             return Center(child: Text('Erreur: ${areaState.message}'));
           } else if (analyticsState is AnalyticsError) {

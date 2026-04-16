@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/cells/bloc/cell_bloc.dart';
 import 'package:garden_connect/cells/widgets/cells_cards_widget.dart';
+import 'package:garden_connect/common/widgets/page_shimmers.dart';
 import 'package:garden_connect/mobile/cells/widgets/mobile_cells_list_widget.dart';
 import 'package:garden_connect/mobile/common/widgets/mobile_header.dart';
 import 'package:garden_ui/ui/design_system.dart';
@@ -31,7 +32,10 @@ class MobileCellsPage extends StatelessWidget {
     return BlocBuilder<CellBloc, CellState>(
       builder: (context, cellsState) {
         if (cellsState is CellInitial || cellsState is CellsShimmer) {
-          return const Center(child: CircularProgressIndicator());
+          return Scaffold(
+            appBar: const MobileHeader(),
+            body: const CellsPageShimmer(mobile: true),
+          );
         } else if (cellsState is CellError) {
           return Center(child: Text('Erreur: ${cellsState.message}'));
         } else if (cellsState is CellsLoaded) {

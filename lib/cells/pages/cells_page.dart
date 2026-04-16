@@ -6,6 +6,7 @@ import 'package:garden_connect/cells/widgets/cells_cards_widget.dart';
 import 'package:garden_connect/cells/widgets/cells_filter_widget.dart';
 import 'package:garden_connect/cells/widgets/cells_list_widget.dart';
 import 'package:garden_connect/common/widgets/page_header.dart';
+import 'package:garden_connect/common/widgets/page_shimmers.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:go_router/go_router.dart';
 
@@ -38,12 +39,15 @@ class CellsPage extends StatelessWidget {
       body: BlocBuilder<CellBloc, CellState>(
         builder: (context, cellsState) {
           if (cellsState is CellInitial || cellsState is CellsShimmer) {
-            return const Center(child: CircularProgressIndicator());
+            return const CellsPageShimmer();
           } else if (cellsState is CellError) {
             return Center(child: Text('Erreur: ${cellsState.message}'));
           } else if (cellsState is CellsLoaded) {
             return Padding(
-              padding: EdgeInsets.symmetric(vertical: GardenSpace.paddingMd, horizontal: GardenSpace.paddingLg),
+              padding: EdgeInsets.symmetric(
+                vertical: GardenSpace.paddingMd,
+                horizontal: GardenSpace.paddingLg,
+              ),
               child: SingleChildScrollView(
                 child: Column(
                   spacing: GardenSpace.gapLg,
@@ -73,10 +77,8 @@ class CellsPage extends StatelessWidget {
                             child: CellsFilterWidget(
                               filter: cellsState.filter,
                               onChanged:
-                                  (newFilter) => _onFilterChanged(
-                                context,
-                                newFilter,
-                              ),
+                                  (newFilter) =>
+                                      _onFilterChanged(context, newFilter),
                             ),
                           ),
                         Expanded(
