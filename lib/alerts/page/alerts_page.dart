@@ -112,6 +112,7 @@ class AlertsPage extends StatelessWidget {
                   ),
                 ],
               ),
+              SizedBox(height: GardenSpace.gapMd),
               // Menu des onglets
               if (state is AlertLoaded)
                 AlertTabMenu(
