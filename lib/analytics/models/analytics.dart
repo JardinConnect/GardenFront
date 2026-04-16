@@ -270,6 +270,22 @@ enum AnalyticType {
         return AnalyticsFilterEnum.light.unit;
     }
   }
+
+  double get maxValue {
+    switch (this) {
+      case AnalyticType.airTemperature:
+      case AnalyticType.soilTemperature:
+        return 50.0;
+      case AnalyticType.airHumidity:
+      case AnalyticType.soilHumidity:
+      case AnalyticType.deepSoilHumidity:
+        return 100.0;
+      case AnalyticType.light:
+        return 100000.0;
+      case AnalyticType.battery:
+        return 100.0;
+    }
+  }
 }
 
 enum AnalyticAlertStatus {

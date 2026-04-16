@@ -171,7 +171,7 @@ class _HexagonesWidgetState extends State<HexagonesWidget> {
                   vertical: 2,
                 ),
                 child: Text(
-                  '$activeNodesCount nœuds actifs',
+                  '$activeNodesCount cellules actives',
                   style: const TextStyle(color: Colors.white),
                 ),
               ),

@@ -4,6 +4,7 @@ import 'package:garden_ui/ui/foundation/padding/space_design_system.dart';
 
 import '../../common/widgets/empty_state_widget.dart';
 import '../../common/widgets/page_header.dart';
+import '../../common/widgets/page_shimmers.dart';
 import '../bloc/alert_bloc.dart';
 import '../view/alert_card_view.dart';
 import '../view/alert_form_view.dart';
@@ -66,7 +67,7 @@ class AlertsPage extends StatelessWidget {
         if (state is AlertLoaded &&
             state.isShowingEditView &&
             (state.editingAlert == null || state.alertDetails == null)) {
-          return const Center(child: CircularProgressIndicator());
+          return const AlertsPageShimmer();
         }
 
         // Vue d'édition
@@ -108,9 +109,7 @@ class AlertsPage extends StatelessWidget {
                   // Bouton pour ajouter une alerte
                   AddAlertButton(
                     onPressed:
-                        () => context.read<AlertBloc>().add(
-                          AlertShowAddView(),
-                        ),
+                        () => context.read<AlertBloc>().add(AlertShowAddView()),
                   ),
                 ],
               ),
@@ -136,7 +135,7 @@ class AlertsPage extends StatelessWidget {
   /// Construit le contenu selon l'onglet sélectionné
   Widget _buildContent(BuildContext context, AlertState state) {
     if (state is AlertLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const AlertsContentShimmer();
     }
 
     if (state is AlertError) {
@@ -149,7 +148,7 @@ class AlertsPage extends StatelessWidget {
     }
 
     if (state is! AlertLoaded) {
-      return const Center(child: CircularProgressIndicator());
+      return const AlertsContentShimmer();
     }
 
     return switch (state.selectedTab) {

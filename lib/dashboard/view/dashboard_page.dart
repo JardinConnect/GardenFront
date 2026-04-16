@@ -10,6 +10,7 @@ import '../../areas/bloc/area_bloc.dart';
 import '../../areas/models/area.dart';
 import '../../cells/bloc/cell_bloc.dart';
 import '../../common/widgets/page_header.dart';
+import '../../common/widgets/page_shimmers.dart';
 import '../../core/app_assets.dart';
 import '../widgets/activity_sensors.dart';
 import '../widgets/expandable_card.dart';
@@ -40,7 +41,7 @@ class DashboardPage extends StatelessWidget {
               areaState is AreaInitial ||
               cellState is CellsShimmer ||
               cellState is CellInitial) {
-            return const Center(child: CircularProgressIndicator());
+            return const HomePageShimmer();
           } else if (areaState is AreaError) {
             return Center(child: Text('Erreur: ${areaState.message}'));
           } else if (analyticsState is AnalyticsError) {
@@ -73,7 +74,7 @@ class DashboardPage extends StatelessWidget {
                     ),
                     ExpandableCard(
                       icon: AppAssets.hexagon,
-                      title: 'Comparaison entre noeuds',
+                      title: 'Comparaison entre cellules',
                       child: NodeComparison(areas: areas),
                     ),
                     ExpandableCard(
@@ -89,60 +90,60 @@ class DashboardPage extends StatelessWidget {
                               spacing: GardenSpace.gapMd,
                               runSpacing: GardenSpace.gapMd,
                               children:
-                              trackedCells.map((cell) {
-                                return SizedBox(
-                                  width: (constraints.maxWidth - 32) / 3,
-                                  child: AnalyticsSummaryCard(
-                                    name: cell.name,
-                                    batteryPercentage: 89,
-                                    onPressed:
-                                        () =>
-                                        context.go('/cells/${cell.id}'),
-                                    light:
-                                    cell.analytics.light?.first.value
-                                        .toInt() ??
-                                        0,
-                                    rain:
-                                    cell
-                                        .analytics
-                                        .airHumidity
-                                        ?.first
-                                        .value
-                                        .toInt() ??
-                                        0,
-                                    humiditySurface:
-                                    cell
-                                        .analytics
-                                        .soilHumidity
-                                        ?.first
-                                        .value
-                                        .toInt() ??
-                                        0,
-                                    humidityDepth:
-                                    cell
-                                        .analytics
-                                        .deepSoilHumidity
-                                        ?.first
-                                        .value
-                                        .toInt() ??
-                                        0,
-                                    temperatureSurface:
-                                    cell
-                                        .analytics
-                                        .airTemperature
-                                        ?.first
-                                        .value ??
-                                        0,
-                                    temperatureDepth:
-                                    cell
-                                        .analytics
-                                        .soilTemperature
-                                        ?.first
-                                        .value ??
-                                        0,
-                                  ),
-                                );
-                              }).toList(),
+                                  trackedCells.map((cell) {
+                                    return SizedBox(
+                                      width: (constraints.maxWidth - 32) / 3,
+                                      child: AnalyticsSummaryCard(
+                                        name: cell.name,
+                                        batteryPercentage: 89,
+                                        onPressed:
+                                            () =>
+                                                context.go('/cells/${cell.id}'),
+                                        light:
+                                            cell.analytics.light?.first.value
+                                                .toInt() ??
+                                            0,
+                                        rain:
+                                            cell
+                                                .analytics
+                                                .airHumidity
+                                                ?.first
+                                                .value
+                                                .toInt() ??
+                                            0,
+                                        humiditySurface:
+                                            cell
+                                                .analytics
+                                                .soilHumidity
+                                                ?.first
+                                                .value
+                                                .toInt() ??
+                                            0,
+                                        humidityDepth:
+                                            cell
+                                                .analytics
+                                                .deepSoilHumidity
+                                                ?.first
+                                                .value
+                                                .toInt() ??
+                                            0,
+                                        temperatureSurface:
+                                            cell
+                                                .analytics
+                                                .airTemperature
+                                                ?.first
+                                                .value ??
+                                            0,
+                                        temperatureDepth:
+                                            cell
+                                                .analytics
+                                                .soilTemperature
+                                                ?.first
+                                                .value ??
+                                            0,
+                                      ),
+                                    );
+                                  }).toList(),
                             ),
                           );
                         },
@@ -160,33 +161,90 @@ class DashboardPage extends StatelessWidget {
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             gridDelegate:
-                            SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: crossAxisCount,
-                              mainAxisSpacing: GardenSpace.gapMd,
-                              crossAxisSpacing: GardenSpace.gapMd,
-                              mainAxisExtent: 220,
-                            ),
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: crossAxisCount,
+                                  mainAxisSpacing: GardenSpace.gapMd,
+                                  crossAxisSpacing: GardenSpace.gapMd,
+                                  mainAxisExtent: 220,
+                                ),
                             itemCount: trackedAreas.length,
                             itemBuilder: (context, index) {
                               final area = trackedAreas[index];
                               return AnalyticsSummaryCard(
                                 name: area.name,
-                                onPressed: () {},
+                                onPressed:
+                                    () => context.go(
+                                      '/areas?areaId=${Uri.encodeComponent(area.id)}',
+                                    ),
                                 light:
-                                area.analytics.light!.first.value.toInt(),
+                                    (area.analytics.light != null &&
+                                            area.analytics.light!.isNotEmpty)
+                                        ? area.analytics.light!.first.value
+                                            .toInt()
+                                        : 0,
                                 rain:
-                                area.analytics.airHumidity!.first.value
-                                    .toInt(),
+                                    (area.analytics.airHumidity != null &&
+                                            area
+                                                .analytics
+                                                .airHumidity!
+                                                .isNotEmpty)
+                                        ? area
+                                            .analytics
+                                            .airHumidity!
+                                            .first
+                                            .value
+                                            .toInt()
+                                        : 0,
                                 humiditySurface:
-                                area.analytics.soilHumidity!.first.value
-                                    .toInt(),
+                                    (area.analytics.soilHumidity != null &&
+                                            area
+                                                .analytics
+                                                .soilHumidity!
+                                                .isNotEmpty)
+                                        ? area
+                                            .analytics
+                                            .soilHumidity!
+                                            .first
+                                            .value
+                                            .toInt()
+                                        : 0,
                                 humidityDepth:
-                                area.analytics.deepSoilHumidity!.first.value
-                                    .toInt(),
+                                    (area.analytics.deepSoilHumidity != null &&
+                                            area
+                                                .analytics
+                                                .deepSoilHumidity!
+                                                .isNotEmpty)
+                                        ? area
+                                            .analytics
+                                            .deepSoilHumidity!
+                                            .first
+                                            .value
+                                            .toInt()
+                                        : 0,
                                 temperatureSurface:
-                                area.analytics.airTemperature!.first.value,
+                                    (area.analytics.airTemperature != null &&
+                                            area
+                                                .analytics
+                                                .airTemperature!
+                                                .isNotEmpty)
+                                        ? area
+                                            .analytics
+                                            .airTemperature!
+                                            .first
+                                            .value
+                                        : 0,
                                 temperatureDepth:
-                                area.analytics.soilTemperature!.first.value,
+                                    (area.analytics.soilTemperature != null &&
+                                            area
+                                                .analytics
+                                                .soilTemperature!
+                                                .isNotEmpty)
+                                        ? area
+                                            .analytics
+                                            .soilTemperature!
+                                            .first
+                                            .value
+                                        : 0,
                               );
                             },
                           );
