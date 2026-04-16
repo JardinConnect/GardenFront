@@ -23,45 +23,45 @@ class SensorIconsRow extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Température rouge
+        // Température air
         _buildSensorIcon(
           SensorType.airTemperature,
           activeSensorTypes.contains(SensorType.airTemperature),
           0,
         ),
         const SizedBox(width: 6),
-        // Température marron (deuxième thermomètre)
+        // Humidité air (pluie)
         _buildSensorIcon(
-          SensorType.soilTemperature,
-          activeSensorTypes.contains(SensorType.soilTemperature),
+          SensorType.rain,
+          activeSensorTypes.contains(SensorType.rain),
           1,
-        ),
-        const SizedBox(width: 6),
-        // Humidité surface
-        _buildSensorIcon(
-          SensorType.humiditySurface,
-          activeSensorTypes.contains(SensorType.humiditySurface),
-          2,
-        ),
-        const SizedBox(width: 6),
-        // Humidité profondeur
-        _buildSensorIcon(
-          SensorType.humidityDepth,
-          activeSensorTypes.contains(SensorType.humidityDepth),
-          3,
         ),
         const SizedBox(width: 6),
         // Luminosité
         _buildSensorIcon(
           SensorType.light,
           activeSensorTypes.contains(SensorType.light),
+          2,
+        ),
+        const SizedBox(width: 6),
+        // Température sol
+        _buildSensorIcon(
+          SensorType.soilTemperature,
+          activeSensorTypes.contains(SensorType.soilTemperature),
+          3,
+        ),
+        const SizedBox(width: 6),
+        // Humidité basse sol (surface)
+        _buildSensorIcon(
+          SensorType.humiditySurface,
+          activeSensorTypes.contains(SensorType.humiditySurface),
           4,
         ),
         const SizedBox(width: 6),
-        // Pluie
+        // Humidité haute sol (profondeur)
         _buildSensorIcon(
-          SensorType.rain,
-          activeSensorTypes.contains(SensorType.rain),
+          SensorType.humidityDepth,
+          activeSensorTypes.contains(SensorType.humidityDepth),
           5,
         ),
       ],
