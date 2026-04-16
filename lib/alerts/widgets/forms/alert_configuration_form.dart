@@ -65,6 +65,8 @@ class AlertConfigurationForm extends StatelessWidget {
               onWarningRangeChanged: onWarningRangeChanged,
               onWarningEnabledChanged: onWarningEnabledChanged,
             ),
+
+            SizedBox(height: GardenSpace.paddingMd),
           ],
         ),
       ),
