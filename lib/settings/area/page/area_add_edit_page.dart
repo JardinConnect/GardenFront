@@ -56,14 +56,11 @@ class AreaAddEditPage extends StatelessWidget {
                                 availableParents: state.getAvailableParents(
                                   area,
                                 ),
-                                initialParent: state.areas
-                                    .cast<Area?>()
-                                    .firstWhere(
-                                      (a) => a!.id == area.parentId,
-                                      orElse: () => null,
-                                    ),
+                                initialParent: Area.findParentOf(state.areas, area.id),
                                 isViewMode: isViewMode,
                                 icon: Icons.hexagon_outlined,
+                                subtitle: 'Niveau ${area.level}',
+                                rootLabel: 'GAEC Plume de Courgette',
                                 onSave: (name, parentArea) {
                                   context.read<AreaBloc>().add(
                                     UpdateArea(
