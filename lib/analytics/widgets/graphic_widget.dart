@@ -227,6 +227,65 @@ class _GraphicWidgetState extends State<GraphicWidget> {
     );
   }
 
+  DateTime _asDateOnly(DateTime value) {
+    return DateTime(value.year, value.month, value.day);
+  }
+
+  List<int> _buildDayStartIndexes(List<Analytic> data) {
+    if (data.isEmpty) {
+      return const [];
+    }
+
+    final indexes = <int>[0];
+    var previousDay = _asDateOnly(data.first.occurredAt);
+
+    for (var i = 1; i < data.length; i++) {
+      final currentDay = _asDateOnly(data[i].occurredAt);
+      if (currentDay != previousDay) {
+        indexes.add(i);
+        previousDay = currentDay;
+      }
+    }
+
+    final lastIndex = data.length - 1;
+    if (indexes.last != lastIndex) {
+      indexes.add(lastIndex);
+    }
+
+    return indexes;
+  }
+
+  Set<int> _computeVisibleXAxisIndexes(List<Analytic> data, double chartWidth) {
+    if (data.isEmpty) {
+      return const <int>{};
+    }
+
+    final dayIndexes = _buildDayStartIndexes(data);
+    if (dayIndexes.length <= 2) {
+      return dayIndexes.toSet();
+    }
+
+    const minLabelSpacing = 56.0;
+    final safeWidth =
+        chartWidth.isFinite && chartWidth > 0 ? chartWidth : 300.0;
+    final maxLabels =
+        (safeWidth / minLabelSpacing)
+            .floor()
+            .clamp(2, dayIndexes.length)
+            .toInt();
+    final step = (dayIndexes.length / maxLabels).ceil();
+
+    final visibleIndexes = <int>{};
+    for (var i = 0; i < dayIndexes.length; i += step) {
+      visibleIndexes.add(dayIndexes[i]);
+    }
+    visibleIndexes
+      ..add(dayIndexes.first)
+      ..add(dayIndexes.last);
+
+    return visibleIndexes;
+  }
+
   Widget _buildChart(
     double minValue,
     double maxValue,
@@ -240,74 +299,90 @@ class _GraphicWidgetState extends State<GraphicWidget> {
       padding: EdgeInsets.all(GardenSpace.paddingMd),
       child: SizedBox(
         height: 300,
-        child: LineChart(
-          LineChartData(
-            gridData: FlGridData(
-              show: true,
-              drawVerticalLine: true,
-              drawHorizontalLine: true,
-              horizontalInterval: 5,
-              verticalInterval: 1,
-              getDrawingHorizontalLine:
-                  (value) =>
-                      FlLine(color: Colors.grey.shade300, strokeWidth: 1),
-              getDrawingVerticalLine:
-                  (value) =>
-                      FlLine(color: Colors.grey.shade300, strokeWidth: 1),
-            ),
-            titlesData: FlTitlesData(
-              leftTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  reservedSize: 45,
-                  interval: 5,
-                  getTitlesWidget: (value, meta) {
-                    return Text(
-                      value.toStringAsFixed(0),
-                      style: const TextStyle(fontSize: 12),
-                    );
-                  },
-                ),
-              ),
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  reservedSize: 30,
-                  interval: 1,
-                  getTitlesWidget: (value, meta) {
-                    int index = value.toInt();
-                    if (index < 0 || index >= sortedData.length) {
-                      return const SizedBox.shrink();
-                    }
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final visibleXLabelIndexes = _computeVisibleXAxisIndexes(
+              sortedData,
+              constraints.maxWidth,
+            );
+            final dateFormat = DateFormat('dd/MM');
 
-                    final date = sortedData[index].occurredAt;
-                    return Padding(
-                      padding: EdgeInsets.only(top: GardenSpace.paddingSm),
-                      child: Text(
-                        DateFormat('dd/MM').format(date),
-                        style: const TextStyle(fontSize: 10),
-                      ),
-                    );
-                  },
+            return LineChart(
+              LineChartData(
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: true,
+                  drawHorizontalLine: true,
+                  horizontalInterval: 5,
+                  verticalInterval: 1,
+                  getDrawingHorizontalLine:
+                      (value) =>
+                          FlLine(color: Colors.grey.shade300, strokeWidth: 1),
+                  getDrawingVerticalLine:
+                      (value) =>
+                          FlLine(color: Colors.grey.shade300, strokeWidth: 1),
+                ),
+                titlesData: FlTitlesData(
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 45,
+                      interval: 5,
+                      getTitlesWidget: (value, meta) {
+                        return Text(
+                          value.toStringAsFixed(0),
+                          style: const TextStyle(fontSize: 12),
+                        );
+                      },
+                    ),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 38,
+                      interval: 1,
+                      getTitlesWidget: (value, meta) {
+                        final index = value.toInt();
+                        if (value != index.toDouble() ||
+                            index < 0 ||
+                            index >= sortedData.length ||
+                            !visibleXLabelIndexes.contains(index)) {
+                          return const SizedBox.shrink();
+                        }
+
+                        final date = sortedData[index].occurredAt;
+                        return SideTitleWidget(
+                          meta: meta,
+                          space: GardenSpace.paddingSm,
+                          child: Text(
+                            dateFormat.format(date),
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  rightTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                ),
+                borderData: FlBorderData(
+                  show: true,
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                minX: 0,
+                maxX: maxX.toDouble(),
+                minY: minValue - 5,
+                maxY: maxValue + 5,
+                lineBarsData: filteredAnalytics.buildLineBarsDataForTypes(
+                  currentFilter.analyticTypes,
                 ),
               ),
-              rightTitles: AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
-              ),
-              topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            ),
-            borderData: FlBorderData(
-              show: true,
-              border: Border.all(color: Colors.grey.shade300),
-            ),
-            minX: 0,
-            maxX: maxX.toDouble(),
-            minY: minValue - 5,
-            maxY: maxValue + 5,
-            lineBarsData: filteredAnalytics.buildLineBarsDataForTypes(
-              currentFilter.analyticTypes,
-            ),
-          ),
+            );
+          },
         ),
       ),
     );

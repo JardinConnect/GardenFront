@@ -73,7 +73,7 @@ class _AreasPageState extends State<AreasPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   PageHeader(
-                    title: 'Gestion des espaces',
+                    title: 'Vos Espaces',
                     actions: [
                       if (areaState.selectedCell == null)
                         IconButton.filled(

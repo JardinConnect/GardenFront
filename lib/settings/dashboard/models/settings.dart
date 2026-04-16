@@ -55,7 +55,7 @@ enum SettingType {
       case SettingType.showDisconnectedCells || SettingType.allowCellsMoving || SettingType.showCellsBatteryLevel:
         return 'Gestion des cellules';
       case SettingType.showEmptyAreas || SettingType.allowAreaMoving || SettingType.allowAreaRenaming || SettingType.allowAreaDeletion:
-        return 'Gestion des espaces';
+        return 'Vos Espaces';
     }
   }
 
