@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_client_sse/flutter_client_sse.dart';
 import 'package:garden_connect/analytics/models/analytics.dart';
 import 'package:garden_connect/cells/models/cell.dart';
+import 'package:garden_connect/cells/repository/cell_sse_repository.dart';
 import 'package:garden_connect/cells/repository/cell_repository.dart';
 import 'package:meta/meta.dart';
 
@@ -10,8 +14,12 @@ part 'cell_state.dart';
 
 class CellBloc extends Bloc<CellEvent, CellState> {
   final CellRepository _cellRepository;
+  final CellSSERepository _cellSSERepository;
 
-  CellBloc() : _cellRepository = CellRepository(), super(const CellInitial()) {
+  CellBloc()
+    : _cellRepository = CellRepository(),
+        _cellSSERepository = CellSSERepository(),
+      super(const CellInitial()) {
     on<LoadCells>(_loadCells);
     on<RefreshCells>(_refreshCells);
     on<ToggleCellsDisplayMode>(_toggleCellsDisplayMode);
@@ -49,11 +57,24 @@ class CellBloc extends Bloc<CellEvent, CellState> {
   }
 
   _refreshCells(RefreshCells event, Emitter<CellState> emit) async {
+    emit(const CellsShimmer());
+    final errorMsg = "Erreur lors du rafraîchissement des données des cellules";
     try {
-      await _cellRepository.refreshCells();
-      add(LoadCells());
+      await for (final model in _cellSSERepository.subscribeToRefresh()) {
+        final eventName = model.event?.trim() ?? '';
+        if (eventName == 'error') {
+          emit(CellError(message: errorMsg));
+          return;
+        }
+        if (eventName.isNotEmpty &&
+            eventName != 'status' &&
+            eventName != 'waiting_ack') {
+          add(LoadCells());
+          return;
+        }
+      }
     } catch (e) {
-      emit(CellError(message: e.toString()));
+      if (!emit.isDone) emit(CellError(message: e.toString()));
     }
   }
 
@@ -141,7 +162,12 @@ class CellBloc extends Bloc<CellEvent, CellState> {
 
   _updateCell(UpdateCell event, Emitter<CellState> emit) async {
     try {
-      await _cellRepository.updateCell(event.id, event.name, event.isTracked, event.parentId);
+      await _cellRepository.updateCell(
+        event.id,
+        event.name,
+        event.isTracked,
+        event.parentId,
+      );
     } catch (e) {
       emit(CellError(message: e.toString()));
     }

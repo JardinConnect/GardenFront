@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_client_sse/flutter_client_sse.dart';
 import 'package:garden_connect/cells/models/cell_pairing_payload.dart';
-import 'package:garden_connect/cells/repository/cell_pairing_repository.dart';
+import 'package:garden_connect/cells/repository/cell_sse_repository.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +22,7 @@ class CellPairPendingView extends StatefulWidget {
 class _CellPairPendingViewState extends State<CellPairPendingView> {
   static const Duration _pairingTimeout = Duration(seconds: 15);
 
-  final CellPairingRepository _pairingRepository = CellPairingRepository();
+  final CellSSERepository _pairingRepository = CellSSERepository();
   StreamSubscription<SSEModel>? _pairingSubscription;
   Timer? _timeoutTimer;
   Timer? _countdownTimer;
