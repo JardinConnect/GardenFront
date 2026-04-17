@@ -12,4 +12,7 @@ class AppAssets {
   static const String deleteArea = 'assets/delete_area.svg';
   static const String deleteCell = 'assets/delete_cell.svg';
   static const String addCell = 'assets/add_cell.svg';
+  static const String resetSettings = 'assets/reset_settings.svg';
+  static const String deleteRaspi = 'assets/delete_raspi.svg';
+  static const String deleteCellsAnalytics = 'assets/delete_cells_analytics.svg';
 }
