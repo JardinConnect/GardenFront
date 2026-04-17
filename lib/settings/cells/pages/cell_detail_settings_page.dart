@@ -41,7 +41,7 @@ class CellDetailSettingsPage extends StatelessWidget {
             }
 
             final cell = cellsState.cell;
-            final areas = areasState.areas;
+            final areas = areasState.filteredAreas;
 
             return SafeArea(
               child: SingleChildScrollView(

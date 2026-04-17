@@ -24,9 +24,9 @@ class AnalyticsRepository {
 
       // Générer les données pour 365 jours
       List<Map<String, dynamic>> generateAnalyticsForDays(
-        double baseValue,
-        double variation,
-      ) {
+          double baseValue,
+          double variation,
+          ) {
         return List.generate(365, (index) {
           final date = now.subtract(Duration(days: 365 - index));
           // Ajouter plusieurs mesures par jour (par exemple 4 mesures espacées de 6h)
@@ -34,9 +34,9 @@ class AnalyticsRepository {
             final measureDate = date.add(Duration(hours: hourIndex * 6));
             return {
               "value":
-                  (baseValue +
-                          (random.nextDouble() * variation * 2 - variation))
-                      .toDouble(),
+              (baseValue +
+                  (random.nextDouble() * variation * 2 - variation))
+                  .toDouble(),
               "occurred_at": measureDate.toIso8601String(),
               "sensor_id": 12,
               "alert_status": getRandomAlertStatus(),
@@ -109,9 +109,9 @@ class AnalyticsRepository {
   }
 
   Future<List<AlertEvent>> _fetchAlertEvents(
-    DateTime startDate,
-    DateTime endDate,
-  ) async {
+      DateTime startDate,
+      DateTime endDate,
+      ) async {
     final query = Uri(queryParameters: {
       'start_date': _formatApiDateTime(startDate),
       'end_date': _formatApiDateTime(endDate),
@@ -155,8 +155,8 @@ class AnalyticsRepository {
   }
 
   Future<Analytics> _fetchAnalyticsForRequest(
-    _AnalyticsRequest request,
-  ) async {
+      _AnalyticsRequest request,
+      ) async {
     final query = Uri(queryParameters: {
       'start_date': _formatApiDateTime(request.startDate),
       'end_date': _formatApiDateTime(request.endDate),
