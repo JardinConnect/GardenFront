@@ -260,11 +260,14 @@ class _CellConfigureViewState extends State<CellConfigureView> {
     final List<Alert> alerts =
         alertState is AlertLoaded ? alertState.alerts : const [];
 
+    final now = DateTime.now();
+
     final Cell lastCell = Cell(
       id: '1',
       name: 'Cellule #4-1',
       location: 'Espace 2 > Serre A > planche 23',
-      updatedAt: DateTime.now(),
+      updatedAt: now,
+      createdAt: now,
       isTracked: false,
       analytics: Analytics(),
     );
