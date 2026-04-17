@@ -25,7 +25,6 @@ class CellsSettingsPage extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => CellBloc()..add(LoadCells())),
         BlocProvider(create: (context) => CellsUpdateFrequencyFormBloc()),
       ],
       child: Builder(
