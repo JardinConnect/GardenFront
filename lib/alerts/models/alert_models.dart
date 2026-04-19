@@ -358,7 +358,10 @@ class SensorRange {
 
   const SensorRange({required this.min, required this.max});
 
-  Map<String, dynamic> toJson() => {"min": min, "max": max};
+  Map<String, dynamic> toJson() => {
+    "min": double.parse(min.toStringAsFixed(1)),
+    "max": double.parse(max.toStringAsFixed(1)),
+  };
 }
 
 class SensorRequest {

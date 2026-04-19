@@ -11,12 +11,12 @@ class HttpClient {
       return envUrl;
     }
     if (kIsWeb) {
-      return 'http://127.0.0.1:8000/api';
+      return 'http://100.126.179.10:8000/api';
     }
     if (defaultTargetPlatform == TargetPlatform.android) {
-      return 'http://10.0.2.2:8000/api';
+      return 'http://100.126.179.10:8000/api';
     }
-    return 'http://127.0.0.1:8000/api';
+    return 'http://100.126.179.10:8000/api';
   }
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();

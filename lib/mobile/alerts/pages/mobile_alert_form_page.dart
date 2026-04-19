@@ -119,6 +119,7 @@ class _MobileAlertFormPageState extends State<MobileAlertFormPage> {
           body: SafeArea(
             bottom: false,
             child: CustomScrollView(
+              clipBehavior: Clip.none,
               slivers: [
                 SliverToBoxAdapter(
                   child: Padding(

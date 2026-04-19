@@ -118,8 +118,21 @@ class AppRouter {
           ),
           GoRoute(
             path: '/areas',
-            pageBuilder:
-                (context, state) => NoTransitionPage(child: const AreasPage()),
+            pageBuilder: (context, state) {
+              return NoTransitionPage(
+                child: MultiBlocProvider(
+                  providers: [
+                    BlocProvider<AreaBloc>(
+                      create: (context) => AreaBloc()..add(LoadAreas()),
+                    ),
+                    BlocProvider<CellBloc>(
+                      create: (context) => CellBloc()..add(LoadCells()),
+                    ),
+                  ],
+                  child: const AreasPage(),
+                ),
+              );
+            },
             routes: [
               GoRoute(
                 path: 'cells/:id',
@@ -138,8 +151,14 @@ class AppRouter {
           ),
           GoRoute(
             path: '/cells',
-            pageBuilder:
-                (context, state) => NoTransitionPage(child: const CellsPage()),
+            pageBuilder: (context, state) {
+              return NoTransitionPage(
+                child: BlocProvider<CellBloc>(
+                  create: (context) => CellBloc()..add(LoadCells()),
+                  child: const CellsPage(),
+                ),
+              );
+            },
             routes: [
               GoRoute(
                 path: ':id',
@@ -156,10 +175,17 @@ class AppRouter {
               ),
             ],
           ),
+
           GoRoute(
             path: '/alerts',
-            pageBuilder:
-                (context, state) => NoTransitionPage(child: const AlertsPage()),
+            pageBuilder: (context, state) {
+              return NoTransitionPage(
+                child: BlocProvider<AlertBloc>(
+                  create: (context) => AlertBloc()..add(const AlertLoadData()),
+                  child: const AlertsPage(),
+                ),
+              );
+            },
           ),
           GoRoute(
             path: '/settings',
@@ -169,9 +195,10 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: '/areas',
-                pageBuilder:
-                    (context, state) =>
-                        NoTransitionPage(child: const AreaSettingsPage()),
+                pageBuilder: (context, state) {
+                  context.read<AreaBloc>().add(LoadAreas());
+                  return NoTransitionPage(child: const AreaSettingsPage());
+                },
                 routes: [
                   GoRoute(
                     path: 'add',
@@ -206,9 +233,10 @@ class AppRouter {
               ),
               GoRoute(
                 path: '/cells',
-                pageBuilder:
-                    (context, state) =>
-                        NoTransitionPage(child: const CellsSettingsPage()),
+                pageBuilder: (context, state) {
+                  context.read<CellBloc>().add(LoadCells());
+                  return NoTransitionPage(child: const CellsSettingsPage());
+                },
                 routes: [
                   GoRoute(
                     path: 'add',

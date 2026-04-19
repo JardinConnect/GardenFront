@@ -48,7 +48,7 @@ class MobileAlertTabContent extends StatelessWidget {
     switch (currentTab) {
       case MobileAlertFormTab.critical:
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: GardenSpace.paddingLg),
+          padding: EdgeInsets.fromLTRB(GardenSpace.paddingLg, GardenSpace.paddingMd, GardenSpace.paddingLg, 0),
           child: ThresholdsSection(
             selectedSensors: state.selectedSensors,
             criticalRanges: state.criticalRanges,
@@ -71,7 +71,7 @@ class MobileAlertTabContent extends StatelessWidget {
 
       case MobileAlertFormTab.warning:
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: GardenSpace.paddingLg),
+          padding: EdgeInsets.fromLTRB(GardenSpace.paddingLg, GardenSpace.paddingMd, GardenSpace.paddingLg, 0),
           child: ThresholdsSection(
             selectedSensors: state.selectedSensors,
             criticalRanges: state.criticalRanges,
@@ -111,7 +111,7 @@ class MobileAlertTabContent extends StatelessWidget {
 
       case MobileAlertFormTab.danger:
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: GardenSpace.paddingLg),
+          padding: EdgeInsets.fromLTRB(GardenSpace.paddingLg, GardenSpace.paddingMd, GardenSpace.paddingLg, 0),
           child: isEditing && alert != null
               ? AlertDangerZone(alert: alert!)
               : const SizedBox.shrink(),

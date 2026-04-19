@@ -446,7 +446,7 @@ class _CellConfigureViewState extends State<CellConfigureView> {
                           ),
                           Expanded(
                             child: TooltipWidget(
-                              title: _firmwareVersion ?? '-',
+                              title: _firmwareVersion ?? '1.0.1',
                               content: 'Firmware',
                               isReversed: true,
                               isCentered: true,
@@ -464,7 +464,7 @@ class _CellConfigureViewState extends State<CellConfigureView> {
                       ),
                     ),
                     const SizedBox(height: 100),
-                    _buildCellPreviouslyDisabled(lastCell),
+                    // _buildCellPreviouslyDisabled(lastCell),
                     const SizedBox(height: 30),
                     Center(
                       child: Button(

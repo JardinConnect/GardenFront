@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_connect/alerts/bloc/alert_bloc.dart';
+import 'package:garden_connect/alerts/widgets/button/tab_menu.dart';
 import 'package:garden_connect/auth/utils/auth_extension.dart';
 import 'package:garden_ui/ui/design_system.dart';
+import 'package:go_router/go_router.dart';
 
 class MobileHeader extends StatelessWidget implements PreferredSizeWidget {
   final List<IconButton>? actionsButtons;
@@ -40,7 +44,12 @@ class MobileHeader extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         ...?actionsButtons,
         IconButton(
-          onPressed: () => {},
+          onPressed: () {
+            context.read<AlertBloc>().add(
+              AlertChangeTab(tabType: AlertTabType.history),
+            );
+            context.go('/m/alerts');
+          },
           icon: Icon(
             Icons.notifications_rounded,
             color: GardenColors.typography.shade500,
