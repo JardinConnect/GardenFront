@@ -17,6 +17,8 @@ class _SensorConfig {
   final RangeValues defaultCritical;
   final RangeValues defaultWarning;
   final double interval;
+  final double stepSize;
+  final int decimals;
 
   const _SensorConfig({
     required this.min,
@@ -25,6 +27,8 @@ class _SensorConfig {
     required this.defaultCritical,
     required this.defaultWarning,
     required this.interval,
+    required this.stepSize,
+    required this.decimals,
   });
 }
 
@@ -35,6 +39,8 @@ const Map<SensorType, _SensorConfig> _sensorConfigs = {
     max: 50,
     unit: '°C',
     interval: 10,
+    stepSize: 0.1,
+    decimals: 1,
     defaultCritical: RangeValues(0, 30),
     defaultWarning: RangeValues(5, 25),
   ),
@@ -43,6 +49,8 @@ const Map<SensorType, _SensorConfig> _sensorConfigs = {
     max: 50,
     unit: '°C',
     interval: 10,
+    stepSize: 0.1,
+    decimals: 1,
     defaultCritical: RangeValues(0, 35),
     defaultWarning: RangeValues(5, 28),
   ),
@@ -51,6 +59,8 @@ const Map<SensorType, _SensorConfig> _sensorConfigs = {
     max: 100,
     unit: '%',
     interval: 10,
+    stepSize: 0.1,
+    decimals: 1,
     defaultCritical: RangeValues(10, 80),
     defaultWarning: RangeValues(20, 70),
   ),
@@ -59,6 +69,8 @@ const Map<SensorType, _SensorConfig> _sensorConfigs = {
     max: 100,
     unit: '%',
     interval: 10,
+    stepSize: 0.1,
+    decimals: 1,
     defaultCritical: RangeValues(10, 80),
     defaultWarning: RangeValues(20, 70),
   ),
@@ -67,6 +79,8 @@ const Map<SensorType, _SensorConfig> _sensorConfigs = {
     max: 20000,
     unit: 'lm',
     interval: 5000,
+    stepSize: 100,
+    decimals: 0,
     defaultCritical: RangeValues(100, 10000),
     defaultWarning: RangeValues(500, 8000),
   ),
@@ -75,6 +89,8 @@ const Map<SensorType, _SensorConfig> _sensorConfigs = {
     max: 100,
     unit: '%',
     interval: 10,
+    stepSize: 0.1,
+    decimals: 1,
     defaultCritical: RangeValues(1, 80),
     defaultWarning: RangeValues(5, 70),
   ),
@@ -297,6 +313,7 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
                 max: config.max,
                 values: SfRangeValues(range.start, range.end),
                 interval: config.interval,
+                stepSize: config.stepSize,
                 showLabels: true,
                 showTicks: true,
                 enableTooltip: true,
@@ -307,7 +324,8 @@ class _ThresholdsSectionState extends State<ThresholdsSection> {
                   dynamic actualValue,
                   String formattedText,
                 ) {
-                  return '${actualValue.round()}${config.unit}';
+                  final val = (actualValue as double).toStringAsFixed(config.decimals);
+                  return '$val${config.unit}';
                 },
                 onChanged: (SfRangeValues values) {
                   final callback =
