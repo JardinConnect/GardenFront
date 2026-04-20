@@ -11,12 +11,15 @@ class HttpClient {
       return envUrl;
     }
     if (kIsWeb) {
-      return 'http://100.126.179.10:8000/api';
+      return 'http://127.0.0.1:8000/api';
+      // return 'http://100.126.179.10:8000/api';
     }
     if (defaultTargetPlatform == TargetPlatform.android) {
-      return 'http://100.126.179.10:8000/api';
+      return 'http://127.0.0.1:8000/api';
+      // return 'http://100.126.179.10:8000/api';
     }
-    return 'http://100.126.179.10:8000/api';
+    return 'http://127.0.0.1:8000/api';
+    // return 'http://100.126.179.10:8000/api';
   }
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
@@ -170,8 +173,10 @@ class HttpClient {
       final refreshed = await _refreshAccessToken();
       if (refreshed) {
         final retryHeaders = await _getHeaders(includeAuth: true);
-        final retryRequest =
-            http.Request('PATCH', Uri.parse('$baseUrl$endpoint'));
+        final retryRequest = http.Request(
+          'PATCH',
+          Uri.parse('$baseUrl$endpoint'),
+        );
         retryRequest.headers.addAll(retryHeaders);
         if (body != null) {
           retryRequest.body = jsonEncode(body);
@@ -183,7 +188,10 @@ class HttpClient {
     return response;
   }
 
-  Future<http.Response> delete(String endpoint, {bool includeAuth = true}) async {
+  Future<http.Response> delete(
+    String endpoint, {
+    bool includeAuth = true,
+  }) async {
     final headers = await _getHeaders(includeAuth: includeAuth);
     final response = await http.delete(
       Uri.parse('$baseUrl$endpoint'),
