@@ -4,20 +4,37 @@ import 'package:garden_ui/ui/design_system.dart';
 import '../../models/alert_models.dart';
 
 const _availableSensors = [
-  (type: SensorType.airTemperature, displayName: 'Température air'),
-  (type: SensorType.rain, displayName: 'Humidité air'),
-  (type: SensorType.light, displayName: 'Luminosité'),
-  (type: SensorType.soilTemperature, displayName: 'Température sol'),
-  (type: SensorType.humiditySurface, displayName: 'Humidité basse sol'),
-  (type: SensorType.humidityDepth, displayName: 'Humidité haute sol'),
+  (
+    type: SensorType.airTemperature,
+    displayName: 'Température air',
+    sensorId: '1TA',
+  ),
+  (type: SensorType.rain, displayName: 'Humidité air', sensorId: '1HA'),
+  (type: SensorType.light, displayName: 'Luminosité', sensorId: '1L'),
+  (
+    type: SensorType.soilTemperature,
+    displayName: 'Température sol',
+    sensorId: '1TS',
+  ),
+  (
+    type: SensorType.humiditySurface,
+    displayName: 'Humidité basse sol',
+    sensorId: '2HS',
+  ),
+  (
+    type: SensorType.humidityDepth,
+    displayName: 'Humidité haute sol',
+    sensorId: '1HS',
+  ),
 ];
 
 /// Classe représentant un capteur sélectionné avec son type et son index
 class SelectedSensor {
   final SensorType type;
   final int index;
+  final String sensorId;
 
-  const SelectedSensor(this.type, this.index);
+  const SelectedSensor(this.type, this.index, this.sensorId);
 
   @override
   bool operator ==(Object other) {
@@ -71,7 +88,9 @@ class SensorsSection extends StatelessWidget {
     );
   }
 
-  Widget _buildSensorCard(({SensorType type, String displayName}) sensor) {
+  Widget _buildSensorCard(
+    ({SensorType type, String displayName, String sensorId}) sensor,
+  ) {
     final isSelected = selectedSensors.any((s) => s.type == sensor.type);
 
     return GestureDetector(
@@ -80,15 +99,16 @@ class SensorsSection extends StatelessWidget {
         if (isSelected) {
           current.removeWhere((s) => s.type == sensor.type);
         } else {
-          current.add(SelectedSensor(sensor.type, 0));
+          current.add(SelectedSensor(sensor.type, 1, sensor.sensorId));
         }
         onSelectionChanged?.call(current);
       },
       child: Container(
         decoration: BoxDecoration(
-          border: isSelected
-              ? Border.all(color: GardenColors.primary.shade500, width: 1)
-              : null,
+          border:
+              isSelected
+                  ? Border.all(color: GardenColors.primary.shade500, width: 1)
+                  : null,
           borderRadius: GardenRadius.radiusSm,
         ),
         child: GardenCard(
@@ -123,17 +143,20 @@ class SensorsSection extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isSelected ? GardenColors.primary.shade500 : Colors.transparent,
+          color:
+              isSelected ? GardenColors.primary.shade500 : Colors.transparent,
           border: Border.all(
-            color: isSelected
-                ? GardenColors.primary.shade500
-                : Colors.grey.shade400,
+            color:
+                isSelected
+                    ? GardenColors.primary.shade500
+                    : Colors.grey.shade400,
             width: compact ? 1.5 : 2,
           ),
         ),
-        child: isSelected
-            ? Icon(Icons.check, size: iconSize, color: Colors.white)
-            : null,
+        child:
+            isSelected
+                ? Icon(Icons.check, size: iconSize, color: Colors.white)
+                : null,
       ),
     );
   }

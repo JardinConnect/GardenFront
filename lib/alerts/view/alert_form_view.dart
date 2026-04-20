@@ -17,11 +17,7 @@ class AlertFormView extends StatefulWidget {
   // Null en mode création
   final Alert? alert;
   final Map<String, dynamic>? alertDetails;
-  const AlertFormView({
-    super.key,
-    this.alert,
-    this.alertDetails,
-  });
+  const AlertFormView({super.key, this.alert, this.alertDetails});
 
   bool get isEditing => alert != null && alertDetails != null;
 
@@ -40,8 +36,7 @@ class _AlertFormViewState extends State<AlertFormView> {
       // Pré-remplissage depuis les détails existants
       _nameController.text = (widget.alertDetails!['title'] as String?) ?? '';
       _selectedCellIds =
-          (widget.alertDetails!['cellIds'] as List<dynamic>?)
-              ?.cast<String>() ??
+          (widget.alertDetails!['cellIds'] as List<dynamic>?)?.cast<String>() ??
           [];
     }
   }
@@ -233,6 +228,7 @@ class _AlertFormViewState extends State<AlertFormView> {
           return SensorRequest(
             type: sensorTypeToApiString(sensor.type),
             index: sensor.index,
+            sensor_id: sensor.sensorId,
             criticalRange: SensorRange(min: critical.start, max: critical.end),
             warningRange: SensorRange(min: warning.start, max: warning.end),
           );
@@ -282,4 +278,3 @@ class _AlertFormViewState extends State<AlertFormView> {
     }
   }
 }
-
