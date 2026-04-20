@@ -60,10 +60,13 @@ class _MobileAlertFormPageState extends State<MobileAlertFormPage> {
   /// Pré-remplit le formulaire depuis l'état BLoC lors du premier chargement en édition.
   void _initFromState(AlertLoaded state) {
     if (_initialized) return;
-    if (widget.isEditing && state.alertDetails != null && state.editingAlert != null) {
+    if (widget.isEditing &&
+        state.alertDetails != null &&
+        state.editingAlert != null) {
       _nameController.text = (state.alertDetails!['title'] as String?) ?? '';
       _selectedCellIds =
-          (state.alertDetails!['cellIds'] as List<dynamic>?)?.cast<String>() ?? [];
+          (state.alertDetails!['cellIds'] as List<dynamic>?)?.cast<String>() ??
+          [];
       _initialized = true;
     } else if (!widget.isEditing) {
       _initialized = true;
@@ -82,16 +85,19 @@ class _MobileAlertFormPageState extends State<MobileAlertFormPage> {
     return BlocConsumer<AlertBloc, AlertState>(
       listenWhen: (prev, curr) {
         if (curr is! AlertLoaded || prev is! AlertLoaded) return false;
-        final hasNewConflicts = curr.pendingConflicts != null &&
+        final hasNewConflicts =
+            curr.pendingConflicts != null &&
             curr.pendingConflicts!.isNotEmpty &&
             prev.pendingConflicts != curr.pendingConflicts;
         final addViewClosed = prev.isShowingAddView && !curr.isShowingAddView;
-        final editViewClosed = prev.isShowingEditView && !curr.isShowingEditView;
+        final editViewClosed =
+            prev.isShowingEditView && !curr.isShowingEditView;
         return hasNewConflicts || addViewClosed || editViewClosed;
       },
       listener: (context, state) {
         if (state is! AlertLoaded) return;
-        if (state.pendingConflicts != null && state.pendingConflicts!.isNotEmpty) {
+        if (state.pendingConflicts != null &&
+            state.pendingConflicts!.isNotEmpty) {
           _showConflictDialog(context, state.pendingConflicts!);
           return;
         }
@@ -101,12 +107,16 @@ class _MobileAlertFormPageState extends State<MobileAlertFormPage> {
       },
       builder: (context, state) {
         if (state is! AlertLoaded) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         }
 
         if (widget.isEditing &&
             (state.editingAlert == null || state.alertDetails == null)) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         }
 
         _initFromState(state);
@@ -122,17 +132,25 @@ class _MobileAlertFormPageState extends State<MobileAlertFormPage> {
               slivers: [
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: GardenSpace.paddingLg),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: GardenSpace.paddingLg,
+                    ),
                     child: Text(
-                      widget.isEditing ? 'Modifier l\'alerte' : 'Nouvelle alerte',
-                      style: GardenTypography.headingSm.copyWith(fontWeight: FontWeight.bold),
+                      widget.isEditing
+                          ? 'Modifier l\'alerte'
+                          : 'Nouvelle alerte',
+                      style: GardenTypography.headingSm.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
                 SliverToBoxAdapter(child: SizedBox(height: GardenSpace.gapMd)),
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: GardenSpace.paddingLg),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: GardenSpace.paddingLg,
+                    ),
                     child: MobileAlertNameRow(
                       controller: _nameController,
                       isReady: ready,
@@ -143,13 +161,16 @@ class _MobileAlertFormPageState extends State<MobileAlertFormPage> {
                 SliverToBoxAdapter(child: SizedBox(height: GardenSpace.gapMd)),
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: GardenSpace.paddingLg),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: GardenSpace.paddingLg,
+                    ),
                     child: GardenCard(
                       child: SensorsSection(
                         selectedSensors: state.selectedSensors,
-                        onSelectionChanged: (s) => context.read<AlertBloc>().add(
-                          AlertUpdateSensors(sensors: s),
-                        ),
+                        onSelectionChanged:
+                            (s) => context.read<AlertBloc>().add(
+                              AlertUpdateSensors(sensors: s),
+                            ),
                         compact: true,
                       ),
                     ),
@@ -169,7 +190,8 @@ class _MobileAlertFormPageState extends State<MobileAlertFormPage> {
                     currentTab: _currentTab,
                     state: state,
                     selectedCellIds: _selectedCellIds,
-                    onCellSelectionChanged: (ids) => setState(() => _selectedCellIds = ids),
+                    onCellSelectionChanged:
+                        (ids) => setState(() => _selectedCellIds = ids),
                     isEditing: widget.isEditing,
                     alert: state.editingAlert,
                   ),
@@ -190,29 +212,39 @@ class _MobileAlertFormPageState extends State<MobileAlertFormPage> {
   void _submit(AlertLoaded state) {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
-      context.read<AlertBloc>().add(AlertPushError(message: 'Le nom est obligatoire'));
+      context.read<AlertBloc>().add(
+        AlertPushError(message: 'Le nom est obligatoire'),
+      );
       return;
     }
     if (state.selectedSensors.isEmpty) {
-      context.read<AlertBloc>().add(const AlertPushError(message: 'Sélectionnez au moins un capteur'));
+      context.read<AlertBloc>().add(
+        const AlertPushError(message: 'Sélectionnez au moins un capteur'),
+      );
       return;
     }
     if (_selectedCellIds.isEmpty) {
-      context.read<AlertBloc>().add(const AlertPushError(message: 'Sélectionnez au moins une cellule'));
+      context.read<AlertBloc>().add(
+        const AlertPushError(message: 'Sélectionnez au moins une cellule'),
+      );
       return;
     }
 
-    final sensors = state.selectedSensors.map((sensor) {
-      final key = '${sensor.type.index}_${sensor.index}';
-      final critical = state.criticalRanges[key] ?? sensor.type.defaultCriticalRange;
-      final warning = state.warningRanges[key] ?? sensor.type.defaultWarningRange;
-      return SensorRequest(
-        type: sensorTypeToApiString(sensor.type),
-        index: sensor.index,
-        criticalRange: SensorRange(min: critical.start, max: critical.end),
-        warningRange: SensorRange(min: warning.start, max: warning.end),
-      );
-    }).toList();
+    final sensors =
+        state.selectedSensors.map((sensor) {
+          final key = '${sensor.type.index}_${sensor.index}';
+          final critical =
+              state.criticalRanges[key] ?? sensor.type.defaultCriticalRange;
+          final warning =
+              state.warningRanges[key] ?? sensor.type.defaultWarningRange;
+          return SensorRequest(
+            type: sensorTypeToApiString(sensor.type),
+            index: sensor.index,
+            sensor_id: sensor.sensorId,
+            criticalRange: SensorRange(min: critical.start, max: critical.end),
+            warningRange: SensorRange(min: warning.start, max: warning.end),
+          );
+        }).toList();
 
     final request = AlertCreationRequest(
       title: name,
@@ -223,7 +255,9 @@ class _MobileAlertFormPageState extends State<MobileAlertFormPage> {
     );
 
     if (widget.isEditing) {
-      context.read<AlertBloc>().add(AlertValidateUpdate(alertId: widget.alertId!, request: request));
+      context.read<AlertBloc>().add(
+        AlertValidateUpdate(alertId: widget.alertId!, request: request),
+      );
     } else {
       context.read<AlertBloc>().add(AlertValidateAlert(request: request));
     }
@@ -231,17 +265,28 @@ class _MobileAlertFormPageState extends State<MobileAlertFormPage> {
 
   /// Affiche la boîte de dialogue de gestion des conflits, puis traite la réponse
   /// de l'utilisateur en confirmant ou annulant l'opération en cours.
-  Future<void> _showConflictDialog(BuildContext context, List<AlertConflict> conflicts) async {
-    final result = await AlertConflictDialog.show(context, conflicts, isEditing: widget.isEditing);
+  Future<void> _showConflictDialog(
+    BuildContext context,
+    List<AlertConflict> conflicts,
+  ) async {
+    final result = await AlertConflictDialog.show(
+      context,
+      conflicts,
+      isEditing: widget.isEditing,
+    );
     if (!context.mounted) return;
 
     if (widget.isEditing) {
       context.read<AlertBloc>().add(
-        result != null ? AlertConfirmUpdate(overwrite: result) : const AlertCancelUpdate(),
+        result != null
+            ? AlertConfirmUpdate(overwrite: result)
+            : const AlertCancelUpdate(),
       );
     } else {
       context.read<AlertBloc>().add(
-        result != null ? AlertConfirmCreate(overwrite: result) : const AlertCancelCreate(),
+        result != null
+            ? AlertConfirmCreate(overwrite: result)
+            : const AlertCancelCreate(),
       );
     }
   }

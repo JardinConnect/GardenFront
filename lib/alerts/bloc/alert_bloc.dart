@@ -78,7 +78,8 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
         _alertRepository.fetchAlerts(),
         _alertRepository.fetchAlertHistory(),
         _alertRepository.fetchSpaces(),
-        _alertRepository.fetchCells(), // préchargé ici pour éviter le délai en édition/ajout
+        _alertRepository
+            .fetchCells(), // préchargé ici pour éviter le délai en édition/ajout
       ]);
 
       final rawAlerts = results[0] as List<Alert>;
@@ -187,9 +188,10 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
 
     // Reconstruit les capteurs sélectionnés et leurs plages depuis l'API
     // La batterie est exclue : elle ne doit pas apparaître dans la configuration des alertes
-    final sensorsData = (details['sensors'] as List<dynamic>? ?? [])
-        .where((json) => (json['type'] as String?) != 'battery')
-        .toList();
+    final sensorsData =
+        (details['sensors'] as List<dynamic>? ?? [])
+            .where((json) => (json['type'] as String?) != 'battery')
+            .toList();
     final selectedSensors = <SelectedSensor>[];
     final criticalRanges = <String, RangeValues>{};
     final warningRanges = <String, RangeValues>{};
@@ -197,9 +199,10 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
     for (final json in sensorsData) {
       final type = sensorTypeFromString(json['type'] as String);
       final index = (json['index'] as num).toInt();
+      final sensorId = json['sensor_id'];
       final key = '${type.index}_$index';
 
-      selectedSensors.add(SelectedSensor(type, index));
+      selectedSensors.add(SelectedSensor(type, index, sensorId));
 
       if (json['criticalRange'] != null) {
         final cr = json['criticalRange'] as Map<String, dynamic>;
