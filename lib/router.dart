@@ -13,6 +13,7 @@ import 'package:garden_connect/dashboard/view/dashboard_page.dart';
 import 'package:garden_connect/farm-setup/bloc/farm_setup_bloc.dart';
 import 'package:garden_connect/farm-setup/pages/farm_setup_page.dart';
 import 'package:garden_connect/menu/pages/menu_page.dart';
+import 'package:garden_connect/settings/administration/bloc/admin_bloc.dart';
 import 'package:garden_connect/settings/administration/pages/administration_page.dart';
 import 'package:garden_connect/settings/area/page/area_add_edit_page.dart';
 import 'package:garden_connect/settings/area/page/area_settings_page.dart';
@@ -283,8 +284,13 @@ class AppRouter {
               GoRoute(
                 path: '/admin',
                 pageBuilder:
-                    (context, state) =>
-                        NoTransitionPage(child: const AdministrationPage()),
+                    (context, state) => NoTransitionPage(
+                      child: BlocProvider(
+                        create:
+                            (context) => AdminBloc()..add(LoadSystemMetrics()),
+                        child: const AdministrationPage(),
+                      ),
+                    ),
               ),
             ],
           ),

@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:garden_connect/settings/administration/models/system_metrics.dart';
 import 'package:garden_connect/settings/administration/widgets/administration_card_widget.dart';
 import 'package:garden_ui/ui/design_system.dart';
 
 class RaspberryInfosWidget extends StatelessWidget {
-  const RaspberryInfosWidget({super.key});
+  final SystemMetrics systemMetrics;
+
+  const RaspberryInfosWidget({
+    super.key,
+    required this.systemMetrics
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,10 +20,10 @@ class RaspberryInfosWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: GardenSpace.gapMd,
         children: [
-          _RaspberryInfoItem(title: "Température CPU", value: "42°C"),
-          _RaspberryInfoItem(title: "Charge CPU", value: "23%"),
-          _RaspberryInfoItem(title: "Charge RAM", value: "56% (8GB)"),
-          _RaspberryInfoItem(title: "Occuptation Disque", value: "45% (64GB)"),
+          _RaspberryInfoItem(title: "Température CPU", value: "${systemMetrics.cpuTemp}°C"),
+          _RaspberryInfoItem(title: "Charge CPU", value: "${systemMetrics.cpuUsage}%"),
+          _RaspberryInfoItem(title: "Charge RAM", value: "${systemMetrics.ramUsage}% (${systemMetrics.ramTotal}GB)"),
+          _RaspberryInfoItem(title: "Occuptation Disque", value: "${systemMetrics.diskUsage}% (${systemMetrics.diskTotal}GB)"),
         ],
       ),
     );
