@@ -367,12 +367,14 @@ class SensorRange {
 class SensorRequest {
   final String type;
   final int index;
+  final String sensor_id;
   final SensorRange criticalRange;
   final SensorRange warningRange;
 
   const SensorRequest({
     required this.type,
     required this.index,
+    required this.sensor_id,
     required this.criticalRange,
     required this.warningRange,
   });
@@ -380,6 +382,7 @@ class SensorRequest {
   Map<String, dynamic> toJson() => {
     "type": type,
     "index": index,
+    "sensor_id": sensor_id,
     "criticalRange": criticalRange.toJson(),
     "warningRange": warningRange.toJson(),
   };
