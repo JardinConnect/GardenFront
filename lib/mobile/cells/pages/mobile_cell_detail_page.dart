@@ -96,12 +96,22 @@ class MobileCellDetailPage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(
-                            Utils.getLastUpdateText(cellState.cell.updatedAt),
-                            style: GardenTypography.caption.copyWith(
-                              overflow: TextOverflow.ellipsis,
+                          if (cellState.cell.analytics.getLastAnalyticByType(
+                                AnalyticType.battery,
+                              ) !=
+                              null)
+                            Text(
+                              Utils.getLastUpdateText(
+                                cellState.cell.analytics
+                                    .getLastAnalyticByType(
+                                      AnalyticType.battery,
+                                    )!
+                                    .occurredAt,
+                              ),
+                              style: GardenTypography.caption.copyWith(
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          ),
                           BatteryIndicator(
                             batteryPercentage:
                                 cellState.cell.analytics

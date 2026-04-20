@@ -20,9 +20,19 @@ class CellDetailPage extends StatelessWidget {
     this.isFromAreaPage = false,
   });
 
-  void _handleChangeCellTracking(BuildContext context, String name, bool newTrackingValue, String? parentId) {
+  void _handleChangeCellTracking(
+    BuildContext context,
+    String name,
+    bool newTrackingValue,
+    String? parentId,
+  ) {
     context.read<CellBloc>().add(
-      CellTrackingChanged(id: id, name: name, newTrackingValue: newTrackingValue, parentId: parentId),
+      CellTrackingChanged(
+        id: id,
+        name: name,
+        newTrackingValue: newTrackingValue,
+        parentId: parentId,
+      ),
     );
   }
 
@@ -41,12 +51,13 @@ class CellDetailPage extends StatelessWidget {
         } else if (cellState is CellDetailLoaded) {
           return SingleChildScrollView(
             child: Padding(
-              padding: !isFromAreaPage
-                  ? EdgeInsets.symmetric(
-                horizontal: GardenSpace.paddingLg,
-                vertical: GardenSpace.paddingLg,
-              )
-                  : EdgeInsets.zero,
+              padding:
+                  !isFromAreaPage
+                      ? EdgeInsets.symmetric(
+                        horizontal: GardenSpace.paddingLg,
+                        vertical: GardenSpace.paddingLg,
+                      )
+                      : EdgeInsets.zero,
               child: Column(
                 spacing: GardenSpace.gapLg,
                 children: [
@@ -61,7 +72,8 @@ class CellDetailPage extends StatelessWidget {
                             BackTextButton(backFunction: () => context.pop()),
                             IconButton.filled(
                               icon: Icon(Icons.refresh),
-                              onPressed: () => _handleRefreshCellDetail(context),
+                              onPressed:
+                                  () => _handleRefreshCellDetail(context),
                             ),
                           ],
                         ),
@@ -79,17 +91,25 @@ class CellDetailPage extends StatelessWidget {
                               ),
                               GardenToggle(
                                 isEnabled: cellState.cell.isTracked,
-                                onToggle: (bool value) =>
-                                    _handleChangeCellTracking(context, cellState.cell.name, value, cellState.cell.parentId),
+                                onToggle:
+                                    (bool value) => _handleChangeCellTracking(
+                                      context,
+                                      cellState.cell.name,
+                                      value,
+                                      cellState.cell.parentId,
+                                    ),
                                 enabledIcon: Icons.visibility_outlined,
                                 disabledIcon: Icons.visibility_off_outlined,
                               ),
                             ],
                           ),
-                          Text(
-                            Utils.getLastUpdateText(cellState.cell.updatedAt),
-                            style: GardenTypography.caption,
-                          ),
+                          if (cellState.cell.analytics.getLastAnalyticByType(AnalyticType.battery) != null)
+                            Text(
+                              Utils.getLastUpdateText(
+                                cellState.cell.analytics.getLastAnalyticByType(AnalyticType.battery)!.occurredAt,
+                              ),
+                              style: GardenTypography.caption,
+                            ),
                         ],
                       ),
                       Row(
@@ -101,7 +121,12 @@ class CellDetailPage extends StatelessWidget {
                             style: GardenTypography.caption,
                           ),
                           BatteryIndicator(
-                            batteryPercentage: cellState.cell.analytics.getLastAnalyticByType(AnalyticType.battery)?.value.toInt() ?? 0,
+                            batteryPercentage:
+                                cellState.cell.analytics
+                                    .getLastAnalyticByType(AnalyticType.battery)
+                                    ?.value
+                                    .toInt() ??
+                                0,
                             size: BatteryIndicatorSize.sm,
                           ),
                         ],

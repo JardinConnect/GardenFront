@@ -10,6 +10,7 @@ import 'package:garden_connect/common/widgets/base_item_edit_form_card.dart';
 import 'package:garden_connect/core/app_assets.dart';
 import 'package:garden_ui/ui/design_system.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class CellDetailSettingsPage extends StatelessWidget {
   final String id;
@@ -90,18 +91,18 @@ class CellDetailSettingsPage extends StatelessWidget {
                               children: [
                                 InfoCard(
                                   leadingIcon: Icons.sensors,
-                                  sections: const [
+                                  sections: [
                                     InfoSectionData(
                                       icon: Icons.person_add_outlined,
                                       label: 'Création',
-                                      name: 'Alexandre LEFAY',
-                                      date: '15 janvier 2025',
+                                      name: cell.createdBy != null ? '${cell.createdBy!.firstName} ${cell.createdBy!.lastName}' : '-',
+                                      date: DateFormat.yMMMMd('fr_FR').format(cell.createdAt),
                                     ),
                                     InfoSectionData(
                                       icon: Icons.edit_outlined,
                                       label: 'Dernière modification',
-                                      name: 'Benjamin COUET',
-                                      date: '20 janvier 2025',
+                                      name: cell.updatedBy != null ? '${cell.updatedBy!.firstName} ${cell.updatedBy!.lastName}' : '-',
+                                      date: cell.updatedAt != null ? DateFormat.yMMMMd('fr_FR').format(cell.createdAt) : '-',
                                     ),
                                   ],
                                 ),
