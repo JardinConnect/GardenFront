@@ -28,8 +28,6 @@ class CellRepository {
     }
   }
 
-  Future<void> refreshCells() async {}
-
   Future<void> refreshCell(String id) async {}
 
   Future<void> updateCell(

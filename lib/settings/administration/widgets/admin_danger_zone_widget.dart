@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:garden_connect/common/widgets/generic_dialog.dart';
 import 'package:garden_connect/core/app_assets.dart';
 import 'package:garden_connect/settings/administration/widgets/administration_card_widget.dart';
