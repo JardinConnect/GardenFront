@@ -12,14 +12,15 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
   AdminBloc()
     : _adminRepository = AdminRepository(),
       super(const AdminInitial()) {
-    on<LoadSystemMetrics>(_loadSystemMetrics);
+    on<LoadAdminData>(_loadAdminData);
   }
 
-  _loadSystemMetrics(LoadSystemMetrics event, Emitter<AdminState> emit) async {
+  _loadAdminData(LoadAdminData event, Emitter<AdminState> emit) async {
     emit(const AdminShimmer());
     try {
       final systemMetrics = await _adminRepository.fetchSystemMetrics();
-      emit(AdminLoaded(systemMetrics: systemMetrics));
+      final vpnAuthURL = await _adminRepository.fetchVpnAuthURL();
+      emit(AdminLoaded(systemMetrics: systemMetrics, vpnAuthURL: vpnAuthURL));
     } catch (e) {
       emit(AdminError(message: e.toString()));
     }

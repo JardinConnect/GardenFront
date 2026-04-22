@@ -1,68 +1,89 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garden_connect/common/widgets/page_shimmers.dart';
+import 'package:garden_connect/settings/administration/bloc/admin_bloc.dart';
 import 'package:garden_connect/settings/administration/widgets/administration_card_widget.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:garden_ui/ui/design_system.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SystemInfosWidget extends StatelessWidget {
   const SystemInfosWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return AdministrationCardWidget(
-      title: "Informations système",
-      subtitle: "État et métriques de votre cellule mère",
-      icon: Icons.storage_outlined,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: GardenSpace.gapMd,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: GardenSpace.gapMd,
-            children: [
-              Row(
-                spacing: GardenSpace.gapSm,
-                children: [
-                  Expanded(
-                    child: _VersionCardWidget(
-                      title: "Version Logiciel",
-                      value: "1.0.21",
-                      icon: Icons.storage_outlined,
-                      isUpToDate: true,
+    return BlocBuilder<AdminBloc, AdminState>(
+      builder: (context, state) {
+        if (state is AdminInitial || state is AdminShimmer) {
+          return const CellsPageShimmer();
+        } else if (state is AdminError) {
+          return Center(child: Text('Erreur: ${state.message}'));
+        } else if (state is AdminLoaded) {
+          return AdministrationCardWidget(
+            title: "Informations système",
+            subtitle: "État et métriques de votre cellule mère",
+            icon: Icons.storage_outlined,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: GardenSpace.gapMd,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: GardenSpace.gapMd,
+                  children: [
+                    Row(
+                      spacing: GardenSpace.gapSm,
+                      children: [
+                        Expanded(
+                          child: _VersionCardWidget(
+                            title: "Version Logiciel",
+                            value: "1.0.21",
+                            icon: Icons.storage_outlined,
+                            isUpToDate: true,
+                          ),
+                        ),
+                        Expanded(
+                          child: _VersionCardWidget(
+                            title: "Firmware Cellules",
+                            value: "1.0.1",
+                            icon: Icons.sensors_outlined,
+                            isUpToDate: true,
+                          ),
+                        ),
+                        Expanded(
+                          child: _VersionCardWidget(
+                            title: "OS",
+                            value: "GardenConnectOS",
+                            icon: Icons.view_in_ar_outlined,
+                            isUpToDate: false,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  Expanded(
-                    child: _VersionCardWidget(
-                      title: "Firmware Cellules",
-                      value: "1.0.1",
-                      icon: Icons.sensors_outlined,
-                      isUpToDate: true,
+                    Text("État des services", style: GardenTypography.bodyLg),
+                    Column(
+                      spacing: GardenSpace.gapSm,
+                      children: [
+                        _buildServiceCard("Broker MQTT", () => {}),
+                        _buildServiceCard("WIFI", () => {}),
+                        _buildServiceCard("VPN", () async {
+                          if (state.vpnAuthURL != null) {
+                            final Uri url = Uri.parse(state.vpnAuthURL!);
+                            await launchUrl(url, webOnlyWindowName: '_blank');
+                          }
+                        }),
+                        _buildServiceCard("Module LoRa", () => {}),
+                      ],
                     ),
-                  ),
-                  Expanded(
-                    child: _VersionCardWidget(
-                      title: "OS",
-                      value: "GardenConnectOS",
-                      icon: Icons.view_in_ar_outlined,
-                      isUpToDate: false,
-                    ),
-                  ),
-                ],
-              ),
-              Text("État des services", style: GardenTypography.bodyLg),
-              Column(
-                spacing: GardenSpace.gapSm,
-                children: [
-                  _buildServiceCard("Broker MQTT", () => {}),
-                  _buildServiceCard("WIFI", () => {}),
-                  _buildServiceCard("VPN", () => {}),
-                  _buildServiceCard("Module LoRa", () => {}),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        } else {
+          return const Center(child: Text('Erreur'));
+        }
+      },
     );
   }
 
@@ -125,19 +146,31 @@ class _VersionCardWidget extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(
                     color: GardenColors.primary.shade500,
-                    borderRadius: GardenRadius.radiusSm
+                    borderRadius: GardenRadius.radiusSm,
                   ),
                   child: Padding(
-                    padding: EdgeInsetsGeometry.symmetric(horizontal: GardenSpace.paddingSm, vertical: 2.0),
+                    padding: EdgeInsetsGeometry.symmetric(
+                      horizontal: GardenSpace.paddingSm,
+                      vertical: 2.0,
+                    ),
                     child: Row(
                       spacing: GardenSpace.gapXs,
                       children: [
-                        Icon(Icons.check, color: GardenColors.base.shade50, size: 20),
-                        Text("À jour", style: GardenTypography.caption.copyWith(color: GardenColors.base.shade50))
+                        Icon(
+                          Icons.check,
+                          color: GardenColors.base.shade50,
+                          size: 20,
+                        ),
+                        Text(
+                          "À jour",
+                          style: GardenTypography.caption.copyWith(
+                            color: GardenColors.base.shade50,
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                )
+                ),
             ],
           ),
           Row(
