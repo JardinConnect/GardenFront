@@ -199,7 +199,7 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
     for (final json in sensorsData) {
       final type = sensorTypeFromString(json['type'] as String);
       final index = (json['index'] as num).toInt();
-      final sensorId = json['sensor_id'];
+      final sensorId = (json['sensor_id'] as String?) ?? '';
       final key = '${type.index}_$index';
 
       selectedSensors.add(SelectedSensor(type, index, sensorId));
