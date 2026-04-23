@@ -187,9 +187,12 @@ class _HexagonesWidgetState extends State<HexagonesWidget> {
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
             )
-            : Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: _buildHexagons(context, filteredAreas),
+            : SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: _buildHexagons(context, filteredAreas),
+              ),
             ),
       ],
     );

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class HttpClient {
@@ -22,14 +22,14 @@ class HttpClient {
     // return 'http://100.126.179.10:8000/api';
   }
 
-  final FlutterSecureStorage _storage = const FlutterSecureStorage();
-
   Future<String?> _getToken() async {
-    return await _storage.read(key: 'auth_token');
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('auth_token');
   }
 
   Future<String?> _getRefreshToken() async {
-    return await _storage.read(key: 'refresh_token');
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('refresh_token');
   }
 
   Future<Map<String, String>> _getHeaders({bool includeAuth = true}) async {
@@ -68,19 +68,11 @@ class HttpClient {
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      await _storage.write(
-        key: 'auth_token',
-        value: responseData['access_token'],
-      );
-      await _storage.write(
-        key: 'refresh_token',
-        value: responseData['refresh_token'],
-      );
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('auth_token', responseData['access_token']);
+      await prefs.setString('refresh_token', responseData['refresh_token']);
       if (responseData['user'] != null) {
-        await _storage.write(
-          key: 'user',
-          value: jsonEncode(responseData['user']),
-        );
+        await prefs.setString('user', jsonEncode(responseData['user']));
       }
       return true;
     }

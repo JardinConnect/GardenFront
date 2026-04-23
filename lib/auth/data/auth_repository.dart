@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:garden_connect/auth/utils/http_client.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user.dart';
 
 class AuthRepository {
   final HttpClient _httpClient = HttpClient();
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+
+  Future<SharedPreferences> get _prefs => SharedPreferences.getInstance();
 
   Future<User?> login(String email, String password) async {
     try {
@@ -22,12 +23,10 @@ class AuthRepository {
         String refreshToken = responseData['refresh_token'];
         User user = User.fromJson(responseData['user']);
 
-        await _secureStorage.write(key: 'auth_token', value: token);
-        await _secureStorage.write(key: 'refresh_token', value: refreshToken);
-        await _secureStorage.write(
-          key: 'user',
-          value: jsonEncode(user.toJson()),
-        );
+        final prefs = await _prefs;
+        await prefs.setString('auth_token', token);
+        await prefs.setString('refresh_token', refreshToken);
+        await prefs.setString('user', jsonEncode(user.toJson()));
 
         return User(
           id: user.id,
@@ -52,15 +51,18 @@ class AuthRepository {
   }
 
   Future<void> logout() async {
-    await _secureStorage.deleteAll();
+    final prefs = await _prefs;
+    await prefs.clear();
   }
 
   Future<String?> getToken() async {
-    return await _secureStorage.read(key: 'auth_token');
+    final prefs = await _prefs;
+    return prefs.getString('auth_token');
   }
 
   Future<String?> getRefreshToken() async {
-    return await _secureStorage.read(key: 'refresh_token');
+    final prefs = await _prefs;
+    return prefs.getString('refresh_token');
   }
 
   Future<bool> refreshAccessToken() async {
@@ -84,19 +86,11 @@ class AuthRepository {
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        await _secureStorage.write(
-          key: 'auth_token',
-          value: responseData['access_token'],
-        );
-        await _secureStorage.write(
-          key: 'refresh_token',
-          value: responseData['refresh_token'],
-        );
+        final prefs = await _prefs;
+        await prefs.setString('auth_token', responseData['access_token']);
+        await prefs.setString('refresh_token', responseData['refresh_token']);
         if (responseData['user'] != null) {
-          await _secureStorage.write(
-            key: 'user',
-            value: jsonEncode(responseData['user']),
-          );
+          await prefs.setString('user', jsonEncode(responseData['user']));
         }
         return true;
       }
@@ -107,7 +101,8 @@ class AuthRepository {
   }
 
   Future<User?> getUser() async {
-    String? userUnformatted = await _secureStorage.read(key: 'user');
+    final prefs = await _prefs;
+    String? userUnformatted = prefs.getString('user');
     if (userUnformatted != null) {
       Map<String, dynamic> userMap = jsonDecode(userUnformatted);
       return User.fromJson(userMap);
