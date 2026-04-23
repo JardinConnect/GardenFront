@@ -70,6 +70,23 @@ class SystemInfosWidget extends StatelessWidget {
                           if (state.vpnAuthURL != null) {
                             final Uri url = Uri.parse(state.vpnAuthURL!);
                             await launchUrl(url, webOnlyWindowName: '_blank');
+                          } else {
+                            GardenDialog.show(
+                              context,
+                              title: "Connexion au VPN",
+                              content: Padding(
+                                padding: EdgeInsetsGeometry.symmetric(
+                                  horizontal: GardenSpace.paddingMd,
+                                  vertical: GardenSpace.paddingLg,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "Vous êtes déjà connecté au VPN.",
+                                    style: GardenTypography.headingSm,
+                                  ),
+                                ),
+                              ),
+                            );
                           }
                         }),
                         _buildServiceCard("Module LoRa", () => {}),
