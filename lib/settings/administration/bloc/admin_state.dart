@@ -22,6 +22,7 @@ final class AdminShimmer extends AdminState {
 
 final class AdminLoaded extends AdminState {
   final SystemMetrics systemMetrics;
+  final String? vpnAuthURL;
 
-  const AdminLoaded({required this.systemMetrics});
+  const AdminLoaded({required this.systemMetrics, this.vpnAuthURL});
 }

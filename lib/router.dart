@@ -287,7 +287,7 @@ class AppRouter {
                     (context, state) => NoTransitionPage(
                       child: BlocProvider(
                         create:
-                            (context) => AdminBloc()..add(LoadSystemMetrics()),
+                            (context) => AdminBloc()..add(LoadAdminData()),
                         child: const AdministrationPage(),
                       ),
                     ),

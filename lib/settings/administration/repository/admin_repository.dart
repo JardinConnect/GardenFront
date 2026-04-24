@@ -14,4 +14,14 @@ class AdminRepository {
       throw Exception('Erreur lors de la récupération des métriques systèmes');
     }
   }
+
+  Future<String?> fetchVpnAuthURL() async {
+    try {
+      final response = await _httpClient.get('/network/tailscale');
+      final responseData = jsonDecode(response.body);
+      return responseData['auth_url'] as String?;
+    } catch (e) {
+      throw Exception("Erreur lors de l'url d'authentification au VPN");
+    }
+  }
 }
