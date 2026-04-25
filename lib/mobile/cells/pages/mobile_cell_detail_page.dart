@@ -97,14 +97,14 @@ class MobileCellDetailPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           if (cellState.cell.analytics.getLastAnalyticByType(
-                                AnalyticType.battery,
+                                AnalyticType.light,
                               ) !=
                               null)
                             Text(
                               Utils.getLastUpdateText(
                                 cellState.cell.analytics
                                     .getLastAnalyticByType(
-                                      AnalyticType.battery,
+                                      AnalyticType.light,
                                     )!
                                     .occurredAt,
                               ),

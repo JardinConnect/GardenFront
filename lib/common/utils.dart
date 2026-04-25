@@ -5,7 +5,7 @@ class Utils {
     final lastUpdateAtUTC = DateTime.parse("${lastUpdateAt}Z");
     result.write("Mis à jour il y a");
 
-    Duration difference = DateTime.now().difference(lastUpdateAtUTC.toLocal());
+    Duration difference = DateTime.now().difference(lastUpdateAtUTC.toLocal()).abs();
 
     if (difference.inSeconds < 60) {
       result.write(
