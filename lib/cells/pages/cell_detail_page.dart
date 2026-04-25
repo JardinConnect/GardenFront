@@ -103,10 +103,10 @@ class CellDetailPage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          if (cellState.cell.analytics.getLastAnalyticByType(AnalyticType.battery) != null)
+                          if (cellState.cell.analytics.getLastAnalyticByType(AnalyticType.light) != null)
                             Text(
                               Utils.getLastUpdateText(
-                                cellState.cell.analytics.getLastAnalyticByType(AnalyticType.battery)!.occurredAt,
+                                cellState.cell.analytics.getLastAnalyticByType(AnalyticType.light)!.occurredAt,
                               ),
                               style: GardenTypography.caption,
                             ),
