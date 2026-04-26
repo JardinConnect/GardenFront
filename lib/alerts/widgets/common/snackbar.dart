@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'dart:math' as math;
 
+import '../../models/alert_models.dart';
+
 /// Gestionnaire de toasts empilables (max 3 simultanés)
 class _ToastManager {
   static final _ToastManager instance = _ToastManager._();
@@ -130,5 +132,20 @@ void showSnackBarError(BuildContext context, String message) {
       severity: NotificationSeverity.warning,
     ),
     const Duration(seconds: 5),
+  );
+}
+
+void showAlertEventToast(BuildContext context, AlertEvent event) {
+  final isCritical = event.severity == 'critical';
+  _ToastManager.instance.show(
+    context,
+    NotificationToast(
+      title: isCritical ? 'Alerte critique' : 'Avertissement',
+      message: '${event.cellName} - ${event.alertTitle}',
+      size: NotificationSize.md,
+      severity:
+          isCritical ? NotificationSeverity.alert : NotificationSeverity.warning,
+    ),
+    const Duration(seconds: 10),
   );
 }

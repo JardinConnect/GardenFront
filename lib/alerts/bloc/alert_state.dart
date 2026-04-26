@@ -44,6 +44,8 @@ final class AlertLoaded extends AlertState {
   final String? successMessage;
   final String? errorMessage;
 
+  final AlertEvent? latestSSEAlertEvent;
+
   AlertLoaded({
     required this.alerts,
     required this.sensorAlerts,
@@ -65,6 +67,7 @@ final class AlertLoaded extends AlertState {
     this.pendingRequest,
     this.successMessage,
     this.errorMessage,
+    this.latestSSEAlertEvent,
   });
 
   AlertLoaded copyWith({
@@ -94,6 +97,8 @@ final class AlertLoaded extends AlertState {
     bool clearSuccessMessage = false,
     String? errorMessage,
     bool clearErrorMessage = false,
+    AlertEvent? latestSSEAlertEvent,
+    bool clearLatestSSEAlertEvent = false,
   }) {
     return AlertLoaded(
       alerts: alerts ?? this.alerts,
@@ -122,6 +127,10 @@ final class AlertLoaded extends AlertState {
           clearSuccessMessage ? null : (successMessage ?? this.successMessage),
       errorMessage:
           clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
+      latestSSEAlertEvent:
+          clearLatestSSEAlertEvent
+              ? null
+              : (latestSSEAlertEvent ?? this.latestSSEAlertEvent),
     );
   }
 }

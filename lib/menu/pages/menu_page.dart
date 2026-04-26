@@ -5,6 +5,9 @@ import 'package:garden_connect/core/app_assets.dart';
 import 'package:garden_ui/ui/components.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../alerts/bloc/alert_bloc.dart';
+import '../../alerts/widgets/common/snackbar.dart' as snackbar;
+
 class MenuPage extends StatelessWidget {
   final Widget child;
 
@@ -15,17 +18,34 @@ class MenuPage extends StatelessWidget {
     final currentPath = GoRouterState.of(context).uri.path;
     final isInSettings = currentPath.startsWith('/settings');
 
-    return Scaffold(
-      body: Row(
-        children: [
-          Expanded(
-            flex: 2,
-            child: isInSettings
-                ? _buildSettingsMenu(context, currentPath)
-                : _buildMainMenu(context, currentPath),
-          ),
-          Expanded(flex: 8, child: child),
-        ],
+    return BlocListener<AlertBloc, AlertState>(
+      listenWhen: (previous, current) {
+        if (current is! AlertLoaded) return false;
+        if (previous is! AlertLoaded) return current.latestSSEAlertEvent != null;
+        return current.latestSSEAlertEvent != null &&
+            current.latestSSEAlertEvent != previous.latestSSEAlertEvent;
+      },
+      listener: (context, state) {
+        if (state is! AlertLoaded) return;
+        final event = state.latestSSEAlertEvent;
+        if (event == null) return;
+
+        snackbar.showAlertEventToast(context, event);
+
+        context.read<AlertBloc>().add(const AlertSSEClearNotification());
+      },
+      child: Scaffold(
+        body: Row(
+          children: [
+            Expanded(
+              flex: 2,
+              child: isInSettings
+                  ? _buildSettingsMenu(context, currentPath)
+                  : _buildMainMenu(context, currentPath),
+            ),
+            Expanded(flex: 8, child: child),
+          ],
+        ),
       ),
     );
   }

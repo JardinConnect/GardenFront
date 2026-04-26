@@ -89,7 +89,8 @@ class AppRouter {
                   create: (context) => CellBloc()..add(LoadCells()),
                 ),
                 BlocProvider<AlertBloc>(
-                  create: (context) => AlertBloc()..add(const AlertLoadData()),
+                  create: (context) =>
+                      AlertBloc(enableSSE: true)..add(const AlertLoadData()),
                 ),
               ],
               child: MenuPage(child: child),

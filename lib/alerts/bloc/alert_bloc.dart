@@ -1,9 +1,13 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../models/alert_models.dart';
 import '../page/alerts_page.dart';
 import '../repository/alert_repository.dart';
+import '../repository/alert_sse_repository.dart';
 import '../widgets/button/tab_menu.dart';
 import '../widgets/forms/sensors_section.dart';
 
@@ -12,8 +16,20 @@ part 'alert_state.dart';
 
 class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
   final AlertRepository _alertRepository;
+  final AlertSSERepository _alertSSERepository;
 
-  AlertBloc() : _alertRepository = AlertRepository(), super(AlertInitial()) {
+  StreamSubscription<dynamic>? _sseSubscription;
+
+  Timer? _sseReconnectTimer;
+
+  Duration _sseReconnectDelay = const Duration(seconds: 5);
+
+  final bool enableSSE;
+
+  AlertBloc({this.enableSSE = false})
+    : _alertRepository = AlertRepository(),
+      _alertSSERepository = AlertSSERepository(),
+      super(AlertInitial()) {
     // Chargement
     on<AlertLoadData>(_loadData);
     on<AlertLoadCells>(_loadCells);
@@ -52,6 +68,74 @@ class AlertBloc extends Bloc<AlertBlocEvent, AlertState> {
     on<AlertClearSuccessMessage>(_clearSuccessMessage);
     on<AlertClearErrorMessage>(_clearErrorMessage);
     on<AlertPushError>(_pushError);
+
+    on<AlertSSENewEvent>(_handleSSENewEvent);
+    on<AlertSSEClearNotification>(_clearSSENotification);
+
+    if (enableSSE) {
+      _startSSESubscription();
+    }
+  }
+
+ void _startSSESubscription() {
+    _sseSubscription?.cancel();
+    _sseSubscription = _alertSSERepository.subscribeToAlertEvents().listen(
+      (model) {
+        final eventName = model.event?.trim() ?? '';
+        if (eventName == 'alert_event') {
+          try {
+            final raw = jsonDecode(model.data ?? '{}') as Map<String, dynamic>;
+            final alertEventJson = raw['alertEvent'] as Map<String, dynamic>?;
+            if (alertEventJson != null) {
+              add(AlertSSENewEvent(alertEvent: AlertEvent.fromJson(alertEventJson)));
+            }
+          } catch (_) {}
+        }
+      },
+      onError: (_) => _scheduleSSEReconnect(),
+      onDone: () => _scheduleSSEReconnect(),
+      cancelOnError: false,
+    );
+  }
+
+  void _scheduleSSEReconnect() {
+    if (isClosed) return;
+    _sseReconnectTimer?.cancel();
+    _sseReconnectTimer = Timer(_sseReconnectDelay, () {
+      if (isClosed) return;
+      _sseReconnectDelay = Duration(
+        seconds: (_sseReconnectDelay.inSeconds * 2).clamp(5, 30),
+      );
+      _startSSESubscription();
+    });
+  }
+
+  void _handleSSENewEvent(AlertSSENewEvent event, Emitter<AlertState> emit) {
+    final s = _loaded();
+    if (s == null) return;
+    _sseReconnectDelay = const Duration(seconds: 5);
+    emit(
+      s.copyWith(
+        alertEvents: [event.alertEvent, ...s.alertEvents],
+        latestSSEAlertEvent: event.alertEvent,
+      ),
+    );
+  }
+
+  void _clearSSENotification(
+    AlertSSEClearNotification event,
+    Emitter<AlertState> emit,
+  ) {
+    final s = _loaded();
+    if (s == null) return;
+    emit(s.copyWith(clearLatestSSEAlertEvent: true));
+  }
+
+  @override
+  Future<void> close() async {
+    _sseReconnectTimer?.cancel();
+    await _sseSubscription?.cancel();
+    return super.close();
   }
 
   // -- Helpers --

@@ -145,3 +145,12 @@ final class AlertPushError extends AlertBlocEvent {
   final String message;
   const AlertPushError({required this.message});
 }
+
+final class AlertSSENewEvent extends AlertBlocEvent {
+  final AlertEvent alertEvent;
+  const AlertSSENewEvent({required this.alertEvent});
+}
+
+final class AlertSSEClearNotification extends AlertBlocEvent {
+  const AlertSSEClearNotification();
+}
