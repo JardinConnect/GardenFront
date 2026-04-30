@@ -140,7 +140,7 @@ class AlertTable extends StatelessWidget {
                   Icon(
                     Icons.warning_amber_rounded,
                     size: 16,
-                    color: Colors.red.shade600,
+                    color:  event.severity ==  'critical' ? Colors.red.shade600 : Colors.orange.shade600,
                   ),
                   const SizedBox(width: 6),
                   Flexible(
@@ -177,7 +177,7 @@ class AlertTable extends StatelessWidget {
             Expanded(
               flex: 2,
               child: Text(
-                DateFormat('HH:mm').format(event.timestamp),
+                DateFormat('HH:mm').format(DateTime.parse("${event.timestamp}Z").toLocal()),
                 style: GardenTypography.bodyLg,
               ),
             ),
