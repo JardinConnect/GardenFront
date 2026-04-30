@@ -50,7 +50,7 @@ class MobileAppRouter {
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return BlocProvider(
-            create: (_) => AlertBloc()..add(const AlertLoadData()),
+            create: (_) => AlertBloc(enableSSE: true)..add(const AlertLoadData()),
             child: MobileHome(navigationShell: navigationShell),
           );
         },
