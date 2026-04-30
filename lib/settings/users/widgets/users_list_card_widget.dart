@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garden_connect/auth/utils/auth_extension.dart';
 import 'package:garden_connect/settings/users/bloc/users_bloc.dart';
+import 'package:garden_ui/ui/design_system.dart';
 import 'package:garden_ui/ui/widgets/atoms/Card/card.dart';
 
 import '../../../auth/models/user.dart';
@@ -25,9 +26,9 @@ class UserListCardWidget extends StatelessWidget {
           dataRowMinHeight: 52,
           dataRowMaxHeight: 64,
           columns: [
-            const DataColumn(label: Text('Prénom / Nom')),
-            const DataColumn(label: Text('Email')),
-            const DataColumn(label: Text('Rôle')),
+            DataColumn(label: Text('Prénom / Nom', style: GardenTypography.bodyLg,)),
+            DataColumn(label: Text('Email', style: GardenTypography.bodyLg,)),
+            DataColumn(label: Text('Rôle', style: GardenTypography.bodyLg,)),
             if(isEditable != null && isEditable == true)
               const DataColumn(label: Text('Actions')),
           ],
