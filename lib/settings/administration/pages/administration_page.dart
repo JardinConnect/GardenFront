@@ -46,7 +46,7 @@ class AdministrationPage extends StatelessWidget {
                           spacing: GardenSpace.gapSm,
                           children: [
                             SystemInfosWidget(),
-                            SavesWidget(),
+                            // SavesWidget(),
                             AdminDangerZoneWidget(),
                           ],
                         ),
@@ -57,8 +57,8 @@ class AdministrationPage extends StatelessWidget {
                           spacing: GardenSpace.gapSm,
                           children: [
                             RaspberryInfosWidget(systemMetrics: state.systemMetrics),
-                            SystemToolsWidget(),
-                            CGUWidget(),
+                            // SystemToolsWidget(),
+                            // CGUWidget(),
                           ],
                         ),
                       ),
