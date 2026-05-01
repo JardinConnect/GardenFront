@@ -55,14 +55,9 @@ class CellBloc extends Bloc<CellEvent, CellState> {
 
   _refreshCells(RefreshCells event, Emitter<CellState> emit) async {
     emit(const CellsShimmer());
-    final errorMsg = "Erreur lors du rafraîchissement des données des cellules";
     try {
       await for (final model in _cellSSERepository.subscribeToRefresh()) {
         final eventName = model.event?.trim() ?? '';
-        if (eventName == 'error') {
-          emit(CellError(message: errorMsg));
-          return;
-        }
         if (eventName.isNotEmpty &&
             eventName != 'status' &&
             eventName != 'waiting_ack') {
