@@ -159,7 +159,11 @@ class AlertEvent {
   });
 
   /// Vrai si cet événement concerne la batterie (non représentable par SensorType)
-  bool get isBattery => sensorTypeRaw == 'battery';
+  bool get isBattery =>
+      sensorTypeRaw == 'battery' ||
+      sensorTypeRaw == 'BATTERY' ||
+      sensorTypeRaw == 'VB' ||
+      sensorTypeRaw == 'SB';
 
   factory AlertEvent.fromJson(Map<String, dynamic> json) {
     return AlertEvent(
@@ -182,19 +186,32 @@ class AlertEvent {
 }
 
 // Convertit une chaîne en SensorType (snake_case API → SensorType)
+// Supporte les formats : ancien (air_temperature), nouveau (AIR_TEMPERATURE) et préfixe (TA, TS…)
 SensorType sensorTypeFromString(String type) {
   switch (type) {
     case 'air_temperature':
+    case 'AIR_TEMPERATURE':
+    case 'TA':
       return SensorType.airTemperature;
     case 'soil_humidity':
+    case 'SOIL_HUMIDITY':
+    case 'HS':
       return SensorType.humiditySurface;
     case 'deep_soil_humidity':
+    case 'DEEP_SOIL_HUMIDITY':
+    case 'DHS':
       return SensorType.humidityDepth;
     case 'light':
+    case 'LIGHT':
+    case 'L':
       return SensorType.light;
     case 'soil_temperature':
+    case 'SOIL_TEMPERATURE':
+    case 'TS':
       return SensorType.soilTemperature;
     case 'air_humidity':
+    case 'AIR_HUMIDITY':
+    case 'HA':
       return SensorType.rain;
     default:
       return SensorType
@@ -322,13 +339,25 @@ SensorAlertData _sensorAlertDataFromApiJson(Map<String, dynamic> json) {
 String _getUnitForSensorType(String type) {
   switch (type) {
     case 'air_temperature':
+    case 'AIR_TEMPERATURE':
+    case 'TA':
     case 'soil_temperature':
+    case 'SOIL_TEMPERATURE':
+    case 'TS':
       return '°C';
     case 'soil_humidity':
+    case 'SOIL_HUMIDITY':
+    case 'HS':
     case 'air_humidity':
+    case 'AIR_HUMIDITY':
+    case 'HA':
     case 'deep_soil_humidity':
+    case 'DEEP_SOIL_HUMIDITY':
+    case 'DHS':
       return '%';
     case 'light':
+    case 'LIGHT':
+    case 'L':
       return 'lux';
     default:
       return '';
