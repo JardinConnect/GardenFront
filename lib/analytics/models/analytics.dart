@@ -309,8 +309,8 @@ abstract class Analytic {
   @JsonKey(fromJson: _valueFromJson)
   final double value;
   final DateTime occurredAt;
-  @JsonKey(name: 'sensor_code', fromJson: _sensorCodeFromJson)
-  final int? sensorCode;
+  @JsonKey(name: 'sensor_code')
+  final String? sensorCode;
   final AnalyticAlertStatus? alertStatus;
 
   Analytic({
@@ -328,14 +328,6 @@ abstract class Analytic {
     if (value is int) return value.toDouble();
     if (value is double) return value;
     return double.tryParse(value.toString()) ?? 0.0;
-  }
-
-  // TODO: Convertisseur temporaire - À SUPPRIMER quand le backend sera fixé
-  static int? _sensorCodeFromJson(dynamic value) {
-    if (value == null) return null;
-    if (value is int) return value;
-    if (value is num) return value.toInt();
-    return int.tryParse(value.toString());
   }
 }
 

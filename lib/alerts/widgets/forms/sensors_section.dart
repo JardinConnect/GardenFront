@@ -19,12 +19,12 @@ const _availableSensors = [
   (
     type: SensorType.humiditySurface,
     displayName: 'Humidité basse sol',
-    sensorId: '2HS',
+    sensorId: '1HS',
   ),
   (
     type: SensorType.humidityDepth,
     displayName: 'Humidité haute sol',
-    sensorId: '1HS',
+    sensorId: '2HS',
   ),
 ];
 
